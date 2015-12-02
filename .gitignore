@@ -8,3 +8,5 @@
 *.suo
 Temp/*
 Library/*
+*.sln
+*.userprefs
