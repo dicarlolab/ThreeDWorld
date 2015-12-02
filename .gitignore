@@ -5,3 +5,6 @@
 *.egg-info
 *.DS_Store
 .*swp
+*.suo
+Temp/*
+Library/*
