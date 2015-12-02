@@ -10,3 +10,4 @@ Temp/*
 Library/*
 *.sln
 *.userprefs
+*.csproj
