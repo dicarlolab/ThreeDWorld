@@ -4,16 +4,20 @@ using NetMQ;
 using System;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using NetMQ.Sockets;
 
 public class NetMessenger : MonoBehaviour
 {
 #region Fields
+    public Avatar avatarPrefab;
     public NetMQContext ctx;
-    public NetMQ.Sockets.ResponseSocket server = null;
-    public NetMQ.Sockets.RequestSocket client = null;
+    public bool shouldCreateTestClient = true;
 
     private NetMQMessage lastMessage = new NetMQMessage();
     private NetMQMessage lastMessageSent = new NetMQMessage();
+    private List<ResponseSocket> createdSockets = new List<ResponseSocket>();
+    private Dictionary<ResponseSocket, Avatar> avatars = new Dictionary<ResponseSocket, Avatar>();
+    private Dictionary<ResponseSocket, RequestSocket> avatarClients = new Dictionary<ResponseSocket, RequestSocket>();
 #endregion
 
 #region Const message values
@@ -29,68 +33,188 @@ public class NetMessenger : MonoBehaviour
 #region Unity callbacks
     void Start()
     {
+        SimulationManager.Init();
+    }
+
+    public void Init()
+    {
         ctx = NetMQContext.Create();
-        CreateServer();
-#if UNITY_EDITOR
-        CreateTestClient();
-        Test();
-#endif
+        CreateNewSocketConnection();
+    }
+
+    public bool AreAllAvatarsReady()
+    {
+        bool allready = true;
+        foreach(Avatar a in avatars.Values)
+            allready = allready && a.readyForSimulation;
+        return allready;
     }
     
     void Update()
     {
-        if (server != null)
+        foreach(ResponseSocket server in createdSockets)
         {
-            if (server.TryReceiveMultipartMessage(ref lastMessage))
-                HandleFrameMessage();
+//            Debug.LogFormat("Server In: {0}, Out: {1}", server.HasIn, server.HasOut);
+            if (server.HasIn && server.TryReceiveMultipartMessage(TimeSpan.Zero, ref lastMessage))
+                HandleFrameMessage(server, lastMessage);
+            RequestSocket client = null;
+            if (avatarClients.ContainsKey(server))
+                client = avatarClients[server];
+            if (client != null)
+            {
+//                Debug.LogFormat("Client In: {0}, Out: {1}", client.HasIn, client.HasOut);
+                if (client.HasIn && client.TryReceiveMultipartMessage(TimeSpan.Zero, ref lastMessage))
+                    HandleClientFrameMessage(client, lastMessage);
+                
+            }
+        }
+    }
+
+    private void FixedUpdate()
+    {
+        // TODO: Handle this for when we have multiple Avatars
+        if (SimulationManager.FinishUpdatingFrames())
+        {
+            foreach(Avatar a in avatars.Values)
+                a.ReadyFramesForRequest();
+        }
+    }
+
+    private void OnDisable()
+    {
+        foreach(ResponseSocket server in createdSockets)
+        {
+            if (avatarClients.ContainsKey(server))
+            {
+                avatarClients[server].Close();
+                avatarClients[server].Dispose();
+            }
+            server.Close();
+            server.Dispose();
+            if (avatars.ContainsKey(server))
+            {
+                Avatar avatar = avatars[server];
+                if (avatar != null && avatar.gameObject != null)
+                    GameObject.Destroy(avatars[server].gameObject);
+            }
+        }
+        avatars.Clear();
+        createdSockets.Clear();
+        avatarClients.Clear();
+        if (ctx != null)
+        {
+            ctx.Terminate();
+            ctx.Dispose();
+            ctx = null;
         }
     }
 #endregion
 
-    private void CreateServer()
+#region Setup
+    private void CreateNewSocketConnection()
     {
-        // TODO: Set up in a way that allows for multiple clients
-        // We'd need separate sockets for each client
-        server = ctx.CreateResponseSocket();
+        ResponseSocket server = ctx.CreateResponseSocket();
         server.Bind("tcp://127.0.0.1:5556");
+        createdSockets.Add(server);
+        if (shouldCreateTestClient)
+            CreateTestClient(server);
     }
 
-    private void CreateTestClient()
+    private void CreateTestClient(ResponseSocket server)
     {
-        client = ctx.CreateRequestSocket();
+        RequestSocket client = ctx.CreateRequestSocket();
         client.Connect("tcp://127.0.0.1:5556");
-        client.SendFrame("Hello");
+        avatarClients[server] = client;
+        client.SendFrame(MSG_R_ClientJoin);
     }
+#endregion
 
 #region Receive messages from the client
-    public void HandleFrameMessage()
+    public void HandleFrameMessage(ResponseSocket server, NetMQMessage msg)
     {
-        string msgHeader = lastMessage.First.ToString();
+        string msgHeader = msg.First.ConvertToString();
+        Debug.LogFormat("Got message on Server: {0}, {1} frames", msgHeader, msg.FrameCount);
 
         switch(msgHeader.ToString())
         {
             case MSG_R_ClientJoin:
-                OnClientJoin(lastMessage);
+                OnClientJoin(server, msg);
                 break;
             case MSG_R_FrameInput:
-                RecieveClientInput(lastMessage);
+                RecieveClientInput(server, msg);
                 break;
         }
     }
 
-    public void RecieveClientInput(NetMQMessage msg)
+    public void RecieveClientInput(ResponseSocket server, NetMQMessage msg)
     {
-        // TODO: Ferry input to correct location
+        avatars[server].HandleNetInput(msg);
     }
 
-    public void OnClientJoin(NetMQMessage msg)
+    public void OnClientJoin(ResponseSocket server, NetMQMessage msg)
     {
-        lastMessageSent.Clear();
-        lastMessageSent.Append(MSG_S_ConfirmClientJoin);
-        client.SendMultipartMessage(lastMessageSent);
+        // Setup new avatar object from prefab
+        Avatar newAvatar = UnityEngine.Object.Instantiate<Avatar>(avatarPrefab);
+        avatars[server] = newAvatar;
+        newAvatar.InitNetData(this, server);
+//
+//        // Send confirmation message
+//        lastMessageSent.Clear();
+//        lastMessageSent.Append(MSG_S_ConfirmClientJoin);
+//        server.SendMultipartMessage(lastMessageSent);
     }
 #endregion
     
+#region Simulate recieving message on the client
+    // Used for debugging without an agent
+    public void HandleClientFrameMessage(RequestSocket client, NetMQMessage msg)
+    {
+        string msgHeader = msg.First.ConvertToString();
+        Debug.LogFormat("Got message on Client: {0}, {1} frames", msgHeader, msg.FrameCount);
+        
+        switch(msgHeader.ToString())
+        {
+            case MSG_S_ConfirmClientJoin:
+                SimulateClientInput(client, msg);
+                break;
+            case MSG_S_FrameData:
+                SimulateClientInput(client, msg);
+                break;
+        }
+    }
+    
+    public void SimulateClientInput(RequestSocket client, NetMQMessage framedDataMsg)
+    {
+//        ResponseSocket server = GetServerForClient(client);
+
+
+//#if (UNITY_STANDALONE_WIN)
+//        Avatar myAvatar = avatars[server];
+//        // Just save out the png data
+//        if (framedDataMsg.FrameCount > 1)
+//        {
+//            for(int i = 0; i < myAvatar.shaders.Count; ++i)
+//                CameraStreamer.SaveOutImages(framedDataMsg[1 + i].ToByteArray(), i);
+//            CameraStreamer.fileIndex++;
+//        }
+//#endif
+
+        // Send input message
+        lastMessageSent.Clear();
+        lastMessageSent.Append(MSG_R_FrameInput);
+
+        // Set movement
+        Vector3 targetVelocity = Vector3.zero;
+        targetVelocity.x = Input.GetAxis("Horizontal");
+        targetVelocity.y = Input.GetAxis("Vertical");
+        lastMessageSent.Append(Mathf.RoundToInt(targetVelocity.x * 4096.0f));
+        lastMessageSent.Append(Mathf.RoundToInt(targetVelocity.y * 4096.0f));
+        lastMessageSent.Append(Mathf.RoundToInt(targetVelocity.z * 4096.0f));
+        
+        client.SendMultipartMessage(lastMessageSent);
+    }
+#endregion
+
     public void SendFrameUpdate(CameraStreamer.CaptureRequest streamCapture)
     {
         lastMessageSent.Clear();
@@ -98,25 +222,26 @@ public class NetMessenger : MonoBehaviour
         // TODO: Additional frame message description?
         
         // Add in captured frames
-        int numValues = Mathf.Min(streamCapture.shadersList.Count, streamCapture.retValue.Count);
+        int numValues = Mathf.Min(streamCapture.shadersList.Count, streamCapture.capturedImages.Count);
         for(int i = 0; i < numValues; ++i)
-            lastMessageSent.Append(streamCapture.retValue[i].pictureBuffer);
+            lastMessageSent.Append(streamCapture.capturedImages[i].pictureBuffer);
         
         // TODO: Insert other wanted data
         
         // Send out the real message
-        client.SendMultipartMessage(lastMessageSent);
+        // TODO: Look up the correct server socket
+        ResponseSocket server = createdSockets[0];
+        server.SendMultipartMessage(lastMessageSent);
+//        Debug.LogFormat("Sending frame message with {0} frames for {1} values", lastMessageSent.FrameCount, numValues);
     }
 
-    private void Test()
+    public ResponseSocket GetServerForClient(RequestSocket client)
     {
-#if UNITY_EDITOR
-        client.SendFrame("Hello");
-        string fromClientMessage = server.ReceiveFrameString();
-        Debug.LogFormat("From Client: {0}", fromClientMessage);
-        server.SendFrame("Hi Back");
-        string fromServerMessage = client.ReceiveFrameString();
-        Debug.LogFormat("From Server: {0}", fromServerMessage);
-#endif
+        foreach(ResponseSocket server in createdSockets)
+        {
+            if (avatarClients.ContainsKey(server) && avatarClients[server] == client)
+                return server;
+        }
+        return null;
     }
 }
