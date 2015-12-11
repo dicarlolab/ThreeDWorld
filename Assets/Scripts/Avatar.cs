@@ -9,12 +9,14 @@ public class Avatar : MonoBehaviour
     public CameraStreamer myCam = null;
     public List<Shader> shaders = null;
     public float moveSpeed = 5.0f;
+    public float observedRange = 25.0f;
 
+    private List<SemanticObject> _observedObjs = new List<SemanticObject>();
     private Vector3 targetVelocity = Vector3.zero;
     private Rigidbody _myRigidbody = null;
     private bool _readyForSimulation = false;
     private NetMessenger myMessenger = null;
-//    private NetMQ.Sockets.ResponseSocket myServer = null;
+    private NetMQ.Sockets.ResponseSocket _myServer = null;
     private CameraStreamer.CaptureRequest request;
 #endregion
 
@@ -26,10 +28,18 @@ public class Avatar : MonoBehaviour
             return _myRigidbody;
         }
     }
-
+    
     public bool readyForSimulation {
         get { return _readyForSimulation; }
         set { _readyForSimulation = value; }
+    }
+    
+    public NetMQ.Sockets.ResponseSocket myServer {
+        get { return _myServer; }
+    }
+
+    public List<SemanticObject> observedObjs {
+        get { return _observedObjs; }
     }
 #endregion
 
@@ -42,22 +52,33 @@ public class Avatar : MonoBehaviour
 
     public void ReadyFramesForRequest()
     {
+        // Set up rendering
         myCam.RequestCaptures(request);
-        _readyForSimulation = false; // TODO: Set this in the correct location
+    }
+
+    public void UpdateObservedObjects()
+    {
+        _observedObjs.Clear();
+        Collider[] observedObjects = Physics.OverlapSphere(transform.position, observedRange);
+        foreach(Collider col in observedObjects)
+        {
+            SemanticObject obj = col.attachedRigidbody.GetComponent<SemanticObject>();
+            if (obj != null && !_observedObjs.Contains(obj))
+                _observedObjs.Add(obj);
+        }
     }
 
     public void InitNetData(NetMessenger myNewMessenger, NetMQ.Sockets.ResponseSocket myNewServer)
     {
         Debug.Log("Calling InitNetData");
         myMessenger = myNewMessenger;
-//        myServer = myNewServer;
-        request.callbackFunc = myMessenger.SendFrameUpdate;
+        _myServer = myNewServer;
+        request.callbackFunc = (CameraStreamer.CaptureRequest req)=>{myMessenger.SendFrameUpdate(req, this);};
         ReadyFramesForRequest();
     }
 
     public void HandleNetInput(NetMQMessage msg)
     {
-//        Debug.Log("HandleNetInput");
         // Get movement
         if (msg.FrameCount > 3)
             targetVelocity = (moveSpeed / 4096.0f) * new Vector3(msg[1].ConvertToInt32(), msg[2].ConvertToInt32(), msg[3].ConvertToInt32());

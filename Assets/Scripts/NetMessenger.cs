@@ -5,6 +5,7 @@ using System;
 using UnityEngine.UI;
 using System.Collections.Generic;
 using NetMQ.Sockets;
+using SimpleJSON;
 
 public class NetMessenger : MonoBehaviour
 {
@@ -18,6 +19,7 @@ public class NetMessenger : MonoBehaviour
     private List<ResponseSocket> createdSockets = new List<ResponseSocket>();
     private Dictionary<ResponseSocket, Avatar> avatars = new Dictionary<ResponseSocket, Avatar>();
     private Dictionary<ResponseSocket, RequestSocket> avatarClients = new Dictionary<ResponseSocket, RequestSocket>();
+    private List<SemanticRelationship> relationsToTest = new List<SemanticRelationship>();
 #endregion
 
 #region Const message values
@@ -30,9 +32,16 @@ public class NetMessenger : MonoBehaviour
     const string MSG_R_FrameInput = "CLIENT_INPUT";
 #endregion
 
+    public List<Avatar> GetAllAvatars()
+    {
+        List<Avatar> ret = new List<Avatar>(avatars.Values);
+        return ret;
+    }
+
 #region Unity callbacks
     void Start()
     {
+        relationsToTest.Add(new OnRelation());
         SimulationManager.Init();
     }
 
@@ -44,10 +53,10 @@ public class NetMessenger : MonoBehaviour
 
     public bool AreAllAvatarsReady()
     {
-        bool allready = true;
+        bool allReady = true;
         foreach(Avatar a in avatars.Values)
-            allready = allready && a.readyForSimulation;
-        return allready;
+            allReady = allReady && a.readyForSimulation;
+        return allReady;
     }
     
     void Update()
@@ -75,6 +84,17 @@ public class NetMessenger : MonoBehaviour
         // TODO: Handle this for when we have multiple Avatars
         if (SimulationManager.FinishUpdatingFrames())
         {
+            HashSet<SemanticObject> allObserved = new HashSet<SemanticObject>();
+            foreach(Avatar a in avatars.Values)
+            {
+                a.UpdateObservedObjects();
+                allObserved.UnionWith(a.observedObjs);
+            }
+
+            // Process all the relation changes
+            foreach(SemanticRelationship rel in relationsToTest)
+                rel.Setup(allObserved);
+
             foreach(Avatar a in avatars.Values)
                 a.ReadyFramesForRequest();
         }
@@ -187,14 +207,16 @@ public class NetMessenger : MonoBehaviour
     {
 //        ResponseSocket server = GetServerForClient(client);
 
+//        if (framedDataMsg.FrameCount > 1)
+//            Debug.Log("Received JSON: "+framedDataMsg[1].ConvertToString());
 
 //#if (UNITY_STANDALONE_WIN)
 //        Avatar myAvatar = avatars[server];
 //        // Just save out the png data
-//        if (framedDataMsg.FrameCount > 1)
+//        if (framedDataMsg.FrameCount > 2)
 //        {
 //            for(int i = 0; i < myAvatar.shaders.Count; ++i)
-//                CameraStreamer.SaveOutImages(framedDataMsg[1 + i].ToByteArray(), i);
+//                CameraStreamer.SaveOutImages(framedDataMsg[2 + i].ToByteArray(), i);
 //            CameraStreamer.fileIndex++;
 //        }
 //#endif
@@ -214,24 +236,29 @@ public class NetMessenger : MonoBehaviour
         client.SendMultipartMessage(lastMessageSent);
     }
 #endregion
-
-    public void SendFrameUpdate(CameraStreamer.CaptureRequest streamCapture)
+    public void SendFrameUpdate(CameraStreamer.CaptureRequest streamCapture, Avatar a)
     {
         lastMessageSent.Clear();
         lastMessageSent.Append(MSG_S_FrameData);
         // TODO: Additional frame message description?
         
+        // Look up relationship values for all observed semantics objects
+        JSONClass retInfo = new JSONClass();
+        retInfo["observed_objects"] = new JSONArray();
+        retInfo["observed_relations"] = new JSONClass();
+        foreach(SemanticObject o in a.observedObjs)
+            retInfo["observed_objects"].Add(o.identifier);
+        foreach(SemanticRelationship rel in relationsToTest)
+            retInfo["observed_relations"][rel.name] = rel.GetJsonString(a.observedObjs);
+        // Send out the real message
+        lastMessageSent.Append(retInfo.ToJSON(0));
+
         // Add in captured frames
         int numValues = Mathf.Min(streamCapture.shadersList.Count, streamCapture.capturedImages.Count);
         for(int i = 0; i < numValues; ++i)
             lastMessageSent.Append(streamCapture.capturedImages[i].pictureBuffer);
         
-        // TODO: Insert other wanted data
-        
-        // Send out the real message
-        // TODO: Look up the correct server socket
-        ResponseSocket server = createdSockets[0];
-        server.SendMultipartMessage(lastMessageSent);
+        a.myServer.SendMultipartMessage(lastMessageSent);
 //        Debug.LogFormat("Sending frame message with {0} frames for {1} values", lastMessageSent.FrameCount, numValues);
     }
 

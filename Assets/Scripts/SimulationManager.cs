@@ -49,11 +49,13 @@ public static class SimulationManager
     {
         framesToProcess = numPhysicsFramesPerUpdate;
         Time.timeScale = (framesToProcess > 0) ? 1.0f : 0.0f;
+        foreach(Avatar a in myNetMessenger.GetAllAvatars())
+            a.readyForSimulation = false;
     }
     
     public static void CheckToggleUpdates()
     {
-        Debug.Log("Avatars ready: " + myNetMessenger.AreAllAvatarsReady());
+//        Debug.Log("Avatars ready: " + myNetMessenger.AreAllAvatarsReady());
         if (myNetMessenger.AreAllAvatarsReady())
             ToggleUpdates();
     }
