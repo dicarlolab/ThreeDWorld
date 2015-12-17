@@ -205,13 +205,13 @@ public class NetMessenger : MonoBehaviour
     
     public void SimulateClientInput(RequestSocket client, NetMQMessage framedDataMsg)
     {
-//        ResponseSocket server = GetServerForClient(client);
+        ResponseSocket server = GetServerForClient(client);
+        Avatar myAvatar = avatars[server];
 
 //        if (framedDataMsg.FrameCount > 1)
 //            Debug.Log("Received JSON: "+framedDataMsg[1].ConvertToString());
 
 //#if (UNITY_STANDALONE_WIN)
-//        Avatar myAvatar = avatars[server];
 //        // Just save out the png data
 //        if (framedDataMsg.FrameCount > 2)
 //        {
@@ -226,13 +226,33 @@ public class NetMessenger : MonoBehaviour
         lastMessageSent.Append(MSG_R_FrameInput);
 
         // Set movement
+        Quaternion curRotation = myAvatar.transform.rotation;
         Vector3 targetVelocity = Vector3.zero;
         targetVelocity.x = Input.GetAxis("Horizontal");
         targetVelocity.y = Input.GetAxis("Vertical");
+        targetVelocity.z = Input.GetAxis("VerticalD");
+        targetVelocity = curRotation * targetVelocity;
+
+        // Read angular velocity
+        Vector3 targetRotationVel = Vector3.zero;
+        targetRotationVel.x = -Input.GetAxis("Vertical2");
+        targetRotationVel.y = Input.GetAxis("Horizontal2");
+        targetRotationVel.z = -Input.GetAxis("HorizontalD");
+
+        // Convert from relative coordinates
+        Quaternion test = Quaternion.identity;
+        test = test * Quaternion.AngleAxis(targetRotationVel.z, curRotation * Vector3.forward);
+        test = test * Quaternion.AngleAxis(targetRotationVel.x, curRotation * Vector3.left);
+        test = test * Quaternion.AngleAxis(targetRotationVel.y, curRotation * Vector3.up);
+        targetRotationVel = test.eulerAngles;
+
         lastMessageSent.Append(Mathf.RoundToInt(targetVelocity.x * 4096.0f));
         lastMessageSent.Append(Mathf.RoundToInt(targetVelocity.y * 4096.0f));
         lastMessageSent.Append(Mathf.RoundToInt(targetVelocity.z * 4096.0f));
-        
+        lastMessageSent.Append(Mathf.RoundToInt(targetRotationVel.x * 4096.0f));
+        lastMessageSent.Append(Mathf.RoundToInt(targetRotationVel.y * 4096.0f));
+        lastMessageSent.Append(Mathf.RoundToInt(targetRotationVel.z * 4096.0f));
+
         client.SendMultipartMessage(lastMessageSent);
     }
 #endregion

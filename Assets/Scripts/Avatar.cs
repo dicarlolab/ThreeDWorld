@@ -9,6 +9,7 @@ public class Avatar : MonoBehaviour
     public CameraStreamer myCam = null;
     public List<Shader> shaders = null;
     public float moveSpeed = 5.0f;
+    public float rotSpeed = 5.0f;
     public float observedRange = 25.0f;
 
     private List<SemanticObject> _observedObjs = new List<SemanticObject>();
@@ -82,6 +83,15 @@ public class Avatar : MonoBehaviour
         // Get movement
         if (msg.FrameCount > 3)
             targetVelocity = (moveSpeed / 4096.0f) * new Vector3(msg[1].ConvertToInt32(), msg[2].ConvertToInt32(), msg[3].ConvertToInt32());
+        if (msg.FrameCount > 6)
+        {
+            Vector3 angChange = (rotSpeed / 4096.0f) * new Vector3(msg[4].ConvertToInt32(), msg[5].ConvertToInt32(), msg[6].ConvertToInt32());
+            angChange -= myRigidbody.angularVelocity;
+            // Clamp value to max change?
+            if (angChange.magnitude > rotSpeed)
+                angChange = angChange.normalized * rotSpeed;
+            myRigidbody.AddTorque(angChange, ForceMode.VelocityChange);
+        }
 
         _readyForSimulation = true;
         // Now ready the output and run the simulation a few frames
