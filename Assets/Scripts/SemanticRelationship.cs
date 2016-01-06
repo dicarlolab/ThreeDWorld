@@ -3,10 +3,16 @@ using System.Collections;
 using System.Collections.Generic;
 using SimpleJSON;
 
+/// <summary>
+/// Represents a type of semantic relation between two SemanticObject's
+/// This is the abstract base class that should be overridden by the implementation
+/// of the specific relationship and operations.
+/// </summary>
 [System.Serializable]
 public abstract class SemanticRelationship
 {
 #region Fields
+    // Name used when describing the relationship in JSON
     public string name = "";
 #endregion
 
@@ -15,7 +21,13 @@ public abstract class SemanticRelationship
 
 #region Functions
     public abstract bool Evaluate(SemanticObject subject, SemanticObject obj);
+
+    // Abstract function that evaluations the relationship value of a given object
+    // over all other objects that it needs to be tested against.
     public abstract void Evaluate(List<SemanticObject> affectedNodes, out Dictionary<SemanticObject, List<SemanticObject>> foundObjs);
+
+    // Utility function that takes a list of SemanticObject's evaluated as 
+    // having a relationship with the given object and outputs as a JSON object
     public virtual JSONNode GetJsonString(List<SemanticObject> affectedNodes)
     {
         JSONClass retClass = new JSONClass();
@@ -31,10 +43,19 @@ public abstract class SemanticRelationship
         return retClass;
     }
 
+
+    // Virtual function that does evaluations over all objects
+    // This should be used to evaluate relationships for low-cost operation or for
+    // partial evaluations that can streamline the operation when evaluating all the combinations
+    // Can also set/clear caches for some evaluation results(e.g. commutative relationships)
     public virtual void Setup(HashSet<SemanticObject> allObservedObjects)
     {
     }
 
+    // Utility function that converts a mapping of all active relations to a mapping
+    // of all active relations over a smaller subset of objects
+    // This is primarily used when we have multiple avatars that can observe different sets of
+    // objects. This allows evaluating relationships once while sending only relevant information
     public static Dictionary<SemanticObject, List<SemanticObject>> LimitSet(List<SemanticObject> subset, Dictionary<SemanticObject, List<SemanticObject>> unrestrictedList)
     {
         Dictionary<SemanticObject, List<SemanticObject>> ret = new Dictionary<SemanticObject, List<SemanticObject>>();

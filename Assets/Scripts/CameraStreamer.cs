@@ -5,15 +5,24 @@ using System;
 using UnityEngine.UI;
 using System.Collections.Generic;
 
+/// <summary>
+/// Class that captures render output from a camera and returns a 
+/// callback with the image data
+/// </summary>
 [RequireComponent(typeof(Camera))]
 public class CameraStreamer : MonoBehaviour
 {
 #region Data Structures
+    // Simple class to make it more clear when passing picture image data
     public class CapturedImage
     {
         public byte[] pictureBuffer;
     }
     public delegate void CollectImages(CaptureRequest completedRequest);
+
+    // Data structure for requesting an image capture from
+    // this camera with the given shaders and callbacks.
+    // Output is added to capturedImages, overriding any previous data
     public class CaptureRequest
     {
         public CollectImages callbackFunc = null;
@@ -24,11 +33,13 @@ public class CameraStreamer : MonoBehaviour
 
 #region Fields
     public Camera targetCam = null;
+    // Debug UI image that shows what this camera is rendering out
     public RawImage testImage = null;
 
-    private Camera textureCam = null;
-    private Texture2D outPhoto = null;
-    private Queue<CaptureRequest> captureRequests = new Queue<CaptureRequest>();
+    private Camera _textureCam = null;
+    private Texture2D _outPhoto = null;
+    // If not empty, this queue will have the camera will capture a render and send a callback
+    private Queue<CaptureRequest> _captureRequests = new Queue<CaptureRequest>();
     public static int fileIndex = 0;
     const string fileName = "testImg";
 #endregion
@@ -41,32 +52,13 @@ public class CameraStreamer : MonoBehaviour
 
     void Update()
     {
-//        if (captureRequests.Count > 0)
-//            Debug.LogFormat("Awaiting PostRender for {0} captures", captureRequests.Count);
     }
-
-//    // Called after the camera renders
-//    void OnPostRender()
-//    {
-//        // Note: It seems that Input.GetKeyDown doesn't work herein OnPostRender
-//        while (captureRequests.Count > 0)
-//            ProcessCaptureRequest(captureRequests.Dequeue());
-//    }
 #endregion
 
 #region Public functions
-//    public void RequestCaptures(List<Shader> shadersToUse = null, CollectImages callbackFunc = null)
-//    {
-//        CaptureRequest newRequest = new CaptureRequest();
-//        newRequest.callbackFunc = callbackFunc;
-//        newRequest.shadersList = shadersToUse;
-//        newRequest.capturedImages = null;
-//        RequestCaptures(newRequest);
-//    }
-    
     public void RequestCaptures(CaptureRequest newRequest)
     {
-        if (captureRequests.Contains(newRequest))
+        if (_captureRequests.Contains(newRequest))
         {
             Debug.Log("Already have a pending request");
             return;
@@ -76,17 +68,20 @@ public class CameraStreamer : MonoBehaviour
             newRequest.shadersList = new List<Shader>();
             newRequest.shadersList.Add(null);
         }
-        captureRequests.Enqueue(newRequest);
+        _captureRequests.Enqueue(newRequest);
         StartCoroutine(CaptureCoroutine());
     }
 
+    // Coroutine to run through all the render requests on this camera
+    // at the end of the frame(to avoid conflicts with the main rendering logic)
     public IEnumerator CaptureCoroutine()
     {
         yield return new WaitForEndOfFrame();
-        while(captureRequests.Count > 0)
-            ProcessCaptureRequest(captureRequests.Dequeue());
+        while(_captureRequests.Count > 0)
+            ProcessCaptureRequest(_captureRequests.Dequeue());
     }
 
+    // Function to save out captured image data to disk as png files(mainly for debugging)
     public static void SaveOutImages(CaptureRequest completedRequest)
     {
         int numValues = Mathf.Min(completedRequest.shadersList.Count, completedRequest.capturedImages.Count);
@@ -95,11 +90,11 @@ public class CameraStreamer : MonoBehaviour
         fileIndex++;
     }
     
+    // Function to save out raw image data to disk as png files(mainly for debugging)
     public static void SaveOutImages(byte[] imageData, int shaderIndex)
     {
         string newFileName = string.Format("{0}/{1}{2}_shader{3}.png", Application.persistentDataPath, fileName, fileIndex, shaderIndex);
         System.IO.File.WriteAllBytes(newFileName, imageData);
-//        Debug.Log("Trying to saved image at " + newFileName);
     }
 #endregion
 
@@ -111,7 +106,7 @@ public class CameraStreamer : MonoBehaviour
         while(request.capturedImages.Count < request.shadersList.Count)
         {
             request.capturedImages.Add(new CapturedImage());
-            Debug.Log("Capture count now: " + request.capturedImages.Count);
+//            Debug.Log("Capture count now: " + request.capturedImages.Count);
         }
         for(int i = 0; i < request.shadersList.Count; ++i)
             request.capturedImages[i].pictureBuffer = TakeSnapshotNow(request.shadersList[i]).pictureBuffer;
@@ -121,29 +116,33 @@ public class CameraStreamer : MonoBehaviour
 
     private CapturedImage TakeSnapshotNow(Shader targetShader)
     {
-        if (textureCam == null)
+        // Create a new camera if we need to that we will be manually rendering
+        if (_textureCam == null)
         {
             GameObject newObj = new GameObject("Texture-Writing Camera");
-            textureCam = newObj.AddComponent<Camera>();
-            textureCam.enabled = false;
-            textureCam.targetTexture = new RenderTexture(targetCam.pixelWidth, targetCam.pixelHeight, 0);
+            _textureCam = newObj.AddComponent<Camera>();
+            _textureCam.enabled = false;
+            _textureCam.targetTexture = new RenderTexture(targetCam.pixelWidth, targetCam.pixelHeight, 0);
             if (testImage != null)
-                testImage.texture = textureCam.targetTexture;
+                testImage.texture = _textureCam.targetTexture;
         }
+
+        // Call render with the appropriate shaders
         if (targetShader != null)
             targetCam.RenderWithShader(targetShader, null);
         else
             targetCam.Render();
 
+        // Copy and convert rendered image to PNG format as a byte array
         const bool SHOULD_USE_MIPMAPS = false;
-        int pixWidth = textureCam.targetTexture.width;
-        int pixHeight = textureCam.targetTexture.height;
-        if (outPhoto == null || outPhoto.width != pixWidth || outPhoto.height != pixHeight)
-            outPhoto = new Texture2D(pixWidth, pixHeight, TextureFormat.ARGB32, SHOULD_USE_MIPMAPS);
-        outPhoto.ReadPixels(new Rect(0, 0, pixWidth, pixHeight), 0, 0);
-        outPhoto.Apply();
+        int pixWidth = _textureCam.targetTexture.width;
+        int pixHeight = _textureCam.targetTexture.height;
+        if (_outPhoto == null || _outPhoto.width != pixWidth || _outPhoto.height != pixHeight)
+            _outPhoto = new Texture2D(pixWidth, pixHeight, TextureFormat.ARGB32, SHOULD_USE_MIPMAPS);
+        _outPhoto.ReadPixels(new Rect(0, 0, pixWidth, pixHeight), 0, 0);
+        _outPhoto.Apply();
         CapturedImage retImage = new CapturedImage();
-        retImage.pictureBuffer = outPhoto.EncodeToPNG();
+        retImage.pictureBuffer = _outPhoto.EncodeToPNG();
         return retImage;
     }
 #endregion

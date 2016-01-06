@@ -3,25 +3,34 @@ using System.Collections;
 using System.Collections.Generic;
 using NetMQ;
 
+/// <summary>
+/// Controls a single avatar driven by a connection to a client
+/// </summary>
 public class Avatar : MonoBehaviour
 {
 #region Fields
+    // Reference to camera component we are streaming from. TODO: Change to a list to allow multiple cameras?
     public CameraStreamer myCam = null;
+    // Reference to all the shaders we are using with each camera(null uses standard rendering)
     public List<Shader> shaders = null;
+    // How fast the avatar can translate using the client controls
     public float moveSpeed = 5.0f;
+    // How fast the avatar can rotate using the client controls
     public float rotSpeed = 5.0f;
+    // The range for which this avatar can observe SemanticObject's
     public float observedRange = 25.0f;
 
     private List<SemanticObject> _observedObjs = new List<SemanticObject>();
-    private Vector3 targetVelocity = Vector3.zero;
+    private Vector3 _targetVelocity = Vector3.zero;
     private Rigidbody _myRigidbody = null;
     private bool _readyForSimulation = false;
-    private NetMessenger myMessenger = null;
+    private NetMessenger _myMessenger = null;
     private NetMQ.Sockets.ResponseSocket _myServer = null;
-    private CameraStreamer.CaptureRequest request;
+    private CameraStreamer.CaptureRequest _request;
 #endregion
 
 #region Properties
+    // The rigidbody associated with the avatar's body
     public Rigidbody myRigidbody {
         get {
             if (_myRigidbody == null)
@@ -30,33 +39,47 @@ public class Avatar : MonoBehaviour
         }
     }
     
+    // Indicates when the client for this avatar is awaiting running the next set of frames
     public bool readyForSimulation {
         get { return _readyForSimulation; }
         set { _readyForSimulation = value; }
     }
     
+    // The server-to-client connection associated with this avatar
     public NetMQ.Sockets.ResponseSocket myServer {
         get { return _myServer; }
     }
 
+    // Objects found within observation radius of this avatar
     public List<SemanticObject> observedObjs {
         get { return _observedObjs; }
     }
 #endregion
 
+#region Unity callbacks
     private void Awake()
     {
-        request = new CameraStreamer.CaptureRequest();
-        request.shadersList = shaders;
-        request.capturedImages = new List<CameraStreamer.CapturedImage>();
+        _request = new CameraStreamer.CaptureRequest();
+        _request.shadersList = shaders;
+        _request.capturedImages = new List<CameraStreamer.CapturedImage>();
     }
+    
+    private void FixedUpdate()
+    {
+        if(myRigidbody != null)
+        {
+            myRigidbody.velocity = _targetVelocity;
+        }
+    }
+#endregion
 
     public void ReadyFramesForRequest()
     {
         // Set up rendering
-        myCam.RequestCaptures(request);
+        myCam.RequestCaptures(_request);
     }
 
+    // Looks for all the SemanticObject's that are within the range
     public void UpdateObservedObjects()
     {
         _observedObjs.Clear();
@@ -72,17 +95,18 @@ public class Avatar : MonoBehaviour
     public void InitNetData(NetMessenger myNewMessenger, NetMQ.Sockets.ResponseSocket myNewServer)
     {
         Debug.Log("Calling InitNetData");
-        myMessenger = myNewMessenger;
+        _myMessenger = myNewMessenger;
         _myServer = myNewServer;
-        request.callbackFunc = (CameraStreamer.CaptureRequest req)=>{myMessenger.SendFrameUpdate(req, this);};
+        _request.callbackFunc = (CameraStreamer.CaptureRequest req)=>{_myMessenger.SendFrameUpdate(req, this);};
         ReadyFramesForRequest();
     }
 
+    // Parse the input sent from the client and use it to update the controls for the next simulation segment
     public void HandleNetInput(NetMQMessage msg)
     {
         // Get movement
         if (msg.FrameCount > 3)
-            targetVelocity = (moveSpeed / 4096.0f) * new Vector3(msg[1].ConvertToInt32(), msg[2].ConvertToInt32(), msg[3].ConvertToInt32());
+            _targetVelocity = (moveSpeed / 4096.0f) * new Vector3(msg[1].ConvertToInt32(), msg[2].ConvertToInt32(), msg[3].ConvertToInt32());
         if (msg.FrameCount > 6)
         {
             Vector3 angChange = (rotSpeed / 4096.0f) * new Vector3(msg[4].ConvertToInt32(), msg[5].ConvertToInt32(), msg[6].ConvertToInt32());
@@ -96,13 +120,5 @@ public class Avatar : MonoBehaviour
         _readyForSimulation = true;
         // Now ready the output and run the simulation a few frames
         SimulationManager.CheckToggleUpdates();
-    }
-
-    private void FixedUpdate()
-    {
-        if(myRigidbody != null)
-        {
-            myRigidbody.velocity = targetVelocity;
-        }
     }
 }

@@ -2,6 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 
+/// <summary>
+/// Implementation for evaluating if an object is "on" another object
+/// </summary>
 public class OnRelation : SemanticRelationship
 {
     public OnRelation()
@@ -9,6 +12,7 @@ public class OnRelation : SemanticRelationship
         name = "ON";
     }
 
+    /// Saved mapping of all objects with an "On" relationship
     public Dictionary<SemanticObject, List<SemanticObject>> foundObjs = new Dictionary<SemanticObject, List<SemanticObject>>();
 
     public override bool Evaluate(SemanticObject subject, SemanticObject obj)
@@ -38,6 +42,7 @@ public class OnRelation : SemanticRelationship
         foreach(Collision col in obj1.activeCollisions)
         {
             SemanticObject hitObj = col.rigidbody.GetComponent<SemanticObject>();
+            // Ensures sufficiently low vertical relative velocity to be treated as "at rest"
             if (hitObj != null && Mathf.Abs(col.relativeVelocity.y) < 0.1f)
             {
                 // Check to see if there exists a contact where this object is above the other object

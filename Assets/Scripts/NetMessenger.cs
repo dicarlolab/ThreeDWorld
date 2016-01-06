@@ -7,19 +7,23 @@ using System.Collections.Generic;
 using NetMQ.Sockets;
 using SimpleJSON;
 
+/// <summary>
+/// Manages connections with all clients
+/// </summary>
 public class NetMessenger : MonoBehaviour
 {
 #region Fields
+    // Template for the avatar to create for each connection
     public Avatar avatarPrefab;
-    public NetMQContext ctx;
     public bool shouldCreateTestClient = true;
 
-    private NetMQMessage lastMessage = new NetMQMessage();
-    private NetMQMessage lastMessageSent = new NetMQMessage();
-    private List<ResponseSocket> createdSockets = new List<ResponseSocket>();
-    private Dictionary<ResponseSocket, Avatar> avatars = new Dictionary<ResponseSocket, Avatar>();
-    private Dictionary<ResponseSocket, RequestSocket> avatarClients = new Dictionary<ResponseSocket, RequestSocket>();
-    private List<SemanticRelationship> relationsToTest = new List<SemanticRelationship>();
+    private NetMQContext _ctx;
+    private NetMQMessage _lastMessage = new NetMQMessage();
+    private NetMQMessage _lastMessageSent = new NetMQMessage();
+    private List<ResponseSocket> _createdSockets = new List<ResponseSocket>();
+    private Dictionary<ResponseSocket, Avatar> _avatars = new Dictionary<ResponseSocket, Avatar>();
+    private Dictionary<ResponseSocket, RequestSocket> _avatarClients = new Dictionary<ResponseSocket, RequestSocket>();
+    private List<SemanticRelationship> _relationsToTest = new List<SemanticRelationship>();
 #endregion
 
 #region Const message values
@@ -34,46 +38,46 @@ public class NetMessenger : MonoBehaviour
 
     public List<Avatar> GetAllAvatars()
     {
-        List<Avatar> ret = new List<Avatar>(avatars.Values);
+        List<Avatar> ret = new List<Avatar>(_avatars.Values);
         return ret;
     }
 
 #region Unity callbacks
     void Start()
     {
-        relationsToTest.Add(new OnRelation());
+        _relationsToTest.Add(new OnRelation());
         SimulationManager.Init();
     }
 
     public void Init()
     {
-        ctx = NetMQContext.Create();
+        _ctx = NetMQContext.Create();
         CreateNewSocketConnection();
     }
 
     public bool AreAllAvatarsReady()
     {
         bool allReady = true;
-        foreach(Avatar a in avatars.Values)
+        foreach(Avatar a in _avatars.Values)
             allReady = allReady && a.readyForSimulation;
         return allReady;
     }
     
     void Update()
     {
-        foreach(ResponseSocket server in createdSockets)
+        foreach(ResponseSocket server in _createdSockets)
         {
 //            Debug.LogFormat("Server In: {0}, Out: {1}", server.HasIn, server.HasOut);
-            if (server.HasIn && server.TryReceiveMultipartMessage(TimeSpan.Zero, ref lastMessage))
-                HandleFrameMessage(server, lastMessage);
+            if (server.HasIn && server.TryReceiveMultipartMessage(TimeSpan.Zero, ref _lastMessage))
+                HandleFrameMessage(server, _lastMessage);
             RequestSocket client = null;
-            if (avatarClients.ContainsKey(server))
-                client = avatarClients[server];
+            if (_avatarClients.ContainsKey(server))
+                client = _avatarClients[server];
             if (client != null)
             {
 //                Debug.LogFormat("Client In: {0}, Out: {1}", client.HasIn, client.HasOut);
-                if (client.HasIn && client.TryReceiveMultipartMessage(TimeSpan.Zero, ref lastMessage))
-                    HandleClientFrameMessage(client, lastMessage);
+                if (client.HasIn && client.TryReceiveMultipartMessage(TimeSpan.Zero, ref _lastMessage))
+                    HandleClientFrameMessage(client, _lastMessage);
                 
             }
         }
@@ -85,47 +89,47 @@ public class NetMessenger : MonoBehaviour
         if (SimulationManager.FinishUpdatingFrames())
         {
             HashSet<SemanticObject> allObserved = new HashSet<SemanticObject>();
-            foreach(Avatar a in avatars.Values)
+            foreach(Avatar a in _avatars.Values)
             {
                 a.UpdateObservedObjects();
                 allObserved.UnionWith(a.observedObjs);
             }
 
             // Process all the relation changes
-            foreach(SemanticRelationship rel in relationsToTest)
+            foreach(SemanticRelationship rel in _relationsToTest)
                 rel.Setup(allObserved);
 
-            foreach(Avatar a in avatars.Values)
+            foreach(Avatar a in _avatars.Values)
                 a.ReadyFramesForRequest();
         }
     }
 
     private void OnDisable()
     {
-        foreach(ResponseSocket server in createdSockets)
+        foreach(ResponseSocket server in _createdSockets)
         {
-            if (avatarClients.ContainsKey(server))
+            if (_avatarClients.ContainsKey(server))
             {
-                avatarClients[server].Close();
-                avatarClients[server].Dispose();
+                _avatarClients[server].Close();
+                _avatarClients[server].Dispose();
             }
             server.Close();
             server.Dispose();
-            if (avatars.ContainsKey(server))
+            if (_avatars.ContainsKey(server))
             {
-                Avatar avatar = avatars[server];
+                Avatar avatar = _avatars[server];
                 if (avatar != null && avatar.gameObject != null)
-                    GameObject.Destroy(avatars[server].gameObject);
+                    GameObject.Destroy(_avatars[server].gameObject);
             }
         }
-        avatars.Clear();
-        createdSockets.Clear();
-        avatarClients.Clear();
-        if (ctx != null)
+        _avatars.Clear();
+        _createdSockets.Clear();
+        _avatarClients.Clear();
+        if (_ctx != null)
         {
-            ctx.Terminate();
-            ctx.Dispose();
-            ctx = null;
+            _ctx.Terminate();
+            _ctx.Dispose();
+            _ctx = null;
         }
     }
 #endregion
@@ -133,18 +137,18 @@ public class NetMessenger : MonoBehaviour
 #region Setup
     private void CreateNewSocketConnection()
     {
-        ResponseSocket server = ctx.CreateResponseSocket();
+        ResponseSocket server = _ctx.CreateResponseSocket();
         server.Bind("tcp://127.0.0.1:5556");
-        createdSockets.Add(server);
+        _createdSockets.Add(server);
         if (shouldCreateTestClient)
             CreateTestClient(server);
     }
 
     private void CreateTestClient(ResponseSocket server)
     {
-        RequestSocket client = ctx.CreateRequestSocket();
+        RequestSocket client = _ctx.CreateRequestSocket();
         client.Connect("tcp://127.0.0.1:5556");
-        avatarClients[server] = client;
+        _avatarClients[server] = client;
         client.SendFrame(MSG_R_ClientJoin);
     }
 #endregion
@@ -168,14 +172,14 @@ public class NetMessenger : MonoBehaviour
 
     public void RecieveClientInput(ResponseSocket server, NetMQMessage msg)
     {
-        avatars[server].HandleNetInput(msg);
+        _avatars[server].HandleNetInput(msg);
     }
 
     public void OnClientJoin(ResponseSocket server, NetMQMessage msg)
     {
         // Setup new avatar object from prefab
         Avatar newAvatar = UnityEngine.Object.Instantiate<Avatar>(avatarPrefab);
-        avatars[server] = newAvatar;
+        _avatars[server] = newAvatar;
         newAvatar.InitNetData(this, server);
 //
 //        // Send confirmation message
@@ -206,13 +210,13 @@ public class NetMessenger : MonoBehaviour
     public void SimulateClientInput(RequestSocket client, NetMQMessage framedDataMsg)
     {
         ResponseSocket server = GetServerForClient(client);
-        Avatar myAvatar = avatars[server];
+        Avatar myAvatar = _avatars[server];
 
 //        if (framedDataMsg.FrameCount > 1)
 //            Debug.Log("Received JSON: "+framedDataMsg[1].ConvertToString());
 
 //#if (UNITY_STANDALONE_WIN)
-//        // Just save out the png data
+//        // Just save out the png data to the local filesystem(Debugging code only)
 //        if (framedDataMsg.FrameCount > 2)
 //        {
 //            for(int i = 0; i < myAvatar.shaders.Count; ++i)
@@ -222,8 +226,8 @@ public class NetMessenger : MonoBehaviour
 //#endif
 
         // Send input message
-        lastMessageSent.Clear();
-        lastMessageSent.Append(MSG_R_FrameInput);
+        _lastMessageSent.Clear();
+        _lastMessageSent.Append(MSG_R_FrameInput);
 
         // Set movement
         Quaternion curRotation = myAvatar.transform.rotation;
@@ -246,20 +250,20 @@ public class NetMessenger : MonoBehaviour
         test = test * Quaternion.AngleAxis(targetRotationVel.y, curRotation * Vector3.up);
         targetRotationVel = test.eulerAngles;
 
-        lastMessageSent.Append(Mathf.RoundToInt(targetVelocity.x * 4096.0f));
-        lastMessageSent.Append(Mathf.RoundToInt(targetVelocity.y * 4096.0f));
-        lastMessageSent.Append(Mathf.RoundToInt(targetVelocity.z * 4096.0f));
-        lastMessageSent.Append(Mathf.RoundToInt(targetRotationVel.x * 4096.0f));
-        lastMessageSent.Append(Mathf.RoundToInt(targetRotationVel.y * 4096.0f));
-        lastMessageSent.Append(Mathf.RoundToInt(targetRotationVel.z * 4096.0f));
+        _lastMessageSent.Append(Mathf.RoundToInt(targetVelocity.x * 4096.0f));
+        _lastMessageSent.Append(Mathf.RoundToInt(targetVelocity.y * 4096.0f));
+        _lastMessageSent.Append(Mathf.RoundToInt(targetVelocity.z * 4096.0f));
+        _lastMessageSent.Append(Mathf.RoundToInt(targetRotationVel.x * 4096.0f));
+        _lastMessageSent.Append(Mathf.RoundToInt(targetRotationVel.y * 4096.0f));
+        _lastMessageSent.Append(Mathf.RoundToInt(targetRotationVel.z * 4096.0f));
 
-        client.SendMultipartMessage(lastMessageSent);
+        client.SendMultipartMessage(_lastMessageSent);
     }
 #endregion
     public void SendFrameUpdate(CameraStreamer.CaptureRequest streamCapture, Avatar a)
     {
-        lastMessageSent.Clear();
-        lastMessageSent.Append(MSG_S_FrameData);
+        _lastMessageSent.Clear();
+        _lastMessageSent.Append(MSG_S_FrameData);
         // TODO: Additional frame message description?
         
         // Look up relationship values for all observed semantics objects
@@ -268,25 +272,25 @@ public class NetMessenger : MonoBehaviour
         retInfo["observed_relations"] = new JSONClass();
         foreach(SemanticObject o in a.observedObjs)
             retInfo["observed_objects"].Add(o.identifier);
-        foreach(SemanticRelationship rel in relationsToTest)
+        foreach(SemanticRelationship rel in _relationsToTest)
             retInfo["observed_relations"][rel.name] = rel.GetJsonString(a.observedObjs);
         // Send out the real message
-        lastMessageSent.Append(retInfo.ToJSON(0));
+        _lastMessageSent.Append(retInfo.ToJSON(0));
 
         // Add in captured frames
         int numValues = Mathf.Min(streamCapture.shadersList.Count, streamCapture.capturedImages.Count);
         for(int i = 0; i < numValues; ++i)
-            lastMessageSent.Append(streamCapture.capturedImages[i].pictureBuffer);
+            _lastMessageSent.Append(streamCapture.capturedImages[i].pictureBuffer);
         
-        a.myServer.SendMultipartMessage(lastMessageSent);
+        a.myServer.SendMultipartMessage(_lastMessageSent);
 //        Debug.LogFormat("Sending frame message with {0} frames for {1} values", lastMessageSent.FrameCount, numValues);
     }
 
     public ResponseSocket GetServerForClient(RequestSocket client)
     {
-        foreach(ResponseSocket server in createdSockets)
+        foreach(ResponseSocket server in _createdSockets)
         {
-            if (avatarClients.ContainsKey(server) && avatarClients[server] == client)
+            if (_avatarClients.ContainsKey(server) && _avatarClients[server] == client)
                 return server;
         }
         return null;
