@@ -20,6 +20,7 @@ public class Avatar : MonoBehaviour
     // The range for which this avatar can observe SemanticObject's
     public float observedRange = 25.0f;
 
+    private AbstractInputModule _myInput = null;
     private List<SemanticObject> _observedObjs = new List<SemanticObject>();
     private Vector3 _targetVelocity = Vector3.zero;
     private Rigidbody _myRigidbody = null;
@@ -49,10 +50,15 @@ public class Avatar : MonoBehaviour
     public NetMQ.Sockets.ResponseSocket myServer {
         get { return _myServer; }
     }
-
+    
     // Objects found within observation radius of this avatar
     public List<SemanticObject> observedObjs {
         get { return _observedObjs; }
+    }
+
+    // Simulates input with a controller and interprets input messages
+    public AbstractInputModule myInput {
+        get { return _myInput; }
     }
 #endregion
 
@@ -62,6 +68,7 @@ public class Avatar : MonoBehaviour
         _request = new CameraStreamer.CaptureRequest();
         _request.shadersList = shaders;
         _request.capturedImages = new List<CameraStreamer.CapturedImage>();
+        _myInput = new InputModule(this);
     }
     
     private void FixedUpdate()
@@ -104,18 +111,7 @@ public class Avatar : MonoBehaviour
     // Parse the input sent from the client and use it to update the controls for the next simulation segment
     public void HandleNetInput(NetMQMessage msg)
     {
-        // Get movement
-        if (msg.FrameCount > 3)
-            _targetVelocity = (moveSpeed / 4096.0f) * new Vector3(msg[1].ConvertToInt32(), msg[2].ConvertToInt32(), msg[3].ConvertToInt32());
-        if (msg.FrameCount > 6)
-        {
-            Vector3 angChange = (rotSpeed / 4096.0f) * new Vector3(msg[4].ConvertToInt32(), msg[5].ConvertToInt32(), msg[6].ConvertToInt32());
-            angChange -= myRigidbody.angularVelocity;
-            // Clamp value to max change?
-            if (angChange.magnitude > rotSpeed)
-                angChange = angChange.normalized * rotSpeed;
-            myRigidbody.AddTorque(angChange, ForceMode.VelocityChange);
-        }
+        _myInput.HandleNetInput(msg, ref _targetVelocity);
 
         _readyForSimulation = true;
         // Now ready the output and run the simulation a few frames
