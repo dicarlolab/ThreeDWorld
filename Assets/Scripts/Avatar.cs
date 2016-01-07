@@ -70,12 +70,12 @@ public class Avatar : MonoBehaviour
         _request.capturedImages = new List<CameraStreamer.CapturedImage>();
         _myInput = new InputModule(this);
     }
-    
+
     private void FixedUpdate()
     {
         if(myRigidbody != null)
         {
-            myRigidbody.velocity = _targetVelocity;
+            myInput.OnFixedUpdate();
         }
     }
 #endregion
