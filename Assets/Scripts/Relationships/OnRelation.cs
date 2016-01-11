@@ -28,6 +28,7 @@ public class OnRelation : SemanticRelationship
     public override void Setup(HashSet<SemanticObject> allObservedObjects)
     {
         // Compare all the objects in the list
+        foundObjs.Clear();
         foreach(SemanticObject obj in allObservedObjects)
         {
             List<SemanticObject> listObjs = PerformTest(obj, allObservedObjects);
@@ -39,11 +40,11 @@ public class OnRelation : SemanticRelationship
     private List<SemanticObject> PerformTest(SemanticObject obj1, HashSet<SemanticObject> allObservedObjects)
     {
         List<SemanticObject> retList = new List<SemanticObject>();
-        foreach(Collision col in obj1.activeCollisions)
+        foreach(Collision col in obj1.GetActiveCollisions())
         {
-            SemanticObject hitObj = col.rigidbody.GetComponent<SemanticObject>();
+            SemanticObjectSimple hitObj = col.rigidbody.GetComponent<SemanticObjectSimple>();
             // Ensures sufficiently low vertical relative velocity to be treated as "at rest"
-            if (hitObj != null && Mathf.Abs(col.relativeVelocity.y) < 0.1f)
+            if (hitObj != null && Mathf.Abs(col.relativeVelocity.y) < 0.1f && !retList.Contains(hitObj))
             {
                 // Check to see if there exists a contact where this object is above the other object
                 foreach(ContactPoint pt in col.contacts)
@@ -51,6 +52,11 @@ public class OnRelation : SemanticRelationship
                     if (pt.normal.y > 0.1f)
                     {
                         retList.Add(hitObj);
+                        foreach(SemanticObjectComplex parentObj in hitObj.GetParentObjects())
+                        {
+                            if (!retList.Contains(parentObj))
+                                retList.Add(parentObj);
+                        }
                         break;
                     }
                 }

@@ -9,8 +9,7 @@ using System.Collections.Generic;
 /// The more complex version includes several other SemanticObject's that are 
 /// wholly contained as part of this SemanticObject. (Not implemented yet)
 /// </summary>
-[RequireComponent(typeof(Rigidbody))]
-public class SemanticObject : MonoBehaviour
+public abstract class SemanticObject : MonoBehaviour
 {
 #region Fields
     // A unique identifier for this SemanticObject instance in the entire scene
@@ -19,30 +18,39 @@ public class SemanticObject : MonoBehaviour
     // share the same source
     public string identifier = "";
 
-    // Cached reference to associated rigidbody component
-    private Rigidbody _myRigidbody = null;
-    // Keep track of currently active collisions on this object for evaluating various SemanticRelationships
-    public List<Collision> activeCollisions = new List<Collision>();
-    // Each physics frame, mark the current collision list as dirty
-    private bool needClearCollisions = true;
+    protected List<SemanticObjectComplex> parentObjects;
+
+//    // Keep track of currently active collisions on this object for evaluating various SemanticRelationships
+//    public List<Collision> activeCollisions = new List<Collision>();
     // Static list to ensure we don't reuse any identifiers in the scene
     private static List<string> usedIdentifiers = new List<string>();
 #endregion
 
-#region Properties
-    // Public accessor property for associated rigidbody component
-    public Rigidbody myRigidbody {
-        get {
-            if (_myRigidbody == null)
-                _myRigidbody = gameObject.GetComponent<Rigidbody>();
-            return _myRigidbody;
+#region Public Functions
+    public abstract List<Collision> GetActiveCollisions();
+    public virtual List<SemanticObjectComplex> GetParentObjects()
+    {
+//        List<SemanticObjectComplex> ret = new List<SemanticObjectComplex>();
+//        if (other is SemanticObjectComplex && this is SemanticObjectSimple)
+//        {
+//            return (other as SemanticObjectComplex).mySubObjects.Contains(this as SemanticObjectSimple);
+//        }
+        return parentObjects;
+    }
+    public virtual bool IsChildObjectOf(SemanticObject other)
+    {
+        if (other is SemanticObjectComplex)
+        {
+            return (other as SemanticObjectComplex).mySubObjects.Contains(this);
         }
+        return false;
     }
 #endregion
 
 #region Unity Callbacks
-    private void Awake()
+    protected virtual void Awake()
     {
+        parentObjects = new List<SemanticObjectComplex>();
         // Ensure that each identifier is unique
         if (string.IsNullOrEmpty(identifier))
             identifier = name;
@@ -53,50 +61,6 @@ public class SemanticObject : MonoBehaviour
         while (usedIdentifiers.Contains(identifier))
             identifier = identifier + "+";
         usedIdentifiers.Add(identifier);
-    }
-
-    private void FixedUpdate()
-    {
-        needClearCollisions = true;
-    }
-    
-    private void OnCollisionEnter(Collision other)
-    {
-        ClearCollisions();
-        activeCollisions.Add(other);
-    }
-    
-    private void OnCollisionStay(Collision other)
-    {
-        ClearCollisions();
-        activeCollisions.Add(other);
-    }
-
-    private void OnCollisionExit(Collision other)
-    {
-        ClearCollisions(other);
-    }
-#endregion
-
-#region Internal Functions
-    private void ClearCollisions(Collision toRemove = null)
-    {
-        if (needClearCollisions)
-            activeCollisions.Clear();
-        else if (toRemove != null)
-        {
-            activeCollisions.RemoveAll((Collision other)=>{
-                return other.collider == toRemove.collider;
-            });
-        }
-        needClearCollisions = false;
-    }
-#endregion
-
-#region Public Functions
-    public void GetDefaultLayout()
-    {
-        // TODO: Find all SemanticObject's in this object based on the object hierarchy
     }
 #endregion
 }

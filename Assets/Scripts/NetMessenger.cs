@@ -212,8 +212,8 @@ public class NetMessenger : MonoBehaviour
         ResponseSocket server = GetServerForClient(client);
         Avatar myAvatar = _avatars[server];
 
-//        if (framedDataMsg.FrameCount > 1)
-//            Debug.Log("Received JSON: "+framedDataMsg[1].ConvertToString());
+        if (framedDataMsg.FrameCount > 1)
+            Debug.Log("Received JSON: "+framedDataMsg[1].ConvertToString());
 
 //#if (UNITY_STANDALONE_WIN)
 //        // Just save out the png data to the local filesystem(Debugging code only)
