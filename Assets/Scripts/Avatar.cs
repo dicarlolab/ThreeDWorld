@@ -93,7 +93,15 @@ public class Avatar : MonoBehaviour
         Collider[] observedObjects = Physics.OverlapSphere(transform.position, observedRange);
         foreach(Collider col in observedObjects)
         {
-            SemanticObjectSimple obj = col.attachedRigidbody.GetComponent<SemanticObjectSimple>();
+            SemanticObjectSimple obj = null;
+            if (col.attachedRigidbody == null)
+                Debug.LogWarningFormat("{0} Collider doesn't have an attached rigidbody!", col.name);
+            else
+            {
+                obj = col.attachedRigidbody.GetComponent<SemanticObjectSimple>();
+                if (obj == null)
+                    Debug.LogWarningFormat("{0} Rigidbody doesn't have an associated SemanticObject!", col.attachedRigidbody.name);
+            }
             if (obj != null && !_observedObjs.Contains(obj))
             {
                 _observedObjs.Add(obj);
