@@ -1,0 +1,132 @@
+fileFormatVersion: 2
+guid: f9d89f1aab57e5e4791992c5f6f547b8
+labels:
+- Ball
+- Billiard
+- Pool
+- Prop
+- Rack
+- Sport
+ModelImporter:
+  serializedVersion: 18
+  fileIDToRecycleName:
+    100000: cushions
+    100002: legs
+    100004: pocket_A
+    100006: pocket_B
+    100008: pocket_C
+    100010: pocket_D
+    100012: pocket_E
+    100014: pocket_F
+    100016: rails
+    100018: surface
+    100020: //RootNode
+    400000: cushions
+    400002: legs
+    400004: pocket_A
+    400006: pocket_B
+    400008: pocket_C
+    400010: pocket_D
+    400012: pocket_E
+    400014: pocket_F
+    400016: rails
+    400018: surface
+    400020: //RootNode
+    2300000: cushions
+    2300002: legs
+    2300004: pocket_A
+    2300006: pocket_B
+    2300008: pocket_C
+    2300010: pocket_D
+    2300012: pocket_E
+    2300014: pocket_F
+    2300016: rails
+    2300018: surface
+    2300020: //RootNode
+    3300000: cushions
+    3300002: legs
+    3300004: pocket_A
+    3300006: pocket_B
+    3300008: pocket_C
+    3300010: pocket_D
+    3300012: pocket_E
+    3300014: pocket_F
+    3300016: rails
+    3300018: surface
+    3300020: //RootNode
+    4300000: legs
+    4300002: surface
+    4300004: pocket_F
+    4300006: rails
+    4300008: cushions
+    4300010: pocket_C
+    4300012: pocket_B
+    4300014: pocket_A
+    4300016: pocket_E
+    4300018: pocket_D
+    4300020: ball
+    9500000: //RootNode
+  materials:
+    importMaterials: 1
+    materialName: 1
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: .5
+    animationPositionError: .5
+    animationScaleError: .5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 0
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 0
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 0
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 0
+  tangentSpace:
+    normalSmoothAngle: 60
+    splitTangentsAcrossUV: 0
+    normalImportMode: 0
+    tangentImportMode: 1
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: .5
+    foreArmTwist: .5
+    upperLegTwist: .5
+    legTwist: .5
+    armStretch: .0500000007
+    legStretch: .0500000007
+    feetSpacing: 0
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 0
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
