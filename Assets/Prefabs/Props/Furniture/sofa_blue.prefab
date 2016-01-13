@@ -1477,6 +1477,7 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 427870}
+  - 114: {fileID: 11479242}
   m_Layer: 0
   m_Name: sofa_blue
   m_TagString: Untagged
@@ -3773,7 +3774,9 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
+  m_MinimumChartSize: 4
   m_AutoUVMaxDistance: .5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
@@ -3797,7 +3800,9 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
+  m_MinimumChartSize: 4
   m_AutoUVMaxDistance: .5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
@@ -3821,7 +3826,9 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
+  m_MinimumChartSize: 4
   m_AutoUVMaxDistance: .5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
@@ -3845,7 +3852,9 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
+  m_MinimumChartSize: 4
   m_AutoUVMaxDistance: .5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
@@ -3869,7 +3878,9 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
+  m_MinimumChartSize: 4
   m_AutoUVMaxDistance: .5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
@@ -5484,7 +5495,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ec657f7dbf5ce404898eb31282b67953, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  identifier: sofa_blue
+  identifier: sofa_blue_frame
 --- !u!114 &11452858
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -5566,6 +5577,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   identifier: 
+--- !u!114 &11479242
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 167618}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c558d373a877f82449cb9fe326e13b9e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  identifier: sofa_blue
+  mySubObjects:
+  - {fileID: 11447776}
+  - {fileID: 11417216}
+  - {fileID: 11456916}
+  - {fileID: 11452858}
+  - {fileID: 11477076}
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

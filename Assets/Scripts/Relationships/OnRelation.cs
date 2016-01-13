@@ -17,7 +17,7 @@ public class OnRelation : SemanticRelationship
 
     public override bool Evaluate(SemanticObject subject, SemanticObject obj)
     {
-        return foundObjs.ContainsKey(subject) && foundObjs[subject].Contains(obj);
+        return foundObjs.ContainsKey(subject) && foundObjs[subject].Contains(obj) && !subject.IsChildObjectOf(obj);
     }
 
     public override void Evaluate(List<SemanticObject> affectedNodes, out Dictionary<SemanticObject, List<SemanticObject>> ret)
@@ -44,7 +44,7 @@ public class OnRelation : SemanticRelationship
         {
             SemanticObjectSimple hitObj = col.rigidbody.GetComponent<SemanticObjectSimple>();
             // Ensures sufficiently low vertical relative velocity to be treated as "at rest"
-            if (hitObj != null && Mathf.Abs(col.relativeVelocity.y) < 0.1f && !retList.Contains(hitObj))
+            if (hitObj != null && Mathf.Abs(col.relativeVelocity.y) < 0.1f && !retList.Contains(hitObj) && !hitObj.IsChildObjectOf(obj1))
             {
                 // Check to see if there exists a contact where this object is above the other object
                 foreach(ContactPoint pt in col.contacts)
@@ -54,7 +54,8 @@ public class OnRelation : SemanticRelationship
                         retList.Add(hitObj);
                         foreach(SemanticObjectComplex parentObj in hitObj.GetParentObjects())
                         {
-                            if (!retList.Contains(parentObj))
+                            // Add parent objects, unless we are also a child object of that parent
+                            if (!retList.Contains(parentObj) && !obj1.IsChildObjectOf(parentObj))
                                 retList.Add(parentObj);
                         }
                         break;

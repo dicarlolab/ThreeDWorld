@@ -9,7 +9,6 @@ using System.Collections.Generic;
 /// The more complex version includes several other SemanticObject's that are 
 /// wholly contained as part of this SemanticObject. (Not implemented yet)
 /// </summary>
-[RequireComponent(typeof(Rigidbody))]
 public class SemanticObjectComplex : SemanticObject
 {
 #region Fields
