@@ -3,11 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 
 /// <summary>
-/// Representation for a collection of rigidbodies that together 
-/// represent a single semantic idea of an object.
-/// The simple version of this is just a single rigidbody and it's children colliders.
-/// The more complex version includes several other SemanticObject's that are 
-/// wholly contained as part of this SemanticObject. (Not implemented yet)
+/// Represents the Semantic Object associated with a single Rigidbody
+/// Every Rigidbody in the scene shouold have a SemanticObjectSimple
+/// attached to it.
+/// The rigidbody can have multiple colliders as part of it, but they
+/// will only be described as a single object in the simulation and 
+/// cannot be moved or separated from one another.
 /// </summary>
 [RequireComponent(typeof(Rigidbody))]
 public class SemanticObjectSimple : SemanticObject

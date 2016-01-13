@@ -7,7 +7,7 @@ using System.Collections.Generic;
 /// represent a single semantic idea of an object.
 /// The simple version of this is just a single rigidbody and it's children colliders.
 /// The more complex version includes several other SemanticObject's that are 
-/// wholly contained as part of this SemanticObject. (Not implemented yet)
+/// wholly contained as part of this SemanticObject.
 /// </summary>
 public abstract class SemanticObject : MonoBehaviour
 {

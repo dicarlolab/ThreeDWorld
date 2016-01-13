@@ -3,11 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 
 /// <summary>
-/// Representation for a collection of rigidbodies that together 
-/// represent a single semantic idea of an object.
-/// The simple version of this is just a single rigidbody and it's children colliders.
-/// The more complex version includes several other SemanticObject's that are 
-/// wholly contained as part of this SemanticObject. (Not implemented yet)
+/// Representation for a collection of rigidbodies(each with their own SemanticObject)
+/// that together represent a single semantic idea of an object.
 /// </summary>
 public class SemanticObjectComplex : SemanticObject
 {
