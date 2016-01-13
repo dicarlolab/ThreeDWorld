@@ -4,11 +4,38 @@ ModelImporter:
   serializedVersion: 18
   fileIDToRecycleName:
     100000: //RootNode
+    100002: back_cusion1
+    100004: back_cusion2
+    100006: base_mesh
+    100008: cusion_group
+    100010: seat_cusion1
+    100012: seat_cusion2
     400000: //RootNode
+    400002: back_cusion1
+    400004: back_cusion2
+    400006: base_mesh
+    400008: cusion_group
+    400010: seat_cusion1
+    400012: seat_cusion2
     2300000: //RootNode
+    2300002: back_cusion1
+    2300004: back_cusion2
+    2300006: base_mesh
+    2300008: seat_cusion1
+    2300010: seat_cusion2
     3300000: //RootNode
+    3300002: back_cusion1
+    3300004: back_cusion2
+    3300006: base_mesh
+    3300008: seat_cusion1
+    3300010: seat_cusion2
     4300000: Sofa
     4300002: sofa
+    4300004: base_mesh
+    4300006: back_cusion1
+    4300008: seat_cusion1
+    4300010: seat_cusion2
+    4300012: back_cusion2
     9500000: //RootNode
   materials:
     importMaterials: 0
