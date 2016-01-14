@@ -492,7 +492,7 @@ GameObject:
   - 23: {fileID: 2349070}
   - 54: {fileID: 5469628}
   - 114: {fileID: 11447776}
-  - 114: {fileID: 11466724}
+  - 114: {fileID: 11427724}
   m_Layer: 0
   m_Name: sofa_base
   m_TagString: Untagged
@@ -5484,6 +5484,38 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   identifier: 
+--- !u!114 &11427724
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 120260}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: edb91c2f29d9ee649857309a8c572d9b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Algorithm: 1
+  MaxHullVertices: 64
+  MaxHulls: 128
+  InternalScale: 10
+  Precision: .800000012
+  CreateMeshAssets: 0
+  CreateHullMesh: 0
+  DebugLog: 0
+  LegacyDepth: 6
+  ShowAdvancedOptions: 0
+  MinHullVolume: 9.99999975e-06
+  BackFaceDistanceFactor: .200000003
+  NormalizeInputMesh: 0
+  ForceNoMultithreading: 0
+  PhysMaterial: {fileID: 0}
+  IsTrigger: 0
+  m_aGoHulls: []
+  LastMaterial: {fileID: 0}
+  LastIsTrigger: 0
+  LargestHullVertices: 0
+  LargestHullFaces: 0
 --- !u!114 &11447776
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -5520,51 +5552,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   identifier: 
---- !u!114 &11466724
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 120260}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: edb91c2f29d9ee649857309a8c572d9b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Algorithm: 0
-  MaxHullVertices: 128
-  MaxHulls: 128
-  InternalScale: 10
-  Precision: 1
-  CreateMeshAssets: 0
-  CreateHullMesh: 0
-  DebugLog: 0
-  LegacyDepth: 6
-  ShowAdvancedOptions: 1
-  MinHullVolume: 9.99999975e-06
-  BackFaceDistanceFactor: .200000003
-  NormalizeInputMesh: 0
-  ForceNoMultithreading: 0
-  PhysMaterial: {fileID: 0}
-  IsTrigger: 0
-  m_aGoHulls:
-  - {fileID: 173128}
-  - {fileID: 146246}
-  - {fileID: 183158}
-  - {fileID: 155976}
-  - {fileID: 133368}
-  - {fileID: 156430}
-  - {fileID: 130288}
-  - {fileID: 193704}
-  - {fileID: 106138}
-  - {fileID: 116086}
-  - {fileID: 118538}
-  - {fileID: 117776}
-  - {fileID: 171634}
-  LastMaterial: {fileID: 0}
-  LastIsTrigger: 0
-  LargestHullVertices: 14
-  LargestHullFaces: 24
 --- !u!114 &11477076
 MonoBehaviour:
   m_ObjectHideFlags: 1
