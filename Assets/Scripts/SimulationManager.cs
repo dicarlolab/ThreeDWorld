@@ -19,6 +19,7 @@ public static class SimulationManager
     }
 #region Fields
     public static int numPhysicsFramesPerUpdate = 5;
+    private static SimpleJSON.JSONClass _readJsonArgs = null;
     private static int framesToProcess = 0;
     private static int totalFramesProcessed = 0;
     private static bool _hasFinishedInit = false;
@@ -38,6 +39,12 @@ public static class SimulationManager
     public static float timeElapsed {
         get {
             return totalFramesProcessed * Time.fixedDeltaTime;
+        }
+    }
+
+    public static SimpleJSON.JSONClass argsConfig {
+        get {
+            return _readJsonArgs;
         }
     }
 #endregion
@@ -124,11 +131,11 @@ public static class SimulationManager
             return;
         }
         string testConfigInfo = System.IO.File.ReadAllText(fileName);
-        SimpleJSON.JSONClass json = SimpleJSON.JSON.Parse(testConfigInfo) as SimpleJSON.JSONClass;
-        if (json != null)
+        _readJsonArgs = SimpleJSON.JSON.Parse(testConfigInfo) as SimpleJSON.JSONClass;
+        if (_readJsonArgs!= null)
         {
-            ReadLogLevel(json["log_level"], ref logLevel);
-            ReadLogLevel(json["stack_log_level"], ref stackLogLevel);
+            ReadLogLevel(_readJsonArgs["log_level"], ref logLevel);
+            ReadLogLevel(_readJsonArgs["stack_log_level"], ref stackLogLevel);
         }
         Debug.LogFormat("Completed reading configuration at {0}", fileName);
     }
