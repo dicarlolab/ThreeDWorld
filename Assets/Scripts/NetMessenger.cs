@@ -46,6 +46,8 @@ public class NetMessenger : MonoBehaviour
     void Start()
     {
         _relationsToTest.Add(new OnRelation());
+		_relationsToTest.Add (new PushRelation ());
+		_relationsToTest.Add (new TouchingRelation ());
         SimulationManager.Init();
     }
 
