@@ -42,13 +42,19 @@ public class SemanticObjectSimple : SemanticObject
     private void OnCollisionEnter(Collision other)
     {
         ClearCollisions();
-        activeCollisions.Add(other);
+        if (other.rigidbody != null)
+            activeCollisions.Add(other);
+        else
+            Debug.LogWarningFormat("No associated rigidbody found with {0}", other.gameObject.name);
     }
     
     private void OnCollisionStay(Collision other)
     {
         ClearCollisions();
-        activeCollisions.Add(other);
+        if (other.rigidbody != null)
+            activeCollisions.Add(other);
+        else
+            Debug.LogWarningFormat("No associated rigidbody found with {0}", other.gameObject.name);
     }
 
     private void OnCollisionExit(Collision other)

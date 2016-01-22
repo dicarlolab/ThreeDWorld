@@ -1,0 +1,108 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &146054
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 433184}
+  - 114: {fileID: 11401938}
+  m_Layer: 0
+  m_Name: ProceduralGeneration
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &433184
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 146054}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+--- !u!114 &11401938
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 146054}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6838632603741a1428102a46a4ed23d2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  complexityLevelToCreate: 5000
+  desiredSpacing: 10
+  wallPrefab: {fileID: 11463304, guid: 9e526eb2d26ff964cb858c48f443b362, type: 2}
+  floorPrefab: {fileID: 11451076, guid: 781707ea1a041d448b3fe59b839492eb, type: 2}
+  roomDim: {x: 110, y: 100, z: 120}
+  availablePrefabs:
+  - fileName: Prefabs/chair_01
+    complexity: 130
+    bounds:
+      m_Center: {x: 3.8548236, y: 0, z: 1.185}
+      m_Extent: {x: 3.8548236, y: 0, z: 1.185}
+  - fileName: Prefabs/Props/Furniture/sofa_blue
+    complexity: 237
+    bounds:
+      m_Center: {x: -0.027999997, y: 1.326, z: -7.8739996}
+      m_Extent: {x: 1.664, y: 1.326, z: 8.286}
+  - fileName: Prefabs/Props/Furniture/sofa_modern_01_starter
+    complexity: 21
+    bounds:
+      m_Center: {x: -6.23, y: 0, z: 0}
+      m_Extent: {x: 6.23, y: 0, z: 0}
+  - fileName: Prefabs/Table_Big
+    complexity: 63
+    bounds:
+      m_Center: {x: -0.12303184, y: 0.48, z: 3.185}
+      m_Extent: {x: 0.12303184, y: 0.48, z: 3.185}
+--- !u!1001 &100100000
+Prefab:
+  m_ObjectHideFlags: 1
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 0}
+      propertyPath: wallPrefab
+      value: 
+      objectReference: {fileID: 11463304, guid: 9e526eb2d26ff964cb858c48f443b362,
+        type: 2}
+    - target: {fileID: 0}
+      propertyPath: floorPrefab
+      value: 
+      objectReference: {fileID: 11451076, guid: 781707ea1a041d448b3fe59b839492eb,
+        type: 2}
+    - target: {fileID: 0}
+      propertyPath: desiredSpacing
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: complexityLevelToCreate
+      value: 5000
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: roomDim.x
+      value: 110
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: roomDim.y
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: roomDim.z
+      value: 120
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 0}
+  m_RootGameObject: {fileID: 146054}
+  m_IsPrefabParent: 1

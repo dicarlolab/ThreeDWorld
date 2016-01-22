@@ -42,7 +42,7 @@ public class OnRelation : SemanticRelationship
         List<SemanticObject> retList = new List<SemanticObject>();
         foreach(Collision col in obj1.GetActiveCollisions())
         {
-            SemanticObjectSimple hitObj = col.rigidbody.GetComponent<SemanticObjectSimple>();
+            SemanticObjectSimple hitObj = (col.rigidbody == null) ? null : col.rigidbody.GetComponent<SemanticObjectSimple>();
             // Ensures sufficiently low vertical relative velocity to be treated as "at rest"
             if (hitObj != null && Mathf.Abs(col.relativeVelocity.y) < 0.1f && !retList.Contains(hitObj) && !hitObj.IsChildObjectOf(obj1))
             {
