@@ -23,8 +23,8 @@ public class ProceduralGeneration : MonoBehaviour
     public int desiredSpacing = 100;
     public SemanticObjectSimple wallPrefab;
     public SemanticObjectSimple floorPrefab;
-    public GameObject DEBUG_testCubePrefab;
-    public TextMesh DEBUG_testGridPrefab;
+    public GameObject DEBUG_testCubePrefab = null;
+    public TextMesh DEBUG_testGridPrefab = null;
     public Vector3 roomDim = new Vector3(10f, 10f, 10f);
     public List<PrefabInfo> availablePrefabs = new List<PrefabInfo>();
     public float gridDim = 0.4f;
@@ -96,14 +96,17 @@ public class ProceduralGeneration : MonoBehaviour
         while(!IsDone())
             AddObjects();
 
-        foreach(GridInfo g in basePlane.myGridSpots)
+        if (DEBUG_testGridPrefab != null)
         {
-            TextMesh test = GameObject.Instantiate<TextMesh>(DEBUG_testGridPrefab);
-            test.text = string.Format("  {0}\n{2}  {1}\n  {3}", g.upSquares, g.leftSquares, g.rightSquares, g.downSquares);
-            test.color = (g.height > 0) ? Color.red: Color.cyan;
-            test.transform.position = roomCornerPos + new Vector3(gridDim * g.x, 0.0f, gridDim * g.y);
-            test.name = string.Format("{0}: ({1},{2})", DEBUG_testGridPrefab.name, g.x, g.y);
-            test.transform.localScale = gridDim * Vector3.one;
+            foreach(GridInfo g in basePlane.myGridSpots)
+            {
+                TextMesh test = GameObject.Instantiate<TextMesh>(DEBUG_testGridPrefab);
+                test.text = string.Format("  {0}\n{2}  {1}\n  {3}", g.upSquares, g.leftSquares, g.rightSquares, g.downSquares);
+                test.color = (g.height > 0) ? Color.red: Color.cyan;
+                test.transform.position = roomCornerPos + new Vector3(gridDim * g.x, 0.0f, gridDim * g.y);
+                test.name = string.Format("{0}: ({1},{2})", DEBUG_testGridPrefab.name, g.x, g.y);
+                test.transform.localScale = gridDim * Vector3.one;
+            }
         }
     }
 
@@ -228,11 +231,14 @@ public class ProceduralGeneration : MonoBehaviour
             newInstance.name = string.Format("{0} #{1}", newPrefab.name, (curRoom != null) ? curRoom.childCount.ToString() : "?");
 
             // Create test cube
-            GameObject testCube = Object.Instantiate<GameObject>(DEBUG_testCubePrefab);
-            testCube.transform.localScale = 2 * info.bounds.extents;
-            testCube.transform.position = centerPos;
-            testCube.name = string.Format("Cube {0}", newInstance.name);
-            testCube.transform.SetParent(curRoom);
+            if (DEBUG_testCubePrefab != null)
+            {
+                GameObject testCube = Object.Instantiate<GameObject>(DEBUG_testCubePrefab);
+                testCube.transform.localScale = 2 * info.bounds.extents;
+                testCube.transform.position = centerPos;
+                testCube.name = string.Format("Cube {0}", newInstance.name);
+                testCube.transform.SetParent(curRoom);
+            }
 
             Debug.LogFormat("{0}: @{1} R:{2} G:{3} BC:{4}", info.fileName, newInstance.transform.position, roomCornerPos, new Vector3(gridDim * spawnX, info.bounds.extents.y, gridDim * spawnZ), info.bounds.center);
             if (curRoom != null)

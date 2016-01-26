@@ -151,7 +151,7 @@ InputManager:
     joyNum: 0
   - serializedVersion: 3
     m_Name: HorizontalD
-    descriptiveName: D-pad
+    descriptiveName: D-pad equivalent for Keyboard
     descriptiveNegativeName: 
     negativeButton: 1
     positiveButton: 2
@@ -166,8 +166,40 @@ InputManager:
     axis: 5
     joyNum: 0
   - serializedVersion: 3
+    m_Name: HorizontalD
+    descriptiveName: D-pad on Controller
+    descriptiveNegativeName: 
+    negativeButton: 1
+    positiveButton: 2
+    altNegativeButton: 
+    altPositiveButton: 
+    gravity: 0
+    dead: 0.19
+    sensitivity: 1
+    snap: 0
+    invert: 0
+    type: 2
+    axis: 5
+    joyNum: 0
+  - serializedVersion: 3
     m_Name: VerticalD
-    descriptiveName: D-pad
+    descriptiveName: D-pad on Controller
+    descriptiveNegativeName: 
+    negativeButton: 3
+    positiveButton: 4
+    altNegativeButton: 
+    altPositiveButton: 
+    gravity: 0
+    dead: 0.19
+    sensitivity: 1
+    snap: 0
+    invert: 0
+    type: 2
+    axis: 6
+    joyNum: 0
+  - serializedVersion: 3
+    m_Name: VerticalD
+    descriptiveName: D-pad equivalent for Keyboard
     descriptiveNegativeName: 
     negativeButton: 3
     positiveButton: 4
@@ -183,7 +215,7 @@ InputManager:
     joyNum: 0
   - serializedVersion: 3
     m_Name: Horizontal2
-    descriptiveName: Right Joystick
+    descriptiveName: Right Joystick equivalent for Keyboard
     descriptiveNegativeName: 
     negativeButton: q
     positiveButton: w
@@ -198,8 +230,24 @@ InputManager:
     axis: 3
     joyNum: 0
   - serializedVersion: 3
+    m_Name: Horizontal2
+    descriptiveName: Right Joystick on Controller
+    descriptiveNegativeName: 
+    negativeButton: 
+    positiveButton: 
+    altNegativeButton: 
+    altPositiveButton: 
+    gravity: 0
+    dead: 0.19
+    sensitivity: 1
+    snap: 0
+    invert: 0
+    type: 2
+    axis: 3
+    joyNum: 0
+  - serializedVersion: 3
     m_Name: Vertical2
-    descriptiveName: Right Joystick
+    descriptiveName: Right Joystick equivalent for Keyboard
     descriptiveNegativeName: 
     negativeButton: e
     positiveButton: r
@@ -211,6 +259,22 @@ InputManager:
     snap: 0
     invert: 0
     type: 0
+    axis: 4
+    joyNum: 0
+  - serializedVersion: 3
+    m_Name: Vertical2
+    descriptiveName: Right Joystick with Controller
+    descriptiveNegativeName: 
+    negativeButton: 
+    positiveButton: 
+    altNegativeButton: 
+    altPositiveButton: 
+    gravity: 0
+    dead: 0.19
+    sensitivity: 1
+    snap: 0
+    invert: 0
+    type: 2
     axis: 4
     joyNum: 0
   - serializedVersion: 3
