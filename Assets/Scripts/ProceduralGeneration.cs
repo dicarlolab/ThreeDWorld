@@ -16,17 +16,6 @@ public class ProceduralGeneration : MonoBehaviour
         public Bounds bounds;
     }
 
-    [System.Serializable]
-    public class GridInfo
-    {
-        public float height;
-        public int x;
-        public int y;
-        public int leftSquares;
-        public int rightSquares;
-        public int upSquares;
-        public int downSquares;
-    }
 
 #region Fields
     // The number of physics collisions to create
@@ -43,12 +32,11 @@ public class ProceduralGeneration : MonoBehaviour
     private int curComplexity = 0;
     private int curRoomWidth = 0;
     private int curRoomLength = 0;
+    private float curRoomHeight = 0f;
     private Vector3 roomCornerPos = Vector3.zero;
     private Transform curRoom = null;
     private int failures = 0; // Counter to avoid infinite loops if we can't place anything
-    // TODO: Move this into its own data structure!
-    // TODO: Change this to be a list of said data structure, for multiple placement subsections
-    private List<GridInfo> availableGridSpots = new List<GridInfo>();
+    private List<HeightPlane> allHeightPlanes = new List<HeightPlane>();
 #endregion
 
 #region Unity Callbacks
@@ -82,22 +70,16 @@ public class ProceduralGeneration : MonoBehaviour
         // Create grid to populate objects
         curComplexity = 0;
         failures = 0;
-//        oldAvailableGridSpots.Clear();
-//        float xDist = roomDim.x / desiredSpacing;
-//        float xStart = (roomDim.x * -0.5f) + (0.5f * xDist);
-//        float zDist = roomDim.z / desiredSpacing;
-//        float zStart = (roomDim.z * -0.5f) + (0.5f * zDist);
-//        for(int i = 0; i < desiredSpacing; ++i)
-//        {
-//            for(int j = 0; j < desiredSpacing; ++j)
-//            {
-//                oldAvailableGridSpots.Add(new Vector3(xStart + (xDist * i), 1.0f, zStart + (zDist * j)));
-//            }
-//        }
 
-        availableGridSpots.Clear();
+        allHeightPlanes.Clear();
+        HeightPlane basePlane = new HeightPlane();
+        allHeightPlanes.Add(basePlane);
+        // TODO: Properly factor in wall/floor/ceiling thickness. Right now just assuming it's 2.0f
         curRoomWidth = Mathf.FloorToInt((roomDim.x - 2.0f) / gridDim);
         curRoomLength = Mathf.FloorToInt((roomDim.z - 2.0f) / gridDim);
+        curRoomHeight = roomDim.y - 2.0f;
+        basePlane.dimWidth = curRoomWidth;
+        basePlane.dimLength = curRoomLength;
         for(int i = 0; i < curRoomWidth; ++i)
         {
             for(int j = 0; j < curRoomLength; ++j)
@@ -105,8 +87,8 @@ public class ProceduralGeneration : MonoBehaviour
                 GridInfo newGridInfo = new GridInfo();
                 newGridInfo.x = i;
                 newGridInfo.y = j;
-                ModifyGrid(newGridInfo, i, j, curRoomWidth, curRoomLength);
-                availableGridSpots.Add(newGridInfo);
+                basePlane.ModifyGrid(newGridInfo, i, j, curRoomWidth, curRoomLength);
+                basePlane.myGridSpots.Add(newGridInfo);
             }
         }
 
@@ -114,7 +96,7 @@ public class ProceduralGeneration : MonoBehaviour
         while(!IsDone())
             AddObjects();
 
-        foreach(GridInfo g in availableGridSpots)
+        foreach(GridInfo g in basePlane.myGridSpots)
         {
             TextMesh test = GameObject.Instantiate<TextMesh>(DEBUG_testGridPrefab);
             test.text = string.Format("  {0}\n{2}  {1}\n  {3}", g.upSquares, g.leftSquares, g.rightSquares, g.downSquares);
@@ -125,106 +107,54 @@ public class ProceduralGeneration : MonoBehaviour
         }
     }
 
-    private int Index(int x, int y)
-    {
-        return (curRoomLength * x ) + y;
-    }
 
-    private void ModifyGrid(GridInfo info, int i, int j, int width, int length)
-    {
-        info.leftSquares = i;
-        info.rightSquares = width - i - 1;
-        info.upSquares = j;
-        info.downSquares= length - j - 1;
-    }
-
-    private void UpdateGrid(int startX, int startY, int dimX, int dimY, float newHeight)
-    {
-        try
-        {
-//        Debug.LogFormat("UpdateGrid({0},{1},{2},{3},{4})", startX, startY, dimX, dimY, newHeight);
-        int numToCheck;
-        for(int i = 0; i <= dimX; ++i)
-        {
-            // check up
-            numToCheck = availableGridSpots[Index(i + startX, startY)].upSquares;
-            for(int j = 1; j <= numToCheck; ++j)
-                availableGridSpots[Index(i + startX, startY - j)].downSquares = j - 1;
-            // check down
-            numToCheck = availableGridSpots[Index(i + startX, startY + dimY)].downSquares;
-            for(int j = 1; j <= numToCheck; ++j)
-                availableGridSpots[Index(i + startX, startY + dimY + j)].upSquares = j - 1;
-        }
-        for(int j = 0; j <= dimY; ++j)
-        {
-            // check left
-            numToCheck = availableGridSpots[Index(startX, j + startY)].leftSquares;
-            for(int i = 1; i <= numToCheck; ++i)
-                availableGridSpots[Index(startX - i, j + startY)].rightSquares = i - 1;
-            // check right
-            numToCheck = availableGridSpots[Index(startX + dimX, j + startY)].rightSquares;
-//            GridInfo refPoint = availableGridSpots[Index(startX + dimX, j + startY)];
-//            Debug.LogFormat("{0} ({1},{2}) instead of ({3},{4})", refPoint.rightSquares, refPoint.x, refPoint.y, startX + dimX, j + startY);
-            for(int i = 1; i <= numToCheck; ++i)
-            {
-//                int curIndex = Index(startX + dimX + i, j + startY);
-//                if (curIndex >= availableGridSpots.Count)
-//                {
-//                    Debug.LogFormat("{0} ({1},{2}) instead of ({3},{4})", refPoint.rightSquares, refPoint.x, refPoint.y, startX + dimX, j + startY);
-//                    Debug.LogFormat("Overflow with {0}/{1} sx{2} dx{3} i{4} num{5} j{6} sy:{7} dim: ({8},{9})", curIndex, availableGridSpots.Count, startX, dimX, i, numToCheck, j, startY, curRoomWidth, curRoomLength);
-//                }
-                availableGridSpots[Index(startX + dimX + i, j + startY)].leftSquares = i - 1;
-            }
-        }
-        for(int i = 0; i <= dimX; ++i)
-        {
-            for(int j = 0; j <= dimY; ++j)
-            {
-                int index = Index(i + startX, j + startY);
-                availableGridSpots[index].height = newHeight;
-                // TODO: For stackable objects, add raised platform stuff
-                ModifyGrid(availableGridSpots[index], 0, 0, 1, 1);
-            }
-        }
-        }
-        catch (System.Exception e)
-        {
-            Debug.LogWarningFormat("Got exception {0}", e.ToString());
-        }
-    }
-
-    private bool TestGrid(GridInfo info, int dimX, int dimY)
-    {
-        for(int i = 0; i < dimX; ++i)
-        {
-            if (availableGridSpots[Index(info.x + i, info.y)].downSquares < (dimY-1))
-                return false;
-        }
-        return true;
-    }
-
-    private bool TryPlaceGroundObject(Bounds bounds, out int finalX, out int finalY)
+    private bool TryPlaceGroundObject(Bounds bounds, out int finalX, out int finalY, out HeightPlane whichPlane)
     {
         finalX = 0;
         finalY = 0;
+        whichPlane = null;
         int boundsWidth = Mathf.CeilToInt(2 * bounds.extents.x / gridDim);
         int boundsLength = Mathf.CeilToInt(2 * bounds.extents.z / gridDim);
-//        float newHeight = bounds.extents.y;
+        float boundsHeight = bounds.extents.y;
 
-        // TODO: Filter values here!
-        List<GridInfo> validValues = availableGridSpots.FindAll((GridInfo info)=>{return info.rightSquares >= (boundsWidth-1) && info.downSquares > (boundsLength-1) && info.height <= 0;});
         bool foundValid = false;
-        while(validValues.Count > 0 && !foundValid)
+        foreach(HeightPlane curHeightPlane in allHeightPlanes)
         {
-            int randIndex = Random.Range(0, validValues.Count);
-            GridInfo testInfo = validValues[randIndex];
-            validValues.RemoveAt(randIndex);
-            if (TestGrid(testInfo, boundsWidth, boundsLength))
+            // Make sure we aren't hitting the ceiling
+            if (curHeightPlane.height + boundsHeight >= curRoomHeight)
+                continue;
+            // Only get grid squares which are valid to place on.
+            List<GridInfo> validValues = curHeightPlane.myGridSpots.FindAll((GridInfo info)=>{return info.rightSquares >= (boundsWidth-1) && info.downSquares > (boundsLength-1) && info.height <= 0;});
+            while(validValues.Count > 0 && !foundValid)
             {
-//                Debug.LogFormat("Selecting ({0},{1}) which has ({2},{3}) to place ({4},{5})", testInfo.x, testInfo.y, testInfo.rightSquares, testInfo.downSquares, boundsWidth, boundsLength);
-                finalX = testInfo.x;
-                finalY = testInfo.y;
-                foundValid = true;
+                int randIndex = Random.Range(0, validValues.Count);
+                GridInfo testInfo = validValues[randIndex];
+                validValues.RemoveAt(randIndex);
+                if (curHeightPlane.TestGrid(testInfo, boundsWidth, boundsLength))
+                {
+                    Vector3 centerPos = roomCornerPos + new Vector3(gridDim * (testInfo.x + (0.5f * boundsWidth)), 0.1f+bounds.extents.y, gridDim * (testInfo.y + (0.5f * boundsLength)));
+                    if (Physics.CheckBox(centerPos, bounds.extents))
+                    {
+                        // Found another object here, let the plane know that there's something above messing with some of the squares
+                        // TODO: Figure out which squares to remove from contention on this plane.
+                        string debugText = "";
+                        Collider[] hitObjs = Physics.OverlapBox(centerPos, bounds.extents);
+                        foreach(Collider col in hitObjs)
+                        {
+                            debugText += col.gameObject.name + ", ";
+                        }
+                        Debug.Log("Unexpected objects: (" + debugText + ") at " + testInfo);
+                    }
+                    else
+                    {
+//                        Debug.LogFormat("Selecting ({0},{1}) which has ({2},{3}) to place ({4},{5})", testInfo.x, testInfo.y, testInfo.rightSquares, testInfo.downSquares, boundsWidth, boundsLength);
+                        finalX = testInfo.x;
+                        finalY = testInfo.y;
+                        whichPlane = curHeightPlane;
+                        foundValid = true;
+                        return foundValid;
+                    }
+                }
             }
         }
 
@@ -282,7 +212,8 @@ public class ProceduralGeneration : MonoBehaviour
 
         // Find a spot to place this object
         int spawnX, spawnZ;
-        if (TryPlaceGroundObject(info.bounds, out spawnX, out spawnZ))
+        HeightPlane targetHeightPlane;
+        if (TryPlaceGroundObject(info.bounds, out spawnX, out spawnZ, out targetHeightPlane))
         {
             int boundsWidth = Mathf.CeilToInt(2 * info.bounds.extents.x / gridDim) - 1;
             int boundsLength = Mathf.CeilToInt(2 * info.bounds.extents.z / gridDim) - 1;
@@ -307,7 +238,7 @@ public class ProceduralGeneration : MonoBehaviour
             if (curRoom != null)
                 newInstance.transform.SetParent(curRoom);
 
-            UpdateGrid(spawnX, spawnZ, boundsWidth, boundsLength, 2 * info.bounds.extents.z);
+            targetHeightPlane.UpdateGrid(spawnX, spawnZ, boundsWidth, boundsLength, 2 * info.bounds.extents.z);
         }
         else
             // TODO: Mark item as unplaceable and continue with smaller objects?
@@ -344,6 +275,7 @@ public class ProceduralGeneration : MonoBehaviour
 
     public bool IsDone()
     {
-        return curComplexity >= complexityLevelToCreate || failures > 10;
+        // TODO: Find a better metric for completion
+        return curComplexity >= complexityLevelToCreate || failures > 30;
     }
 }
