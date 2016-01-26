@@ -43,28 +43,41 @@ MonoBehaviour:
   desiredSpacing: 10
   wallPrefab: {fileID: 11463304, guid: 9e526eb2d26ff964cb858c48f443b362, type: 2}
   floorPrefab: {fileID: 11451076, guid: 781707ea1a041d448b3fe59b839492eb, type: 2}
-  roomDim: {x: 110, y: 100, z: 120}
+  DEBUG_testCubePrefab: {fileID: 0}
+  DEBUG_testGridPrefab: {fileID: 0}
+  roomDim: {x: 100, y: 100, z: 40}
   availablePrefabs:
   - fileName: Prefabs/chair_01
     complexity: 130
     bounds:
-      m_Center: {x: 3.8548236, y: 0, z: 1.185}
-      m_Extent: {x: 3.8548236, y: 0, z: 1.185}
+      m_Center: {x: -0.00008440018, y: 1.3947862, z: -0.12454462}
+      m_Extent: {x: 0.67246866, y: 1.3947864, z: 0.80279166}
+  - fileName: Prefabs/Props/Furniture/chair_7106
+    complexity: 130
+    bounds:
+      m_Center: {x: -0.00008440018, y: 1.3947862, z: -0.1245445}
+      m_Extent: {x: 0.67246866, y: 1.3947864, z: 0.8027916}
   - fileName: Prefabs/Props/Furniture/sofa_blue
     complexity: 237
     bounds:
-      m_Center: {x: -0.027999997, y: 1.326, z: -7.8739996}
-      m_Extent: {x: 1.664, y: 1.326, z: 8.286}
+      m_Center: {x: 0, y: 1.720496, z: 0}
+      m_Extent: {x: 4.242313, y: 1.7204962, z: 2.0811396}
   - fileName: Prefabs/Props/Furniture/sofa_modern_01_starter
-    complexity: 21
+    complexity: 81
     bounds:
-      m_Center: {x: -6.23, y: 0, z: 0}
-      m_Extent: {x: 6.23, y: 0, z: 0}
+      m_Center: {x: -0.03508663, y: 1.6007758, z: 0}
+      m_Extent: {x: 1.7097988, y: 1.6001952, z: 3.6850584}
+  - fileName: Prefabs/Props/Furniture/table_7103
+    complexity: 43
+    bounds:
+      m_Center: {x: -0.00060892105, y: 0.39497495, z: 0.00000047683716}
+      m_Extent: {x: 0.9375837, y: 0.39500034, z: 0.51000035}
   - fileName: Prefabs/Table_Big
     complexity: 63
     bounds:
-      m_Center: {x: -0.12303184, y: 0.48, z: 3.185}
-      m_Extent: {x: 0.12303184, y: 0.48, z: 3.185}
+      m_Center: {x: 0.00000020861626, y: 0, z: 0.00000047683716}
+      m_Extent: {x: 2.47364, y: 0.9606552, z: 4.8412066}
+  gridDim: 1
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
@@ -92,7 +105,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: roomDim.x
-      value: 110
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: roomDim.y
@@ -100,7 +113,19 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: roomDim.z
-      value: 120
+      value: 40
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: DEBUG_testCubePrefab
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: DEBUG_testGridPrefab
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: gridDim
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}

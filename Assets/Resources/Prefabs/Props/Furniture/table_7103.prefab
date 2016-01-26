@@ -14,6 +14,7 @@ GameObject:
   - 54: {fileID: 5472462}
   - 114: {fileID: 11403286}
   - 114: {fileID: 11434500}
+  - 65: {fileID: 6509866}
   m_Layer: 0
   m_Name: table_7103
   m_TagString: Untagged
@@ -934,6 +935,18 @@ MeshCollider:
   serializedVersion: 2
   m_Convex: 1
   m_Mesh: {fileID: 4314100, guid: 1968fe4574342654f8040fa67c9efdf3, type: 2}
+--- !u!65 &6509866
+BoxCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100000}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1.8751674, y: 1.0200005, z: 0.79000056}
+  m_Center: {x: -0.00060901046, y: -0.0000005364419, z: 0.39497495}
 --- !u!65 &6522928
 BoxCollider:
   m_ObjectHideFlags: 1
@@ -1010,10 +1023,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa8bdad9898d94340ab9980d8e4cdb15, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  myComplexity: 0
+  myComplexity: 43
   myBounds:
-    m_Center: {x: 0, y: 0, z: 0}
-    m_Extent: {x: 0, y: 0, z: 0}
+    m_Center: {x: -0.00060892105, y: 0.39497495, z: 0.00000047683716}
+    m_Extent: {x: 0.9375837, y: 0.39500034, z: 0.51000035}
   generationTags: []
 --- !u!1001 &100100000
 Prefab:

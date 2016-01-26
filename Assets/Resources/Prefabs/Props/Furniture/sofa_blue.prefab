@@ -5731,8 +5731,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   myComplexity: 237
   myBounds:
-    m_Center: {x: -0.027999997, y: 1.326, z: -7.8739996}
-    m_Extent: {x: 1.664, y: 1.326, z: 8.286}
+    m_Center: {x: -0.027999997, y: 1.326, z: -0.2939999}
+    m_Extent: {x: 1.664, y: 1.326, z: 0.706}
   generationTags: []
 --- !u!114 &11477834
 MonoBehaviour:

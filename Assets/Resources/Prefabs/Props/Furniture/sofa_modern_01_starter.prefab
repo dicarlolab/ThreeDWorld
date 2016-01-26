@@ -1718,10 +1718,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa8bdad9898d94340ab9980d8e4cdb15, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  myComplexity: 89
+  myComplexity: 81
   myBounds:
-    m_Center: {x: -6.23, y: 0, z: 0}
-    m_Extent: {x: 6.23, y: 0, z: 0}
+    m_Center: {x: -0.03508663, y: 1.6007758, z: 0}
+    m_Extent: {x: 1.7097988, y: 1.6001952, z: 3.6850584}
   generationTags: []
 --- !u!114 &11483238
 MonoBehaviour:

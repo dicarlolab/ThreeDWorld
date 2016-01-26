@@ -17,7 +17,7 @@ public class ProceduralGenerationProcessing
             return;
         GameObject prefab = UnityEditor.PrefabUtility.GetPrefabParent(instance) as GameObject;        
         GeneratablePrefab gp = prefab.GetComponent<GeneratablePrefab>();
-        gp.Process();
+        gp.ProcessPrefab();
     }
 }
 
