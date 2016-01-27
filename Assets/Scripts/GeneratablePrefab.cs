@@ -4,10 +4,21 @@ using System.Collections.Generic;
 
 public class GeneratablePrefab : MonoBehaviour
 {
+    public enum AttachAnchor
+    {
+        Ground,
+        Wall,
+        Ceiling
+    }
+
     #region Fields
+    // Quick toggle to enable/disable using this prefab in the list of available prefabs during procedural generation
+    public bool shouldUse = true;
     // Represents roughly how complex this object is to process
     public int myComplexity = 0;
     public Bounds myBounds = new Bounds();
+    public bool isLight;
+    public AttachAnchor attachMethod = AttachAnchor.Ground;
     public List<string> generationTags = new List<string>();
     #endregion
 

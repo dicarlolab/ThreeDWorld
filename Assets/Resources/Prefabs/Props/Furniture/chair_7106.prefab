@@ -3553,10 +3553,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa8bdad9898d94340ab9980d8e4cdb15, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  shouldUse: 1
   myComplexity: 130
   myBounds:
     m_Center: {x: -0.00008440018, y: 1.3947862, z: -0.1245445}
     m_Extent: {x: 0.67246866, y: 1.3947864, z: 0.8027916}
+  isLight: 0
+  attachMethod: 0
   generationTags: []
 --- !u!1001 &100100000
 Prefab:

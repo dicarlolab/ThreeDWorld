@@ -13,6 +13,8 @@ public class ProceduralGeneration : MonoBehaviour
     {
         public string fileName;
         public int complexity;
+        public bool isLight;
+        public GeneratablePrefab.AttachAnchor anchorType;
         public Bounds bounds;
     }
 
@@ -37,9 +39,22 @@ public class ProceduralGeneration : MonoBehaviour
     private Transform curRoom = null;
     private int failures = 0; // Counter to avoid infinite loops if we can't place anything
     private List<HeightPlane> allHeightPlanes = new List<HeightPlane>();
+    private static ProceduralGeneration _Instance = null;
+#endregion
+
+#region Properties
+    public static ProceduralGeneration Instance
+    {
+        get { return _Instance; }
+    }
 #endregion
 
 #region Unity Callbacks
+    private void Awake()
+    {
+        _Instance = this;
+    }
+
     private void Start()
     {
         Init();
@@ -185,6 +200,7 @@ public class ProceduralGeneration : MonoBehaviour
             allThings[0].CompileListOfProceduralComponents(shouldRecompute);
     }
 
+    // Save out core information so we can decide whether to place the objects dynamically even if they aren't loaded yet
     private void CompileListOfProceduralComponents(bool shouldRecomputePrefabInformation)
     {
         GeneratablePrefab [] allThings = Resources.LoadAll<GeneratablePrefab>("");
@@ -193,7 +209,7 @@ public class ProceduralGeneration : MonoBehaviour
         foreach(GeneratablePrefab prefab in allThings)
         {
             string assetPath = AssetDatabase.GetAssetPath(prefab);
-            if (!string.IsNullOrEmpty(assetPath))
+            if (!string.IsNullOrEmpty(assetPath) && prefab.shouldUse)
             {
                 if (shouldRecomputePrefabInformation)
                     prefab.ProcessPrefab();
@@ -202,6 +218,8 @@ public class ProceduralGeneration : MonoBehaviour
                 newInfo.fileName = newInfo.fileName.Substring(0, newInfo.fileName.LastIndexOf("."));
                 newInfo.complexity = prefab.myComplexity;
                 newInfo.bounds = prefab.myBounds;
+                newInfo.isLight = prefab.isLight;
+                newInfo.anchorType = prefab.attachMethod;
                 availablePrefabs.Add(newInfo);
             }
         }
@@ -221,6 +239,8 @@ public class ProceduralGeneration : MonoBehaviour
             int boundsWidth = Mathf.CeilToInt(2 * info.bounds.extents.x / gridDim) - 1;
             int boundsLength = Mathf.CeilToInt(2 * info.bounds.extents.z / gridDim) - 1;
             Vector3 centerPos = roomCornerPos + new Vector3(gridDim * (spawnX + (0.5f * boundsWidth)), 0.1f+info.bounds.extents.y, gridDim * (spawnZ + (0.5f * boundsLength)));
+            if (info.anchorType == GeneratablePrefab.AttachAnchor.Ceiling)
+                centerPos.y = roomCornerPos.y + curRoomHeight - (0.1f+info.bounds.extents.y);
 
             GameObject newPrefab = Resources.Load<GameObject>(info.fileName);
             // TODO: Factor in complexity to the arrangement algorithm?
@@ -273,10 +293,17 @@ public class ProceduralGeneration : MonoBehaviour
         }
 
         // Create floor
-        GameObject floor = GameObject.Instantiate(floorPrefab.gameObject);
-        floor.transform.localScale = new Vector3(roomDimensions.x, 1.0f, roomDimensions.z);
-        floor.transform.position = roomCenter;
-        floor.transform.SetParent(curRoom);
+        GameObject floorObj = GameObject.Instantiate(floorPrefab.gameObject);
+        floorObj.transform.localScale = new Vector3(roomDimensions.x, 1.0f, roomDimensions.z);
+        floorObj.transform.position = roomCenter;
+        floorObj.transform.SetParent(curRoom);
+
+        // Create ceiling
+        // TODO: Use different prefab for ceiling?
+        GameObject ceilingObj = GameObject.Instantiate(floorPrefab.gameObject);
+        ceilingObj.transform.localScale = new Vector3(roomDimensions.x, 1.0f, roomDimensions.z);
+        ceilingObj.transform.position = roomCenter + roomDimensions.y * Vector3.up;
+        ceilingObj.transform.SetParent(curRoom);
     }
 
     public bool IsDone()

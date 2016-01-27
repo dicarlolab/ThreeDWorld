@@ -53,6 +53,11 @@ public class NetMessenger : MonoBehaviour
 
     public void Init()
     {
+        // Create Procedural generation
+        if (ProceduralGeneration.Instance == null)
+            GameObject.Instantiate(Resources.Load("Prefabs/ProceduralGeneration"));
+
+        // Start up connections
         _ctx = NetMQContext.Create();
         CreateNewSocketConnection();
     }

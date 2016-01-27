@@ -45,35 +45,61 @@ MonoBehaviour:
   floorPrefab: {fileID: 11451076, guid: 781707ea1a041d448b3fe59b839492eb, type: 2}
   DEBUG_testCubePrefab: {fileID: 0}
   DEBUG_testGridPrefab: {fileID: 0}
-  roomDim: {x: 100, y: 100, z: 40}
+  roomDim: {x: 100, y: 20, z: 40}
   availablePrefabs:
   - fileName: Prefabs/chair_01
     complexity: 130
+    isLight: 0
+    anchorType: 0
     bounds:
       m_Center: {x: -0.00008440018, y: 1.3947862, z: -0.12454462}
       m_Extent: {x: 0.67246866, y: 1.3947864, z: 0.80279166}
   - fileName: Prefabs/Props/Furniture/chair_7106
     complexity: 130
+    isLight: 0
+    anchorType: 0
     bounds:
       m_Center: {x: -0.00008440018, y: 1.3947862, z: -0.1245445}
       m_Extent: {x: 0.67246866, y: 1.3947864, z: 0.8027916}
   - fileName: Prefabs/Props/Furniture/sofa_blue
     complexity: 237
+    isLight: 0
+    anchorType: 0
     bounds:
       m_Center: {x: 0, y: 1.720496, z: 0}
       m_Extent: {x: 4.242313, y: 1.7204962, z: 2.0811396}
   - fileName: Prefabs/Props/Furniture/sofa_modern_01_starter
     complexity: 81
+    isLight: 0
+    anchorType: 0
     bounds:
       m_Center: {x: -0.03508663, y: 1.6007758, z: 0}
       m_Extent: {x: 1.7097988, y: 1.6001952, z: 3.6850584}
   - fileName: Prefabs/Props/Furniture/table_7103
     complexity: 43
+    isLight: 0
+    anchorType: 0
     bounds:
       m_Center: {x: -0.00060892105, y: 0.39497495, z: 0.00000047683716}
       m_Extent: {x: 0.9375837, y: 0.39500034, z: 0.51000035}
+  - fileName: Prefabs/Props/Lights/lamp_11
+    complexity: 226
+    isLight: 1
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 2.7734442, z: 0.00000029802322}
+      m_Extent: {x: 0.7376655, y: 2.7815661, z: 0.7490451}
+  - fileName: Prefabs/Props/Lights/lamp_18_hanging
+    complexity: 259
+    isLight: 1
+    anchorType: 2
+    bounds:
+      m_Center: {x: 0.06861806, y: -1.363082, z: 0.19551772}
+      m_Extent: {x: 1.1684761, y: 1.4525725, z: 1.0960374}
   - fileName: Prefabs/Table_Big
     complexity: 63
+    isLight: 0
+    anchorType: 0
     bounds:
       m_Center: {x: 0.00000020861626, y: 0, z: 0.00000047683716}
       m_Extent: {x: 2.47364, y: 0.9606552, z: 4.8412066}
@@ -109,7 +135,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: roomDim.y
-      value: 100
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: roomDim.z

@@ -1690,10 +1690,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa8bdad9898d94340ab9980d8e4cdb15, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  shouldUse: 1
   myComplexity: 63
   myBounds:
     m_Center: {x: 0.00000020861626, y: 0, z: 0.00000047683716}
     m_Extent: {x: 2.47364, y: 0.9606552, z: 4.8412066}
+  isLight: 0
+  attachMethod: 0
   generationTags: []
 --- !u!114 &11408180
 MonoBehaviour:

@@ -100,7 +100,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!108 &736242830
 Light:
   m_ObjectHideFlags: 0
@@ -145,7 +145,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 1
 --- !u!1 &1596850000
 GameObject:
   m_ObjectHideFlags: 0
@@ -233,7 +233,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 0
 --- !u!114 &1596850007
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -260,17 +260,3 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   avatarPrefab: {fileID: 11477270, guid: 50a7c426a44ef4a42919f58ea9b8763c, type: 2}
   shouldCreateTestClient: 1
---- !u!1001 &1922695103
-Prefab:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 433184, guid: e1f5a804a9324bd4c88474bdfa97f3a3, type: 2}
-      propertyPath: m_RootOrder
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_ParentPrefab: {fileID: 100100000, guid: e1f5a804a9324bd4c88474bdfa97f3a3, type: 2}
-  m_IsPrefabParent: 0
