@@ -25,8 +25,8 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100000}
-  m_LocalRotation: {x: -.707106829, y: 0, z: -0, w: .707106829}
-  m_LocalPosition: {x: -.802287877, y: .19552207, z: .853903115}
+  m_LocalRotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071068}
+  m_LocalPosition: {x: -0.8022879, y: 0.19552207, z: 0.8539031}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -49,8 +49,10 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_AutoUVMaxDistance: .5
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
@@ -72,8 +74,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: .70009172, y: .12867561, z: .390827984}
-  m_Center: {x: .00942993164, y: .408964664, z: 2.29882789e-06}
+  m_Size: {x: 0.7000917, y: 0.12867561, z: 0.39082798}
+  m_Center: {x: 0.009429932, y: 0.40896466, z: 0.000002298828}
 --- !u!65 &6500002
 BoxCollider:
   m_ObjectHideFlags: 1
@@ -84,8 +86,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: .749203324, y: .946567297, z: .197194099}
-  m_Center: {x: .0160322785, y: 4.89912281e-06, z: -.0968171731}
+  m_Size: {x: 0.7492033, y: 0.9465673, z: 0.1971941}
+  m_Center: {x: 0.016032279, y: 0.000004899123, z: -0.09681717}
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
