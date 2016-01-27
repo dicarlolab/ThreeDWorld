@@ -1,0 +1,286 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: wall04b
+  m_Shader: {fileID: 46, guid: 0000000000000000f000000000000000, type: 0}
+  m_ShaderKeywords: _NORMALMAP _PARALLAXMAP
+  m_LightmapFlags: 5
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  m_SavedProperties:
+    serializedVersion: 2
+    m_TexEnvs:
+      data:
+        first:
+          name: _MainTex
+        second:
+          m_Texture: {fileID: 2800000, guid: 2a681bf3b6783434db82bcad6167594b, type: 3}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _BumpMap
+        second:
+          m_Texture: {fileID: 2800000, guid: ca579d8e5d5cfa34497f649a583c86d5, type: 3}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _DetailNormalMap
+        second:
+          m_Texture: {fileID: 0}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _ParallaxMap
+        second:
+          m_Texture: {fileID: 2800000, guid: 3941732a60431e841bc6108f493ac81d, type: 3}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _OcclusionMap
+        second:
+          m_Texture: {fileID: 0}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _EmissionMap
+        second:
+          m_Texture: {fileID: 0}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _DetailMask
+        second:
+          m_Texture: {fileID: 0}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _DetailAlbedoMap
+        second:
+          m_Texture: {fileID: 0}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _MetallicGlossMap
+        second:
+          m_Texture: {fileID: 0}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _Cube
+        second:
+          m_Texture: {fileID: 0}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _HeightMap
+        second:
+          m_Texture: {fileID: 2800000, guid: 3941732a60431e841bc6108f493ac81d, type: 3}
+          m_Scale: {x: 0.5, y: 0.5}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _mipFilterTex
+        second:
+          m_Texture: {fileID: 0}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+    m_Floats:
+      data:
+        first:
+          name: _SrcBlend
+        second: 1
+      data:
+        first:
+          name: _DstBlend
+        second: 0
+      data:
+        first:
+          name: _Cutoff
+        second: 0.5
+      data:
+        first:
+          name: _Shininess
+        second: 0.92699635
+      data:
+        first:
+          name: _Parallax
+        second: 0.013955223
+      data:
+        first:
+          name: _ZWrite
+        second: 1
+      data:
+        first:
+          name: _Glossiness
+        second: 0.3
+      data:
+        first:
+          name: _BumpScale
+        second: 1
+      data:
+        first:
+          name: _OcclusionStrength
+        second: 1
+      data:
+        first:
+          name: _DetailNormalMapScale
+        second: 1
+      data:
+        first:
+          name: _UVSec
+        second: 0
+      data:
+        first:
+          name: _Mode
+        second: 0
+      data:
+        first:
+          name: _Metallic
+        second: 0
+      data:
+        first:
+          name: _EmissionScaleUI
+        second: 0
+      data:
+        first:
+          name: _distance_start
+        second: 10
+      data:
+        first:
+          name: _distance_transition
+        second: 33.46154
+      data:
+        first:
+          name: _ExtrudeHeight
+        second: 0.05
+      data:
+        first:
+          name: _ShadowSmoothing
+        second: 1.9409615
+      data:
+        first:
+          name: _SelfShadowStrength
+        second: 0.32692307
+      data:
+        first:
+          name: _LightmapShading
+        second: 0.7
+      data:
+        first:
+          name: _Rot
+        second: 0
+      data:
+        first:
+          name: _DIST_STEPS
+        second: 20
+      data:
+        first:
+          name: _WAVELENGTH
+        second: 1
+      data:
+        first:
+          name: _SHADOW_STEPS
+        second: 20
+      data:
+        first:
+          name: _WAVELENGTH_SHADOWS
+        second: 8
+      data:
+        first:
+          name: _ShadeRange
+        second: 0.02
+      data:
+        first:
+          name: _ShadingStrength
+        second: 0
+      data:
+        first:
+          name: _SHADOW_SMOOTH_STEPS
+        second: 4
+      data:
+        first:
+          name: _RMS
+        second: 0.06064177
+      data:
+        first:
+          name: _SidewallTextureOffset
+        second: -1
+      data:
+        first:
+          name: _BINARY_STEPS
+        second: 6
+      data:
+        first:
+          name: _GlossFromBrightness_multiplicator
+        second: 0.3333
+      data:
+        first:
+          name: _GlossFromBrightness_exponent
+        second: 8
+      data:
+        first:
+          name: _Volume2TangetTopDist
+        second: 0.05
+      data:
+        first:
+          name: _Volume2TangetSideDist
+        second: 0.01
+    m_Colors:
+      data:
+        first:
+          name: _EmissionColor
+        second: {r: 0, g: 0, b: 0, a: 0}
+      data:
+        first:
+          name: _Color
+        second: {r: 0.61194026, g: 0.61194026, b: 0.61194026, a: 1}
+      data:
+        first:
+          name: _SpecColor
+        second: {r: 0.58208954, g: 0.58208954, b: 0.58208954, a: 1}
+      data:
+        first:
+          name: _EmissionColorUI
+        second: {r: 1, g: 1, b: 1, a: 1}
+      data:
+        first:
+          name: _ReflectColor
+        second: {r: 1, g: 1, b: 1, a: 0.5}
+      data:
+        first:
+          name: _ReliefTransform
+        second: {r: 1, g: 1, b: 0, a: 0}
+      data:
+        first:
+          name: _SilhouetteUV_border
+        second: {r: 0, g: 1, b: 0, a: 1}
+      data:
+        first:
+          name: _World2VolumeScale
+        second: {r: 1, g: 1, b: 0, a: 0}
+      data:
+        first:
+          name: _World2VolumeDepthMinMax
+        second: {r: 0, g: 1, b: 0, a: 0}
+      data:
+        first:
+          name: _TangentToTexCurvatureScale
+        second: {r: 1, g: 1, b: 1, a: 1}
+--- !u!1002 &2100001
+EditorExtensionImpl:
+  serializedVersion: 6
