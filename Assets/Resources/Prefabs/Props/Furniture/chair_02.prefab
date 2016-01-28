@@ -335,7 +335,7 @@ GameObject:
   - 54: {fileID: 5483402}
   - 114: {fileID: 11465306}
   m_Layer: 0
-  m_Name: char_02
+  m_Name: chair_02
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
