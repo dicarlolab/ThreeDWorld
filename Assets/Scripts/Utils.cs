@@ -40,4 +40,32 @@ public static class UtilExtensionMethods
         }
         return false;
     }
+
+    public static string ReadString(this SimpleJSON.JSONNode node, string defaultValue = "")
+    {
+        if (node == null || node.Tag != SimpleJSON.JSONBinaryTag.Value)
+            return defaultValue;
+        return node.Value;
+    }
+
+    public static int ReadInt(this SimpleJSON.JSONNode node, int defaultValue = 0)
+    {
+        if (node == null || node.IsNumeric())
+            return defaultValue;
+        return node.AsInt;
+    }
+
+    public static float ReadFloat(this SimpleJSON.JSONNode node, float defaultValue = 0.0f)
+    {
+        if (node == null || node.IsNumeric())
+            return defaultValue;
+        return node.AsFloat;
+    }
+
+    public static bool ReadBool(this SimpleJSON.JSONNode node, bool defaultValue = false)
+    {
+        if (node == null || node.Tag != SimpleJSON.JSONBinaryTag.Value)
+            return defaultValue;
+        return node.AsBool;
+    }
 }

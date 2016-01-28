@@ -10,5 +10,5 @@
     "room_width": 40.0,
     "room_height": 20.0,
     "room_length": 40.0,
-    "desired_spacing": 10
+    "grid_size": 0.4
 }

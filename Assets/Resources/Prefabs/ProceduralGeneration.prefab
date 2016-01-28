@@ -44,6 +44,7 @@ MonoBehaviour:
   desiredSpacing: 10
   wallPrefab: {fileID: 11463304, guid: 9e526eb2d26ff964cb858c48f443b362, type: 2}
   floorPrefab: {fileID: 11451076, guid: 781707ea1a041d448b3fe59b839492eb, type: 2}
+  ceilingPrefab: {fileID: 11451076, guid: 781707ea1a041d448b3fe59b839492eb, type: 2}
   DEBUG_testCubePrefab: {fileID: 0}
   DEBUG_testGridPrefab: {fileID: 0}
   roomDim: {x: 40, y: 20, z: 40}
@@ -324,6 +325,11 @@ Prefab:
       propertyPath: gridDim
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: ceilingPrefab
+      value: 
+      objectReference: {fileID: 11451076, guid: 781707ea1a041d448b3fe59b839492eb,
+        type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 146054}

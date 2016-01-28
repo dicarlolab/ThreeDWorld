@@ -26,6 +26,7 @@ public class ProceduralGeneration : MonoBehaviour
     public int desiredSpacing = 100;
     public SemanticObjectSimple wallPrefab;
     public SemanticObjectSimple floorPrefab;
+    public SemanticObjectSimple ceilingPrefab;
     public GameObject DEBUG_testCubePrefab = null;
     public TextMesh DEBUG_testGridPrefab = null;
     public Vector3 roomDim = new Vector3(10f, 10f, 10f);
@@ -70,18 +71,12 @@ public class ProceduralGeneration : MonoBehaviour
         if (json != null)
         {
             // Override settings with those in config
-            if (json["complexity"].Tag == SimpleJSON.JSONBinaryTag.IntValue)
-                complexityLevelToCreate = json["complexity"].AsInt;
-            if (json["num_ceiling_lights"].Tag == SimpleJSON.JSONBinaryTag.IntValue)
-                numCeilingLights = json["num_ceiling_lights"].AsInt;
-            if (json["room_width"].IsNumeric())
-                roomDim.x = json["room_width"].AsFloat;
-            if (json["room_height"].IsNumeric())
-                roomDim.y = json["room_height"].AsFloat;
-            if (json["room_length"].IsNumeric())
-                roomDim.z = json["room_length"].AsFloat;
-            if (json["desired_spacing"].Tag == SimpleJSON.JSONBinaryTag.IntValue)
-                desiredSpacing = json["desired_spacing"].AsInt;
+            complexityLevelToCreate = json["complexity"].ReadInt(complexityLevelToCreate);
+            numCeilingLights = json["num_ceiling_lights"].ReadInt(numCeilingLights);
+            roomDim.x = json["room_width"].ReadFloat(roomDim.x);
+            roomDim.y = json["room_height"].ReadFloat(roomDim.y);
+            roomDim.z = json["room_length"].ReadFloat(roomDim.z);
+            gridDim = json["grid_size"].ReadFloat(gridDim);
         }
 
         ceilingLightPrefabs = availablePrefabs.FindAll(((PrefabInfo info)=>{return info.anchorType == GeneratablePrefab.AttachAnchor.Ceiling && info.isLight;}));
@@ -318,7 +313,7 @@ public class ProceduralGeneration : MonoBehaviour
 
         // Create ceiling
         // TODO: Use different prefab for ceiling?
-        GameObject ceilingObj = GameObject.Instantiate(floorPrefab.gameObject);
+        GameObject ceilingObj = GameObject.Instantiate(ceilingPrefab.gameObject);
         ceilingObj.transform.localScale = new Vector3(roomDimensions.x, 1.0f, roomDimensions.z);
         ceilingObj.transform.position = roomCenter + roomDimensions.y * Vector3.up;
         ceilingObj.name = "Ceiling: " + ceilingObj.name;
