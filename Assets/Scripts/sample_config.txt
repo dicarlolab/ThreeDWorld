@@ -10,5 +10,6 @@
     "room_width": 40.0,
     "room_height": 20.0,
     "room_length": 40.0,
-    "grid_size": 0.4
+    "max_placement_attempts": 300   // Maximum number of failed placements before we consider a room fully filled.
+    "grid_size": 0.4    // Determines how fine tuned a grid the objects are placed on during Proc. Gen. Smaller the number, the 
 }

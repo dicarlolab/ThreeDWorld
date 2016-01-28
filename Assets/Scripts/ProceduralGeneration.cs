@@ -24,6 +24,7 @@ public class ProceduralGeneration : MonoBehaviour
     public int complexityLevelToCreate = 100;
     public int numCeilingLights = 10;
     public int desiredSpacing = 100;
+    public int maxPlacementAttempts = 300;
     public SemanticObjectSimple wallPrefab;
     public SemanticObjectSimple floorPrefab;
     public SemanticObjectSimple ceilingPrefab;
@@ -77,6 +78,7 @@ public class ProceduralGeneration : MonoBehaviour
             roomDim.y = json["room_height"].ReadFloat(roomDim.y);
             roomDim.z = json["room_length"].ReadFloat(roomDim.z);
             gridDim = json["grid_size"].ReadFloat(gridDim);
+            maxPlacementAttempts = json["max_placement_attempts"].ReadInt(maxPlacementAttempts);
         }
 
         ceilingLightPrefabs = availablePrefabs.FindAll(((PrefabInfo info)=>{return info.anchorType == GeneratablePrefab.AttachAnchor.Ceiling && info.isLight;}));
@@ -113,7 +115,7 @@ public class ProceduralGeneration : MonoBehaviour
 
         // Keep creating objects until we are supposed to stop
         // TODO: Create a separate plane to map ceiling placement
-        for(int i = 0; i < numCeilingLights && failures < 200; ++i)
+        for(int i = 0; i < numCeilingLights && failures < maxPlacementAttempts; ++i)
             AddObjects(ceilingLightPrefabs);
         failures = 0;
         while(!IsDone())
@@ -323,6 +325,6 @@ public class ProceduralGeneration : MonoBehaviour
     public bool IsDone()
     {
         // TODO: Find a better metric for completion
-        return curComplexity >= complexityLevelToCreate || failures > 30;
+        return curComplexity >= complexityLevelToCreate || failures > maxPlacementAttempts;
     }
 }
