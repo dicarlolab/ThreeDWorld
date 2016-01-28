@@ -169,7 +169,6 @@ public class ProceduralGeneration : MonoBehaviour
                     if (Physics.CheckBox(centerPos, bounds.extents))
                     {
                         // Found another object here, let the plane know that there's something above messing with some of the squares
-                        // TODO: Figure out which squares to remove from contention on this plane.
                         string debugText = "";
                         Collider[] hitObjs = Physics.OverlapBox(centerPos, bounds.extents);
                         foreach(Collider col in hitObjs)

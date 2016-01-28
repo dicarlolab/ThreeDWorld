@@ -136,6 +136,8 @@ public static class SimulationManager
         {
             ReadLogLevel(_readJsonArgs["log_level"], ref logLevel);
             ReadLogLevel(_readJsonArgs["stack_log_level"], ref stackLogLevel);
+            if (_readJsonArgs["output_log_file"].Tag == SimpleJSON.JSONBinaryTag.Value)
+                logFileLocation = _readJsonArgs["output_log_file"].Value;
         }
         Debug.LogFormat("Completed reading configuration at {0}", fileName);
     }

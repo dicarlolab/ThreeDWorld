@@ -54,24 +54,11 @@ public class HeightPlane
         int gridMaxX = Mathf.Clamp(Mathf.CeilToInt(maxVec.x / gridDim), 0, dimWidth - 1);
         int gridMinZ = Mathf.Clamp(Mathf.FloorToInt(minVec.z / gridDim), 0, dimLength - 1);
         int gridMaxZ = Mathf.Clamp(Mathf.CeilToInt(maxVec.z / gridDim), 0, dimLength - 1);
-        StripGrid(gridMinX, gridMaxX, gridMinZ, gridMaxZ);
+        UpdateGrid(gridMinX, gridMaxX, gridMinZ, gridMaxZ);
 
     }
 
-    // Invalidate all squares for placement for the given grid coordinates
-    public void StripGrid(int startX, int maxX, int startY, int maxY)
-    {
-        for(int i = startX; i <= maxX; ++i)
-        {
-            for(int j = startY; j <= maxY; ++j)
-            {
-                int index = Index(i, j);
-                myGridSpots[index].inUse = true;
-                ModifyGrid(myGridSpots[index], 0, 0, 1, 1);
-            }
-        }        
-    }
-
+    // Mark a section of the grid as used and update surrounding squares to say how far they are from a boundary
     public void UpdateGrid(int startX, int startY, int dimX, int dimY)
     {
 //        Debug.LogFormat("UpdateGrid({0},{1},{2},{3},{4})", startX, startY, dimX, dimY, newHeight);
@@ -96,13 +83,26 @@ public class HeightPlane
             // check right
             numToCheck = myGridSpots[Index(startX + dimX, j + startY)].rightSquares;
             for(int i = 1; i <= numToCheck; ++i)
-            {
                 myGridSpots[Index(startX + dimX + i, j + startY)].leftSquares = i - 1;
-            }
         }
         StripGrid(startX, startX + dimX, startY, startY + dimY);
     }
 
+    // Invalidate all squares for placement for the given grid coordinates
+    private void StripGrid(int startX, int maxX, int startY, int maxY)
+    {
+        for(int i = startX; i <= maxX; ++i)
+        {
+            for(int j = startY; j <= maxY; ++j)
+            {
+                int index = Index(i, j);
+                myGridSpots[index].inUse = true;
+                ModifyGrid(myGridSpots[index], 0, 0, 1, 1);
+            }
+        }        
+    }
+
+    // Tests to ensure that it is valid to place an object over the given grid rectangle
     public bool TestGrid(GridInfo info, int dimX, int dimY)
     {
         for(int i = 0; i < dimX; ++i)

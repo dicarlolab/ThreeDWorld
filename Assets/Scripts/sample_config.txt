@@ -1,0 +1,14 @@
+{
+    // Logging
+    "log_level": "log",         // Can be "log", "warning", "error", or "none" for the various log levels
+    "stack_log_level": "error", // Minimum log level that we also try to output stack traces
+    "output_log_file": "output_log.txt",
+    
+    // Procedural generation
+    "complexity": 100000,
+    "num_ceiling_lights": 5,
+    "room_width": 40.0,
+    "room_height": 20.0,
+    "room_length": 40.0,
+    "desired_spacing": 10
+}
