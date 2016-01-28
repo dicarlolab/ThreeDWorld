@@ -12,7 +12,7 @@ GameObject:
   - 23: {fileID: 2301074}
   - 95: {fileID: 9506128}
   m_Layer: 0
-  m_Name: char_02
+  m_Name: chair_02
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

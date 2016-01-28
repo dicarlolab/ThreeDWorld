@@ -12,7 +12,7 @@ GameObject:
   - 23: {fileID: 2395930}
   - 95: {fileID: 9509158}
   m_Layer: 0
-  m_Name: Chalk_board
+  m_Name: Board_Big
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
