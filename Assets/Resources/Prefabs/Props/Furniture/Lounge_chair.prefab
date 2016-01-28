@@ -2,7 +2,7 @@
 %TAG !u! tag:unity3d.com,2011:
 --- !u!1 &100000
 GameObject:
-  m_ObjectHideFlags: 0
+  m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   serializedVersion: 4
@@ -11,9 +11,6 @@ GameObject:
   - 33: {fileID: 3300000}
   - 23: {fileID: 2300000}
   - 111: {fileID: 11100000}
-  - 54: {fileID: 5401982}
-  - 114: {fileID: 11469646}
-  - 59: {fileID: 5903170}
   m_Layer: 0
   m_Name: LoungeChairOne_FEETSTAND_FBX
   m_TagString: Untagged
@@ -9396,13 +9393,13 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100000}
-  m_LocalRotation: {x: 0, y: -0, z: 0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0.004336357, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 495782}
-  m_Father: {fileID: 400006}
-  m_RootOrder: 1
+  m_Father: {fileID: 448484}
+  m_RootOrder: 3
 --- !u!4 &400002
 Transform:
   m_ObjectHideFlags: 1
@@ -9440,7 +9437,6 @@ Transform:
   m_LocalScale: {x: 3, y: 3, z: 3}
   m_Children:
   - {fileID: 400014}
-  - {fileID: 400000}
   - {fileID: 448484}
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -13074,8 +13070,9 @@ Transform:
   - {fileID: 400004}
   - {fileID: 400002}
   - {fileID: 400008}
+  - {fileID: 400000}
   m_Father: {fileID: 400006}
-  m_RootOrder: 2
+  m_RootOrder: 1
 --- !u!4 &448536
 Transform:
   m_ObjectHideFlags: 1
@@ -17238,21 +17235,6 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100016}
   m_Mesh: {fileID: 4300000, guid: 1161b65f9cf354de7a4dd02e4e959c41, type: 3}
---- !u!54 &5401982
-Rigidbody:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100000}
-  serializedVersion: 2
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_UseGravity: 1
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 0
 --- !u!54 &5402212
 Rigidbody:
   m_ObjectHideFlags: 1
@@ -17283,38 +17265,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!59 &5903170
-HingeJoint:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100000}
-  m_ConnectedBody: {fileID: 5402212}
-  m_Anchor: {x: 0, y: 0.278114, z: 0}
-  m_Axis: {x: 1, y: 0, z: 0}
-  m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: 0, y: 0.28245038, z: 0}
-  m_UseSpring: 0
-  m_Spring:
-    spring: 0
-    damper: 0
-    targetPosition: 0
-  m_UseMotor: 0
-  m_Motor:
-    targetVelocity: 0
-    force: 0
-    freeSpin: 0
-  m_UseLimits: 0
-  m_Limits:
-    min: 0
-    max: 0
-    bounciness: 0
-    bounceMinVelocity: 0.2
-    contactDistance: 0
-  m_BreakForce: Infinity
-  m_BreakTorque: Infinity
-  m_EnableCollision: 0
-  m_EnablePreprocessing: 1
 --- !u!64 &6400016
 MeshCollider:
   m_ObjectHideFlags: 1
@@ -24320,7 +24270,6 @@ MonoBehaviour:
   identifier: 
   mySubObjects:
   - {fileID: 11434798}
-  - {fileID: 11469646}
   - {fileID: 11461602}
 --- !u!114 &11461602
 MonoBehaviour:
@@ -24328,18 +24277,6 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 197670}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ec657f7dbf5ce404898eb31282b67953, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  identifier: 
---- !u!114 &11469646
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100000}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ec657f7dbf5ce404898eb31282b67953, type: 3}

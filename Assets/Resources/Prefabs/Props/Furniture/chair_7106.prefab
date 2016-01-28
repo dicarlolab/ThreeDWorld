@@ -3556,8 +3556,8 @@ MonoBehaviour:
   shouldUse: 1
   myComplexity: 130
   myBounds:
-    m_Center: {x: -0.00008440018, y: 1.3947862, z: -0.1245445}
-    m_Extent: {x: 0.67246866, y: 1.3947864, z: 0.8027916}
+    m_Center: {x: -0.00008416176, y: 1.3947862, z: -0.1245445}
+    m_Extent: {x: 0.6724688, y: 1.3947864, z: 0.8027916}
   isLight: 0
   attachMethod: 0
   generationTags: []
