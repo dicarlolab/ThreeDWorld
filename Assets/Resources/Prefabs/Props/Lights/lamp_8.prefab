@@ -5380,10 +5380,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   shouldUse: 1
-  myComplexity: 0
+  myComplexity: 216
   myBounds:
-    m_Center: {x: 0, y: 0, z: 0}
-    m_Extent: {x: 0, y: 0, z: 0}
+    m_Center: {x: 0, y: 0.67043227, z: 0}
+    m_Extent: {x: 0.51161104, y: 0.67050546, z: 0.51161104}
   isLight: 1
   attachMethod: 0
   generationTags: []

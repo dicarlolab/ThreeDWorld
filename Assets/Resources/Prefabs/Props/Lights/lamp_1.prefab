@@ -3032,7 +3032,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   shouldUse: 1
-  myComplexity: 104
+  myComplexity: 102
   myBounds:
     m_Center: {x: 0.006156504, y: 0.41074637, z: -0.003376931}
     m_Extent: {x: 0.14964864, y: 0.41074637, z: 0.14686906}
