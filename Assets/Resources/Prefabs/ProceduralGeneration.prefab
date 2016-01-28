@@ -39,7 +39,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6838632603741a1428102a46a4ed23d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  complexityLevelToCreate: 5000
+  complexityLevelToCreate: 10000
+  numCeilingLights: 10
   desiredSpacing: 10
   wallPrefab: {fileID: 11463304, guid: 9e526eb2d26ff964cb858c48f443b362, type: 2}
   floorPrefab: {fileID: 11451076, guid: 781707ea1a041d448b3fe59b839492eb, type: 2}
@@ -47,13 +48,27 @@ MonoBehaviour:
   DEBUG_testGridPrefab: {fileID: 0}
   roomDim: {x: 100, y: 20, z: 40}
   availablePrefabs:
-  - fileName: Prefabs/chair_01
-    complexity: 130
+  - fileName: Prefabs/Props/Furniture/bed1
+    complexity: 221
     isLight: 0
     anchorType: 0
     bounds:
-      m_Center: {x: -0.00008440018, y: 1.3947862, z: -0.12454462}
-      m_Extent: {x: 0.67246866, y: 1.3947864, z: 0.80279166}
+      m_Center: {x: 0, y: -0.00000011920929, z: 0}
+      m_Extent: {x: 4.368828, y: 1.9541403, z: 4.732837}
+  - fileName: Prefabs/Props/Furniture/bed_frame
+    complexity: 175
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: -0.083091736, y: -0.00020718575, z: 2.7239926}
+      m_Extent: {x: 4.9828224, y: 2.003886, z: 2.7630851}
+  - fileName: Prefabs/Props/Furniture/chair_02
+    complexity: 41
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0.03731209, y: 0.011861682, z: 0.003457427}
+      m_Extent: {x: 0.5856348, y: 1.1495382, z: 0.6032827}
   - fileName: Prefabs/Props/Furniture/chair_7106
     complexity: 130
     isLight: 0
@@ -61,6 +76,20 @@ MonoBehaviour:
     bounds:
       m_Center: {x: -0.00008440018, y: 1.3947862, z: -0.1245445}
       m_Extent: {x: 0.67246866, y: 1.3947864, z: 0.8027916}
+  - fileName: Prefabs/Props/Furniture/Lounge_chair
+    complexity: 820
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: -1.3284845, y: 1.3330661, z: 0}
+      m_Extent: {x: 2.593299, y: 1.328039, z: 1.3241515}
+  - fileName: Prefabs/Props/Furniture/Shelf
+    complexity: 21
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0.021257877, y: 2.740556, z: 0.07196766}
+      m_Extent: {x: 3.6054826, y: 2.7405562, z: 0.7969005}
   - fileName: Prefabs/Props/Furniture/sofa_blue
     complexity: 237
     isLight: 0
@@ -76,12 +105,33 @@ MonoBehaviour:
       m_Center: {x: -0.03508663, y: 1.6007758, z: 0}
       m_Extent: {x: 1.7097988, y: 1.6001952, z: 3.6850584}
   - fileName: Prefabs/Props/Furniture/table_7103
-    complexity: 43
+    complexity: 31
     isLight: 0
     anchorType: 0
     bounds:
-      m_Center: {x: -0.00060892105, y: 0.39497495, z: 0.00000047683716}
+      m_Center: {x: -0.00060904026, y: 0.39497495, z: 0.00000047683716}
       m_Extent: {x: 0.9375837, y: 0.39500034, z: 0.51000035}
+  - fileName: Prefabs/Props/Furniture/Table_Big
+    complexity: 63
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0.00000020861626, y: 0, z: 0.00000047683716}
+      m_Extent: {x: 2.47364, y: 0.9606552, z: 4.8412066}
+  - fileName: Prefabs/Props/Lights/lamp_1
+    complexity: 102
+    isLight: 1
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0.006156504, y: 0.41074637, z: -0.003376931}
+      m_Extent: {x: 0.14964864, y: 0.41074637, z: 0.14686906}
+  - fileName: Prefabs/Props/Lights/lamp_10
+    complexity: 246
+    isLight: 1
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0.87156105, z: 0}
+      m_Extent: {x: 0.51352906, y: 0.87238336, z: 0.51352906}
   - fileName: Prefabs/Props/Lights/lamp_11
     complexity: 226
     isLight: 1
@@ -89,6 +139,41 @@ MonoBehaviour:
     bounds:
       m_Center: {x: 0, y: 2.7734442, z: 0.00000029802322}
       m_Extent: {x: 0.7376655, y: 2.7815661, z: 0.7490451}
+  - fileName: Prefabs/Props/Lights/lamp_12
+    complexity: 218
+    isLight: 1
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 1.2813708, z: 0.000000029802322}
+      m_Extent: {x: 0.25936562, y: 1.2811838, z: 0.2593656}
+  - fileName: Prefabs/Props/Lights/lamp_13
+    complexity: 232
+    isLight: 1
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 1.378599, z: 0}
+      m_Extent: {x: 0.4908548, y: 1.3786079, z: 0.4908548}
+  - fileName: Prefabs/Props/Lights/lamp_16
+    complexity: 106
+    isLight: 1
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 1.3490326, z: 0.000000029802322}
+      m_Extent: {x: 0.36124378, y: 1.3580408, z: 0.36124378}
+  - fileName: Prefabs/Props/Lights/lamp_17
+    complexity: 243
+    isLight: 1
+    anchorType: 0
+    bounds:
+      m_Center: {x: -0.00000023841858, y: 1.3182883, z: 0}
+      m_Extent: {x: 0.38146704, y: 1.3182883, z: 0.38146704}
+  - fileName: Prefabs/Props/Lights/lamp_18
+    complexity: 258
+    isLight: 1
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0.03540805, y: 1.3898654, z: 0.094044864}
+      m_Extent: {x: 0.44325104, y: 1.393193, z: 0.405397}
   - fileName: Prefabs/Props/Lights/lamp_18_hanging
     complexity: 259
     isLight: 1
@@ -96,13 +181,99 @@ MonoBehaviour:
     bounds:
       m_Center: {x: 0.06861806, y: -1.363082, z: 0.19551772}
       m_Extent: {x: 1.1684761, y: 1.4525725, z: 1.0960374}
-  - fileName: Prefabs/Table_Big
-    complexity: 63
+  - fileName: Prefabs/Props/Lights/lamp_19
+    complexity: 71
+    isLight: 1
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 1.341772, z: 0}
+      m_Extent: {x: 0.38201034, y: 1.34121, z: 0.38201034}
+  - fileName: Prefabs/Props/Lights/lamp_2
+    complexity: 169
+    isLight: 1
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0.37638497, z: 0}
+      m_Extent: {x: 0.16222884, y: 0.37638497, z: 0.16222884}
+  - fileName: Prefabs/Props/Lights/lamp_20
+    complexity: 226
+    isLight: 1
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 1.3738471, z: 0}
+      m_Extent: {x: 0.4125377, y: 1.3738159, z: 0.46976948}
+  - fileName: Prefabs/Props/Lights/lamp_3
+    complexity: 59
+    isLight: 1
+    anchorType: 0
+    bounds:
+      m_Center: {x: -0.051602185, y: 0.26524732, z: 0}
+      m_Extent: {x: 0.19112387, y: 0.26524732, z: 0.13490611}
+  - fileName: Prefabs/Props/Lights/lamp_4
+    complexity: 49
+    isLight: 1
+    anchorType: 0
+    bounds:
+      m_Center: {x: -0.00023241341, y: 0.33669218, z: 0.000069104135}
+      m_Extent: {x: 0.0769206, y: 0.33910063, z: 0.0769206}
+  - fileName: Prefabs/Props/Lights/lamp_5
+    complexity: 69
+    isLight: 1
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0.46439657, z: 0.000000029802322}
+      m_Extent: {x: 0.2960141, y: 0.46439657, z: 0.2960141}
+  - fileName: Prefabs/Props/Lights/lamp_6
+    complexity: 198
+    isLight: 1
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0.6599121, z: 0}
+      m_Extent: {x: 0.32804668, y: 0.6599121, z: 0.32804668}
+  - fileName: Prefabs/Props/Lights/lamp_7
+    complexity: 199
+    isLight: 1
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0.63753015, z: 0.000000059604645}
+      m_Extent: {x: 0.3561896, y: 0.63753015, z: 0.35618958}
+  - fileName: Prefabs/Props/Lights/lamp_8
+    complexity: 216
+    isLight: 1
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0.67043227, z: 0}
+      m_Extent: {x: 0.51161104, y: 0.67050546, z: 0.51161104}
+  - fileName: Prefabs/Props/Lights/lamp_9
+    complexity: 124
+    isLight: 1
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0.5113381, z: -0.000000014901161}
+      m_Extent: {x: 0.24064241, y: 0.5113381, z: 0.2406424}
+  - fileName: Prefabs/Props/Misc/Board_Big
+    complexity: 13
+    isLight: 0
+    anchorType: 1
+    bounds:
+      m_Center: {x: 0, y: 0.00000011920929, z: 0}
+      m_Extent: {x: 3.5113275, y: 1.8355731, z: 0.050230928}
+  - fileName: Prefabs/Props/Misc/Book
+    complexity: 19
     isLight: 0
     anchorType: 0
     bounds:
-      m_Center: {x: 0.00000020861626, y: 0, z: 0.00000047683716}
-      m_Extent: {x: 2.47364, y: 0.9606552, z: 4.8412066}
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0.3257861, y: 0.067358494, z: 0.26027635}
+  - fileName: Prefabs/Props/Misc/Rack
+    complexity: 60
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: -0.0989867, y: 0.028575, z: 0}
+      m_Extent: {x: 0.1275617, y: 0.028575, z: 0.142875}
+  ceilingLightPrefabs: []
+  groundPrefabs: []
   gridDim: 1
 --- !u!1001 &100100000
 Prefab:
@@ -127,7 +298,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: complexityLevelToCreate
-      value: 5000
+      value: 10000
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: roomDim.x
