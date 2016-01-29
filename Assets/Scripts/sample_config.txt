@@ -5,6 +5,7 @@
     "output_log_file": "output_log.txt",
     
     // Procedural generation
+    "random_seed": 124123452, // Omit and it will just choose one at random. Chosen seeds are output into the log(under warning or log level).
     "complexity": 100000,
     "num_ceiling_lights": 5,
     "room_width": 40.0,
