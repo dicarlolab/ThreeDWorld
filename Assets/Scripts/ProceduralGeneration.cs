@@ -200,6 +200,118 @@ public class ProceduralGeneration : MonoBehaviour
         return foundValid;
     }
 
+    public Vector3 startPoint = Vector3.zero;
+    public Vector3 startSize = Vector3.one;
+    public Material testMat;
+    public Mesh testMesh;
+    public Mesh lastCreated = null;
+    public List<Vector3> testVerts;
+    public List<Vector2> testUV;
+    public List<int> testIndices;
+    public void TestMesh()
+    {
+        if (testMesh == null && GetComponent<MeshFilter>() != null)
+        {
+            testMesh = GetComponent<MeshFilter>().sharedMesh;
+        }
+        if (testMesh == null)
+            return;
+        testVerts.Clear();
+        testIndices.Clear();
+        testUV.Clear();
+        testVerts.AddRange(testMesh.vertices);
+        testIndices.AddRange(testMesh.GetIndices(0));
+        testUV.AddRange(testMesh.uv);
+    }
+
+    public void TestMesh2()
+    {
+        CreateWallMesh(startPoint, startSize);
+    }
+
+    public void CreateWallMesh(Vector3 start, Vector3 size, Transform parentObj = null)
+    {
+        int[] indexArray = {
+            // Left/Right faces
+            2,1,3,
+            2,0,1,
+//            10,1,3,
+//            10,8,1,
+            6,7,5,
+            6,5,4,
+
+            // Top/Bottom faces
+            12,13,9,
+            12,9,8,
+            14,11,15,
+            14,10,11,
+
+            // Front/Back faces
+            5,7,3,
+            5,3,1,
+            4,2,6,
+            4,0,2
+        };
+
+        const int vertCount = 16;
+        const int indexCount = 3 * 2 * 6;
+        Vector3[] newVerts = new Vector3[vertCount];
+        int[]     newIndices  = new int[indexCount];
+        List<Vector2> newUVs = new List<Vector2>();
+        Vector2 startUV = new Vector2(start.x + start.z, start.y);
+
+
+        // Create vertices
+        for(int isTopBottom = 0; isTopBottom < 2; isTopBottom++)
+        {
+            for(int i = 0; i < 2; ++i)
+            {
+                for(int j = 0; j < 2; ++j)
+                {
+                    for(int k = 0; k < 2; ++k)
+                    {
+                        newVerts[8 * isTopBottom + 4 * i + 2 * j + k] = start + new Vector3((i == 1) ? size.x : 0, (j == 1) ? size.y : 0, (k == 1) ? size.z : 0);
+                        Vector2 newUV = Vector2.zero;
+                        if (isTopBottom == 0)
+                        {
+                            newUV.y = startUV.y + (j * size.y);
+                            newUV.x = startUV.x + (i * size.x) + (k * size.z);
+                        }
+                        else
+                        {
+                            newUV.y = start.x+start.y + (i * size.x) + (j * size.y);
+                            newUV.x = start.z + 4f+(k * size.z);
+                        }
+                        newUVs.Add(newUV);
+                    }
+                }
+            }
+        }
+
+        // Create faces
+        for(int i = 0; i < indexArray.Length; ++i)
+        {
+            int index = indexArray[i];
+            newIndices[i] = index;
+        }
+
+        Mesh newMesh = new Mesh();
+        newMesh.vertices  = newVerts;
+        newMesh.triangles = newIndices;
+        newMesh.SetUVs(0, newUVs);
+        lastCreated = newMesh;
+
+        GameObject newObj = new GameObject(string.Format("Created Mesh @{0} with size{1}", start, size));
+        if (parentObj != null)
+            newObj.transform.SetParent(parentObj, false);
+        MeshFilter meshFilter = newObj.AddComponent<MeshFilter>();
+        meshFilter.mesh = newMesh;
+        newObj.AddComponent<MeshRenderer>().material = testMat;
+        BoxCollider col = newObj.AddComponent<BoxCollider>();
+        col.size = size;
+        col.center = start + (0.5f * size);
+    }
+
 #if UNITY_EDITOR
     // Finds all prefabs that we can use and create a lookup table with relevant information
     [MenuItem ("Procedural Generation/SetupPrefabs Quick")]
