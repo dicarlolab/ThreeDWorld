@@ -49,7 +49,7 @@ public class GeneratablePrefab : MonoBehaviour
             }
             else
             {
-                //                Debug.LogFormat("Encapsulating bounds for {0} as part of {1} as {2} with {3}", col.name, name, myBounds, col.bounds);
+//                Debug.LogFormat("Encapsulating bounds for {0} as part of {1} as {2} with {3}", col.name, name, myBounds, col.bounds);
                 myBounds.Encapsulate(col.bounds);
             }
         }

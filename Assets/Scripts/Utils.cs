@@ -48,11 +48,27 @@ public static class UtilExtensionMethods
         return node.Value;
     }
 
+    public static bool ReadString(this SimpleJSON.JSONNode node, ref string overwriteValue)
+    {
+        if (node == null || node.Tag != SimpleJSON.JSONBinaryTag.Value)
+            return false;
+        overwriteValue = node.Value;
+        return true;
+    }
+
     public static int ReadInt(this SimpleJSON.JSONNode node, int defaultValue = 0)
     {
         if (node == null || node.IsNumeric())
             return defaultValue;
         return node.AsInt;
+    }
+
+    public static bool ReadInt(this SimpleJSON.JSONNode node, ref int overwriteValue)
+    {
+        if (node == null || node.IsNumeric())
+            return false;
+        overwriteValue = node.AsInt;
+        return true;
     }
 
     public static float ReadFloat(this SimpleJSON.JSONNode node, float defaultValue = 0.0f)
@@ -62,10 +78,26 @@ public static class UtilExtensionMethods
         return node.AsFloat;
     }
 
+    public static bool ReadFloat(this SimpleJSON.JSONNode node, ref float overwriteValue)
+    {
+        if (node == null || node.IsNumeric())
+            return false;
+        overwriteValue = node.AsFloat;
+        return true;
+    }
+
     public static bool ReadBool(this SimpleJSON.JSONNode node, bool defaultValue = false)
     {
         if (node == null || node.Tag != SimpleJSON.JSONBinaryTag.Value)
             return defaultValue;
         return node.AsBool;
+    }
+
+    public static bool ReadBool(this SimpleJSON.JSONNode node, ref bool overwriteValue)
+    {
+        if (node == null || node.Tag != SimpleJSON.JSONBinaryTag.Value)
+            return false;
+        overwriteValue = node.AsBool;
+        return true;        
     }
 }

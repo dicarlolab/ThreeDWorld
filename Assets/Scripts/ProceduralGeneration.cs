@@ -21,9 +21,9 @@ public class ProceduralGeneration : MonoBehaviour
 
 #region Fields
     // The number of physics collisions to create
+    public int _curRandSeed = 0;
     public int complexityLevelToCreate = 100;
     public int numCeilingLights = 10;
-    public int desiredSpacing = 100;
     public int maxPlacementAttempts = 300;
     public SemanticObjectSimple wallPrefab;
     public SemanticObjectSimple floorPrefab;
@@ -35,6 +35,8 @@ public class ProceduralGeneration : MonoBehaviour
     public List<PrefabInfo> ceilingLightPrefabs = new List<PrefabInfo>();
     public List<PrefabInfo> groundPrefabs = new List<PrefabInfo>();
     public float gridDim = 0.4f;
+    public bool shouldUseGivenSeed = false;
+    public int desiredRndSeed = -1;
 
     private int curComplexity = 0;
     private int curRoomWidth = 0;
@@ -78,9 +80,16 @@ public class ProceduralGeneration : MonoBehaviour
             roomDim.y = json["room_height"].ReadFloat(roomDim.y);
             roomDim.z = json["room_length"].ReadFloat(roomDim.z);
             gridDim = json["grid_size"].ReadFloat(gridDim);
+            shouldUseGivenSeed = json["random_seed"].ReadInt(ref desiredRndSeed) || shouldUseGivenSeed;
             maxPlacementAttempts = json["max_placement_attempts"].ReadInt(maxPlacementAttempts);
         }
 
+        if (shouldUseGivenSeed)
+            Random.seed = desiredRndSeed;
+        else
+            Random.seed = Random.Range(int.MinValue, int.MaxValue);
+        _curRandSeed = Random.seed;
+        Debug.LogWarning("Using random seed: " + _curRandSeed);
         ceilingLightPrefabs = availablePrefabs.FindAll(((PrefabInfo info)=>{return info.anchorType == GeneratablePrefab.AttachAnchor.Ceiling && info.isLight;}));
         groundPrefabs = availablePrefabs.FindAll(((PrefabInfo info)=>{return info.anchorType == GeneratablePrefab.AttachAnchor.Ground;}));
 
