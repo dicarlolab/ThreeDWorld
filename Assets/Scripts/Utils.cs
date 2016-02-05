@@ -5,6 +5,13 @@ public class Utils
 {
 }
 
+[System.Serializable]
+public struct Point2
+{
+    int x;
+    int y;
+}
+
 
 public static class UtilExtensionMethods
 {

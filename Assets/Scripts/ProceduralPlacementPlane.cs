@@ -31,6 +31,29 @@ public class HeightPlane
         set { myGridSpots[indexer] = value; }
     }
 
+    public void Clear()
+    {
+        Clear(dimWidth, dimLength);
+    }
+
+    public void Clear(int width, int length)
+    {
+        dimWidth = width;
+        dimLength = length;
+        myGridSpots.Clear();
+        for(int i = 0; i < width; ++i)
+        {
+            for(int j = 0; j < length; ++j)
+            {
+                GridInfo newGridInfo = new GridInfo();
+                newGridInfo.x = i;
+                newGridInfo.y = j;
+                ModifyGrid(newGridInfo, i, j, width, length);
+                myGridSpots.Add(newGridInfo);
+            }
+        }        
+    }
+
 
     public int Index(int x, int y)
     {

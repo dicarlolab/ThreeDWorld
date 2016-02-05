@@ -21,11 +21,9 @@ public class ProceduralGeneration : MonoBehaviour
 
 #region Fields
     // The number of physics collisions to create
-    public int _curRandSeed = 0;
     public int complexityLevelToCreate = 100;
     public int numCeilingLights = 10;
     public int maxPlacementAttempts = 300;
-    public SemanticObjectSimple wallPrefab;
     public SemanticObjectSimple floorPrefab;
     public SemanticObjectSimple ceilingPrefab;
     public GameObject DEBUG_testCubePrefab = null;
@@ -38,14 +36,22 @@ public class ProceduralGeneration : MonoBehaviour
     public bool shouldUseGivenSeed = false;
     public int desiredRndSeed = -1;
 
-    private int curComplexity = 0;
-    private int curRoomWidth = 0;
-    private int curRoomLength = 0;
-    private float curRoomHeight = 0f;
-    private Vector3 roomCornerPos = Vector3.zero;
-    private Transform curRoom = null;
-    private int failures = 0; // Counter to avoid infinite loops if we can't place anything
-    private List<HeightPlane> allHeightPlanes = new List<HeightPlane>();
+    public List<WallArray> wallSegmentList = new List<WallArray>();
+    public float WALL_WIDTH = 1.0f;
+    public int NUM_ROOMS = 1;
+    public int MAX_NUM_TWISTS = 4;
+    public int MIN_SPACING = 10;
+    public Material wallMaterial = null;
+
+    private int _curRandSeed = 0;
+    private int _curComplexity = 0;
+    private int _curRoomWidth = 0;
+    private int _curRoomLength = 0;
+    private float _curRoomHeight = 0f;
+    private Vector3 _roomCornerPos = Vector3.zero;
+    private Transform _curRoom = null;
+    private int _failures = 0; // Counter to avoid infinite loops if we can't place anything
+    private List<HeightPlane> _allHeightPlanes = new List<HeightPlane>();
     private static ProceduralGeneration _Instance = null;
 #endregion
 
@@ -94,56 +100,50 @@ public class ProceduralGeneration : MonoBehaviour
         groundPrefabs = availablePrefabs.FindAll(((PrefabInfo info)=>{return info.anchorType == GeneratablePrefab.AttachAnchor.Ground;}));
 
         // Create rooms
+        roomDim.x = Mathf.Round(roomDim.x / gridDim) * gridDim;
+        roomDim.z = Mathf.Round(roomDim.z / gridDim) * gridDim;
         CreateRoom(roomDim, Vector3.zero);
 
         // Create grid to populate objects
-        curComplexity = 0;
-        failures = 0;
+        _curComplexity = 0;
+        _failures = 0;
 
-        allHeightPlanes.Clear();
+        _allHeightPlanes.Clear();
         HeightPlane basePlane = new HeightPlane();
-        allHeightPlanes.Add(basePlane);
-        // TODO: Properly factor in wall/floor/ceiling thickness. Right now just assuming it's 2.0f
-        curRoomWidth = Mathf.FloorToInt((roomDim.x - 2.0f) / gridDim);
-        curRoomLength = Mathf.FloorToInt((roomDim.z - 2.0f) / gridDim);
-        curRoomHeight = roomDim.y - 2.0f;
-        basePlane.dimWidth = curRoomWidth;
-        basePlane.dimLength = curRoomLength;
-        basePlane.cornerPos = roomCornerPos;
-        for(int i = 0; i < curRoomWidth; ++i)
-        {
-            for(int j = 0; j < curRoomLength; ++j)
-            {
-                GridInfo newGridInfo = new GridInfo();
-                newGridInfo.x = i;
-                newGridInfo.y = j;
-                basePlane.ModifyGrid(newGridInfo, i, j, curRoomWidth, curRoomLength);
-                basePlane.myGridSpots.Add(newGridInfo);
-            }
-        }
+        basePlane.gridDim = gridDim;
+        _allHeightPlanes.Add(basePlane);
+        _curRoomWidth = Mathf.FloorToInt(roomDim.x / gridDim);
+        _curRoomLength = Mathf.FloorToInt(roomDim.z / gridDim);
+        _curRoomHeight = roomDim.y;
+        basePlane.cornerPos = _roomCornerPos;
+        basePlane.Clear(_curRoomWidth, _curRoomLength);
+
+        SubdivideRoom();
 
         // Keep creating objects until we are supposed to stop
         // TODO: Create a separate plane to map ceiling placement
-        for(int i = 0; i < numCeilingLights && failures < maxPlacementAttempts; ++i)
+        for(int i = 0; i < numCeilingLights && _failures < maxPlacementAttempts; ++i)
             AddObjects(ceilingLightPrefabs);
-        failures = 0;
+        _failures = 0;
         while(!IsDone())
             AddObjects(groundPrefabs);
 
         if (DEBUG_testGridPrefab != null)
         {
+            GameObject child = new GameObject("TEST GRIDS");
+            child.transform.SetParent(_curRoom);
             foreach(GridInfo g in basePlane.myGridSpots)
             {
                 TextMesh test = GameObject.Instantiate<TextMesh>(DEBUG_testGridPrefab);
+                test.transform.SetParent(child.transform);
                 test.text = string.Format("  {0}\n{2}  {1}\n  {3}", g.upSquares, g.leftSquares, g.rightSquares, g.downSquares);
                 test.color = g.inUse ? Color.red: Color.cyan;
-                test.transform.position = roomCornerPos + new Vector3(gridDim * g.x, 0.0f, gridDim * g.y);
+                test.transform.position = _roomCornerPos + new Vector3(gridDim * g.x, 0.0f, gridDim * g.y);
                 test.name = string.Format("{0}: ({1},{2})", DEBUG_testGridPrefab.name, g.x, g.y);
                 test.transform.localScale = gridDim * Vector3.one;
             }
         }
     }
-
 
     private bool TryPlaceGroundObject(Bounds bounds, GeneratablePrefab.AttachAnchor anchorType, out int finalX, out int finalY, out HeightPlane whichPlane)
     {
@@ -155,10 +155,10 @@ public class ProceduralGeneration : MonoBehaviour
         float boundsHeight = bounds.extents.y;
 
         bool foundValid = false;
-        foreach(HeightPlane curHeightPlane in allHeightPlanes)
+        foreach(HeightPlane curHeightPlane in _allHeightPlanes)
         {
             // Make sure we aren't hitting the ceiling
-            if (curHeightPlane.planeHeight + boundsHeight >= curRoomHeight)
+            if (curHeightPlane.planeHeight + boundsHeight >= _curRoomHeight)
                 continue;
             // Only get grid squares which are valid to place on.
             List<GridInfo> validValues = curHeightPlane.myGridSpots.FindAll((GridInfo info)=>{return info.rightSquares >= (boundsWidth-1) && info.downSquares > (boundsLength-1) && !info.inUse;});
@@ -169,9 +169,9 @@ public class ProceduralGeneration : MonoBehaviour
                 validValues.RemoveAt(randIndex);
                 if (curHeightPlane.TestGrid(testInfo, boundsWidth, boundsLength))
                 {
-                    Vector3 centerPos = roomCornerPos + new Vector3(gridDim * (testInfo.x + (0.5f * boundsWidth)), 0.1f+boundsHeight, gridDim * (testInfo.y + (0.5f * boundsLength)));
+                    Vector3 centerPos = _roomCornerPos + new Vector3(gridDim * (testInfo.x + (0.5f * boundsWidth)), 0.1f+boundsHeight, gridDim * (testInfo.y + (0.5f * boundsLength)));
                     if (anchorType == GeneratablePrefab.AttachAnchor.Ceiling)
-                        centerPos.y = roomCornerPos.y + curRoomHeight - (0.1f+boundsHeight);
+                        centerPos.y = _roomCornerPos.y + _curRoomHeight - (0.1f+boundsHeight);
                     if (Physics.CheckBox(centerPos, bounds.extents))
                     {
                         // Found another object here, let the plane know that there's something above messing with some of the squares
@@ -200,117 +200,51 @@ public class ProceduralGeneration : MonoBehaviour
         return foundValid;
     }
 
-    public Vector3 startPoint = Vector3.zero;
-    public Vector3 startSize = Vector3.one;
-    public Material testMat;
-    public Mesh testMesh;
-    public Mesh lastCreated = null;
-    public List<Vector3> testVerts;
-    public List<Vector2> testUV;
-    public List<int> testIndices;
-    public void TestMesh()
+    public void SubdivideRoom()
     {
-        if (testMesh == null && GetComponent<MeshFilter>() != null)
+        wallSegmentList.Clear();
+        HeightPlane curPlane = _allHeightPlanes[0];
+
+        // Build initial walls
+        _failures = 0;
+        WallArray.WALL_HEIGHT = _curRoomHeight;
+        WallArray.WALL_WIDTH = WALL_WIDTH;
+        WallArray.MIN_SPACING = MIN_SPACING;
+        WallArray.WALL_MATERIAL = wallMaterial;
+        wallSegmentList.Add(WallArray.CreateRoomOuterWalls(curPlane));
+
+        while(wallSegmentList.Count < NUM_ROOMS && _failures < 300)
         {
-            testMesh = GetComponent<MeshFilter>().sharedMesh;
-        }
-        if (testMesh == null)
-            return;
-        testVerts.Clear();
-        testIndices.Clear();
-        testUV.Clear();
-        testVerts.AddRange(testMesh.vertices);
-        testIndices.AddRange(testMesh.GetIndices(0));
-        testUV.AddRange(testMesh.uv);
-    }
-
-    public void TestMesh2()
-    {
-        CreateWallMesh(startPoint, startSize);
-    }
-
-    public void CreateWallMesh(Vector3 start, Vector3 size, Transform parentObj = null)
-    {
-        int[] indexArray = {
-            // Left/Right faces
-            2,1,3,
-            2,0,1,
-//            10,1,3,
-//            10,8,1,
-            6,7,5,
-            6,5,4,
-
-            // Top/Bottom faces
-            12,13,9,
-            12,9,8,
-            14,11,15,
-            14,10,11,
-
-            // Front/Back faces
-            5,7,3,
-            5,3,1,
-            4,2,6,
-            4,0,2
-        };
-
-        const int vertCount = 16;
-        const int indexCount = 3 * 2 * 6;
-        Vector3[] newVerts = new Vector3[vertCount];
-        int[]     newIndices  = new int[indexCount];
-        List<Vector2> newUVs = new List<Vector2>();
-        Vector2 startUV = new Vector2(start.x + start.z, start.y);
-
-
-        // Create vertices
-        for(int isTopBottom = 0; isTopBottom < 2; isTopBottom++)
-        {
-            for(int i = 0; i < 2; ++i)
+            WallArray newWallSet = WallArray.PlotNewWallArray(curPlane, string.Format("Wall Segment {0}", wallSegmentList.Count));
+            if (newWallSet == null)
             {
-                for(int j = 0; j < 2; ++j)
-                {
-                    for(int k = 0; k < 2; ++k)
-                    {
-                        newVerts[8 * isTopBottom + 4 * i + 2 * j + k] = start + new Vector3((i == 1) ? size.x : 0, (j == 1) ? size.y : 0, (k == 1) ? size.z : 0);
-                        Vector2 newUV = Vector2.zero;
-                        if (isTopBottom == 0)
-                        {
-                            newUV.y = startUV.y + (j * size.y);
-                            newUV.x = startUV.x + (i * size.x) + (k * size.z);
-                        }
-                        else
-                        {
-                            newUV.y = start.x+start.y + (i * size.x) + (j * size.y);
-                            newUV.x = start.z + 4f+(k * size.z);
-                        }
-                        newUVs.Add(newUV);
-                    }
-                }
+                // No possible segments! Start over!
+                Debug.LogWarning("Starting over!!!");
+                curPlane.Clear();
+                _failures++;
+                while(wallSegmentList.Count > 1)
+                    wallSegmentList.RemoveRange(1, wallSegmentList.Count - 1);
+                if (_failures > 300)
+                    break;
+                continue;
+            }
+            else
+            {
+                wallSegmentList.Add(newWallSet);
+                newWallSet.MarkIntersectionPoints(wallSegmentList);
             }
         }
 
-        // Create faces
-        for(int i = 0; i < indexArray.Length; ++i)
+        for(int i = 0; i < wallSegmentList.Count; ++i)
         {
-            int index = indexArray[i];
-            newIndices[i] = index;
+            WallArray curWallSeg = wallSegmentList[i];
+            curWallSeg.PlaceDoorsAndWindows(i != 0);
+
+            // Actually build object meshes
+            curWallSeg.ConstructWallSegments(_curRoom);
         }
-
-        Mesh newMesh = new Mesh();
-        newMesh.vertices  = newVerts;
-        newMesh.triangles = newIndices;
-        newMesh.SetUVs(0, newUVs);
-        lastCreated = newMesh;
-
-        GameObject newObj = new GameObject(string.Format("Created Mesh @{0} with size{1}", start, size));
-        if (parentObj != null)
-            newObj.transform.SetParent(parentObj, false);
-        MeshFilter meshFilter = newObj.AddComponent<MeshFilter>();
-        meshFilter.mesh = newMesh;
-        newObj.AddComponent<MeshRenderer>().material = testMat;
-        BoxCollider col = newObj.AddComponent<BoxCollider>();
-        col.size = size;
-        col.center = start + (0.5f * size);
     }
+
 
 #if UNITY_EDITOR
     // Finds all prefabs that we can use and create a lookup table with relevant information
@@ -371,17 +305,17 @@ public class ProceduralGeneration : MonoBehaviour
         {
             int boundsWidth = Mathf.CeilToInt(2 * info.bounds.extents.x / gridDim) - 1;
             int boundsLength = Mathf.CeilToInt(2 * info.bounds.extents.z / gridDim) - 1;
-            Vector3 centerPos = roomCornerPos + new Vector3(gridDim * (spawnX + (0.5f * boundsWidth)), 0.1f+info.bounds.extents.y, gridDim * (spawnZ + (0.5f * boundsLength)));
+            Vector3 centerPos = _roomCornerPos + new Vector3(gridDim * (spawnX + (0.5f * boundsWidth)), 0.1f+info.bounds.extents.y, gridDim * (spawnZ + (0.5f * boundsLength)));
             if (info.anchorType == GeneratablePrefab.AttachAnchor.Ceiling)
-                centerPos.y = roomCornerPos.y + curRoomHeight - (0.1f+info.bounds.extents.y);
+                centerPos.y = _roomCornerPos.y + _curRoomHeight - (0.1f+info.bounds.extents.y);
 
             GameObject newPrefab = Resources.Load<GameObject>(info.fileName);
             // TODO: Factor in complexity to the arrangement algorithm?
-            curComplexity += info.complexity;
+            _curComplexity += info.complexity;
 
             GameObject newInstance = Object.Instantiate<GameObject>(newPrefab.gameObject);
             newInstance.transform.position = centerPos - info.bounds.center;
-            newInstance.name = string.Format("{0} #{1}", newPrefab.name, (curRoom != null) ? curRoom.childCount.ToString() : "?");
+            newInstance.name = string.Format("{0} #{1}", newPrefab.name, (_curRoom != null) ? _curRoom.childCount.ToString() : "?");
 
             // Create test cube
             if (DEBUG_testCubePrefab != null)
@@ -390,12 +324,12 @@ public class ProceduralGeneration : MonoBehaviour
                 testCube.transform.localScale = 2 * info.bounds.extents;
                 testCube.transform.position = centerPos;
                 testCube.name = string.Format("Cube {0}", newInstance.name);
-                testCube.transform.SetParent(curRoom);
+                testCube.transform.SetParent(_curRoom);
             }
 
-            Debug.LogFormat("{0}: @{1} R:{2} G:{3} BC:{4}", info.fileName, newInstance.transform.position, roomCornerPos, new Vector3(gridDim * spawnX, info.bounds.extents.y, gridDim * spawnZ), info.bounds.center);
-            if (curRoom != null)
-                newInstance.transform.SetParent(curRoom);
+            Debug.LogFormat("{0}: @{1} R:{2} G:{3} BC:{4}", info.fileName, newInstance.transform.position, _roomCornerPos, new Vector3(gridDim * spawnX, info.bounds.extents.y, gridDim * spawnZ), info.bounds.center);
+            if (_curRoom != null)
+                newInstance.transform.SetParent(_curRoom);
 
             // TODO: For stackable objects, create a new height plane to stack
             if (info.anchorType == GeneratablePrefab.AttachAnchor.Ground)
@@ -403,36 +337,21 @@ public class ProceduralGeneration : MonoBehaviour
         }
         else
             // TODO: Mark item as unplaceable and continue with smaller objects?
-            ++failures;
+            ++_failures;
     }
 
     public void CreateRoom(Vector3 roomDimensions, Vector3 roomCenter)
     {
-        curRoom = new GameObject("New Room").transform;
-        roomCornerPos = roomCenter - (0.5f *roomDimensions);
-        roomCornerPos.x = roomCornerPos.x + 1.0f;
-        roomCornerPos.y = 0f;
-        roomCornerPos.z = roomCornerPos.z + 1.0f;
-
-        // Create walls
-        Vector3 [] directions = {Vector3.forward, Vector3.back, Vector3.left, Vector3.right};
-        for(int i = 0; i < 4; ++i)
-        {
-            Vector3 curDir = directions[i];
-            Vector3 normalizedDir = (Vector3.Dot(roomDimensions, curDir) > 0) ? curDir : -curDir;
-            GameObject wall = GameObject.Instantiate(wallPrefab.gameObject);
-            wall.transform.position = roomCenter + (0.5f * Vector3.Dot(roomDimensions, curDir) * normalizedDir);
-            Vector3 newScale = normalizedDir + roomDimensions - (Vector3.Dot(roomDimensions, curDir) * curDir);
-            wall.transform.localScale = newScale;
-            wall.transform.SetParent(curRoom);
-        }
+        _curRoom = new GameObject("New Room").transform;
+        _roomCornerPos = (roomCenter - (0.5f *roomDimensions)) + (gridDim * 0.5f * Vector3.one);
+        _roomCornerPos.y = 0f;
 
         // Create floor
         GameObject floorObj = GameObject.Instantiate(floorPrefab.gameObject);
         floorObj.transform.localScale = new Vector3(roomDimensions.x, 1.0f, roomDimensions.z);
         floorObj.transform.position = roomCenter;
         floorObj.name = "Floor: " + floorObj.name;
-        floorObj.transform.SetParent(curRoom);
+        floorObj.transform.SetParent(_curRoom);
 
         // Create ceiling
         // TODO: Use different prefab for ceiling?
@@ -440,12 +359,12 @@ public class ProceduralGeneration : MonoBehaviour
         ceilingObj.transform.localScale = new Vector3(roomDimensions.x, 1.0f, roomDimensions.z);
         ceilingObj.transform.position = roomCenter + roomDimensions.y * Vector3.up;
         ceilingObj.name = "Ceiling: " + ceilingObj.name;
-        ceilingObj.transform.SetParent(curRoom);
+        ceilingObj.transform.SetParent(_curRoom);
     }
 
     public bool IsDone()
     {
         // TODO: Find a better metric for completion
-        return curComplexity >= complexityLevelToCreate || failures > maxPlacementAttempts;
+        return _curComplexity >= complexityLevelToCreate || _failures > maxPlacementAttempts;
     }
 }

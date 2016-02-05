@@ -40,11 +40,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   complexityLevelToCreate: 10000
-  numCeilingLights: 10
-  desiredSpacing: 10
-  wallPrefab: {fileID: 11463304, guid: 9e526eb2d26ff964cb858c48f443b362, type: 2}
+  numCeilingLights: 3
+  maxPlacementAttempts: 300
   floorPrefab: {fileID: 11451076, guid: 781707ea1a041d448b3fe59b839492eb, type: 2}
-  ceilingPrefab: {fileID: 11451076, guid: 781707ea1a041d448b3fe59b839492eb, type: 2}
+  ceilingPrefab: {fileID: 11451076, guid: ada5ed2a4f68e564c88d0efc4eb1c9fa, type: 2}
   DEBUG_testCubePrefab: {fileID: 0}
   DEBUG_testGridPrefab: {fileID: 0}
   roomDim: {x: 40, y: 20, z: 40}
@@ -276,6 +275,14 @@ MonoBehaviour:
   ceilingLightPrefabs: []
   groundPrefabs: []
   gridDim: 1
+  shouldUseGivenSeed: 0
+  desiredRndSeed: -1
+  wallSegmentList: []
+  WALL_WIDTH: 0.25
+  NUM_ROOMS: 1
+  MAX_NUM_TWISTS: 4
+  MIN_SPACING: 10
+  wallMaterial: {fileID: 2100000, guid: 1e23b2d236a58f040968acd05c361bce, type: 2}
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
@@ -328,8 +335,20 @@ Prefab:
     - target: {fileID: 0}
       propertyPath: ceilingPrefab
       value: 
-      objectReference: {fileID: 11451076, guid: 781707ea1a041d448b3fe59b839492eb,
+      objectReference: {fileID: 11451076, guid: ada5ed2a4f68e564c88d0efc4eb1c9fa,
         type: 2}
+    - target: {fileID: 0}
+      propertyPath: numCeilingLights
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: wallMaterial
+      value: 
+      objectReference: {fileID: 2100000, guid: 1e23b2d236a58f040968acd05c361bce, type: 2}
+    - target: {fileID: 0}
+      propertyPath: WALL_WIDTH
+      value: 0.25
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 146054}
