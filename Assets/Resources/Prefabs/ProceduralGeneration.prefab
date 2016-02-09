@@ -279,9 +279,9 @@ MonoBehaviour:
   desiredRndSeed: -1
   wallSegmentList: []
   WALL_WIDTH: 0.25
-  NUM_ROOMS: 1
+  NUM_ROOMS: 5
   MAX_NUM_TWISTS: 4
-  MIN_SPACING: 10
+  MIN_SPACING: 2
   wallMaterial: {fileID: 2100000, guid: 1e23b2d236a58f040968acd05c361bce, type: 2}
 --- !u!1001 &100100000
 Prefab:
@@ -348,6 +348,14 @@ Prefab:
     - target: {fileID: 0}
       propertyPath: WALL_WIDTH
       value: 0.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: NUM_ROOMS
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: MIN_SPACING
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
