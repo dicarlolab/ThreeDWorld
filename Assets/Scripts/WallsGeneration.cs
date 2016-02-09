@@ -12,6 +12,7 @@ public class WallInfo
     public int startGridX;
     public int startGridY;
     public int gridLength;
+    public bool isReversed = false;
     public Material wallMat = null;
 
     [System.Serializable]
@@ -335,12 +336,6 @@ public class WallArray : IEnumerable<WallInfo>
                     turnPoints.Add(j);
             }
 
-            string debugOutput = string.Format("Going from {0} in {1} has points: ", lastPoint, buildDir);
-            foreach(int j in turnPoints)
-                debugOutput += j + ",";
-            debugOutput += string.Format(" Forced: {0} in {1} for seg: {2}", forceTurn, forceDirection, i);
-            Debug.Log(debugOutput);
-
             // Try to turn if we have a point where we can.
             if (turnPoints.Count > 0 || forceTurn >= 0)
             {
@@ -455,7 +450,7 @@ public class WallArray : IEnumerable<WallInfo>
         System.Func<WallInfo, bool, System.Predicate<WallInfo>> testFunc;
         testFunc = (WallInfo segment, bool isFirst)=>{
             int testX = segment.startGridX, testY = segment.startGridY;
-            int diffLength = isFirst ? -1 : (segment.gridLength + 1);
+            int diffLength = (segment.isReversed ^ isFirst) ? -1 : (segment.gridLength + 1);
             if (segment.isNorthSouth)
                 testY += diffLength;
             else
@@ -487,18 +482,25 @@ public class WallArray : IEnumerable<WallInfo>
 
         // Sanity check
         if (foundStart == null)
-            Debug.LogWarningFormat("Couldn't find start point! " + myWalls[0].name);
+            Debug.LogWarningFormat("Couldn't find start point! {0}", myWalls[0].name);
         if (foundEnd == null)
-            Debug.LogWarningFormat("Couldn't find end point! " + myWalls[Count - 1].name);        
+            Debug.LogWarningFormat("Couldn't find end point! {0}", myWalls[Count - 1].name);
     }
 
     private WallInfo BuildInteriorWallSegment(int startX, int startY, int dx, int dy, int gridLength, HeightPlane curPlane, bool shortStart)
     {
         // Update Grid
+        bool didReverse = false;
         if (dx < 0)
+        {
             startX -= gridLength;
+            didReverse = true;
+        }
         if (dy < 0)
+        {
             startY -= gridLength;
+            didReverse = true;
+        }
         bool shortEnd = shortStart && (dx < 0 || dy < 0);
         shortStart = shortStart && !shortEnd;
 //        curPlane.UpdateGrid(startX, startY, (dx == 0) ? 0 : gridLength, ((dy == 0) ? 0 : gridLength));
@@ -508,6 +510,7 @@ public class WallArray : IEnumerable<WallInfo>
         newWall.wallMat = WALL_MATERIAL;
         newWall.isNorthSouth = dx == 0;
         newWall.gridLength = gridLength;
+        newWall.isReversed = didReverse;
         newWall.startGridX = startX;
         newWall.startGridY = startY;
         newWall.length = (gridLength + 1) * curPlane.gridDim;
