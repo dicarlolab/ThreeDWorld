@@ -14,6 +14,9 @@ public class WallInfo
     public int gridLength;
     public bool isReversed = false;
     public Material wallMat = null;
+    public Material trimMat = null;
+    public static float TRIM_HEIGHT = 0.5f;
+    public static float TRIM_THICKNESS = 0.01f;
 
     [System.Serializable]
     public struct HoleInfo
@@ -115,6 +118,24 @@ public class WallInfo
 
     public GameObject CreateWallMesh(Vector3 start, Vector3 size, Transform parentObj = null)
     {
+        GameObject ret = CreateBoxMesh(start, size, wallMat, string.Format("Created Mesh @{0} with size{1}", start, size), parentObj);
+        // Create trim if necessary
+        if (start.y < TRIM_HEIGHT && start.y + size.y >= TRIM_HEIGHT)
+        {
+            Vector3 trimSize = new Vector3(), trimStart = new Vector3();
+            trimSize.x = size.x + 2 * TRIM_THICKNESS;
+            trimSize.y = TRIM_HEIGHT - start.y;
+            trimSize.z = size.z + 2 * TRIM_THICKNESS;
+            trimStart.x = start.x - TRIM_THICKNESS;
+            trimStart.y = start.y;
+            trimStart.z = start.z - TRIM_THICKNESS;
+            CreateBoxMesh(trimStart, trimSize, trimMat, string.Format("Trim Mesh @{0} with size{1}", trimStart, trimSize), parentObj);
+        }
+        return ret;
+    }
+
+    public GameObject CreateBoxMesh(Vector3 start, Vector3 size, Material mat, string name, Transform parentObj = null)
+    {
         int[] indexArray = {
             // Left/Right faces
             2, 1, 3,
@@ -181,12 +202,12 @@ public class WallInfo
         newMesh.triangles = newIndices;
         newMesh.SetUVs(0, newUVs);
 
-        GameObject newObj = new GameObject(string.Format("Created Mesh @{0} with size{1}", start, size));
+        GameObject newObj = new GameObject(name);
         if (parentObj != null)
             newObj.transform.SetParent(parentObj, false);
         MeshFilter meshFilter = newObj.AddComponent<MeshFilter>();
         meshFilter.mesh = newMesh;
-        newObj.AddComponent<MeshRenderer>().material = wallMat;
+        newObj.AddComponent<MeshRenderer>().material = mat;
         BoxCollider col = newObj.AddComponent<BoxCollider>();
         col.size = size;
         col.center = start + (0.5f * size);
@@ -208,6 +229,7 @@ public class WallArray : IEnumerable<WallInfo>
     static public int MIN_SPACING = 1;
     static public int NUM_TWISTS = 1;
     static public Material WALL_MATERIAL = null;
+    static public Material TRIM_MATERIAL = null;
 #endregion
 
     static private bool HelperFunction(int testVal, ref bool foundFirstZero, ref Point2 testDir, int x, int y)
@@ -400,6 +422,7 @@ public class WallArray : IEnumerable<WallInfo>
             newWall.startGridX = -1;
             newWall.startGridY = -1;
             newWall.wallMat = WALL_MATERIAL;
+            newWall.trimMat = TRIM_MATERIAL;
             if (!newWall.isNorthSouth)
             {
                 newWall.gridLength = curPlane.dimWidth;
@@ -508,6 +531,7 @@ public class WallArray : IEnumerable<WallInfo>
         // Create wall info
         WallInfo newWall = new WallInfo();
         newWall.wallMat = WALL_MATERIAL;
+        newWall.trimMat = TRIM_MATERIAL;
         newWall.isNorthSouth = dx == 0;
         newWall.gridLength = gridLength;
         newWall.isReversed = didReverse;

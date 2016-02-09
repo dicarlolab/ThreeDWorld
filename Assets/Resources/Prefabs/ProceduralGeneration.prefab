@@ -283,6 +283,7 @@ MonoBehaviour:
   MAX_NUM_TWISTS: 4
   MIN_SPACING: 2
   wallMaterial: {fileID: 2100000, guid: 1e23b2d236a58f040968acd05c361bce, type: 2}
+  wallTrimMaterial: {fileID: 2100000, guid: 037c10e8a9c9c5e47a726216732d17d8, type: 2}
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
@@ -357,6 +358,10 @@ Prefab:
       propertyPath: MIN_SPACING
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: wallTrimMaterial
+      value: 
+      objectReference: {fileID: 2100000, guid: 037c10e8a9c9c5e47a726216732d17d8, type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 146054}
