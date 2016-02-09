@@ -12,6 +12,23 @@ public class GridInfo
     public int rightSquares;
     public int upSquares;
     public int downSquares;
+
+    public int GetDistInDir(Point2 pt)
+    {
+        return GetDistInDir(pt.x, pt.y);
+    }
+    public int GetDistInDir(int dx, int dy)
+    {
+        if (dy < 0)
+            return upSquares;
+        if (dy > 0)
+            return downSquares;
+        if (dx < 0)
+            return leftSquares;
+        if (dx > 0)
+            return rightSquares;
+        return 0;
+    }
 }
 
 [System.Serializable]
@@ -29,6 +46,12 @@ public class HeightPlane
     {
         get{ return myGridSpots[indexer]; }
         set { myGridSpots[indexer] = value; }
+    }
+
+    public GridInfo this[Point2 indexer]
+    {
+        get{ return myGridSpots[Index(indexer)]; }
+        set { myGridSpots[Index(indexer)] = value; }
     }
 
     public void Clear()
@@ -54,10 +77,18 @@ public class HeightPlane
         }        
     }
 
-
     public int Index(int x, int y)
     {
+        if (x > dimWidth || y > dimLength)
+            Debug.LogErrorFormat("XY values out of bounds for plane! ({0},{1}) for bounds: ({2} x {3})", x, y, dimWidth, dimLength);
         return (dimLength * x ) + y;
+    }
+
+    public int Index(Point2 pt)
+    {
+        if (pt.x > dimWidth || pt.y > dimLength)
+            Debug.LogErrorFormat("Point out of bounds for plane! {0} for bounds: ({1} x {2})", pt, dimWidth, dimLength);
+        return (dimLength * pt.x ) + pt.y;
     }
 
     public void ModifyGrid(GridInfo info, int i, int j, int width, int length)

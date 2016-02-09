@@ -118,8 +118,6 @@ public class WallInfo
             // Left/Right faces
             2, 1, 3,
             2, 0, 1,
-//            10,1,3,
-//            10,8,1,
             6, 7, 5,
             6, 5, 4,
 
@@ -203,78 +201,194 @@ public class WallArray : IEnumerable<WallInfo>
     public string name;
     public List<WallInfo> myWalls = new List<WallInfo>();
     public HeightPlane myPlane;
+    public int DEBUG_Spacing;
     static public float WALL_WIDTH = 1.0f;
     static public float WALL_HEIGHT = 1.0f;
-    static public float MIN_SPACING = 1.0f;
+    static public int MIN_SPACING = 1;
+    static public int NUM_TWISTS = 1;
     static public Material WALL_MATERIAL = null;
 #endregion
 
-
-    static private bool HelperFunction(int testVal, ref bool foundFirstZero)
+    static private bool HelperFunction(int testVal, ref bool foundFirstZero, ref Point2 testDir, int x, int y)
     {
         if (testVal <= MIN_SPACING)
         {
             if (testVal == 0 && !foundFirstZero)
+            {
                 foundFirstZero = true;
+                testDir.x = x;
+                testDir.y = y;
+            }
             else
                 return true;
         }
         return false;
     }
-    static private bool HelperFunction2(GridInfo test)
+
+    static private System.Predicate<GridInfo> HelperFunction3(HeightPlane givenPlane)
     {
-        bool foundFirstZero = false;
-        if (HelperFunction(test.downSquares, ref foundFirstZero))
+        return (GridInfo test) => {
+            Point2 testDir = new Point2();
+            bool foundFirstZero = false;
+            if (HelperFunction(test.downSquares, ref foundFirstZero, ref testDir, 0, 1))
+                return false;
+            if (HelperFunction(test.upSquares, ref foundFirstZero, ref testDir, 0, -1))
+                return false;
+            if (HelperFunction(test.rightSquares, ref foundFirstZero, ref testDir, -1, 0))
+                return false;
+            if (HelperFunction(test.leftSquares, ref foundFirstZero, ref testDir, 1, 0))
+                return false;
+            return foundFirstZero && TestPlaceWall(givenPlane, testDir, new Point2(test.x, test.y));
+        };
+    }
+
+    static private void UpdateGridForSegment(Point3 lastPoint, int dx, int dy, HeightPlane givenPlane)
+    {
+        givenPlane.UpdateGrid(lastPoint.x + (dx < 0 ? -lastPoint.z : 0), lastPoint.y + (dy < 0 ? -lastPoint.z : 0), (dx == 0) ? 0 : lastPoint.z, ((dy == 0) ? 0 : lastPoint.z));
+    }
+
+    static private bool TestPlaceWall(HeightPlane givenPlane, Point2 testDir, Point2 startPoint)
+    {
+//        if (allowReverseDirection)
+//            return TestPlaceWall(givenPlane, testDir, startPoint) || TestPlaceWall(givenPlane, -testDir, startPoint);
+        if (givenPlane[startPoint].GetDistInDir(testDir) <= MIN_SPACING)
             return false;
-        if (HelperFunction(test.upSquares, ref foundFirstZero))
-            return false;
-        if (HelperFunction(test.rightSquares, ref foundFirstZero))
-            return false;
-        if (HelperFunction(test.leftSquares, ref foundFirstZero))
-            return false;
-        return foundFirstZero;
+        Point2 perpDir1 = new Point2(testDir.y, testDir.x), perpDir2 = -perpDir1, testPoint = startPoint;
+        for(int i = 0; i <= MIN_SPACING; ++i)
+        {
+            testPoint = testPoint + testDir;
+            GridInfo info = givenPlane[testPoint];
+            if (info.GetDistInDir(perpDir1) <= MIN_SPACING || info.GetDistInDir(perpDir2) <= MIN_SPACING)
+                return false;
+        }
+        return true;
     }
 
     static public WallArray PlotNewWallArray(HeightPlane givenPlane, string newName = "")
     {
         WallArray newWallSet = new WallArray();
+            newWallSet.DEBUG_Spacing = MIN_SPACING; // TODO: Remove this
         newWallSet.name = newName;
         newWallSet.myPlane = givenPlane;
 
         // Find start spot
-        List<GridInfo> possibleStartPoints = givenPlane.myGridSpots.FindAll(HelperFunction2);
+        List<GridInfo> possibleStartPoints = givenPlane.myGridSpots.FindAll(HelperFunction3(givenPlane));
         if (possibleStartPoints.Count == 0)
             return null;
 
         int randIndex = Random.Range(0, possibleStartPoints.Count);
         GridInfo wallStart = possibleStartPoints[randIndex];
-        int dx = 0, dy = 0;
+        Point2 buildDir = new Point2();
         int count = 0;
         if (wallStart.leftSquares== 0)
         {
-            dx = 1;
+            buildDir.x = 1;
             count = wallStart.rightSquares;
         }
         if (wallStart.rightSquares == 0)
         {
-            dx = -1;
+            buildDir.x = -1;
             count = wallStart.leftSquares;
         }
         if (wallStart.downSquares == 0)
         {
-            dy = -1;
+            buildDir.y = -1;
             count = wallStart.upSquares;
         }
         if (wallStart.upSquares == 0)
         {
-            dy = 1;
+            buildDir.y = 1;
             count = wallStart.downSquares;
         }
 
-        // TODO: Add in twists?
-        WallInfo newWall = newWallSet.BuildInteriorWallSegment(wallStart.x, wallStart.y, dx, dy, count, givenPlane); 
-        newWallSet.myWalls.Add(newWall);
-        newWall.name = string.Format("{0} #{1}", newName, newWallSet.myWalls.Count);
+        List<Point3> toAdd = new List<Point3>();
+        toAdd.Add(new Point3(wallStart.x, wallStart.y, count));
+        for(int i = 0; i < NUM_TWISTS; ++i)
+        {
+            Point3 lastPoint = toAdd[toAdd.Count - 1];
+
+            int forceTurn = -1;
+            bool forceDirection = false;
+            int minRange = (MIN_SPACING + 1);
+            int maxRange = lastPoint.z - (MIN_SPACING);
+            buildDir.Normalize();
+            Point2 perpDir1 = new Point2(buildDir.y, buildDir.x), perpDir2 = new Point2(-buildDir.y, -buildDir.x);
+            List<int> turnPoints = new List<int>();
+            for(int j = 1; j < lastPoint.z; ++j)
+            {
+                Point2 testPoint = (Point2)lastPoint + buildDir;
+                GridInfo info = givenPlane[testPoint];
+                bool mustTurn1 = info.GetDistInDir(perpDir1) < MIN_SPACING;
+                bool mustTurn2 = info.GetDistInDir(perpDir2) < MIN_SPACING;
+
+                if (mustTurn1 || mustTurn2)
+                {
+                    if (turnPoints.Count == 0)
+                    {
+                        // If we don't have an option to turn beforehand, force a turn here to close the gap
+                        forceTurn = j;
+                        forceDirection = mustTurn1;
+                    }
+                    break;
+                }
+                else if (j >= minRange && j < maxRange)
+                    turnPoints.Add(j);
+            }
+
+            string debugOutput = string.Format("Going from {0} in {1} has points: ", lastPoint, buildDir);
+            foreach(int j in turnPoints)
+                debugOutput += j + ",";
+            debugOutput += string.Format(" Forced: {0} in {1} for seg: {2}", forceTurn, forceDirection, i);
+            Debug.Log(debugOutput);
+
+            // Try to turn if we have a point where we can.
+            if (turnPoints.Count > 0 || forceTurn >= 0)
+            {
+                // Update Grid
+                int dist = forceTurn;
+                if (forceTurn < 0)
+                    dist = turnPoints[Random.Range(0, turnPoints.Count)];
+                // Adjust distance of old point
+                lastPoint.z = dist - 1;
+                toAdd[toAdd.Count - 1] = lastPoint;
+                UpdateGridForSegment(toAdd[toAdd.Count - 1], buildDir.x, buildDir.y, givenPlane);
+
+                Point3 testPoint = lastPoint;
+                testPoint.x += dist * buildDir.x;
+                testPoint.y += dist * buildDir.y;
+                GridInfo testInfo = givenPlane.myGridSpots[givenPlane.Index(testPoint.x, testPoint.y)];
+
+                // Pick a new direction
+                // TODO: Decide between shorter/longer paths depending on how many twists remaining
+                if (forceTurn >= 0)
+                    buildDir = forceDirection ? perpDir1 : perpDir2;
+                else
+                    buildDir = (Random.Range(0, 2) == 1) ? perpDir1 : perpDir2;
+
+                // Add this point to the end
+                testPoint.z = testInfo.GetDistInDir(buildDir.x, buildDir.y);
+//                Debug.LogFormat(newWallSet.name + ": Turning at {0}/{10} of range({11},{12}) toward ({1},{2}) for {9} info: d{3},u{4},l{5},r{6} @({7},{8})", 
+//                    dist, buildDir.x, buildDir.y, testInfo.downSquares, testInfo.upSquares, 
+//                    testInfo.leftSquares, testInfo.rightSquares, testInfo.x, testInfo.y, testPoint.z,
+//                    originalDist, minRange, maxRange);
+                toAdd.Add(testPoint);
+            }
+            else
+                break;
+        }
+        UpdateGridForSegment(toAdd[toAdd.Count - 1], buildDir.x, buildDir.y, givenPlane);
+        toAdd.Add(new Point3(toAdd[toAdd.Count - 1].x + buildDir.x, toAdd[toAdd.Count - 1].y + buildDir.y, 0));
+
+        for(int i = 0; i < toAdd.Count - 1; ++i)
+        {
+            buildDir.x = (toAdd[i+1].x - toAdd[i].x);
+            buildDir.y = (toAdd[i+1].y - toAdd[i].y);
+//            Debug.LogFormat(newWallSet.name + ": Going from ({0},{1})=>({2},{3})", toAdd[i].x, toAdd[i].y, toAdd[i+1].x, toAdd[i+1].y);
+            WallInfo newWall = newWallSet.BuildInteriorWallSegment(toAdd[i].x, toAdd[i].y, buildDir.x, buildDir.y, toAdd[i].z, givenPlane, i != 0); 
+            newWallSet.myWalls.Add(newWall);
+            newWall.name = string.Format("{0} #{1}", newName, newWallSet.myWalls.Count);
+        }
+
         return newWallSet;
     }
 
@@ -305,7 +419,6 @@ public class WallArray : IEnumerable<WallInfo>
             {
                 newWall.gridLength = curPlane.dimLength;
                 newWall.length = curPlane.dimLength * curPlane.gridDim;
-//                newWall.startPos.x = curPlane.gridDim * ((i == 1) ? 0 : curPlane.dimWidth);
                 newWall.startPos.x = (i == 1) ? (-WALL_WIDTH) : (curPlane.gridDim * curPlane.dimWidth);
                 newWall.startPos.z = 0f;
                 newWall.startGridY = 0;
@@ -338,7 +451,7 @@ public class WallArray : IEnumerable<WallInfo>
 
     public void MarkIntersectionPoints(List<WallArray> listOfWalls)
     {
-        // Mark start/ending point in 
+        // Mark start/ending point as intersections on whichever wall we hit
         System.Func<WallInfo, bool, System.Predicate<WallInfo>> testFunc;
         testFunc = (WallInfo segment, bool isFirst)=>{
             int testX = segment.startGridX, testY = segment.startGridY;
@@ -374,23 +487,21 @@ public class WallArray : IEnumerable<WallInfo>
 
         // Sanity check
         if (foundStart == null)
-            Debug.LogWarningFormat("Couldn't find start point! ");
+            Debug.LogWarningFormat("Couldn't find start point! " + myWalls[0].name);
         if (foundEnd == null)
-            Debug.LogWarningFormat("Couldn't find end point! ");        
+            Debug.LogWarningFormat("Couldn't find end point! " + myWalls[Count - 1].name);        
     }
 
-    private WallInfo BuildInteriorWallSegment(int startX, int startY, int dx, int dy, int gridLength, HeightPlane curPlane)
+    private WallInfo BuildInteriorWallSegment(int startX, int startY, int dx, int dy, int gridLength, HeightPlane curPlane, bool shortStart)
     {
-//        int startX = wallStart.x, startY = wallStart.y;
-
         // Update Grid
         if (dx < 0)
             startX -= gridLength;
         if (dy < 0)
             startY -= gridLength;
-        curPlane.UpdateGrid(startX, startY, (dx == 0) ? 0 : gridLength, ((dy == 0) ? 0 : gridLength));
-//        int endX = startX + ((dx == 0) ? 0 : (dx * gridLength));
-//        int endY = startY + ((dy == 0) ? 0 : (dy * gridLength));
+        bool shortEnd = shortStart && (dx < 0 || dy < 0);
+        shortStart = shortStart && !shortEnd;
+//        curPlane.UpdateGrid(startX, startY, (dx == 0) ? 0 : gridLength, ((dy == 0) ? 0 : gridLength));
 
         // Create wall info
         WallInfo newWall = new WallInfo();
@@ -405,28 +516,30 @@ public class WallArray : IEnumerable<WallInfo>
         {
             newWall.startPos.z -= 0.5f * curPlane.gridDim;
             newWall.startPos.x -= 0.5f * WALL_WIDTH;
-            if (startY != 0)
+            if (startY != 0 || shortStart)
             {
-                newWall.startPos.z -= 0.5f * (curPlane.gridDim - WALL_WIDTH);
-                newWall.length += 0.5f * (curPlane.gridDim - WALL_WIDTH);
+                float extendDist = (shortStart ? -0.5f : 0.5f) * (curPlane.gridDim - WALL_WIDTH);
+                newWall.startPos.z -= extendDist;
+                newWall.length += extendDist;
             }
-            if (startY+gridLength+1 != curPlane.dimLength)
-                newWall.length += 0.5f * (curPlane.gridDim - WALL_WIDTH);
+            if (startY+gridLength+1 != curPlane.dimLength || shortEnd)
+                newWall.length += (shortEnd ? -0.5f : 0.5f) * (curPlane.gridDim - WALL_WIDTH);
         }
         else
         {
             newWall.startPos.x -= 0.5f * curPlane.gridDim;
             newWall.startPos.z -= 0.5f * WALL_WIDTH;
-            if (startX != 0)
+            if (startX != 0 || shortStart)
             {
-                newWall.startPos.x -= 0.5f * (curPlane.gridDim - WALL_WIDTH);
-                newWall.length += 0.5f * (curPlane.gridDim - WALL_WIDTH);
+                float extendDist = (shortStart ? -0.5f : 0.5f) * (curPlane.gridDim - WALL_WIDTH);
+                newWall.startPos.x -= extendDist;
+                newWall.length += extendDist;
             }
-            if (startX+gridLength+1 != curPlane.dimWidth)
-                newWall.length += 0.5f * (curPlane.gridDim - WALL_WIDTH);
+            if (startX+gridLength+1 != curPlane.dimWidth || shortEnd)
+                newWall.length += (shortEnd ? -0.5f : 0.5f) * (curPlane.gridDim - WALL_WIDTH);
         }
-        Debug.LogFormat("Creating for ({0},{1}) for {2} corner for {3} based on room corner {4}, dim: {5}/{6} ({7},{8})", startX, startY, gridLength, 
-            newWall.startPos, newWall.length, curPlane.dimWidth, curPlane.dimLength, dx, dy);
+//        Debug.LogFormat("Creating for grid: ({0},{1}) for {2} corner for real({3} for {4}), name: {5}, short:{6}, dir:({7},{8})", startX, startY, gridLength, 
+//            newWall.startPos, newWall.length, name, shortStart || shortEnd, dx, dy);
         return newWall;
     }
 

@@ -102,7 +102,7 @@ public class ProceduralGeneration : MonoBehaviour
         // Create rooms
         roomDim.x = Mathf.Round(roomDim.x / gridDim) * gridDim;
         roomDim.z = Mathf.Round(roomDim.z / gridDim) * gridDim;
-        CreateRoom(roomDim, Vector3.zero);
+        CreateRoom(roomDim, new Vector3((roomDim.x-1) * 0.5f,0,(roomDim.z-1) * 0.5f));
 
         // Create grid to populate objects
         _curComplexity = 0;
@@ -136,7 +136,8 @@ public class ProceduralGeneration : MonoBehaviour
             {
                 TextMesh test = GameObject.Instantiate<TextMesh>(DEBUG_testGridPrefab);
                 test.transform.SetParent(child.transform);
-                test.text = string.Format("  {0}\n{2}  {1}\n  {3}", g.upSquares, g.leftSquares, g.rightSquares, g.downSquares);
+//                test.text = string.Format("  {0}\n{2}  {1}\n  {3}", g.upSquares, g.leftSquares, g.rightSquares, g.downSquares);
+                test.text = string.Format("{0},{1}", g.x, g.y);
                 test.color = g.inUse ? Color.red: Color.cyan;
                 test.transform.position = _roomCornerPos + new Vector3(gridDim * g.x, 0.0f, gridDim * g.y);
                 test.name = string.Format("{0}: ({1},{2})", DEBUG_testGridPrefab.name, g.x, g.y);
@@ -209,7 +210,8 @@ public class ProceduralGeneration : MonoBehaviour
         _failures = 0;
         WallArray.WALL_HEIGHT = _curRoomHeight;
         WallArray.WALL_WIDTH = WALL_WIDTH;
-        WallArray.MIN_SPACING = MIN_SPACING;
+        WallArray.MIN_SPACING = Mathf.RoundToInt(MIN_SPACING / gridDim);
+        WallArray.NUM_TWISTS = MAX_NUM_TWISTS;
         WallArray.WALL_MATERIAL = wallMaterial;
         wallSegmentList.Add(WallArray.CreateRoomOuterWalls(curPlane));
 
