@@ -15,19 +15,35 @@ public class WallInfo
     public bool isReversed = false;
     public Material wallMat = null;
     public Material trimMat = null;
+    public Material windowMat = null;
+    public Material windowTrimMat = null;
     public static float TRIM_HEIGHT = 0.5f;
     public static float TRIM_THICKNESS = 0.01f;
+    public const float MIN_SPACING_FOR_HOLES = 0.1f;
 
     [System.Serializable]
     public struct HoleInfo
     {
         public Vector2 bottomCorner;
         public Vector2 size;
+        public bool fillWithGlass;
     };
 
     public List<HoleInfo> holes = new List<HoleInfo>();
     public List<float> intersectionPoints = new List<float>();
+    public List<Vector2> placementSpots = new List<Vector2>();
 
+    public void Init(float newLength)
+    {
+        length = newLength;
+        placementSpots.Clear();
+        placementSpots.Add(new Vector2(MIN_SPACING_FOR_HOLES, length - MIN_SPACING_FOR_HOLES));
+    }
+
+    private static int CompareSpots(Vector2 v1, Vector2 v2)
+    {
+        return v1.x.CompareTo(v2.x);
+    }
 
     public void SortHoles()
     {
@@ -40,6 +56,98 @@ public class WallInfo
     {
         intersectionPoints.Add(lengthPos);
         intersectionPoints.Sort();
+        RemovePlacementSpot(lengthPos - (0.5f * WallArray.WALL_WIDTH), lengthPos + (0.5f * WallArray.WALL_WIDTH));
+    }
+
+    public void AddWindows()
+    {
+        const float WINDOW_WIDTH = 2.0f, MOD_WINDOW_WIDTH = WINDOW_WIDTH + 2 * MIN_SPACING_FOR_HOLES;
+        const float WINDOW_HEIGHT = 2.0f;
+        const float WINDOW_SPACING = 6.0f;
+
+        // First find all valid spots a window could fit in
+        List<Vector2> validSpots = new List<Vector2>();
+        float totalRange = 0f;
+        for(int i = 0; i < placementSpots.Count; ++i)
+        {
+            Vector2 nextArea = placementSpots[i];
+            if (nextArea.y > MOD_WINDOW_WIDTH)
+            {
+                validSpots.Add(nextArea);
+                totalRange += (nextArea.y - nextArea.x - MOD_WINDOW_WIDTH);
+            }
+        }
+
+        // TODO: Mark window locations so we can create window meshes there later
+        // Place windows until we have enough or we run out of space
+        int NUM_TO_PLACE = Mathf.RoundToInt(length / WINDOW_SPACING);
+        while (validSpots.Count > 0 && NUM_TO_PLACE > 0)
+        {
+            float placementLoc = Random.Range(0f, totalRange);
+            Vector2 nextArea = validSpots[0];
+            for(int i = 0; i < validSpots.Count; ++i)
+            {
+                nextArea = validSpots[i];
+                float placementLength = (nextArea.y - nextArea.x - MOD_WINDOW_WIDTH);
+                if (placementLoc > placementLength)
+                    placementLoc -= placementLength;
+                else
+                {
+                    validSpots.RemoveAt(i);
+                    totalRange -= placementLength;
+                    if (placementLength > placementLoc + 2 * MOD_WINDOW_WIDTH)
+                    {
+                        validSpots.Insert(i, new Vector2(nextArea.x + placementLoc + MOD_WINDOW_WIDTH, nextArea.y));
+                        totalRange += (placementLength - (placementLoc + MOD_WINDOW_WIDTH));
+                    }
+                    if (placementLoc > MOD_WINDOW_WIDTH)
+                    {
+                        validSpots.Insert(i, new Vector2(nextArea.x, nextArea.x + placementLoc));
+                        totalRange += (placementLoc - MOD_WINDOW_WIDTH);
+                    }
+                    break;
+                }
+            }
+            if (placementLoc + nextArea.x + MOD_WINDOW_WIDTH > nextArea.y)
+            {
+                Debug.LogErrorFormat("Invalid placement @{0}/{1} on {2} with mww:{3} for #{4}", placementLoc, totalRange, nextArea, MOD_WINDOW_WIDTH, NUM_TO_PLACE);
+                NUM_TO_PLACE = 0;
+            }
+            else
+            {
+                // TODO: Randomize window height location?
+                float placementHeight = (WallArray.WALL_HEIGHT - WINDOW_HEIGHT)*0.5f;
+                float midPoint = placementLoc + nextArea.x + (0.5f * MOD_WINDOW_WIDTH);
+                HoleInfo windowHole = new HoleInfo();
+                windowHole.fillWithGlass = true;
+                windowHole.size = new Vector2(WINDOW_WIDTH, WINDOW_HEIGHT);
+                windowHole.bottomCorner = new Vector2(midPoint - (0.5f * WINDOW_WIDTH), placementHeight);
+                holes.Add(windowHole);
+                RemovePlacementSpot(windowHole.bottomCorner.x - MIN_SPACING_FOR_HOLES, windowHole.bottomCorner.x + windowHole.size.x + MIN_SPACING_FOR_HOLES);
+                NUM_TO_PLACE--;
+            }
+        }
+    }
+
+    private void RemovePlacementSpot(float newSpotX, float newSpotY)
+    {
+        RemovePlacementSpot(new Vector2(newSpotX, newSpotY));
+    }
+    private void RemovePlacementSpot(Vector2 newSpot)
+    {
+        for(int i = 0; i < placementSpots.Count && placementSpots[i].x <= newSpot.y; ++i)
+        {
+            if (placementSpots[i].x < newSpot.y && placementSpots[i].x >= newSpot.x)
+            {
+                Vector2 before = new Vector2(placementSpots[i].x, newSpot.x);
+                Vector2 after = new Vector2(newSpot.y, placementSpots[i].y);
+                placementSpots.RemoveAt(i);
+                if (after.y > after.x)
+                    placementSpots.Insert(i, after);
+                if (before.y > before.x)
+                    placementSpots.Insert(i, before);
+            }
+        }
     }
 
     public void AddDoor()
@@ -48,6 +156,7 @@ public class WallInfo
         const float DOOR_WIDTH = 1.5f;
         const float DOOR_HEIGHT = 3.0f;
         HoleInfo doorHole = new HoleInfo();
+        doorHole.fillWithGlass = false;
         doorHole.size = new Vector2(DOOR_WIDTH, DOOR_HEIGHT);
         float midPoint = length * 0.5f, longestSection = 0.0f, curSection = 0f, prevPoint = 0f;
         foreach (float point in intersectionPoints)
@@ -62,6 +171,7 @@ public class WallInfo
         }
         doorHole.bottomCorner = new Vector2(midPoint - (0.5f * DOOR_WIDTH), 0.0f);
         holes.Add(doorHole);
+        RemovePlacementSpot(doorHole.bottomCorner.x - MIN_SPACING_FOR_HOLES, doorHole.bottomCorner.x + doorHole.size.x + MIN_SPACING_FOR_HOLES);
     }
 
 
@@ -230,6 +340,8 @@ public class WallArray : IEnumerable<WallInfo>
     static public int NUM_TWISTS = 1;
     static public Material WALL_MATERIAL = null;
     static public Material TRIM_MATERIAL = null;
+    static public Material WINDOW_MATERIAL = null;
+    static public Material WINDOW_TRIM_MATERIAL = null;
 #endregion
 
     static private bool HelperFunction(int testVal, ref bool foundFirstZero, ref Point2 testDir, int x, int y)
@@ -426,7 +538,7 @@ public class WallArray : IEnumerable<WallInfo>
             if (!newWall.isNorthSouth)
             {
                 newWall.gridLength = curPlane.dimWidth;
-                newWall.length = (2*WALL_WIDTH) + (curPlane.dimWidth * curPlane.gridDim);
+                newWall.Init((2*WALL_WIDTH) + (curPlane.dimWidth * curPlane.gridDim));
                 newWall.startPos.x = -WALL_WIDTH;
                 newWall.startPos.z = (i == 0) ? -WALL_WIDTH : (curPlane.gridDim * curPlane.dimLength);
                 newWall.startGridX = 0;
@@ -436,7 +548,7 @@ public class WallArray : IEnumerable<WallInfo>
             else
             {
                 newWall.gridLength = curPlane.dimLength;
-                newWall.length = curPlane.dimLength * curPlane.gridDim;
+                newWall.Init(curPlane.dimLength * curPlane.gridDim);
                 newWall.startPos.x = (i == 1) ? (-WALL_WIDTH) : (curPlane.gridDim * curPlane.dimWidth);
                 newWall.startPos.z = 0f;
                 newWall.startGridY = 0;
@@ -464,7 +576,9 @@ public class WallArray : IEnumerable<WallInfo>
         if (shouldPlaceDoors)
             myWalls[0].AddDoor();
 
-        // TODO: Add Windows        
+        // TODO: Add Windows
+        foreach(WallInfo info in myWalls)
+            info.AddWindows();
     }
 
     public void MarkIntersectionPoints(List<WallArray> listOfWalls)
@@ -537,7 +651,7 @@ public class WallArray : IEnumerable<WallInfo>
         newWall.isReversed = didReverse;
         newWall.startGridX = startX;
         newWall.startGridY = startY;
-        newWall.length = (gridLength + 1) * curPlane.gridDim;
+        float newLength = (gridLength + 1) * curPlane.gridDim;
         newWall.startPos = curPlane.cornerPos + (curPlane.gridDim * new Vector3(startX, 0, startY));
         if (newWall.isNorthSouth)
         {
@@ -547,10 +661,10 @@ public class WallArray : IEnumerable<WallInfo>
             {
                 float extendDist = (shortStart ? -0.5f : 0.5f) * (curPlane.gridDim - WALL_WIDTH);
                 newWall.startPos.z -= extendDist;
-                newWall.length += extendDist;
+                newLength += extendDist;
             }
             if (startY+gridLength+1 != curPlane.dimLength || shortEnd)
-                newWall.length += (shortEnd ? -0.5f : 0.5f) * (curPlane.gridDim - WALL_WIDTH);
+                newLength += (shortEnd ? -0.5f : 0.5f) * (curPlane.gridDim - WALL_WIDTH);
         }
         else
         {
@@ -560,11 +674,12 @@ public class WallArray : IEnumerable<WallInfo>
             {
                 float extendDist = (shortStart ? -0.5f : 0.5f) * (curPlane.gridDim - WALL_WIDTH);
                 newWall.startPos.x -= extendDist;
-                newWall.length += extendDist;
+                newLength += extendDist;
             }
             if (startX+gridLength+1 != curPlane.dimWidth || shortEnd)
-                newWall.length += (shortEnd ? -0.5f : 0.5f) * (curPlane.gridDim - WALL_WIDTH);
+                newLength += (shortEnd ? -0.5f : 0.5f) * (curPlane.gridDim - WALL_WIDTH);
         }
+        newWall.Init(newLength);
 //        Debug.LogFormat("Creating for grid: ({0},{1}) for {2} corner for real({3} for {4}), name: {5}, short:{6}, dir:({7},{8})", startX, startY, gridLength, 
 //            newWall.startPos, newWall.length, name, shortStart || shortEnd, dx, dy);
         return newWall;
