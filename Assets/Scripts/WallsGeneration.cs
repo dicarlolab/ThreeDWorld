@@ -71,7 +71,7 @@ public class WallInfo
         for(int i = 0; i < placementSpots.Count; ++i)
         {
             Vector2 nextArea = placementSpots[i];
-            if (nextArea.y > MOD_WINDOW_WIDTH)
+            if (nextArea.y - nextArea.x > MOD_WINDOW_WIDTH)
             {
                 validSpots.Add(nextArea);
                 totalRange += (nextArea.y - nextArea.x - MOD_WINDOW_WIDTH);
@@ -137,15 +137,21 @@ public class WallInfo
     {
         for(int i = 0; i < placementSpots.Count && placementSpots[i].x <= newSpot.y; ++i)
         {
-            if (placementSpots[i].x < newSpot.y && placementSpots[i].x >= newSpot.x)
+            if (placementSpots[i].x < newSpot.y && placementSpots[i].y >= newSpot.x)
             {
                 Vector2 before = new Vector2(placementSpots[i].x, newSpot.x);
                 Vector2 after = new Vector2(newSpot.y, placementSpots[i].y);
                 placementSpots.RemoveAt(i);
-                if (after.y > after.x)
-                    placementSpots.Insert(i, after);
                 if (before.y > before.x)
+                {
                     placementSpots.Insert(i, before);
+                    ++i;
+                }
+                if (after.y > after.x)
+                {
+                    placementSpots.Insert(i, after);
+                    ++i;
+                }
             }
         }
     }
@@ -158,16 +164,16 @@ public class WallInfo
         HoleInfo doorHole = new HoleInfo();
         doorHole.fillWithGlass = false;
         doorHole.size = new Vector2(DOOR_WIDTH, DOOR_HEIGHT);
-        float midPoint = length * 0.5f, longestSection = 0.0f, curSection = 0f, prevPoint = 0f;
-        foreach (float point in intersectionPoints)
+        float midPoint = length * 0.5f, longestSection = 0.0f, curSection = 0f;
+        for(int i = 0; i < placementSpots.Count; ++i)
         {
-            curSection = point - prevPoint;
+            Vector2 nextArea = placementSpots[i];
+            curSection = nextArea.y - nextArea.x;
             if (curSection > longestSection)
             {
                 longestSection = curSection;
-                midPoint = prevPoint + (0.5f * curSection);
+                midPoint = (0.5f * nextArea.y + nextArea.x);
             }
-            prevPoint = point;
         }
         doorHole.bottomCorner = new Vector2(midPoint - (0.5f * DOOR_WIDTH), 0.0f);
         holes.Add(doorHole);
@@ -199,7 +205,7 @@ public class WallInfo
 
             newSize = baseSize + (holeInfo.bottomCorner.x - curX) * lengthDir;
             if (holeInfo.bottomCorner.x - curX > 0)
-                CreateWallMesh(startPos + curX * lengthDir, newSize, wallBase.transform);
+                CreateWallMesh(startPos + curX * lengthDir, newSize, wallBase.transform, "between ");
             curX = holeInfo.bottomCorner.x;
             newSize = baseSize + (holeInfo.size.x * lengthDir);
 
@@ -207,13 +213,22 @@ public class WallInfo
             newStartPos = startPos + curX * lengthDir;
             newSize.y = holeInfo.bottomCorner.y;
             if (newSize.y > 0)
-                CreateWallMesh(newStartPos, newSize, wallBase.transform);
+                CreateWallMesh(newStartPos, newSize, wallBase.transform, "below: ");
+            
+            // Fill in windows if necessary
+            if (holeInfo.fillWithGlass)
+            {
+                newStartPos.y = startPos.y + holeInfo.bottomCorner.y;
+                newSize.y = holeInfo.size.y;
+                CreateBoxMesh(newStartPos, newSize, WallArray.WINDOW_MATERIAL, string.Format("Created Window @{0} with size{1}", newStartPos, newSize), parentObj);
+            }
 
             // Above
             newStartPos.y = startPos.y + holeInfo.bottomCorner.y + holeInfo.size.y;
             newSize.y = baseSize.y - (holeInfo.bottomCorner.y + holeInfo.size.y);
             if (newSize.y > 0)
-                CreateWallMesh(newStartPos, newSize, wallBase.transform);
+                CreateWallMesh(newStartPos, newSize, wallBase.transform, "above: ");
+
 
             curX = holeInfo.bottomCorner.x + holeInfo.size.x;
         }
@@ -226,9 +241,9 @@ public class WallInfo
         return wallBase;
     }
 
-    public GameObject CreateWallMesh(Vector3 start, Vector3 size, Transform parentObj = null)
+    public GameObject CreateWallMesh(Vector3 start, Vector3 size, Transform parentObj = null, string namePrefix = "")
     {
-        GameObject ret = CreateBoxMesh(start, size, wallMat, string.Format("Created Mesh @{0} with size{1}", start, size), parentObj);
+        GameObject ret = CreateBoxMesh(start, size, wallMat, string.Format("{0}Created Mesh @{1} with size{2}", namePrefix, start, size), parentObj);
         // Create trim if necessary
         if (start.y < TRIM_HEIGHT && start.y + size.y >= TRIM_HEIGHT)
         {
@@ -239,7 +254,7 @@ public class WallInfo
             trimStart.x = start.x - TRIM_THICKNESS;
             trimStart.y = start.y;
             trimStart.z = start.z - TRIM_THICKNESS;
-            CreateBoxMesh(trimStart, trimSize, trimMat, string.Format("Trim Mesh @{0} with size{1}", trimStart, trimSize), parentObj);
+            CreateBoxMesh(trimStart, trimSize, trimMat, string.Format("{0}Trim Mesh @{1} with size{2}", namePrefix, trimStart, trimSize), parentObj);
         }
         return ret;
     }

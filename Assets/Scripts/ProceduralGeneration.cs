@@ -43,6 +43,8 @@ public class ProceduralGeneration : MonoBehaviour
     public int MIN_SPACING = 10;
     public Material wallMaterial = null;
     public Material wallTrimMaterial = null;
+    public Material windowMaterial = null;
+    public Material windowTrimMaterial = null;
 
     private int _curRandSeed = 0;
     private int _curComplexity = 0;
@@ -215,6 +217,8 @@ public class ProceduralGeneration : MonoBehaviour
         WallArray.NUM_TWISTS = MAX_NUM_TWISTS;
         WallArray.WALL_MATERIAL = wallMaterial;
         WallArray.TRIM_MATERIAL = wallTrimMaterial ;
+        WallArray.WINDOW_MATERIAL = windowMaterial;
+        WallArray.WINDOW_TRIM_MATERIAL = windowTrimMaterial ;
         wallSegmentList.Add(WallArray.CreateRoomOuterWalls(curPlane));
 
         while(wallSegmentList.Count < NUM_ROOMS && _failures < 300)
