@@ -30,7 +30,6 @@ public class WallInfo
     };
 
     public List<HoleInfo> holes = new List<HoleInfo>();
-    public List<float> intersectionPoints = new List<float>();
     public List<Vector2> placementSpots = new List<Vector2>();
 
     public void Init(float newLength)
@@ -54,8 +53,6 @@ public class WallInfo
 
     public void MarkIntersection(float lengthPos)
     {
-        intersectionPoints.Add(lengthPos);
-        intersectionPoints.Sort();
         RemovePlacementSpot(lengthPos - (0.5f * WallArray.WALL_WIDTH), lengthPos + (0.5f * WallArray.WALL_WIDTH));
     }
 

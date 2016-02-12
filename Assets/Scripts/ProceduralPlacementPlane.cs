@@ -40,7 +40,11 @@ public class HeightPlane
     public Vector3 cornerPos;
     public float gridDim;
     public GeneratablePrefab.AttachAnchor anchorType = GeneratablePrefab.AttachAnchor.Ground;
-    public List<GridInfo> myGridSpots = new List<GridInfo>();    
+    public List<GridInfo> myGridSpots = new List<GridInfo>();
+    public Vector3 upDir = new Vector3(0,1f,0);
+    public Vector3 widthDir = new Vector3(1f,0,0);
+    public Vector3 lengthDir = new Vector3(0,0,1f);
+    public Quaternion rotMat = Quaternion.identity;
 
     public GridInfo this[int indexer]
     {
@@ -52,6 +56,36 @@ public class HeightPlane
     {
         get{ return myGridSpots[Index(indexer)]; }
         set { myGridSpots[Index(indexer)] = value; }
+    }
+
+    public Vector3 GridToWorld(Point2 pt)
+    {
+        return rotMat * (cornerPos + new Vector3(gridDim * pt.x, 0.0f, gridDim * pt.y));
+    }
+
+    public void InitForWall(WallInfo wall, bool whichSide)
+    {
+        if (wall.isNorthSouth)
+        {
+            if (whichSide)
+                rotMat = Quaternion.Euler(new Vector3(0f, 0f, 90f));
+            else
+                rotMat = Quaternion.Euler(new Vector3(0f, 0f, -90f));
+        }
+        else
+        {
+            if (whichSide)
+                rotMat = Quaternion.Euler(new Vector3(90f, 0f, 0f));
+            else
+                rotMat = Quaternion.Euler(new Vector3(-90f, 0f, 0f));
+        }
+        upDir = rotMat * new Vector3(0,1f,0);
+        widthDir = rotMat * new Vector3(1f,0,0);
+        lengthDir = rotMat * new Vector3(0,0,1f);
+        anchorType = GeneratablePrefab.AttachAnchor.Wall;
+
+        // TODO: Adjust dimensions and corner pos
+
     }
 
     public void Clear()
@@ -102,8 +136,8 @@ public class HeightPlane
     // Helper function to invalidate all squares covered by these bounds
     public void RestrictBounds(Bounds bounds)
     {
-        Vector3 minVec = bounds.center - bounds.extents - cornerPos;
-        Vector3 maxVec = bounds.center + bounds.extents - cornerPos;
+        Vector3 minVec = rotMat * (bounds.center - bounds.extents - cornerPos);
+        Vector3 maxVec = rotMat * (bounds.center + bounds.extents - cornerPos);
         int gridMinX = Mathf.Clamp(Mathf.FloorToInt(minVec.x / gridDim), 0, dimWidth - 1);
         int gridMaxX = Mathf.Clamp(Mathf.CeilToInt(maxVec.x / gridDim), 0, dimWidth - 1);
         int gridMinZ = Mathf.Clamp(Mathf.FloorToInt(minVec.z / gridDim), 0, dimLength - 1);
