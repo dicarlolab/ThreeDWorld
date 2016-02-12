@@ -20,6 +20,12 @@ public class WallInfo
     public static float TRIM_HEIGHT = 0.5f;
     public static float TRIM_THICKNESS = 0.01f;
     public const float MIN_SPACING_FOR_HOLES = 0.1f;
+    public static float WINDOW_WIDTH = 2.0f;
+    public static float WINDOW_HEIGHT = 2.0f;
+    public static float WINDOW_PLACEMENT_HEIGHT = 2.0f;
+    public static float WINDOW_SPACING = 6.0f;
+    public static float DOOR_WIDTH = 1.5f;
+    public static float DOOR_HEIGHT = 3.0f;
 
     [System.Serializable]
     public struct HoleInfo
@@ -58,9 +64,7 @@ public class WallInfo
 
     public void AddWindows()
     {
-        const float WINDOW_WIDTH = 2.0f, MOD_WINDOW_WIDTH = WINDOW_WIDTH + 2 * MIN_SPACING_FOR_HOLES;
-        const float WINDOW_HEIGHT = 2.0f;
-        const float WINDOW_SPACING = 6.0f;
+        float MOD_WINDOW_WIDTH = WINDOW_WIDTH + 2 * MIN_SPACING_FOR_HOLES;
 
         // First find all valid spots a window could fit in
         List<Vector2> validSpots = new List<Vector2>();
@@ -113,7 +117,7 @@ public class WallInfo
             else
             {
                 // TODO: Randomize window height location?
-                float placementHeight = (WallArray.WALL_HEIGHT - WINDOW_HEIGHT)*0.5f;
+                float placementHeight = WINDOW_PLACEMENT_HEIGHT;//(WallArray.WALL_HEIGHT - WINDOW_HEIGHT)*0.5f;
                 float midPoint = placementLoc + nextArea.x + (0.5f * MOD_WINDOW_WIDTH);
                 HoleInfo windowHole = new HoleInfo();
                 windowHole.fillWithGlass = true;
@@ -156,8 +160,6 @@ public class WallInfo
     public void AddDoor()
     {
         // TODO: Add multiple doors?
-        const float DOOR_WIDTH = 1.5f;
-        const float DOOR_HEIGHT = 3.0f;
         HoleInfo doorHole = new HoleInfo();
         doorHole.fillWithGlass = false;
         doorHole.size = new Vector2(DOOR_WIDTH, DOOR_HEIGHT);
@@ -217,7 +219,10 @@ public class WallInfo
             {
                 newStartPos.y = startPos.y + holeInfo.bottomCorner.y;
                 newSize.y = holeInfo.size.y;
-                CreateBoxMesh(newStartPos, newSize, WallArray.WINDOW_MATERIAL, string.Format("Created Window @{0} with size{1}", newStartPos, newSize), parentObj);
+                GameObject windowMesh = CreateBoxMesh(newStartPos, newSize, WallArray.WINDOW_MATERIAL, string.Format("Created Window @{0} with size{1}", newStartPos, newSize), parentObj);
+                windowMesh.AddComponent<SemanticObjectSimple>();
+                Rigidbody windowRB = windowMesh.GetComponent<Rigidbody>();
+                windowRB.isKinematic = true;
             }
 
             // Above
@@ -345,7 +350,6 @@ public class WallArray : IEnumerable<WallInfo>
     public string name;
     public List<WallInfo> myWalls = new List<WallInfo>();
     public HeightPlane myPlane;
-    public int DEBUG_Spacing;
     static public float WALL_WIDTH = 1.0f;
     static public float WALL_HEIGHT = 1.0f;
     static public int MIN_SPACING = 1;
@@ -414,7 +418,6 @@ public class WallArray : IEnumerable<WallInfo>
     static public WallArray PlotNewWallArray(HeightPlane givenPlane, string newName = "")
     {
         WallArray newWallSet = new WallArray();
-            newWallSet.DEBUG_Spacing = MIN_SPACING; // TODO: Remove this
         newWallSet.name = newName;
         newWallSet.myPlane = givenPlane;
 

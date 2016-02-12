@@ -38,9 +38,17 @@ public class ProceduralGeneration : MonoBehaviour
 
     public List<WallArray> wallSegmentList = new List<WallArray>();
     public float WALL_WIDTH = 1.0f;
+    public float DOOR_WIDTH = 1.5f;
+    public float DOOR_HEIGHT = 3.0f;
+    public float WINDOW_SIZE_WIDTH = 2.0f;
+    public float WINDOW_SIZE_HEIGHT = 2.0f;
+    public float WINDOW_PLACEMENT_HEIGHT = 2.0f;
+    public float WINDOW_SPACING = 6.0f;
+    public float WALL_TRIM_HEIGHT = 0.5f;
+    public float WALL_TRIM_THICKNESS = 0.01f;
+    public float MIN_HALLWAY_SPACING = 5.0f;
     public int NUM_ROOMS = 1;
     public int MAX_NUM_TWISTS = 4;
-    public int MIN_SPACING = 10;
     public Material wallMaterial = null;
     public Material wallTrimMaterial = null;
     public Material windowMaterial = null;
@@ -83,14 +91,26 @@ public class ProceduralGeneration : MonoBehaviour
         if (json != null)
         {
             // Override settings with those in config
+            shouldUseGivenSeed = json["random_seed"].ReadInt(ref desiredRndSeed) || shouldUseGivenSeed;
             complexityLevelToCreate = json["complexity"].ReadInt(complexityLevelToCreate);
             numCeilingLights = json["num_ceiling_lights"].ReadInt(numCeilingLights);
             roomDim.x = json["room_width"].ReadFloat(roomDim.x);
             roomDim.y = json["room_height"].ReadFloat(roomDim.y);
             roomDim.z = json["room_length"].ReadFloat(roomDim.z);
-            gridDim = json["grid_size"].ReadFloat(gridDim);
-            shouldUseGivenSeed = json["random_seed"].ReadInt(ref desiredRndSeed) || shouldUseGivenSeed;
+            WALL_WIDTH = json["wall_width"].ReadFloat(WALL_WIDTH);
+            DOOR_WIDTH = json["door_width"].ReadFloat(DOOR_WIDTH);
+            DOOR_HEIGHT = json["door_height"].ReadFloat(DOOR_HEIGHT);
+            WINDOW_SIZE_WIDTH = json["window_size_width"].ReadFloat(WINDOW_SIZE_WIDTH);
+            WINDOW_SIZE_HEIGHT = json["window_size_height"].ReadFloat(WINDOW_SIZE_HEIGHT);
+            WINDOW_PLACEMENT_HEIGHT = json["window_placement_height"].ReadFloat(WINDOW_PLACEMENT_HEIGHT);
+            WINDOW_SPACING = json["window_spacing"].ReadFloat(WINDOW_SPACING);
+            WALL_TRIM_HEIGHT = json["wall_trim_height"].ReadFloat(WALL_TRIM_HEIGHT);
+            WALL_TRIM_THICKNESS = json["wall_trim_thickness"].ReadFloat(WALL_TRIM_THICKNESS);
+            MIN_HALLWAY_SPACING = json["min_hallway_width"].ReadFloat(MIN_HALLWAY_SPACING);
+            NUM_ROOMS = json["number_rooms"].ReadInt(NUM_ROOMS);
+            MAX_NUM_TWISTS = json["max_wall_twists"].ReadInt(MAX_NUM_TWISTS);
             maxPlacementAttempts = json["max_placement_attempts"].ReadInt(maxPlacementAttempts);
+            gridDim = json["grid_size"].ReadFloat(gridDim);
         }
 
         if (shouldUseGivenSeed)
@@ -213,12 +233,21 @@ public class ProceduralGeneration : MonoBehaviour
         _failures = 0;
         WallArray.WALL_HEIGHT = _curRoomHeight;
         WallArray.WALL_WIDTH = WALL_WIDTH;
-        WallArray.MIN_SPACING = Mathf.RoundToInt(MIN_SPACING / gridDim);
+        WallArray.MIN_SPACING = Mathf.RoundToInt(MIN_HALLWAY_SPACING / gridDim);
         WallArray.NUM_TWISTS = MAX_NUM_TWISTS;
         WallArray.WALL_MATERIAL = wallMaterial;
         WallArray.TRIM_MATERIAL = wallTrimMaterial ;
         WallArray.WINDOW_MATERIAL = windowMaterial;
-        WallArray.WINDOW_TRIM_MATERIAL = windowTrimMaterial ;
+        WallArray.WINDOW_TRIM_MATERIAL = windowTrimMaterial;
+        WallInfo.WINDOW_WIDTH = WINDOW_SIZE_WIDTH;
+        WallInfo.WINDOW_HEIGHT = WINDOW_SIZE_HEIGHT;
+        WallInfo.WINDOW_SPACING = WINDOW_SPACING;
+        WallInfo.WINDOW_PLACEMENT_HEIGHT = WINDOW_PLACEMENT_HEIGHT;
+        WallInfo.DOOR_WIDTH = DOOR_WIDTH;
+        WallInfo.DOOR_HEIGHT = DOOR_HEIGHT;
+        WallInfo.TRIM_HEIGHT = WALL_TRIM_HEIGHT;
+        WallInfo.TRIM_THICKNESS = WALL_TRIM_THICKNESS;
+
         wallSegmentList.Add(WallArray.CreateRoomOuterWalls(curPlane));
 
         while(wallSegmentList.Count < NUM_ROOMS && _failures < 300)
