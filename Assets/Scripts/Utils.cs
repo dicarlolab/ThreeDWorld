@@ -1,5 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+using System.IO;
+
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 public class Utils
 {
@@ -134,6 +140,33 @@ public static class UtilExtensionMethods
             v.z = -v.z;
         return v;
     }
+    public static HashSet<Object> s()
+    {
+        return null;
+    }
+
+#if UNITY_EDITOR
+    public static HashSet<T> GetAllChildrenAssets<T>(this DefaultAsset folderAsset) where T : Object
+    {
+        HashSet<T> ret = new HashSet<T>();
+        string assetPath = AssetDatabase.GetAssetPath(folderAsset);
+        string testVal = AssetDatabase.GenerateUniqueAssetPath(assetPath);
+        if (!string.IsNullOrEmpty(testVal))
+        {
+            // Strip out the Assets folder which is included in both paths
+            string fullPath = Application.dataPath + assetPath.Substring(6);
+            string [] subFiles = Directory.GetFiles(fullPath, "*", SearchOption.AllDirectories);
+            foreach(string childFullPath in subFiles)
+            {
+                string childAssetPath = childFullPath.Substring(Application.dataPath.Length - 6);
+                T foundObj = AssetDatabase.LoadAssetAtPath(childAssetPath, typeof(T)) as T;
+                if (foundObj != null)
+                    ret.Add(foundObj);
+            }
+        }
+        return ret;
+    }
+#endif
 
     public static bool IsNumeric(this SimpleJSON.JSONNode node)
     {
