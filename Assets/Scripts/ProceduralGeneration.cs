@@ -284,6 +284,75 @@ public class ProceduralGeneration : MonoBehaviour
 
 
 #if UNITY_EDITOR
+    // Setup a new prefab object from a model
+    [MenuItem ("Procedural Generation/Create prefab model folders")]
+    private static void CreatePrefabFromModel()
+    {
+        
+        HashSet<GameObject> allSelected = new HashSet<GameObject>(Selection.gameObjects);
+        foreach(Object obj in Selection.objects)
+        {
+            if (obj is GameObject)
+                allSelected.Add(obj as GameObject);
+            else if (obj is DefaultAsset)
+                allSelected.UnionWith((obj as DefaultAsset).GetAllChildrenAssets<GameObject>());
+        }
+        if (allSelected == null || allSelected.Count == 0)
+            return;
+
+        foreach(GameObject obj in allSelected)
+        {
+            // Create a single copy of this model
+            if (PrefabUtility.GetPrefabType(obj) == PrefabType.ModelPrefab)
+                MakeSimplePrefabObj(obj);
+        }
+    }
+
+    private static void MakeSimplePrefabObj(GameObject obj)
+    {
+        GameObject instance = GameObject.Instantiate(obj) as GameObject;
+        instance.name = obj.name;
+
+        // Remove any old colliders.
+        Collider[] foundColliders = instance.transform.GetComponentsInChildren<Collider>();
+        foreach(Collider col in foundColliders)
+            Object.DestroyImmediate(col, true);
+
+        // Create SemanticObject/Rigidbody
+        instance.AddComponent<SemanticObjectSimple>().name = instance.name;
+
+        // Add generatable prefab tags
+        instance.AddComponent<GeneratablePrefab>();
+
+        // Save as a prefab
+        string prefabAssetPath = string.Format("Assets/Resources/Prefabs/Converted Models/{0}.prefab", obj.name);
+        GameObject prefab = PrefabUtility.CreatePrefab(prefabAssetPath, instance);
+        GameObject.DestroyImmediate(instance);
+
+        // Create colliders for the prefab
+        // Using reflection to avoid failing when compiling on machine without ConcaveCollider scripts.
+        // ConcaveCollider.FH_CreateColliders(prefab, true);
+        System.Type t = System.Type.GetType("ConcaveCollider");
+        if (t != null)
+        {
+            System.Reflection.MethodInfo method = t.GetMethod("FH_CreateColliders", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public);
+            if (method != null)
+            {
+                object[] parameters = {prefab, true};
+                method.Invoke(null, parameters);
+            }
+            else
+                Debug.LogWarning("ConcaveCollider::FH_CreateColliders method doesn't exist!");
+        }
+        else
+            Debug.LogWarning("ConcaveCollider class doesn't exist!");
+
+        // Save out updated metadata settings
+        GeneratablePrefab metaData = prefab.GetComponent<GeneratablePrefab>();
+        metaData.ProcessPrefab();
+        SetupPrefabs(false);
+    }
+
     // Finds all prefabs that we can use and create a lookup table with relevant information
     [MenuItem ("Procedural Generation/SetupPrefabs Quick")]
     private static void SetupPrefabsQuick()
