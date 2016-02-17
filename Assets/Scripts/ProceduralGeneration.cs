@@ -326,7 +326,11 @@ public class ProceduralGeneration : MonoBehaviour
 
         // Save as a prefab
         string prefabAssetPath = string.Format("Assets/Resources/Prefabs/Converted Models/{0}.prefab", obj.name);
-        GameObject prefab = PrefabUtility.CreatePrefab(prefabAssetPath, instance);
+        GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(prefabAssetPath);
+        if (prefab == null)
+            prefab = PrefabUtility.CreatePrefab(prefabAssetPath, instance);
+        else
+            prefab = PrefabUtility.ReplacePrefab(instance, prefab);
         GameObject.DestroyImmediate(instance);
 
         // Create colliders for the prefab
