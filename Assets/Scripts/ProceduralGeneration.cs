@@ -326,7 +326,6 @@ public class ProceduralGeneration : MonoBehaviour
     [MenuItem ("Procedural Generation/Create prefab model folders")]
     private static void CreatePrefabFromModel()
     {
-        
         HashSet<GameObject> allSelected = new HashSet<GameObject>(Selection.gameObjects);
         foreach(Object obj in Selection.objects)
         {

@@ -11,6 +11,14 @@ public class GeneratablePrefab : MonoBehaviour
         Ceiling
     }
 
+    [System.Serializable]
+    public class StackableInfo
+    {
+        public float rotationAngle = 0f;
+        public Vector3 bottomCenter = new Vector3(0f,0f,0f);
+        public Vector3 dimensions = new Vector3(1f, -1f, 1f); // Negative y value means unlimited height
+    }
+
     #region Fields
     // Quick toggle to enable/disable using this prefab in the list of available prefabs during procedural generation
     public bool shouldUse = true;
@@ -20,6 +28,7 @@ public class GeneratablePrefab : MonoBehaviour
     public bool isLight;
     public AttachAnchor attachMethod = AttachAnchor.Ground;
     public List<string> generationTags = new List<string>();
+    public List<StackableInfo> stackableAreas = new List<StackableInfo>();
     #endregion
 
 #if UNITY_EDITOR
@@ -77,6 +86,19 @@ public class GeneratablePrefab : MonoBehaviour
                 DestroyImmediate(c, true);
             else
                 Destroy(c);
+        }
+    }
+
+    public void OnDrawGizmos()
+    {
+        foreach(StackableInfo info in stackableAreas)
+        {
+            Vector3 center = info.bottomCenter;
+            Vector3 dim = info.dimensions;
+            if (dim.y <= 0f)
+                dim.y = 20.0f - center.y;
+            center.y = center.y + 0.5f * dim.y;
+            Gizmos.DrawWireCube(center + myBounds.center + transform.position, dim);
         }
     }
 #endif
