@@ -247,6 +247,20 @@ public static class UtilExtensionMethods
         return false;
     }
 
+    public static bool ReadList(this SimpleJSON.JSONNode node, ref List<string> overwriteValue)
+    {
+        if (node == null || node.Tag != SimpleJSON.JSONBinaryTag.Array)
+            return false;
+        overwriteValue.Clear();
+        string newVal = null;
+        for(int i = 0; i < node.Count; ++i)
+        {
+            if (node[i].ReadString(ref newVal))
+                overwriteValue.Add(newVal);
+        }
+        return true;
+    }
+
     public static bool ReadBool(this SimpleJSON.JSONNode node, bool defaultValue = false)
     {
         if (node == null || node.Tag != SimpleJSON.JSONBinaryTag.Value)

@@ -32,6 +32,8 @@ public class ProceduralGeneration : MonoBehaviour
     public List<PrefabInfo> availablePrefabs = new List<PrefabInfo>();
     public List<PrefabInfo> ceilingLightPrefabs = new List<PrefabInfo>();
     public List<PrefabInfo> groundPrefabs = new List<PrefabInfo>();
+    public List<string> disabledItems = new List<string>();
+    public List<string> permittedItems = new List<string>();
     public float gridDim = 0.4f;
     public bool shouldUseStandardizedSize = false;
     public Vector3 standardizedSize = Vector3.one;
@@ -94,6 +96,10 @@ public class ProceduralGeneration : MonoBehaviour
         {
             // Override settings with those in config
             shouldUseGivenSeed = json["random_seed"].ReadInt(ref desiredRndSeed) || shouldUseGivenSeed;
+            shouldUseStandardizedSize = json["should_use_standardized_size"].ReadBool(shouldUseStandardizedSize);
+            standardizedSize = json["standardized_size"].ReadVector3(standardizedSize);
+            json["disabled_items"].ReadList(ref disabledItems);
+            json["permitted_items"].ReadList(ref permittedItems);
             complexityLevelToCreate = json["complexity"].ReadInt(complexityLevelToCreate);
             numCeilingLights = json["num_ceiling_lights"].ReadInt(numCeilingLights);
             roomDim.x = json["room_width"].ReadFloat(roomDim.x);
@@ -113,8 +119,6 @@ public class ProceduralGeneration : MonoBehaviour
             MAX_NUM_TWISTS = json["max_wall_twists"].ReadInt(MAX_NUM_TWISTS);
             maxPlacementAttempts = json["max_placement_attempts"].ReadInt(maxPlacementAttempts);
             gridDim = json["grid_size"].ReadFloat(gridDim);
-            standardizedSize = json["standardized_size"].ReadVector3(standardizedSize);
-            shouldUseStandardizedSize = json["should_use_standardized_size"].ReadBool(shouldUseStandardizedSize);
         }
 
         if (shouldUseGivenSeed)
@@ -123,8 +127,29 @@ public class ProceduralGeneration : MonoBehaviour
             Random.seed = Random.Range(int.MinValue, int.MaxValue);
         _curRandSeed = Random.seed;
         Debug.LogWarning("Using random seed: " + _curRandSeed);
-        ceilingLightPrefabs = availablePrefabs.FindAll(((PrefabInfo info)=>{return info.anchorType == GeneratablePrefab.AttachAnchor.Ceiling && info.isLight;}));
-        groundPrefabs = availablePrefabs.FindAll(((PrefabInfo info)=>{return info.anchorType == GeneratablePrefab.AttachAnchor.Ground;}));
+
+        List<PrefabInfo> filteredPrefabs = availablePrefabs.FindAll(((PrefabInfo info)=>{
+            // Remove items that have been disallowed
+            foreach(string itemName in disabledItems)
+            {
+                if (info.fileName.ToLowerInvariant().Contains(itemName.ToLowerInvariant()))
+                    return false;
+            }
+
+            // If we have a list, only use items that are allowed in the list
+            if (permittedItems.Count > 0)
+            {
+                foreach(string itemName in permittedItems)
+                {
+                    if (info.fileName.ToLowerInvariant().Contains(itemName.ToLowerInvariant()))
+                        return true;
+                }
+                return false;
+            }
+            return true;
+        }));
+        ceilingLightPrefabs = filteredPrefabs.FindAll(((PrefabInfo info)=>{return info.anchorType == GeneratablePrefab.AttachAnchor.Ceiling && info.isLight;}));
+        groundPrefabs = filteredPrefabs.FindAll(((PrefabInfo info)=>{return info.anchorType == GeneratablePrefab.AttachAnchor.Ground;}));
 
         // Create rooms
         roomDim.x = Mathf.Round(roomDim.x / gridDim) * gridDim;
