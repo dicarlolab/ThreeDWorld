@@ -275,13 +275,23 @@ MonoBehaviour:
   ceilingLightPrefabs: []
   groundPrefabs: []
   gridDim: 1
+  shouldUseStandardizedSize: 0
+  standardizedSize: {x: 1, y: 1, z: 1}
   shouldUseGivenSeed: 0
   desiredRndSeed: -1
   wallSegmentList: []
   WALL_WIDTH: 0.25
+  DOOR_WIDTH: 1.5
+  DOOR_HEIGHT: 3
+  WINDOW_SIZE_WIDTH: 2
+  WINDOW_SIZE_HEIGHT: 2
+  WINDOW_PLACEMENT_HEIGHT: 2
+  WINDOW_SPACING: 6
+  WALL_TRIM_HEIGHT: 0.5
+  WALL_TRIM_THICKNESS: 0.01
+  MIN_HALLWAY_SPACING: 5
   NUM_ROOMS: 5
   MAX_NUM_TWISTS: 4
-  MIN_SPACING: 2
   wallMaterial: {fileID: 2100000, guid: 1e23b2d236a58f040968acd05c361bce, type: 2}
   wallTrimMaterial: {fileID: 2100000, guid: 037c10e8a9c9c5e47a726216732d17d8, type: 2}
   windowMaterial: {fileID: 2100000, guid: e7a9aa901c4190f4ba2c8d9803d4df8f, type: 2}
@@ -372,6 +382,30 @@ Prefab:
       propertyPath: windowTrimMaterial
       value: 
       objectReference: {fileID: 2100000, guid: 037c10e8a9c9c5e47a726216732d17d8, type: 2}
+    - target: {fileID: 0}
+      propertyPath: shouldUseStandardizedSize
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: standardizedSize.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: standardizedSize.z
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: desiredRndSeed
+      value: -1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: shouldUseGivenSeed
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: standardizedSize.y
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 146054}

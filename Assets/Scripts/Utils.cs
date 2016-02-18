@@ -198,14 +198,14 @@ public static class UtilExtensionMethods
 
     public static int ReadInt(this SimpleJSON.JSONNode node, int defaultValue = 0)
     {
-        if (node == null || node.IsNumeric())
+        if (node == null || !node.IsNumeric())
             return defaultValue;
         return node.AsInt;
     }
 
     public static bool ReadInt(this SimpleJSON.JSONNode node, ref int overwriteValue)
     {
-        if (node == null || node.IsNumeric())
+        if (node == null || !node.IsNumeric())
             return false;
         overwriteValue = node.AsInt;
         return true;
@@ -213,17 +213,38 @@ public static class UtilExtensionMethods
 
     public static float ReadFloat(this SimpleJSON.JSONNode node, float defaultValue = 0.0f)
     {
-        if (node == null || node.IsNumeric())
+        if (node == null || !node.IsNumeric())
             return defaultValue;
         return node.AsFloat;
     }
 
     public static bool ReadFloat(this SimpleJSON.JSONNode node, ref float overwriteValue)
     {
-        if (node == null || node.IsNumeric())
+        if (node == null || !node.IsNumeric())
             return false;
         overwriteValue = node.AsFloat;
         return true;
+    }
+
+    public static Vector3 ReadVector3(this SimpleJSON.JSONNode node, Vector3 defaultValue = new Vector3())
+    {
+        ReadVector3(node, ref defaultValue);
+        return defaultValue;
+    }
+
+    public static bool ReadVector3(this SimpleJSON.JSONNode node, ref Vector3 overwriteValue)
+    {
+        if (node == null || node.Tag != SimpleJSON.JSONBinaryTag.Array || node.Count != 3)
+            return false;
+        Vector3 placeholder = overwriteValue;
+        if (node[0].ReadFloat(ref placeholder.x) && node[1].ReadFloat(ref placeholder.y) && node[2].ReadFloat(ref placeholder.z))
+        {
+            overwriteValue.x = placeholder.x;
+            overwriteValue.y = placeholder.y;
+            overwriteValue.z = placeholder.z;
+            return true;
+        }
+        return false;
     }
 
     public static bool ReadBool(this SimpleJSON.JSONNode node, bool defaultValue = false)

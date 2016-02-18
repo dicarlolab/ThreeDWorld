@@ -33,6 +33,8 @@ public class ProceduralGeneration : MonoBehaviour
     public List<PrefabInfo> ceilingLightPrefabs = new List<PrefabInfo>();
     public List<PrefabInfo> groundPrefabs = new List<PrefabInfo>();
     public float gridDim = 0.4f;
+    public bool shouldUseStandardizedSize = false;
+    public Vector3 standardizedSize = Vector3.one;
     public bool shouldUseGivenSeed = false;
     public int desiredRndSeed = -1;
 
@@ -111,6 +113,8 @@ public class ProceduralGeneration : MonoBehaviour
             MAX_NUM_TWISTS = json["max_wall_twists"].ReadInt(MAX_NUM_TWISTS);
             maxPlacementAttempts = json["max_placement_attempts"].ReadInt(maxPlacementAttempts);
             gridDim = json["grid_size"].ReadFloat(gridDim);
+            standardizedSize = json["standardized_size"].ReadVector3(standardizedSize);
+            shouldUseStandardizedSize = json["should_use_standardized_size"].ReadBool(shouldUseStandardizedSize);
         }
 
         if (shouldUseGivenSeed)
@@ -169,14 +173,23 @@ public class ProceduralGeneration : MonoBehaviour
         }
     }
 
-    private bool TryPlaceGroundObject(Bounds bounds, GeneratablePrefab.AttachAnchor anchorType, out int finalX, out int finalY, out HeightPlane whichPlane)
+    private bool TryPlaceGroundObject(Bounds bounds, GeneratablePrefab.AttachAnchor anchorType, out int finalX, out int finalY, out float modScale, out HeightPlane whichPlane)
     {
         finalX = 0;
         finalY = 0;
         whichPlane = null;
-        int boundsWidth = Mathf.CeilToInt(2 * bounds.extents.x / gridDim);
-        int boundsLength = Mathf.CeilToInt(2 * bounds.extents.z / gridDim);
-        float boundsHeight = bounds.extents.y;
+        modScale = 1.0f;
+        if (shouldUseStandardizedSize)
+        {
+            modScale = Mathf.Min(
+                standardizedSize.x / bounds.extents.x,
+                standardizedSize.y / bounds.extents.y,
+                standardizedSize.z / bounds.extents.z);
+        }
+        Bounds testBounds = new Bounds(bounds.center, modScale * 2f * bounds.extents);
+        int boundsWidth = Mathf.CeilToInt(2 * testBounds.extents.x / gridDim);
+        int boundsLength = Mathf.CeilToInt(2 * testBounds.extents.z / gridDim);
+        float boundsHeight = testBounds.extents.y;
 
         bool foundValid = false;
         foreach(HeightPlane curHeightPlane in _allHeightPlanes)
@@ -196,11 +209,11 @@ public class ProceduralGeneration : MonoBehaviour
                     Vector3 centerPos = _roomCornerPos + new Vector3(gridDim * (testInfo.x + (0.5f * boundsWidth)), 0.1f+boundsHeight, gridDim * (testInfo.y + (0.5f * boundsLength)));
                     if (anchorType == GeneratablePrefab.AttachAnchor.Ceiling)
                         centerPos.y = _roomCornerPos.y + _curRoomHeight - (0.1f+boundsHeight);
-                    if (Physics.CheckBox(centerPos, bounds.extents))
+                    if (Physics.CheckBox(centerPos, testBounds.extents))
                     {
                         // Found another object here, let the plane know that there's something above messing with some of the squares
                         string debugText = "";
-                        Collider[] hitObjs = Physics.OverlapBox(centerPos, bounds.extents);
+                        Collider[] hitObjs = Physics.OverlapBox(centerPos, testBounds.extents);
                         foreach(Collider col in hitObjs)
                         {
                             debugText += col.gameObject.name + ", ";
@@ -410,34 +423,37 @@ public class ProceduralGeneration : MonoBehaviour
 
         // Find a spot to place this object
         int spawnX, spawnZ;
+        float modScale;
         HeightPlane targetHeightPlane;
-        if (TryPlaceGroundObject(info.bounds, info.anchorType, out spawnX, out spawnZ, out targetHeightPlane))
+        if (TryPlaceGroundObject(info.bounds, info.anchorType, out spawnX, out spawnZ, out modScale, out targetHeightPlane))
         {
-            int boundsWidth = Mathf.CeilToInt(2 * info.bounds.extents.x / gridDim) - 1;
-            int boundsLength = Mathf.CeilToInt(2 * info.bounds.extents.z / gridDim) - 1;
-            Vector3 centerPos = _roomCornerPos + new Vector3(gridDim * (spawnX + (0.5f * boundsWidth)), 0.1f+info.bounds.extents.y, gridDim * (spawnZ + (0.5f * boundsLength)));
+            int boundsWidth = Mathf.CeilToInt(modScale* 2f * info.bounds.extents.x / gridDim) - 1;
+            int boundsLength = Mathf.CeilToInt(modScale* 2f * info.bounds.extents.z / gridDim) - 1;
+            float modHeight = 0.1f+(info.bounds.extents.y * modScale);
+            Vector3 centerPos = _roomCornerPos + new Vector3(gridDim * (spawnX + (0.5f * boundsWidth)), modHeight, gridDim * (spawnZ + (0.5f * boundsLength)));
             if (info.anchorType == GeneratablePrefab.AttachAnchor.Ceiling)
-                centerPos.y = _roomCornerPos.y + _curRoomHeight - (0.1f+info.bounds.extents.y);
+                centerPos.y = _roomCornerPos.y + _curRoomHeight - modHeight;
 
             GameObject newPrefab = Resources.Load<GameObject>(info.fileName);
             // TODO: Factor in complexity to the arrangement algorithm?
             _curComplexity += info.complexity;
 
             GameObject newInstance = Object.Instantiate<GameObject>(newPrefab.gameObject);
-            newInstance.transform.position = centerPos - info.bounds.center;
+            newInstance.transform.position = centerPos - (info.bounds.center * modScale);
+            newInstance.transform.localScale = newInstance.transform.localScale * modScale;
             newInstance.name = string.Format("{0} #{1}", newPrefab.name, (_curRoom != null) ? _curRoom.childCount.ToString() : "?");
 
             // Create test cube
             if (DEBUG_testCubePrefab != null)
             {
                 GameObject testCube = Object.Instantiate<GameObject>(DEBUG_testCubePrefab);
-                testCube.transform.localScale = 2 * info.bounds.extents;
+                testCube.transform.localScale = modScale * 2f * info.bounds.extents;
                 testCube.transform.position = centerPos;
                 testCube.name = string.Format("Cube {0}", newInstance.name);
                 testCube.transform.SetParent(_curRoom);
             }
 
-            Debug.LogFormat("{0}: @{1} R:{2} G:{3} BC:{4}", info.fileName, newInstance.transform.position, _roomCornerPos, new Vector3(gridDim * spawnX, info.bounds.extents.y, gridDim * spawnZ), info.bounds.center);
+            Debug.LogFormat("{0}: @{1} R:{2} G:{3} BC:{4} MS:{5}", info.fileName, newInstance.transform.position, _roomCornerPos, new Vector3(gridDim * spawnX, info.bounds.extents.y, gridDim * spawnZ), info.bounds.center, modScale);
             if (_curRoom != null)
                 newInstance.transform.SetParent(_curRoom);
 

@@ -113,14 +113,14 @@ public class HeightPlane
 
     public int Index(int x, int y)
     {
-        if (x > dimWidth || y > dimLength)
+        if (x >= dimWidth || y >= dimLength)
             Debug.LogErrorFormat("XY values out of bounds for plane! ({0},{1}) for bounds: ({2} x {3})", x, y, dimWidth, dimLength);
         return (dimLength * x ) + y;
     }
 
     public int Index(Point2 pt)
     {
-        if (pt.x > dimWidth || pt.y > dimLength)
+        if (pt.x >= dimWidth || pt.y >= dimLength)
             Debug.LogErrorFormat("Point out of bounds for plane! {0} for bounds: ({1} x {2})", pt, dimWidth, dimLength);
         return (dimLength * pt.x ) + pt.y;
     }
@@ -142,7 +142,7 @@ public class HeightPlane
         int gridMaxX = Mathf.Clamp(Mathf.CeilToInt(maxVec.x / gridDim), 0, dimWidth - 1);
         int gridMinZ = Mathf.Clamp(Mathf.FloorToInt(minVec.z / gridDim), 0, dimLength - 1);
         int gridMaxZ = Mathf.Clamp(Mathf.CeilToInt(maxVec.z / gridDim), 0, dimLength - 1);
-        UpdateGrid(gridMinX, gridMaxX-gridMinX, gridMinZ, gridMaxZ-gridMinZ);
+        UpdateGrid(gridMinX, gridMinZ, gridMaxX-gridMinX, gridMaxZ-gridMinZ);
     }
 
     // Mark a section of the grid as used and update surrounding squares to say how far they are from a boundary
