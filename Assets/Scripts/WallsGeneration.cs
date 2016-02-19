@@ -261,7 +261,7 @@ public class WallInfo
         return ret;
     }
 
-    public GameObject CreateBoxMesh(Vector3 start, Vector3 size, Material mat, string name, Transform parentObj = null)
+    public static GameObject CreateBoxMesh(Vector3 start, Vector3 size, Material mat, string name, Transform parentObj = null)
     {
         int[] indexArray = {
             // Left/Right faces
@@ -354,7 +354,8 @@ public class WallArray : IEnumerable<WallInfo>
     static public float WALL_HEIGHT = 1.0f;
     static public int MIN_SPACING = 1;
     static public int NUM_TWISTS = 1;
-    static public Material WALL_MATERIAL = null;
+    static public List<Material> WALL_MATERIALS = new List<Material>();
+    static public int CURRENT_WALL_MAT_INDEX = 0;
     static public Material TRIM_MATERIAL = null;
     static public Material WINDOW_MATERIAL = null;
     static public Material WINDOW_TRIM_MATERIAL = null;
@@ -548,7 +549,7 @@ public class WallArray : IEnumerable<WallInfo>
             newWall.isNorthSouth = i % 2 == 1;
             newWall.startGridX = -1;
             newWall.startGridY = -1;
-            newWall.wallMat = WALL_MATERIAL;
+            newWall.wallMat = GetNextWallMat();
             newWall.trimMat = TRIM_MATERIAL;
             if (!newWall.isNorthSouth)
             {
@@ -639,6 +640,11 @@ public class WallArray : IEnumerable<WallInfo>
             Debug.LogWarningFormat("Couldn't find end point! {0}", myWalls[Count - 1].name);
     }
 
+    private static Material GetNextWallMat()
+    {
+        return WALL_MATERIALS[++CURRENT_WALL_MAT_INDEX % WALL_MATERIALS.Count];
+    }
+
     private WallInfo BuildInteriorWallSegment(int startX, int startY, int dx, int dy, int gridLength, HeightPlane curPlane, bool shortStart)
     {
         // Update Grid
@@ -659,7 +665,7 @@ public class WallArray : IEnumerable<WallInfo>
 
         // Create wall info
         WallInfo newWall = new WallInfo();
-        newWall.wallMat = WALL_MATERIAL;
+        newWall.wallMat = GetNextWallMat();
         newWall.trimMat = TRIM_MATERIAL;
         newWall.isNorthSouth = dx == 0;
         newWall.gridLength = gridLength;

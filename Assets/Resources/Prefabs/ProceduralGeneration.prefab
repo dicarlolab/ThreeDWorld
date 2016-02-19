@@ -274,6 +274,8 @@ MonoBehaviour:
       m_Extent: {x: 0.1275617, y: 0.028575, z: 0.142875}
   ceilingLightPrefabs: []
   groundPrefabs: []
+  disabledItems: []
+  permittedItems: []
   gridDim: 1
   shouldUseStandardizedSize: 0
   standardizedSize: {x: 1, y: 1, z: 1}
@@ -292,7 +294,10 @@ MonoBehaviour:
   MIN_HALLWAY_SPACING: 5
   NUM_ROOMS: 5
   MAX_NUM_TWISTS: 4
-  wallMaterial: {fileID: 2100000, guid: 1e23b2d236a58f040968acd05c361bce, type: 2}
+  wallMaterials:
+  - {fileID: 2100000, guid: 1e23b2d236a58f040968acd05c361bce, type: 2}
+  floorMaterial: {fileID: 2100000, guid: 1e23b2d236a58f040968acd05c361bce, type: 2}
+  ceilingMaterial: {fileID: 2100000, guid: 1e23b2d236a58f040968acd05c361bce, type: 2}
   wallTrimMaterial: {fileID: 2100000, guid: 037c10e8a9c9c5e47a726216732d17d8, type: 2}
   windowMaterial: {fileID: 2100000, guid: e7a9aa901c4190f4ba2c8d9803d4df8f, type: 2}
   windowTrimMaterial: {fileID: 2100000, guid: 037c10e8a9c9c5e47a726216732d17d8, type: 2}
@@ -303,6 +308,10 @@ Prefab:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 0}
+      propertyPath: wallMaterials.Array.size
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: wallPrefab
       value: 
@@ -406,6 +415,18 @@ Prefab:
       propertyPath: standardizedSize.y
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: ceilingMaterial
+      value: 
+      objectReference: {fileID: 2100000, guid: 1e23b2d236a58f040968acd05c361bce, type: 2}
+    - target: {fileID: 0}
+      propertyPath: floorMaterial
+      value: 
+      objectReference: {fileID: 2100000, guid: 1e23b2d236a58f040968acd05c361bce, type: 2}
+    - target: {fileID: 0}
+      propertyPath: wallMaterials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 1e23b2d236a58f040968acd05c361bce, type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 146054}

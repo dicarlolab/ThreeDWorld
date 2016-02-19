@@ -53,7 +53,9 @@ public class ProceduralGeneration : MonoBehaviour
     public float MIN_HALLWAY_SPACING = 5.0f;
     public int NUM_ROOMS = 1;
     public int MAX_NUM_TWISTS = 4;
-    public Material wallMaterial = null;
+    public List<Material> wallMaterials = new List<Material>();
+    public Material floorMaterial = null;
+    public Material ceilingMaterial = null;
     public Material wallTrimMaterial = null;
     public Material windowMaterial = null;
     public Material windowTrimMaterial = null;
@@ -151,27 +153,16 @@ public class ProceduralGeneration : MonoBehaviour
         ceilingLightPrefabs = filteredPrefabs.FindAll(((PrefabInfo info)=>{return info.anchorType == GeneratablePrefab.AttachAnchor.Ceiling && info.isLight;}));
         groundPrefabs = filteredPrefabs.FindAll(((PrefabInfo info)=>{return info.anchorType == GeneratablePrefab.AttachAnchor.Ground;}));
 
+        // Create grid to populate objects
+        _curComplexity = 0;
+        _failures = 0;
+
         // Create rooms
         roomDim.x = Mathf.Round(roomDim.x / gridDim) * gridDim;
         roomDim.z = Mathf.Round(roomDim.z / gridDim) * gridDim;
         CreateRoom(roomDim, new Vector3((roomDim.x-1) * 0.5f,0,(roomDim.z-1) * 0.5f));
 
-        // Create grid to populate objects
-        _curComplexity = 0;
         _failures = 0;
-
-        _allHeightPlanes.Clear();
-        HeightPlane basePlane = new HeightPlane();
-        basePlane.gridDim = gridDim;
-        _allHeightPlanes.Add(basePlane);
-        _curRoomWidth = Mathf.FloorToInt(roomDim.x / gridDim);
-        _curRoomLength = Mathf.FloorToInt(roomDim.z / gridDim);
-        _curRoomHeight = roomDim.y;
-        basePlane.cornerPos = _roomCornerPos;
-        basePlane.Clear(_curRoomWidth, _curRoomLength);
-
-        SubdivideRoom();
-
         // Keep creating objects until we are supposed to stop
         // TODO: Create a separate plane to map ceiling placement
         for(int i = 0; i < numCeilingLights && _failures < maxPlacementAttempts; ++i)
@@ -179,23 +170,6 @@ public class ProceduralGeneration : MonoBehaviour
         _failures = 0;
         while(!IsDone())
             AddObjects(groundPrefabs);
-
-        if (DEBUG_testGridPrefab != null)
-        {
-            GameObject child = new GameObject("TEST GRIDS");
-            child.transform.SetParent(_curRoom);
-            foreach(GridInfo g in basePlane.myGridSpots)
-            {
-                TextMesh test = GameObject.Instantiate<TextMesh>(DEBUG_testGridPrefab);
-                test.transform.SetParent(child.transform);
-//                test.text = string.Format("  {0}\n{2}  {1}\n  {3}", g.upSquares, g.leftSquares, g.rightSquares, g.downSquares);
-                test.text = string.Format("{0},{1}", g.x, g.y);
-                test.color = g.inUse ? Color.red: Color.cyan;
-                test.transform.position = _roomCornerPos + new Vector3(gridDim * g.x, 0.0f, gridDim * g.y);
-                test.name = string.Format("{0}: ({1},{2})", DEBUG_testGridPrefab.name, g.x, g.y);
-                test.transform.localScale = gridDim * Vector3.one;
-            }
-        }
     }
 
     private bool TryPlaceGroundObject(Bounds bounds, GeneratablePrefab.AttachAnchor anchorType, out int finalX, out int finalY, out float modScale, out HeightPlane whichPlane)
@@ -273,7 +247,8 @@ public class ProceduralGeneration : MonoBehaviour
         WallArray.WALL_WIDTH = WALL_WIDTH;
         WallArray.MIN_SPACING = Mathf.RoundToInt(MIN_HALLWAY_SPACING / gridDim);
         WallArray.NUM_TWISTS = MAX_NUM_TWISTS;
-        WallArray.WALL_MATERIAL = wallMaterial;
+        WallArray.WALL_MATERIALS = wallMaterials;
+        WallArray.CURRENT_WALL_MAT_INDEX = 0;
         WallArray.TRIM_MATERIAL = wallTrimMaterial ;
         WallArray.WINDOW_MATERIAL = windowMaterial;
         WallArray.WINDOW_TRIM_MATERIAL = windowTrimMaterial;
@@ -314,7 +289,6 @@ public class ProceduralGeneration : MonoBehaviour
         {
             WallArray curWallSeg = wallSegmentList[i];
             curWallSeg.PlaceDoorsAndWindows(i != 0);
-
             // Actually build object meshes
             curWallSeg.ConstructWallSegments(_curRoom);
         }
@@ -496,20 +470,44 @@ public class ProceduralGeneration : MonoBehaviour
         _roomCornerPos = (roomCenter - (0.5f *roomDimensions)) + (gridDim * 0.5f * Vector3.one);
         _roomCornerPos.y = 0f;
 
-        // Create floor
-        GameObject floorObj = GameObject.Instantiate(floorPrefab.gameObject);
-        floorObj.transform.localScale = new Vector3(roomDimensions.x, 1.0f, roomDimensions.z);
-        floorObj.transform.position = roomCenter;
-        floorObj.name = "Floor: " + floorObj.name;
-        floorObj.transform.SetParent(_curRoom);
+        // Create floor and ceiling
+        Vector3 floorSize = new Vector3(roomDimensions.x, WALL_WIDTH, roomDimensions.z);
+        Vector3 floorStart = roomCenter + new Vector3(-0.5f * roomDimensions.x, -WALL_WIDTH, -0.5f * roomDimensions.z);
+        Vector3 ceilingStart = floorStart + (roomDimensions.y + WALL_WIDTH) * Vector3.up;
+        WallInfo.CreateBoxMesh(floorStart, floorSize, floorMaterial, "Floor", _curRoom);
+        WallInfo.CreateBoxMesh(ceilingStart, floorSize, ceilingMaterial, "Ceiling", _curRoom);
 
-        // Create ceiling
-        // TODO: Use different prefab for ceiling?
-        GameObject ceilingObj = GameObject.Instantiate(ceilingPrefab.gameObject);
-        ceilingObj.transform.localScale = new Vector3(roomDimensions.x, 1.0f, roomDimensions.z);
-        ceilingObj.transform.position = roomCenter + roomDimensions.y * Vector3.up;
-        ceilingObj.name = "Ceiling: " + ceilingObj.name;
-        ceilingObj.transform.SetParent(_curRoom);
+        // Setup floor plane
+        _allHeightPlanes.Clear();
+        HeightPlane basePlane = new HeightPlane();
+        basePlane.gridDim = gridDim;
+        _allHeightPlanes.Add(basePlane);
+        _curRoomWidth = Mathf.FloorToInt(roomDim.x / gridDim);
+        _curRoomLength = Mathf.FloorToInt(roomDim.z / gridDim);
+        _curRoomHeight = roomDim.y;
+        basePlane.cornerPos = _roomCornerPos;
+        basePlane.Clear(_curRoomWidth, _curRoomLength);
+
+        // Create walls
+        SubdivideRoom();
+
+        // Create debug test grid on the floor
+        if (DEBUG_testGridPrefab != null)
+        {
+            GameObject child = new GameObject("TEST GRIDS");
+            child.transform.SetParent(_curRoom);
+            foreach(GridInfo g in basePlane.myGridSpots)
+            {
+                TextMesh test = GameObject.Instantiate<TextMesh>(DEBUG_testGridPrefab);
+                test.transform.SetParent(child.transform);
+//                test.text = string.Format("  {0}\n{2}  {1}\n  {3}", g.upSquares, g.leftSquares, g.rightSquares, g.downSquares);
+                test.text = string.Format("{0},{1}", g.x, g.y);
+                test.color = g.inUse ? Color.red: Color.cyan;
+                test.transform.position = _roomCornerPos + new Vector3(gridDim * g.x, 0.0f, gridDim * g.y);
+                test.name = string.Format("{0}: ({1},{2})", DEBUG_testGridPrefab.name, g.x, g.y);
+                test.transform.localScale = gridDim * Vector3.one;
+            }
+        }
     }
 
     public bool IsDone()
