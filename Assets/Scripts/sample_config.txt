@@ -1,4 +1,7 @@
 {
+    // General
+    "port_number": "5556",
+    
     // Logging
     "log_level": "log",         // Can be "log", "warning", "error", or "none" for the various log levels
     "stack_log_level": "error", // Minimum log level that we also try to output stack traces
