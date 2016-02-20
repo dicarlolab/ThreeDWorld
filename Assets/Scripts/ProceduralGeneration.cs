@@ -474,8 +474,14 @@ public class ProceduralGeneration : MonoBehaviour
         Vector3 floorSize = new Vector3(roomDimensions.x, WALL_WIDTH, roomDimensions.z);
         Vector3 floorStart = roomCenter + new Vector3(-0.5f * roomDimensions.x, -WALL_WIDTH, -0.5f * roomDimensions.z);
         Vector3 ceilingStart = floorStart + (roomDimensions.y + WALL_WIDTH) * Vector3.up;
-        WallInfo.CreateBoxMesh(floorStart, floorSize, floorMaterial, "Floor", _curRoom);
-        WallInfo.CreateBoxMesh(ceilingStart, floorSize, ceilingMaterial, "Ceiling", _curRoom);
+
+        GameObject floor = WallInfo.CreateBoxMesh(floorStart, floorSize, floorMaterial, "Floor", _curRoom);
+        floor.AddComponent<SemanticObjectSimple>();
+        floor.GetComponent<Rigidbody>().isKinematic = true;
+
+        GameObject top = WallInfo.CreateBoxMesh(ceilingStart, floorSize, ceilingMaterial, "Ceiling", _curRoom);
+        top.AddComponent<SemanticObjectSimple>();
+        top.GetComponent<Rigidbody>().isKinematic = true;
 
         // Setup floor plane
         _allHeightPlanes.Clear();

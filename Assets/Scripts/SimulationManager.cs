@@ -168,6 +168,8 @@ public static class SimulationManager
         }
 
         ParseJsonInfo(configLocation);
+        if (argsConfig == null)
+            _readJsonArgs = new SimpleJSON.JSONClass();
 
         // Init NetMessenger
         myNetMessenger = GameObject.FindObjectOfType<NetMessenger>();
