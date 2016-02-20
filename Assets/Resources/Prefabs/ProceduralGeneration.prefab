@@ -295,7 +295,17 @@ MonoBehaviour:
   NUM_ROOMS: 5
   MAX_NUM_TWISTS: 4
   wallMaterials:
-  - {fileID: 2100000, guid: 1e23b2d236a58f040968acd05c361bce, type: 2}
+  - {fileID: 2100000, guid: 828929aeaf1e435419cd3352f01e9b33, type: 2}
+  - {fileID: 2100000, guid: 9ab5b5d587e8e4c4f80957fe730f246b, type: 2}
+  - {fileID: 2100000, guid: 3f38a4eb00edb444bb3bdddcc74d548f, type: 2}
+  - {fileID: 2100000, guid: bbb3b746f075eb94da1fe36e0d032528, type: 2}
+  - {fileID: 2100000, guid: 465f68ac9399fea438bcb16e4ac9d3a3, type: 2}
+  - {fileID: 2100000, guid: b7c7b5ef468ed764fbc2a90f524fa638, type: 2}
+  - {fileID: 2100000, guid: 82fac6dfccb2712459638b23b59d4f6b, type: 2}
+  - {fileID: 2100000, guid: dd83204045ff3a74ab2d1ecf29a1fa13, type: 2}
+  - {fileID: 2100000, guid: d4d8a0a4ba48ed0499fc65b502f911a7, type: 2}
+  - {fileID: 2100000, guid: db528085b72f4f64bb2b1156539a69e4, type: 2}
+  - {fileID: 2100000, guid: beacaa5348e17c141b8368b04be021fa, type: 2}
   floorMaterial: {fileID: 2100000, guid: 1e23b2d236a58f040968acd05c361bce, type: 2}
   ceilingMaterial: {fileID: 2100000, guid: 1e23b2d236a58f040968acd05c361bce, type: 2}
   wallTrimMaterial: {fileID: 2100000, guid: 037c10e8a9c9c5e47a726216732d17d8, type: 2}
@@ -310,7 +320,7 @@ Prefab:
     m_Modifications:
     - target: {fileID: 0}
       propertyPath: wallMaterials.Array.size
-      value: 1
+      value: 11
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: wallPrefab
@@ -426,7 +436,43 @@ Prefab:
     - target: {fileID: 0}
       propertyPath: wallMaterials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 1e23b2d236a58f040968acd05c361bce, type: 2}
+      objectReference: {fileID: 2100000, guid: 828929aeaf1e435419cd3352f01e9b33, type: 2}
+    - target: {fileID: 0}
+      propertyPath: wallMaterials.Array.data[1]
+      value: 
+      objectReference: {fileID: 2100000, guid: 9ab5b5d587e8e4c4f80957fe730f246b, type: 2}
+    - target: {fileID: 0}
+      propertyPath: wallMaterials.Array.data[2]
+      value: 
+      objectReference: {fileID: 2100000, guid: 3f38a4eb00edb444bb3bdddcc74d548f, type: 2}
+    - target: {fileID: 0}
+      propertyPath: wallMaterials.Array.data[3]
+      value: 
+      objectReference: {fileID: 2100000, guid: bbb3b746f075eb94da1fe36e0d032528, type: 2}
+    - target: {fileID: 0}
+      propertyPath: wallMaterials.Array.data[4]
+      value: 
+      objectReference: {fileID: 2100000, guid: 465f68ac9399fea438bcb16e4ac9d3a3, type: 2}
+    - target: {fileID: 0}
+      propertyPath: wallMaterials.Array.data[5]
+      value: 
+      objectReference: {fileID: 2100000, guid: b7c7b5ef468ed764fbc2a90f524fa638, type: 2}
+    - target: {fileID: 0}
+      propertyPath: wallMaterials.Array.data[7]
+      value: 
+      objectReference: {fileID: 2100000, guid: dd83204045ff3a74ab2d1ecf29a1fa13, type: 2}
+    - target: {fileID: 0}
+      propertyPath: wallMaterials.Array.data[8]
+      value: 
+      objectReference: {fileID: 2100000, guid: d4d8a0a4ba48ed0499fc65b502f911a7, type: 2}
+    - target: {fileID: 0}
+      propertyPath: wallMaterials.Array.data[9]
+      value: 
+      objectReference: {fileID: 2100000, guid: db528085b72f4f64bb2b1156539a69e4, type: 2}
+    - target: {fileID: 0}
+      propertyPath: wallMaterials.Array.data[10]
+      value: 
+      objectReference: {fileID: 2100000, guid: beacaa5348e17c141b8368b04be021fa, type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 146054}
