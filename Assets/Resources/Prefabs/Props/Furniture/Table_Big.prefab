@@ -1698,6 +1698,10 @@ MonoBehaviour:
   isLight: 0
   attachMethod: 0
   generationTags: []
+  stackableAreas:
+  - rotationAngle: 0
+    bottomCenter: {x: 0, y: 1, z: 0}
+    dimensions: {x: 4.6, y: -1, z: 8.63}
 --- !u!114 &11408180
 MonoBehaviour:
   m_ObjectHideFlags: 1

@@ -15,6 +15,7 @@ public class NetMessenger : MonoBehaviour
 #region Fields
     // Template for the avatar to create for each connection
     public Avatar avatarPrefab;
+    public string portNumber = "5556";
     public bool shouldCreateTestClient = true;
 
     private NetMQContext _ctx;
@@ -53,6 +54,9 @@ public class NetMessenger : MonoBehaviour
 
     public void Init()
     {
+        // Read port number
+        portNumber = SimulationManager.argsConfig["port_number"].ReadString(portNumber);
+
         // Create Procedural generation
         if (ProceduralGeneration.Instance == null)
             GameObject.Instantiate(Resources.Load("Prefabs/ProceduralGeneration"));
@@ -85,7 +89,6 @@ public class NetMessenger : MonoBehaviour
 //                Debug.LogFormat("Client In: {0}, Out: {1}", client.HasIn, client.HasOut);
                 if (client.HasIn && client.TryReceiveMultipartMessage(TimeSpan.Zero, ref _lastMessage))
                     HandleClientFrameMessage(client, _lastMessage);
-                
             }
         }
     }
@@ -145,7 +148,7 @@ public class NetMessenger : MonoBehaviour
     private void CreateNewSocketConnection()
     {
         ResponseSocket server = _ctx.CreateResponseSocket();
-        server.Bind("tcp://127.0.0.1:5556");
+        server.Bind("tcp://127.0.0.1:" + portNumber);
         _createdSockets.Add(server);
         if (shouldCreateTestClient)
             CreateTestClient(server);
@@ -154,7 +157,7 @@ public class NetMessenger : MonoBehaviour
     private void CreateTestClient(ResponseSocket server)
     {
         RequestSocket client = _ctx.CreateRequestSocket();
-        client.Connect("tcp://127.0.0.1:5556");
+        client.Connect("tcp://127.0.0.1:" + portNumber);
         _avatarClients[server] = client;
         client.SendFrame(MSG_R_ClientJoin);
     }
