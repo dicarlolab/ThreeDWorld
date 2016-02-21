@@ -46,7 +46,7 @@ public abstract class BenchmarkTest : MonoBehaviour {
 
 #region Virtual
 	// writes data to a save path
-	private virtual void writeData () {
+	protected virtual void writeData () {
 		if (iterationCount >= maxIterations) {
 			string outputData = "";
 			for (int i = 0; i < framerates.GetLength(0); i++) {
@@ -62,7 +62,7 @@ public abstract class BenchmarkTest : MonoBehaviour {
 
 #region Unity Callbacks
 	// initializes data capture variables
-	virtual void Start () {
+	public virtual void Start () {
 		iterationDuration = calculateDuration ();
 		iterationStartTime = 0;
 
@@ -76,7 +76,7 @@ public abstract class BenchmarkTest : MonoBehaviour {
 		lastFrameRecordingTime = Time.time;
 	}
 		
-	virtual void FixedUpdate () {
+	public virtual void FixedUpdate () {
 		if (Time.time - iterationStartTime > iterationDuration && iterationCount < maxIterations) { // every new iteration
 
 			iterationCount++;
