@@ -263,14 +263,14 @@ public static class UtilExtensionMethods
 
     public static bool ReadBool(this SimpleJSON.JSONNode node, bool defaultValue = false)
     {
-        if (node == null || node.Tag != SimpleJSON.JSONBinaryTag.Value)
+        if (node == null || node.Tag != SimpleJSON.JSONBinaryTag.BoolValue)
             return defaultValue;
         return node.AsBool;
     }
 
     public static bool ReadBool(this SimpleJSON.JSONNode node, ref bool overwriteValue)
     {
-        if (node == null || node.Tag != SimpleJSON.JSONBinaryTag.Value)
+        if (node == null || node.Tag != SimpleJSON.JSONBinaryTag.BoolValue)
             return false;
         overwriteValue = node.AsBool;
         return true;        
