@@ -1,6 +1,10 @@
 {
     // General
     "port_number": "5556",
+    "host_address": "127.0.0.1",
+    "create_test_client": false,
+    "create_server": true,
+    "debug_network_messages": false,
     
     // Logging
     "log_level": "log",         // Can be "log", "warning", "error", or "none" for the various log levels
@@ -13,7 +17,7 @@
     "standardized_size": [1.0, 1.0, 1.0],
     "disabled_items": [], // A list of item names to not use, e.g. ["lamp", "bed"] would exclude files with the word "lamp" or "bed" in their file path
     "permitted_items": [], // If not empty, it will ONLY use items that contain at least one of the given strings in their file path
-    "complexity": 100000,
+    "complexity": 0,
     "num_ceiling_lights": 5,
     "room_width": 40.0,
     "room_height": 20.0,

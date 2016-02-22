@@ -16,7 +16,11 @@ public class NetMessenger : MonoBehaviour
     // Template for the avatar to create for each connection
     public Avatar avatarPrefab;
     public string portNumber = "5556";
-    public bool shouldCreateTestClient = true;
+    public string hostAddress = "*";
+    public bool shouldCreateTestClient = false;
+    public bool shouldCreateServer = true;
+    public bool debugNetworkMessages = false;
+    public RequestSocket clientSimulation = null;
 
     private NetMQContext _ctx;
     private NetMQMessage _lastMessage = new NetMQMessage();
@@ -56,9 +60,13 @@ public class NetMessenger : MonoBehaviour
     {
         // Read port number
         portNumber = SimulationManager.argsConfig["port_number"].ReadString(portNumber);
+        hostAddress = SimulationManager.argsConfig["host_address"].ReadString(hostAddress);
+        shouldCreateTestClient = SimulationManager.argsConfig["create_test_client"].ReadBool(shouldCreateTestClient);
+        shouldCreateServer = SimulationManager.argsConfig["create_server"].ReadBool(shouldCreateServer);
+        debugNetworkMessages = SimulationManager.argsConfig["debug_network_messages"].ReadBool(debugNetworkMessages);
 
         // Create Procedural generation
-        if (ProceduralGeneration.Instance == null)
+        if (ProceduralGeneration.Instance == null && shouldCreateServer)
             GameObject.Instantiate(Resources.Load("Prefabs/ProceduralGeneration"));
 
         // Start up connections
@@ -76,6 +84,13 @@ public class NetMessenger : MonoBehaviour
     
     void Update()
     {
+        if (clientSimulation != null)
+        {
+            string output;
+            if (clientSimulation.HasIn && clientSimulation.TryReceiveFrameString(out output))
+                Debug.LogWarning("Received: " + output);
+            return;
+        }
         foreach(ResponseSocket server in _createdSockets)
         {
 //            Debug.LogFormat("Server In: {0}, Out: {1}", server.HasIn, server.HasOut);
@@ -132,6 +147,12 @@ public class NetMessenger : MonoBehaviour
                     GameObject.Destroy(_avatars[server].gameObject);
             }
         }
+        if (clientSimulation != null)
+        {
+            clientSimulation.Close();
+            clientSimulation.Dispose();
+            clientSimulation = null;
+        }
         _avatars.Clear();
         _createdSockets.Clear();
         _avatarClients.Clear();
@@ -148,16 +169,25 @@ public class NetMessenger : MonoBehaviour
     private void CreateNewSocketConnection()
     {
         ResponseSocket server = _ctx.CreateResponseSocket();
-        server.Bind("tcp://127.0.0.1:" + portNumber);
-        _createdSockets.Add(server);
-        if (shouldCreateTestClient)
-            CreateTestClient(server);
+        if (shouldCreateServer)
+        {
+            server.Bind("tcp://" + hostAddress + ":" + portNumber);
+            _createdSockets.Add(server);
+            if (shouldCreateTestClient)
+                CreateTestClient(server);
+        }
+        else
+        {
+            clientSimulation = _ctx.CreateRequestSocket();
+            clientSimulation.Connect("tcp://" + hostAddress + ":" + portNumber);
+            clientSimulation.SendFrame(MSG_R_ClientJoin);
+        }
     }
 
     private void CreateTestClient(ResponseSocket server)
     {
         RequestSocket client = _ctx.CreateRequestSocket();
-        client.Connect("tcp://127.0.0.1:" + portNumber);
+        client.Connect("tcp://" + hostAddress + ":" + portNumber);
         _avatarClients[server] = client;
         client.SendFrame(MSG_R_ClientJoin);
     }
@@ -166,8 +196,9 @@ public class NetMessenger : MonoBehaviour
 #region Receive messages from the client
     public void HandleFrameMessage(ResponseSocket server, NetMQMessage msg)
     {
+        if (debugNetworkMessages)
+            Debug.LogFormat("Received Msg on Server: {0}", ReadOutMessage(msg));
         string msgHeader = msg.First.ConvertToString();
-        Debug.LogFormat("Got message on Server: {0}, {1} frames", msgHeader, msg.FrameCount);
 
         switch(msgHeader.ToString())
         {
@@ -203,9 +234,10 @@ public class NetMessenger : MonoBehaviour
     // Used for debugging without an agent
     public void HandleClientFrameMessage(RequestSocket client, NetMQMessage msg)
     {
+        if (debugNetworkMessages)
+            Debug.LogFormat("Received Msg on Client: {0}", ReadOutMessage(msg));
         string msgHeader = msg.First.ConvertToString();
-        Debug.LogFormat("Got message on Client: {0}, {1} frames", msgHeader, msg.FrameCount);
-        
+
         switch(msgHeader.ToString())
         {
             case MSG_S_ConfirmClientJoin:
@@ -216,14 +248,36 @@ public class NetMessenger : MonoBehaviour
                 break;
         }
     }
+
+    static private string ReadOutFrame(NetMQFrame frame)
+    {
+        string test = null;
+        if (frame.BufferSize == 4)
+            test = BitConverter.ToInt32(frame.Buffer, 0).ToString();
+        else if (frame.BufferSize == 8)
+            test = BitConverter.ToInt64(frame.Buffer, 0).ToString();
+        //            else if (msg[i].BufferSize > 800000)
+        else if (frame.BufferSize > 5000)
+            test = "PNG " + frame.BufferSize;
+        else
+            test = frame.ConvertToString(System.Text.Encoding.ASCII);
+        return test;
+    }
+
+    static public string ReadOutMessage(NetMQMessage msg)
+    {
+        string output = string.Format("[{0}] ({1} frames)", msg.First.ConvertToString(), msg.FrameCount);
+        for(int i = 0; i < msg.FrameCount; ++i)
+        {
+            output += string.Format("\n{0}: \"{1}\"", i, ReadOutFrame(msg[i]));
+        }
+        return output;
+    }
     
     public void SimulateClientInput(RequestSocket client, NetMQMessage framedDataMsg)
     {
         ResponseSocket server = GetServerForClient(client);
         Avatar myAvatar = _avatars[server];
-
-        if (framedDataMsg.FrameCount > 1)
-            Debug.Log("Received JSON: "+framedDataMsg[1].ConvertToString());
 
 //#if (UNITY_STANDALONE_WIN)
 //        // Just save out the png data to the local filesystem(Debugging code only)
