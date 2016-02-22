@@ -13,18 +13,18 @@ public class ConcaveCollider : MonoBehaviour
         Fast,
         Legacy
     }
-                       public EAlgorithm       Algorithm                   = EAlgorithm.Fast;
-                       public int              MaxHullVertices             = 64;
+                       public EAlgorithm       Algorithm                   = EAlgorithm.Normal;
+                       public int              MaxHullVertices             = 128;
                        public int              MaxHulls                    = 128;
                        public float            InternalScale               = 10.0f;
-                       public float            Precision                   = 0.8f;
-                       public bool             CreateMeshAssets            = false;
+                       public float            Precision                   = 1.0f;
+                       public bool             CreateMeshAssets            = true;
                        public bool             CreateHullMesh              = false;
                        public bool             DebugLog                    = false;
                        public int              LegacyDepth                 = 6;
                        public bool             ShowAdvancedOptions         = false;
                        public float            MinHullVolume               = 0.00001f;
-                       public float            BackFaceDistanceFactor      = 0.2f;
+                       public float            BackFaceDistanceFactor      = 0.02f;
                        public bool             NormalizeInputMesh          = false;
                        public bool             ForceNoMultithreading       = false;
 
@@ -39,12 +39,16 @@ public class ConcaveCollider : MonoBehaviour
     [SerializeField]   private int             LargestHullVertices         = 0;
     [SerializeField]   private int             LargestHullFaces            = 0;
 
+                       private static bool     InBatchSaveMode             = true;
+
     public delegate void LogDelegate     ([MarshalAs(UnmanagedType.LPStr)]string message);
     public delegate void ProgressDelegate([MarshalAs(UnmanagedType.LPStr)]string message, float fPercent);
 
     void OnDestroy()
     {
-        DestroyHulls();
+        // Only destroy created hulls if this was created during Play mode
+        if(!(Application.isEditor && Application.isPlaying == false))
+            DestroyHulls();
     }
 
     void Reset()
@@ -94,27 +98,34 @@ public class ConcaveCollider : MonoBehaviour
         LargestHullVertices = 0;
         LargestHullFaces    = 0;
 
-        if(m_aGoHulls == null)
+        if(m_aGoHulls != null)
         {
-            return;
+            if(Application.isEditor && Application.isPlaying == false)
+            {
+                foreach(GameObject hull in m_aGoHulls)
+                {
+                    if(hull) DestroyImmediate(hull);
+                }
+            }
+            else
+            {
+                foreach(GameObject hull in m_aGoHulls)
+                {
+                    if(hull) Destroy(hull);
+                }
+            }
+
+            m_aGoHulls = null;
         }
 
-        if(Application.isEditor && Application.isPlaying == false)
+        Transform hullParent = this.transform.Find("Generated Colliders");
+        if(hullParent != null)
         {
-            foreach(GameObject hull in m_aGoHulls)
-            {
-                if(hull) DestroyImmediate(hull);
-            }
+            if(Application.isEditor && Application.isPlaying == false)
+                DestroyImmediate(hullParent.gameObject);
+            else
+                Destroy(hullParent.gameObject);
         }
-        else
-        {
-            foreach(GameObject hull in m_aGoHulls)
-            {
-                if(hull) Destroy(hull);
-            }
-        }
-
-        m_aGoHulls = null;
     }
 
     public void CancelComputation()
@@ -123,18 +134,32 @@ public class ConcaveCollider : MonoBehaviour
     }
 
 #if UNITY_EDITOR
-
-    public void ComputeHulls(LogDelegate log, ProgressDelegate progress)
+    public bool ComputeHulls(LogDelegate log, ProgressDelegate progress)
     {
+        bool hadError = false;
         string strMeshAssetPath = "";
-
         if(CreateMeshAssets)
         {
-            strMeshAssetPath = UnityEditor.EditorUtility.SaveFilePanelInProject("Save mesh asset", "mesh_" + gameObject.name + this.GetInstanceID().ToString() + ".asset", "asset", "Please enter a file name to save the mesh asset to");
+            string uniqueID = null;;
+            Debug.LogFormat("Obj: {0} of type {1}", gameObject.transform.FullPath(), UnityEditor.PrefabUtility.GetPrefabType(this.gameObject));
+            if (UnityEditor.PrefabUtility.GetPrefabParent(this.gameObject) != null)
+            {
+                string prefabPath = UnityEditor.AssetDatabase.GetAssetPath(UnityEditor.PrefabUtility.GetPrefabParent(this.gameObject));
+                int startIndex = 1 + prefabPath.LastIndexOf("/");
+                prefabPath = prefabPath.Substring(startIndex, prefabPath.LastIndexOf(".") - startIndex);
+                uniqueID = string.Format("{0}_{1}", prefabPath, UnityEditor.PrefabUtility.GetPrefabParent(this.gameObject).name);
+            }
+            else
+                uniqueID = string.Format("{0}_{1}", gameObject.name, this.GetInstanceID().ToString());
+            strMeshAssetPath = "ColliderMeshes\\" + uniqueID + " _colMesh.asset";
+            if (!InBatchSaveMode)
+                strMeshAssetPath = UnityEditor.EditorUtility.SaveFilePanelInProject("Save mesh asset", strMeshAssetPath, "asset", "Save collider mesh for " + gameObject.name);
+            else
+                strMeshAssetPath = "Assets/" + strMeshAssetPath;
 
             if(strMeshAssetPath.Length == 0)
             {
-                return;
+                return false;
             }
         }
 
@@ -243,11 +268,20 @@ public class ConcaveCollider : MonoBehaviour
                     }
                     else if(info.nHullsOut == 0)
                     {
+                        hadError = true;
                         if(log != null) log("Error: No hulls were generated");
                     }
                     else
                     {
                         // -1 User cancelled
+                        hadError = true;
+                    }
+
+                    Transform hullParent = this.transform.Find("Generated Colliders");
+                    if (hullParent == null)
+                    {
+                        hullParent = (new GameObject("Generated Colliders")).transform;
+                        hullParent.transform.SetParent(this.transform, false);
                     }
 
                     for(int nHull = 0; nHull < info.nHullsOut; nHull++)
@@ -260,7 +294,7 @@ public class ConcaveCollider : MonoBehaviour
                             m_aGoHulls[nHull] = new GameObject("Hull " + nHull);
                             m_aGoHulls[nHull].transform.position = this.transform.position;
                             m_aGoHulls[nHull].transform.rotation = this.transform.rotation;
-                            m_aGoHulls[nHull].transform.parent   = this.transform;
+                            m_aGoHulls[nHull].transform.parent   = hullParent;
                             m_aGoHulls[nHull].layer              = this.gameObject.layer;
 
                             Vector3[] hullVertices = new Vector3[hullInfo.nVertexCount];
@@ -278,14 +312,14 @@ public class ConcaveCollider : MonoBehaviour
                                 for(int nVertex = 0; nVertex < hullVertices.Length; nVertex++)
                                 {
                                     hullVertices[nVertex] *= fInvMeshRescale;
-                                    hullVertices[nVertex]  = Vector3.Scale(hullVertices[nVertex], transform.localScale);
+                                    hullVertices[nVertex]  = Vector3.Scale(hullVertices[nVertex], transform.lossyScale);
                                 }
                             }
                             else
                             {
                                 for(int nVertex = 0; nVertex < hullVertices.Length; nVertex++)
                                 {
-                                    hullVertices[nVertex] = Vector3.Scale(hullVertices[nVertex], transform.localScale);
+                                    hullVertices[nVertex] = Vector3.Scale(hullVertices[nVertex], transform.lossyScale);
                                 }
                             }
 
@@ -404,20 +438,101 @@ public class ConcaveCollider : MonoBehaviour
                 }
                 else
                 {
+                    hadError = true;
                     if(log != null) log("Error: convex decomposition could not be completed due to errors");
                 }
             }
             else
             {
+                hadError = true;
                 if(log != null) log("Error: " + this.name + " has no mesh");
             }
         }
         else
         {
+            hadError = true;
             if(log != null) log("Error: " + this.name + " has no mesh");
         }
 
         DllClose();
+        return !hadError;
+    }
+
+    private void ShowEditorProgressBar(string message, float fPercent)
+    {
+        if(UnityEditor.EditorUtility.DisplayCancelableProgressBar("Computing hulls", message, fPercent / 100.0f))
+        {
+            CancelComputation();
+        }
+    }
+
+    [UnityEditor.MenuItem ("GameObject/ConcaveCollider/CreateColliders %&c")]
+    private static void CreateCollidersMenuCommand()
+    {
+        GameObject obj = UnityEditor.Selection.activeGameObject;
+        FH_CreateColliders(obj, false);
+    }
+
+    public static void FH_CreateColliders(GameObject obj, bool isBatchMode)
+    {
+        if (obj == null)
+            return;
+        if (UnityEditor.PrefabUtility.GetPrefabType(obj) == UnityEditor.PrefabType.ModelPrefab)
+        {
+            Debug.LogWarningFormat("{0} is a model prefab and can't be edited to have meshes", obj.name);
+            return;
+        }
+        InBatchSaveMode = isBatchMode;
+        GameObject prefab = UnityEditor.PrefabUtility.FindPrefabRoot(obj) as GameObject;
+        GameObject createdInstance = null;
+        if (prefab != null && UnityEditor.PrefabUtility.GetPrefabType(obj) == UnityEditor.PrefabType.Prefab)
+        {
+            // Since we can't modify prefabs directly, we'll instantiate it first and modify that instead
+            createdInstance = UnityEditor.PrefabUtility.InstantiatePrefab(prefab) as GameObject;
+            Debug.LogFormat("{0} is prefab", obj.name, UnityEditor.PrefabUtility.GetPrefabType(createdInstance));
+            obj = createdInstance;
+        }
+        else
+        {
+            Debug.LogFormat("{0} is not prefab: {1}", obj.name, UnityEditor.PrefabUtility.GetPrefabType(obj));
+        }
+        MeshFilter [] foundMeshFilters = obj.GetComponentsInChildren<MeshFilter>();
+        if (foundMeshFilters == null || foundMeshFilters.Length == 0)
+            FH_ComputeHulls(obj);
+        else
+        {
+            foreach(MeshFilter curMeshFilter in foundMeshFilters)
+                FH_ComputeHulls(curMeshFilter.gameObject);
+        }
+        if (createdInstance != null)
+        {
+            UnityEditor.PrefabUtility.ReplacePrefab(createdInstance, prefab);
+            DestroyImmediate(createdInstance);
+        }
+        InBatchSaveMode = false;
+    }
+
+    private static void FH_ComputeHulls(GameObject obj)
+    {
+        if (obj == null)
+            return;
+        ConcaveCollider current = obj.GetComponent<ConcaveCollider>();
+        bool hadComponent = current != null;
+        if (current == null)
+            current = obj.AddComponent<ConcaveCollider>();
+        try {
+            if (current.ComputeHulls(new ConcaveCollider.LogDelegate(Debug.Log), new ConcaveCollider.ProgressDelegate(current.ShowEditorProgressBar)))
+                Debug.LogFormat("Completed computing hulls for {0}", obj.name);
+            else
+                Debug.LogWarningFormat("Error computing hulls for {0}", obj.name);
+        }
+        catch(System.Exception e)
+        {
+            Debug.LogWarningFormat("Error computing hulls for {0}: {1}\n{2}", obj.name, e.Message, e.StackTrace);
+        }
+        UnityEditor.EditorUtility.ClearProgressBar();
+        if (!hadComponent)
+            DestroyImmediate(current, true);
     }
 
 #endif // UNITY_EDITOR
