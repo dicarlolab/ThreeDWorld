@@ -442,6 +442,18 @@ namespace SimpleJSON
                             Token += aJSON [i];
                         break;
                         
+                    case '/':
+                        if (!QuoteMode && aJSON.Length > i + 1 && aJSON [i + 1] == '/')
+                        {
+                            char C = aJSON[++i];
+                            while(i < aJSON.Length && C != '\n' && C != '\r')
+                            {
+                                C = aJSON[++i];
+                            }
+                        }
+                        else
+                            Token += aJSON [i]; 
+                        break;
                     case '\\':
                         ++i;
                         if (QuoteMode) {
@@ -1010,6 +1022,7 @@ namespace SimpleJSON
                 case JSONBinaryTag.DoubleValue:
                 case JSONBinaryTag.FloatValue:
                 case JSONBinaryTag.IntValue:
+                case JSONBinaryTag.BoolValue:
                     return m_Data;
                 case JSONBinaryTag.Value:
                     return string.Format ("\"{0}\"", Escape (m_Data));
