@@ -12,11 +12,11 @@ public class GeneratablePrefab : MonoBehaviour
     }
 
     [System.Serializable]
-    public class StackableInfo
+    public struct StackableInfo
     {
-        public float rotationAngle = 0f;
-        public Vector3 bottomCenter = new Vector3(0f,0f,0f);
-        public Vector3 dimensions = new Vector3(1f, -1f, 1f); // Negative y value means unlimited height
+        public float rotationAngle;
+        public Vector3 bottomCenter;
+        public Vector3 dimensions; // Negative y value means unlimited height
     }
 
     #region Fields

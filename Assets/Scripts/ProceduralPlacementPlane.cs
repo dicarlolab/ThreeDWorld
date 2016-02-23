@@ -34,7 +34,8 @@ public class GridInfo
 [System.Serializable]
 public class HeightPlane
 {
-    public float planeHeight;
+    public string name = "HeightPlane";
+    public float planeHeight = 0f;
     public int dimWidth;
     public int dimLength;
     public Vector3 cornerPos;
@@ -61,6 +62,11 @@ public class HeightPlane
     public Vector3 GridToWorld(Point2 pt)
     {
         return rotMat * (cornerPos + new Vector3(gridDim * pt.x, 0.0f, gridDim * pt.y));
+    }
+
+    public Vector3 GridToWorld(Vector2 vec)
+    {
+        return rotMat * (cornerPos + new Vector3(gridDim * vec.x, 0.0f, gridDim * vec.y));
     }
 
     public void InitForWall(WallInfo wall, bool whichSide)
