@@ -103,9 +103,9 @@ public class InputModule : AbstractInputModule
     public override void HandleNetInput(JSONClass jsonData, ref Vector3 targetVel)
     {
         // Get movement
-        cacheVel = _myAvatar.moveSpeed * jsonData.ReadVector3(cacheVel * (1/_myAvatar.moveSpeed));
+        cacheVel = _myAvatar.moveSpeed * jsonData["vel"].ReadVector3(cacheVel * (1/_myAvatar.moveSpeed));
         targetVel = cacheVel;
-        cacheAngVel = _myAvatar.rotSpeed * jsonData.ReadVector3(cacheAngVel * (1/_myAvatar.rotSpeed));
+        cacheAngVel = _myAvatar.rotSpeed * jsonData["ang_vel"].ReadVector3(cacheAngVel * (1/_myAvatar.rotSpeed));
     }
 
     public override void OnFixedUpdate()
