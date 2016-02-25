@@ -205,6 +205,7 @@ public class ProceduralGeneration : MonoBehaviour
 
         for(int i = 0; i < _allHeightPlanes.Count; ++i)
             DrawTestGrid(_allHeightPlanes[i]);
+        Debug.Log("Final complexity: " + _curComplexity);
     }
 
     private bool TryPlaceGroundObject(Bounds bounds, GeneratablePrefab.AttachAnchor anchorType, out int finalX, out int finalY, out float modScale, out HeightPlane whichPlane)
@@ -462,8 +463,21 @@ public class ProceduralGeneration : MonoBehaviour
             _failures++;
             return;
         }
-        // TODO: Seed this random selection?
         PrefabInfo info = prefabList[Random.Range(0, prefabList.Count)];
+
+        // Check for excess complexity
+        int maxComplexity = (complexityLevelToCreate - _curComplexity);
+        if (info.complexity > maxComplexity)
+        {
+            prefabList.RemoveAll((PrefabInfo testInfo)=>{
+                return testInfo.complexity > maxComplexity;
+            });
+            if (showProcGenDebug)
+                Debug.LogFormat("Filtering for complexity {0} > {1} leaving {2} objects ", info.complexity, maxComplexity, prefabList.Count);
+            if (prefabList.Count == 0)
+                return;
+            info = prefabList[Random.Range(0, prefabList.Count)];
+        }
 
         // Find a spot to place this object
         int spawnX, spawnZ;
