@@ -87,6 +87,9 @@ public class InputModule : AbstractInputModule
         targetRotationVel.x = -Input.GetAxis("Vertical2");
         targetRotationVel.y = Input.GetAxis("Horizontal2");
         targetRotationVel.z = -Input.GetAxis("HorizontalD");
+
+        if (Input.GetKey(KeyCode.Space))
+            data["teleport_random"] = new JSONData(true);
         
 //        // Convert from relative coordinates
 //        Quaternion test = Quaternion.identity;
@@ -103,9 +106,11 @@ public class InputModule : AbstractInputModule
     public override void HandleNetInput(JSONClass jsonData, ref Vector3 targetVel)
     {
         // Get movement
-        cacheVel = _myAvatar.moveSpeed * jsonData["vel"].ReadVector3(cacheVel * (1/_myAvatar.moveSpeed));
+        cacheVel = _myAvatar.moveSpeed * jsonData["vel"].ReadVector3(Vector3.zero);
         targetVel = cacheVel;
-        cacheAngVel = _myAvatar.rotSpeed * jsonData["ang_vel"].ReadVector3(cacheAngVel * (1/_myAvatar.rotSpeed));
+        cacheAngVel = _myAvatar.rotSpeed * jsonData["ang_vel"].ReadVector3(Vector3.zero);
+        if (jsonData["teleport_random"].ReadBool(false))
+            _myAvatar.TeleportToValidPosition();
     }
 
     public override void OnFixedUpdate()
