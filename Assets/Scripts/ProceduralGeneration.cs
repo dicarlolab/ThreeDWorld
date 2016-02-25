@@ -112,6 +112,7 @@ public class ProceduralGeneration : MonoBehaviour
             complexityLevelToCreate = json["complexity"].ReadInt(complexityLevelToCreate);
             numCeilingLights = json["num_ceiling_lights"].ReadInt(numCeilingLights);
             minStackingBases = json["minimum_stacking_base_objects"].ReadInt(minStackingBases);
+            forceStackedItems = json["minimum_objects_to_stack"].ReadInt(forceStackedItems);
             roomDim.x = json["room_width"].ReadFloat(roomDim.x);
             roomDim.y = json["room_height"].ReadFloat(roomDim.y);
             roomDim.z = json["room_length"].ReadFloat(roomDim.z);
