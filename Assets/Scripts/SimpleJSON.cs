@@ -735,6 +735,11 @@ namespace SimpleJSON
             get { return m_List.Count; }
         }
         
+        public override JSONBinaryTag Tag
+        {
+            get { return JSONBinaryTag.Array; }
+        }
+
         public override void Add (string aKey, JSONNode aItem)
         {
             m_List.Add (aItem);
@@ -860,7 +865,11 @@ namespace SimpleJSON
             get { return m_Dict.Count; }
         }
         
-        
+        public override JSONBinaryTag Tag
+        {
+            get { return JSONBinaryTag.Class; }
+        }
+
         public override void Add (string aKey, JSONNode aItem)
         {
             if (!string.IsNullOrEmpty (aKey)) {
