@@ -124,9 +124,9 @@ public class Avatar : MonoBehaviour
     }
 
     // Parse the input sent from the client and use it to update the controls for the next simulation segment
-    public void HandleNetInput(NetMQMessage msg)
+    public void HandleNetInput(SimpleJSON.JSONClass msgJsonData)
     {
-        _myInput.HandleNetInput(msg, ref _targetVelocity);
+        _myInput.HandleNetInput(msgJsonData, ref _targetVelocity);
 
         _readyForSimulation = true;
         // Now ready the output and run the simulation a few frames

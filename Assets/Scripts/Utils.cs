@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using SimpleJSON;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -130,6 +131,30 @@ public static class UtilExtensionMethods
         return xfm.parent + "/" + xfm.name;
     }
 
+    public static JSONClass ReadJson(this NetMQ.NetMQMessage me, out string messageType)
+    {
+        messageType = null;
+        if (me != null && me.FrameCount > 0)
+        {
+            JSONClass ret = me[0].ToJson();
+            if (ret != null)
+                messageType = ret["msg_type"].ReadString(messageType);
+            return ret;
+        }
+        return null;
+    }
+
+    public static JSONClass ToJson(this NetMQ.NetMQFrame me)
+    {
+        string jsonString = me.ConvertToString();
+        if (jsonString != null)
+        {
+            JSONNode node = JSONData.Parse(jsonString);
+            return node as JSONClass;
+        }
+        return null;
+    }
+
     public static Vector3 Abs(this Vector3 v)
     {
         if (v.x < 0)
@@ -140,6 +165,16 @@ public static class UtilExtensionMethods
             v.z = -v.z;
         return v;
     }
+
+    public static JSONArray ToJson(this Vector3 v)
+    {
+        JSONArray ret = new JSONArray();
+        ret.Add(new JSONData(v.x));
+        ret.Add(new JSONData(v.y));
+        ret.Add(new JSONData(v.z));
+        return ret;
+    }
+
     public static HashSet<Object> s()
     {
         return null;
