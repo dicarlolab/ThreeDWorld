@@ -148,6 +148,7 @@ public class HeightPlane
         int gridMaxX = Mathf.Clamp(Mathf.CeilToInt(maxVec.x / gridDim), 0, dimWidth - 1);
         int gridMinZ = Mathf.Clamp(Mathf.FloorToInt(minVec.z / gridDim), 0, dimLength - 1);
         int gridMaxZ = Mathf.Clamp(Mathf.CeilToInt(maxVec.z / gridDim), 0, dimLength - 1);
+//        Debug.LogFormat("RestrictBounds: ({0},{1}) to ({2},{3}), b: {4}, c: {5}, min:{6}, max:{7}", gridMinX, gridMinZ, gridMaxX, gridMaxZ, bounds, cornerPos, minVec, maxVec);
         UpdateGrid(gridMinX, gridMinZ, gridMaxX-gridMinX, gridMaxZ-gridMinZ);
     }
 

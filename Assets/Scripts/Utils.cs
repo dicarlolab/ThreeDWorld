@@ -175,9 +175,16 @@ public static class UtilExtensionMethods
         return ret;
     }
 
-    public static HashSet<Object> s()
+    public static Bounds Rotate(this Bounds b, Quaternion rot)
     {
-        return null;
+        Bounds newBounds = new Bounds();
+        newBounds.center = rot * b.center;
+        Vector3 newExtents = (rot * b.extents).Abs();
+        newExtents = Vector3.Max(newExtents, (rot * new Vector3(-b.extents.x, b.extents.y, b.extents.z)).Abs());
+        newExtents = Vector3.Max(newExtents, (rot * new Vector3(b.extents.x, -b.extents.y, b.extents.z)).Abs());
+        newExtents = Vector3.Max(newExtents, (rot * new Vector3(-b.extents.x, -b.extents.y, b.extents.z)).Abs());
+        newBounds.size = newExtents * 2f;
+        return newBounds;
     }
 
 #if UNITY_EDITOR

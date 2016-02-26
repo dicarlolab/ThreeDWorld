@@ -178,22 +178,22 @@ public class ProceduralGeneration : MonoBehaviour
         _failures = 0;
         // Keep creating objects until we are supposed to stop
         // TODO: Create a separate plane to map ceiling placement
-        for(int i = 0; i < numCeilingLights && _failures < maxPlacementAttempts; ++i)
+        for(int i = 0; (i - _failures) < numCeilingLights && _failures < maxPlacementAttempts; ++i)
             AddObjects(ceilingLightPrefabs);
         _failures = 0;
 
         if (showProcGenDebug && minStackingBases > 0)
-            Debug.Log("Stacking object bases");
+            Debug.LogFormat("Stacking {0} objects bases: {1} types", minStackingBases, stackingPrefabs.Count);
         // Place stacking bases first so we can have more opportunities to stack on top
-        for(int i = 0; i < minStackingBases && stackingPrefabs.Count > 0; ++i)
+        for(int i = 0; (i - _failures) < minStackingBases && stackingPrefabs.Count > 0; ++i)
             AddObjects(stackingPrefabs);
         _failures = 0;
 
         if (showProcGenDebug && forceStackedItems > 0)
-            Debug.Log("Stacking objects");
+            Debug.LogFormat("Stacking {0} objects: {1} types", forceStackedItems, itemsForStacking.Count);
         // Place stacking bases first so we can have more opportunities to stack on top
         _forceStackObject = true;
-        for(int i = 0; i < forceStackedItems && itemsForStacking.Count > 0; ++i)
+        for(int i = 0; (i - _failures) < forceStackedItems && itemsForStacking.Count > 0; ++i)
             AddObjects(itemsForStacking);
         _failures = 0;
         _forceStackObject = false;
@@ -250,16 +250,19 @@ public class ProceduralGeneration : MonoBehaviour
                         // Found another object here, let the plane know that there's something above messing with some of the squares
                         string debugText = "";
                         Collider[] hitObjs = Physics.OverlapBox(centerPos, testBounds.extents);
+                        HashSet<string> hitObjNames = new HashSet<string>();
                         foreach(Collider col in hitObjs)
                         {
                             if (col.attachedRigidbody != null)
-                                debugText += col.attachedRigidbody.name + ":" + col.gameObject.name  + ", ";
+                                hitObjNames.Add(col.attachedRigidbody.name);
                             else
-                                debugText += col.gameObject.name + ", ";
+                                hitObjNames.Add(col.gameObject.name );
                             curHeightPlane.RestrictBounds(col.bounds);
                         }
+                        foreach(string hitName in hitObjNames)
+                            debugText += hitName + ", ";
                         if (showProcGenDebug)
-                            Debug.LogFormat("Unexpected objects: ({0}) at ({1},{2}) on plane {3}", debugText, testInfo.x, testInfo.y, curHeightPlane.name);
+                            Debug.LogFormat("Unexpected objects: ({0}) at ({1},{2}) on plane {3} with test {5} ext: {4}", debugText, testInfo.x, testInfo.y, curHeightPlane.name, testBounds.extents, centerPos);
                     }
                     else
                     {
@@ -483,11 +486,16 @@ public class ProceduralGeneration : MonoBehaviour
         int spawnX, spawnZ;
         float modScale;
         HeightPlane targetHeightPlane;
-        if (TryPlaceGroundObject(info.bounds, info.anchorType, out spawnX, out spawnZ, out modScale, out targetHeightPlane))
+        Quaternion modifiedRotation = Quaternion.identity;
+        if (info.stackableAreas.Count == 0)
+            modifiedRotation = Quaternion.Euler(new Vector3(0,Random.Range(0f,360f),0));
+        Bounds modifiedBounds = info.bounds.Rotate(modifiedRotation);
+
+        if (TryPlaceGroundObject(modifiedBounds, info.anchorType, out spawnX, out spawnZ, out modScale, out targetHeightPlane))
         {
-            int boundsWidth = Mathf.CeilToInt(modScale* 2f * info.bounds.extents.x / gridDim) - 1;
-            int boundsLength = Mathf.CeilToInt(modScale* 2f * info.bounds.extents.z / gridDim) - 1;
-            float modHeight = 0.1f+(info.bounds.extents.y * modScale);
+            int boundsWidth = Mathf.CeilToInt(modScale* 2f * modifiedBounds.extents.x / gridDim) - 1;
+            int boundsLength = Mathf.CeilToInt(modScale* 2f * modifiedBounds.extents.z / gridDim) - 1;
+            float modHeight = 0.1f+(modifiedBounds.extents.y * modScale);
             Vector3 centerPos = targetHeightPlane.cornerPos + new Vector3(gridDim * (spawnX + (0.5f * boundsWidth)), modHeight, gridDim * (spawnZ + (0.5f * boundsLength)));
             if (info.anchorType == GeneratablePrefab.AttachAnchor.Ceiling)
                 centerPos.y = _roomCornerPos.y + _curRoomHeight - modHeight;
@@ -497,16 +505,16 @@ public class ProceduralGeneration : MonoBehaviour
             _curComplexity += info.complexity;
 
             GameObject newInstance = Object.Instantiate<GameObject>(newPrefab.gameObject);
-            Quaternion modifiedRotation = Quaternion.identity;
-            newInstance.transform.position = centerPos - (info.bounds.center * modScale);
+            newInstance.transform.position = centerPos - (modifiedBounds.center * modScale);
             newInstance.transform.localScale = newInstance.transform.localScale * modScale;
+            newInstance.transform.rotation = modifiedRotation * newInstance.transform.rotation;
             newInstance.name = string.Format("{0} #{1} on {2}", newPrefab.name, (_curRoom != null) ? _curRoom.childCount.ToString() : "?", targetHeightPlane.name);
 
             // Create test cube
             if (DEBUG_testCubePrefab != null)
             {
                 GameObject testCube = Object.Instantiate<GameObject>(DEBUG_testCubePrefab);
-                testCube.transform.localScale = modScale * 2f * info.bounds.extents;
+                testCube.transform.localScale = modScale * 2f * modifiedBounds.extents;
                 testCube.transform.position = centerPos;
                 testCube.name = string.Format("Cube {0}", newInstance.name);
                 testCube.transform.SetParent(_curRoom);
@@ -531,7 +539,7 @@ public class ProceduralGeneration : MonoBehaviour
                     newPlane.gridDim = gridDim;
                     // TODO: Set rotation matrix for new plane?
                     newPlane.rotMat = modifiedRotation;
-                    newPlane.cornerPos = newInstance.transform.position + (modifiedRotation * stackInfo.bottomCenter);
+                    newPlane.cornerPos = newInstance.transform.position + (modifiedRotation * (stackInfo.bottomCenter + info.bounds.center));
                     newPlane.cornerPos = newPlane.GridToWorld(new Vector2((width-1) * -0.5f, (length-1) * -0.5f));
                     newPlane.planeHeight = stackInfo.dimensions.y;
                     if (stackInfo.dimensions.y <= 0)
@@ -546,7 +554,7 @@ public class ProceduralGeneration : MonoBehaviour
         {
             // TODO: Mark item as unplaceable and continue with smaller objects?
             if (showProcGenDebug)
-                Debug.LogFormat("Couldn't place: {0}", info.fileName);
+                Debug.LogFormat("Couldn't place: {0}. {1} object types, {2} complexity left", info.fileName, prefabList.Count, complexityLevelToCreate - _curComplexity);
             prefabList.Remove(info);
             ++_failures;
         }
