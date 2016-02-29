@@ -190,6 +190,11 @@ public static class SimulationManager
         if (argsConfig == null)
             _readJsonArgs = new SimpleJSON.JSONClass();
 
+        // Set resolution
+        int screenWidth = _readJsonArgs["screen_width"].ReadInt(Screen.width);
+        int screenHeight = _readJsonArgs["screen_height"].ReadInt(Screen.height);
+        Screen.SetResolution(screenWidth, screenHeight, Screen.fullScreen);
+
         // Init NetMessenger
         myNetMessenger = GameObject.FindObjectOfType<NetMessenger>();
         if (myNetMessenger != null)

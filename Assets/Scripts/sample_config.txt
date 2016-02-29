@@ -1,5 +1,7 @@
 {
     // General
+    "screen_width": 256,
+    "screen_height": 256,
     "port_number": "5556",
     "host_address": "127.0.0.1",
     "create_test_client": false,
