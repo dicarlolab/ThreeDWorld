@@ -89,7 +89,7 @@ public class GeneratablePrefab : MonoBehaviour
         }
     }
 
-    public void OnDrawGizmos()
+    public void OnDrawGizmosSelected()
     {
         foreach(StackableInfo info in stackableAreas)
         {

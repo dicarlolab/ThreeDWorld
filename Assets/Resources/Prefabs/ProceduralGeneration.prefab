@@ -115,7 +115,7 @@ MonoBehaviour:
       m_Extent: {x: 1.7097986, y: 1.6001952, z: 3.6850584}
     stackableAreas: []
   - fileName: Prefabs/Props/Furniture/table_7103
-    complexity: 31
+    complexity: 34
     isLight: 0
     anchorType: 0
     bounds:
@@ -123,8 +123,8 @@ MonoBehaviour:
       m_Extent: {x: 0.9375837, y: 0.39500034, z: 0.51000035}
     stackableAreas:
     - rotationAngle: 0
-      bottomCenter: {x: 0.09, y: 0.42, z: 0.04}
-      dimensions: {x: 1.61, y: 0, z: 0.89}
+      bottomCenter: {x: 0, y: 0.42, z: 0.04}
+      dimensions: {x: 1.73, y: 0, z: 0.89}
   - fileName: Prefabs/Props/Furniture/Table_Big
     complexity: 63
     isLight: 0
