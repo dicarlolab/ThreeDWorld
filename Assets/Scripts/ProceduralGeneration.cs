@@ -226,8 +226,15 @@ public class ProceduralGeneration : MonoBehaviour
         int boundsLength = Mathf.CeilToInt(2 * testBounds.extents.z / gridDim);
         float boundsHeight = testBounds.extents.y;
 
+        List<int> randomPlanesOrder = new List<int>();
+        int randomOrderValue = Random.Range(0, int.MaxValue);
+        for(int i = 0; i < _allHeightPlanes.Count; ++i)
+            randomPlanesOrder.Insert(randomOrderValue % (randomPlanesOrder.Count + 1), i);
+        if (_forceStackObject)
+            randomPlanesOrder.Remove(0);
+
         bool foundValid = false;
-        for(int planeNum = _forceStackObject ? 1 : 0; planeNum < _allHeightPlanes.Count; ++planeNum)
+        foreach(int planeNum in randomPlanesOrder)
         {
             HeightPlane curHeightPlane = _allHeightPlanes[planeNum];
             // Make sure we aren't hitting the ceiling
