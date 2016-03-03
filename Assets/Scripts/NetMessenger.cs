@@ -340,6 +340,8 @@ public class NetMessenger : MonoBehaviour
         foreach(SemanticRelationship rel in _relationsToTest)
             jsonData["observed_relations"][rel.name] = rel.GetJsonString(a.observedObjs);
 
+        jsonData["avatar_position"] = a.transform.position.ToJson();
+        jsonData["avatar_rotation"] = a.transform.rotation.ToJson();
 //        // Add in captured frames
 //        int numValues = Mathf.Min(streamCapture.shadersList.Count, streamCapture.capturedImages.Count);
 //        JSONArray imagesArray = new JSONArray();

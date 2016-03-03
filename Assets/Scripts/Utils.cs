@@ -175,6 +175,16 @@ public static class UtilExtensionMethods
         return ret;
     }
 
+    public static JSONArray ToJson(this Quaternion q)
+    {
+        JSONArray ret = new JSONArray();
+        ret.Add(new JSONData(q.w));
+        ret.Add(new JSONData(q.x));
+        ret.Add(new JSONData(q.y));
+        ret.Add(new JSONData(q.z));
+        return ret;
+    }
+
     public static Bounds Rotate(this Bounds b, Quaternion rot)
     {
         Bounds newBounds = new Bounds();
