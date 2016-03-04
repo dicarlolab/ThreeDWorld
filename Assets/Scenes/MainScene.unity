@@ -198,7 +198,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   avatarPrefab: {fileID: 11477270, guid: 50a7c426a44ef4a42919f58ea9b8763c, type: 2}
+  portNumber: 5556
+  hostAddress: 127.0.0.1
   shouldCreateTestClient: 1
+  shouldCreateServer: 1
+  debugNetworkMessages: 0
 --- !u!1 &1667372658
 GameObject:
   m_ObjectHideFlags: 0

@@ -5387,6 +5387,7 @@ MonoBehaviour:
   isLight: 1
   attachMethod: 0
   generationTags: []
+  stackableAreas: []
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

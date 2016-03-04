@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using SimpleJSON;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -130,6 +131,30 @@ public static class UtilExtensionMethods
         return xfm.parent + "/" + xfm.name;
     }
 
+    public static JSONClass ReadJson(this NetMQ.NetMQMessage me, out string messageType)
+    {
+        messageType = null;
+        if (me != null && me.FrameCount > 0)
+        {
+            JSONClass ret = me[0].ToJson();
+            if (ret != null)
+                messageType = ret["msg_type"].ReadString(messageType);
+            return ret;
+        }
+        return null;
+    }
+
+    public static JSONClass ToJson(this NetMQ.NetMQFrame me)
+    {
+        string jsonString = me.ConvertToString();
+        if (jsonString != null)
+        {
+            JSONNode node = JSONData.Parse(jsonString);
+            return node as JSONClass;
+        }
+        return null;
+    }
+
     public static Vector3 Abs(this Vector3 v)
     {
         if (v.x < 0)
@@ -140,9 +165,36 @@ public static class UtilExtensionMethods
             v.z = -v.z;
         return v;
     }
-    public static HashSet<Object> s()
+
+    public static JSONArray ToJson(this Vector3 v)
     {
-        return null;
+        JSONArray ret = new JSONArray();
+        ret.Add(new JSONData(v.x));
+        ret.Add(new JSONData(v.y));
+        ret.Add(new JSONData(v.z));
+        return ret;
+    }
+
+    public static JSONArray ToJson(this Quaternion q)
+    {
+        JSONArray ret = new JSONArray();
+        ret.Add(new JSONData(q.w));
+        ret.Add(new JSONData(q.x));
+        ret.Add(new JSONData(q.y));
+        ret.Add(new JSONData(q.z));
+        return ret;
+    }
+
+    public static Bounds Rotate(this Bounds b, Quaternion rot)
+    {
+        Bounds newBounds = new Bounds();
+        newBounds.center = rot * b.center;
+        Vector3 newExtents = (rot * b.extents).Abs();
+        newExtents = Vector3.Max(newExtents, (rot * new Vector3(-b.extents.x, b.extents.y, b.extents.z)).Abs());
+        newExtents = Vector3.Max(newExtents, (rot * new Vector3(b.extents.x, -b.extents.y, b.extents.z)).Abs());
+        newExtents = Vector3.Max(newExtents, (rot * new Vector3(-b.extents.x, -b.extents.y, b.extents.z)).Abs());
+        newBounds.size = newExtents * 2f;
+        return newBounds;
     }
 
 #if UNITY_EDITOR
@@ -263,14 +315,14 @@ public static class UtilExtensionMethods
 
     public static bool ReadBool(this SimpleJSON.JSONNode node, bool defaultValue = false)
     {
-        if (node == null || node.Tag != SimpleJSON.JSONBinaryTag.Value)
+        if (node == null || node.Tag != SimpleJSON.JSONBinaryTag.BoolValue)
             return defaultValue;
         return node.AsBool;
     }
 
     public static bool ReadBool(this SimpleJSON.JSONNode node, ref bool overwriteValue)
     {
-        if (node == null || node.Tag != SimpleJSON.JSONBinaryTag.Value)
+        if (node == null || node.Tag != SimpleJSON.JSONBinaryTag.BoolValue)
             return false;
         overwriteValue = node.AsBool;
         return true;        

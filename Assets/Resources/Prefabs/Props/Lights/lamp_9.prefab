@@ -3694,6 +3694,7 @@ MonoBehaviour:
   isLight: 1
   attachMethod: 0
   generationTags: []
+  stackableAreas: []
 --- !u!114 &11485236
 MonoBehaviour:
   m_ObjectHideFlags: 1

@@ -34,7 +34,8 @@ public class GridInfo
 [System.Serializable]
 public class HeightPlane
 {
-    public float planeHeight;
+    public string name = "HeightPlane";
+    public float planeHeight = 0f;
     public int dimWidth;
     public int dimLength;
     public Vector3 cornerPos;
@@ -61,6 +62,11 @@ public class HeightPlane
     public Vector3 GridToWorld(Point2 pt)
     {
         return rotMat * (cornerPos + new Vector3(gridDim * pt.x, 0.0f, gridDim * pt.y));
+    }
+
+    public Vector3 GridToWorld(Vector2 vec)
+    {
+        return rotMat * (cornerPos + new Vector3(gridDim * vec.x, 0.0f, gridDim * vec.y));
     }
 
     public void InitForWall(WallInfo wall, bool whichSide)
@@ -142,6 +148,7 @@ public class HeightPlane
         int gridMaxX = Mathf.Clamp(Mathf.CeilToInt(maxVec.x / gridDim), 0, dimWidth - 1);
         int gridMinZ = Mathf.Clamp(Mathf.FloorToInt(minVec.z / gridDim), 0, dimLength - 1);
         int gridMaxZ = Mathf.Clamp(Mathf.CeilToInt(maxVec.z / gridDim), 0, dimLength - 1);
+//        Debug.LogFormat("RestrictBounds: ({0},{1}) to ({2},{3}), b: {4}, c: {5}, min:{6}, max:{7}", gridMinX, gridMinZ, gridMaxX, gridMaxZ, bounds, cornerPos, minVec, maxVec);
         UpdateGrid(gridMinX, gridMinZ, gridMaxX-gridMinX, gridMaxZ-gridMinZ);
     }
 

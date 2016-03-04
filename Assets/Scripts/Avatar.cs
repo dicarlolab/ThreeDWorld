@@ -69,6 +69,7 @@ public class Avatar : MonoBehaviour
         _request.shadersList = shaders;
         _request.capturedImages = new List<CameraStreamer.CapturedImage>();
         _myInput = new InputModule(this);
+        TeleportToValidPosition();
     }
 
     private void FixedUpdate()
@@ -114,6 +115,33 @@ public class Avatar : MonoBehaviour
         }
     }
 
+    public void TeleportToValidPosition()
+    {
+        // TODO: Have this check for more than a simple sphere of radius 0.5f for when we extend the avatar
+        const float radius = 0.5f;
+        Vector3 roomDim = ProceduralGeneration.Instance.roomDim;
+        int xDim = Mathf.FloorToInt(roomDim.x) - 1, zDim = Mathf.FloorToInt(roomDim.z) - 1;
+        float startHeight = roomDim.y - (1.1f * radius);
+        for (int i = 0; i < 1000; ++i)
+        {
+            Vector3 spawnTest = new Vector3(radius + Random.Range(0, xDim), startHeight, radius + Random.Range(0, zDim));
+            if (!Physics.CheckSphere(spawnTest, radius))
+            {
+                RaycastHit hit = new RaycastHit();
+                if (Physics.SphereCast(spawnTest, radius, Vector3.down, out hit, startHeight))
+                {
+                    spawnTest.y -= Random.Range(0, hit.distance);
+                    transform.position = spawnTest;
+                    return;
+                }
+
+                transform.position = spawnTest;
+                return;
+            }
+        }
+        Debug.LogWarning("Couldn't find a spot to place the avatar!");
+    }
+
     public void InitNetData(NetMessenger myNewMessenger, NetMQ.Sockets.ResponseSocket myNewServer)
     {
         Debug.Log("Calling InitNetData");
@@ -124,9 +152,9 @@ public class Avatar : MonoBehaviour
     }
 
     // Parse the input sent from the client and use it to update the controls for the next simulation segment
-    public void HandleNetInput(NetMQMessage msg)
+    public void HandleNetInput(SimpleJSON.JSONClass msgJsonData)
     {
-        _myInput.HandleNetInput(msg, ref _targetVelocity);
+        _myInput.HandleNetInput(msgJsonData, ref _targetVelocity);
 
         _readyForSimulation = true;
         // Now ready the output and run the simulation a few frames

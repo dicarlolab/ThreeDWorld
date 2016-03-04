@@ -1,14 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 /// <summary>
 /// Component that forces Unity Rigidbodies physics to only update
 /// when the simulation is telling it to. This ensures an even framerate/time
 /// for the agent.
 /// </summary>
-using System.Collections.Generic;
-
-
 public static class SimulationManager
 {
     enum MyLogLevel {
@@ -121,16 +119,37 @@ public static class SimulationManager
         }
     }
 
-    public static void ParseJsonInfo(string fileName)
+    public static string ReadConfigFile(string fileName)
     {
         if (string.IsNullOrEmpty(fileName))
-            return;
+            return null;
         if (!System.IO.File.Exists(fileName))
         {
             Debug.LogWarningFormat("Couldn't open configuration file at {0}", fileName);
-            return;
+            return null;
         }
-        string testConfigInfo = System.IO.File.ReadAllText(fileName);
+        return System.IO.File.ReadAllText(fileName);
+    }
+
+    public static void ParseJsonInfo(string fileName)
+    {
+        string testConfigInfo = ReadConfigFile(fileName);
+#if UNITY_EDITOR
+        // Read sample config if we have no config
+        if (testConfigInfo == null)
+        {
+            Debug.Log("Reading sample config");
+            const string configLoc = "Assets/Scripts/sample_config.txt";
+            TextAsset sampleConfig = UnityEditor.AssetDatabase.LoadAssetAtPath<TextAsset>(configLoc);
+            if (sampleConfig != null)
+            {
+                Debug.Log("Found sample config: " + sampleConfig.text);
+                testConfigInfo = sampleConfig.text;
+            }
+        }
+#endif
+        if (testConfigInfo == null)
+            return;
         _readJsonArgs = SimpleJSON.JSON.Parse(testConfigInfo) as SimpleJSON.JSONClass;
         if (_readJsonArgs!= null)
         {
@@ -138,7 +157,7 @@ public static class SimulationManager
             ReadLogLevel(_readJsonArgs["stack_log_level"], ref stackLogLevel);
             logFileLocation = _readJsonArgs["output_log_file"].ReadString(logFileLocation);
         }
-        Debug.LogFormat("Completed reading configuration at {0}", fileName);
+        Debug.LogFormat("Completed reading configuration at {0}:\n{1}", fileName, _readJsonArgs.ToJSON(0));
     }
 
     // Should use argument -executeMethod SimulationManager.Init
@@ -170,6 +189,11 @@ public static class SimulationManager
         ParseJsonInfo(configLocation);
         if (argsConfig == null)
             _readJsonArgs = new SimpleJSON.JSONClass();
+
+        // Set resolution
+        int screenWidth = _readJsonArgs["screen_width"].ReadInt(Screen.width);
+        int screenHeight = _readJsonArgs["screen_height"].ReadInt(Screen.height);
+        Screen.SetResolution(screenWidth, screenHeight, Screen.fullScreen);
 
         // Init NetMessenger
         myNetMessenger = GameObject.FindObjectOfType<NetMessenger>();

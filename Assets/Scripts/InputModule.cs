@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using NetMQ;
+using SimpleJSON;
 
 public abstract class AbstractInputModule
 {
@@ -18,10 +19,10 @@ public abstract class AbstractInputModule
     }
 
     // Read controller input and translate it into commands from an agent
-    public abstract void SimulateInputFromController(ref NetMQMessage newMsg);
+    public abstract void SimulateInputFromController(ref JSONClass responseMsgData);
     
     // Parse the input sent from the client and use it to update the controls for the next simulation segment
-    public abstract void HandleNetInput(NetMQMessage msg, ref Vector3 targetVel);
+    public abstract void HandleNetInput(JSONClass msgJsonData, ref Vector3 targetVel);
 
     public abstract void OnFixedUpdate();
 #region Encoding/Decoding
@@ -71,7 +72,7 @@ public class InputModule : AbstractInputModule
 
     public InputModule(Avatar myAvatar) : base(myAvatar) {}
 
-    public override void SimulateInputFromController(ref NetMQMessage newMsg)
+    public override void SimulateInputFromController(ref JSONClass data)
     {
         // Set movement
         Quaternion curRotation = _myAvatar.transform.rotation;
@@ -86,6 +87,9 @@ public class InputModule : AbstractInputModule
         targetRotationVel.x = -Input.GetAxis("Vertical2");
         targetRotationVel.y = Input.GetAxis("Horizontal2");
         targetRotationVel.z = -Input.GetAxis("HorizontalD");
+
+        if (Input.GetKey(KeyCode.Space))
+            data["teleport_random"] = new JSONData(true);
         
 //        // Convert from relative coordinates
 //        Quaternion test = Quaternion.identity;
@@ -93,22 +97,20 @@ public class InputModule : AbstractInputModule
 //        test = test * Quaternion.AngleAxis(targetRotationVel.x, curRotation * Vector3.left);
 //        test = test * Quaternion.AngleAxis(targetRotationVel.y, curRotation * Vector3.up);
 //        targetRotationVel = test.eulerAngles;
-        
-        EncodeVector01(targetVelocity, newMsg);
-        EncodeVector01(targetRotationVel, newMsg);
+
+        data["vel"] = targetVelocity.ToJson();
+        data["ang_vel"] = targetRotationVel.ToJson();
     }
 
     // Parse the input sent from the client and use it to update the controls for the next simulation segment
-    public override void HandleNetInput(NetMQMessage msg, ref Vector3 targetVel)
+    public override void HandleNetInput(JSONClass jsonData, ref Vector3 targetVel)
     {
-        float moveSpeed = _myAvatar.moveSpeed;
-        float rotSpeed = _myAvatar.rotSpeed;
-        int curIndex = 1;
         // Get movement
-        cacheVel = moveSpeed * ReadVector01(msg, ref curIndex);
+        cacheVel = _myAvatar.moveSpeed * jsonData["vel"].ReadVector3(Vector3.zero);
         targetVel = cacheVel;
-
-        cacheAngVel = rotSpeed * ReadVector01(msg, ref curIndex);
+        cacheAngVel = _myAvatar.rotSpeed * jsonData["ang_vel"].ReadVector3(Vector3.zero);
+        if (jsonData["teleport_random"].ReadBool(false))
+            _myAvatar.TeleportToValidPosition();
     }
 
     public override void OnFixedUpdate()

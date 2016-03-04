@@ -442,6 +442,18 @@ namespace SimpleJSON
                             Token += aJSON [i];
                         break;
                         
+                    case '/':
+                        if (!QuoteMode && aJSON.Length > i + 1 && aJSON [i + 1] == '/')
+                        {
+                            char C = aJSON[++i];
+                            while(i < aJSON.Length && C != '\n' && C != '\r')
+                            {
+                                C = aJSON[++i];
+                            }
+                        }
+                        else
+                            Token += aJSON [i]; 
+                        break;
                     case '\\':
                         ++i;
                         if (QuoteMode) {
@@ -723,6 +735,11 @@ namespace SimpleJSON
             get { return m_List.Count; }
         }
         
+        public override JSONBinaryTag Tag
+        {
+            get { return JSONBinaryTag.Array; }
+        }
+
         public override void Add (string aKey, JSONNode aItem)
         {
             m_List.Add (aItem);
@@ -848,7 +865,11 @@ namespace SimpleJSON
             get { return m_Dict.Count; }
         }
         
-        
+        public override JSONBinaryTag Tag
+        {
+            get { return JSONBinaryTag.Class; }
+        }
+
         public override void Add (string aKey, JSONNode aItem)
         {
             if (!string.IsNullOrEmpty (aKey)) {
@@ -1010,6 +1031,7 @@ namespace SimpleJSON
                 case JSONBinaryTag.DoubleValue:
                 case JSONBinaryTag.FloatValue:
                 case JSONBinaryTag.IntValue:
+                case JSONBinaryTag.BoolValue:
                     return m_Data;
                 case JSONBinaryTag.Value:
                     return string.Format ("\"{0}\"", Escape (m_Data));

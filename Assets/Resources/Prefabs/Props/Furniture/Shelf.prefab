@@ -508,6 +508,25 @@ MonoBehaviour:
   isLight: 0
   attachMethod: 0
   generationTags: []
+  stackableAreas:
+  - rotationAngle: 0
+    bottomCenter: {x: -0.03, y: -2.7, z: 0}
+    dimensions: {x: 6.7, y: 1.27, z: 1.23}
+  - rotationAngle: 0
+    bottomCenter: {x: -0.03, y: -1.25, z: 0}
+    dimensions: {x: 6.7, y: 0.85, z: 1.23}
+  - rotationAngle: 0
+    bottomCenter: {x: -0.03, y: -0.22, z: 0}
+    dimensions: {x: 6.7, y: 0.86, z: 1.23}
+  - rotationAngle: 0
+    bottomCenter: {x: -0.03, y: 0.81, z: 0}
+    dimensions: {x: 6.7, y: 0.79, z: 1.23}
+  - rotationAngle: 0
+    bottomCenter: {x: -0.03, y: 1.77, z: 0}
+    dimensions: {x: 6.7, y: 0.55, z: 1.23}
+  - rotationAngle: 0
+    bottomCenter: {x: -0.03, y: 2.48, z: 0}
+    dimensions: {x: 6.7, y: 0, z: 1.23}
 --- !u!114 &11449262
 MonoBehaviour:
   m_ObjectHideFlags: 1
