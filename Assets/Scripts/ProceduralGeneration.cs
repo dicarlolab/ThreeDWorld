@@ -517,6 +517,20 @@ public class ProceduralGeneration : MonoBehaviour
             newInstance.transform.rotation = modifiedRotation * newInstance.transform.rotation;
             newInstance.name = string.Format("{0} #{1} on {2}", newPrefab.name, (_curRoom != null) ? _curRoom.childCount.ToString() : "?", targetHeightPlane.name);
 
+			print("LUMP");
+			print(newInstance.name);
+			print(newPrefab.name);
+			print(newInstance.GetComponent<Renderer>());
+			if (newInstance.GetComponent<Renderer>() != null)
+			{
+				print(newInstance.GetComponent<Renderer>().material);
+				newInstance.GetComponent<Renderer>().material.SetInt("_idval", _curRoom.childCount);
+				print(newInstance.GetComponent<Renderer>().material.GetInt("_idval"));
+			} else 
+			{
+				print("null material");
+			}
+
             // Create test cube
             if (DEBUG_testCubePrefab != null)
             {
