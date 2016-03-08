@@ -19,6 +19,8 @@ public class Avatar : MonoBehaviour
     public float rotSpeed = 5.0f;
     // The range for which this avatar can observe SemanticObject's
     public float observedRange = 25.0f;
+    // send scene info?
+	public bool sendSceneInfo = false;
 
     private AbstractInputModule _myInput = null;
     private List<SemanticObject> _observedObjs = new List<SemanticObject>();

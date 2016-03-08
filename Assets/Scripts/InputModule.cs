@@ -106,6 +106,7 @@ public class InputModule : AbstractInputModule
     public override void HandleNetInput(JSONClass jsonData, ref Vector3 targetVel)
     {
         // Get movement
+        _myAvatar.sendSceneInfo = jsonData["sendSceneInfo"].ReadBool(false);
         cacheVel = _myAvatar.moveSpeed * jsonData["vel"].ReadVector3(Vector3.zero);
         targetVel = cacheVel;
         cacheAngVel = _myAvatar.rotSpeed * jsonData["ang_vel"].ReadVector3(Vector3.zero);
