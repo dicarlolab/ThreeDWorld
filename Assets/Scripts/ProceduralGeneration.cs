@@ -1,4 +1,7 @@
-﻿using UnityEngine;
+﻿//TODO:  -- more generic way to deterine object identity
+//       -- assign different identity to different walls
+ 
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -519,7 +522,7 @@ public class ProceduralGeneration : MonoBehaviour
 
 			if (newInstance.GetComponent<Renderer>() != null)
 			{
-				newInstance.GetComponent<Renderer>().material.SetInt("_idval", _curRoom.childCount);
+				newInstance.GetComponent<Renderer>().material.SetInt("_idval", _curRoom.childCount + 2);
 			} 
 
             // Create test cube
@@ -586,10 +589,12 @@ public class ProceduralGeneration : MonoBehaviour
         GameObject floor = WallInfo.CreateBoxMesh(floorStart, floorSize, floorMaterial, "Floor", _curRoom);
         floor.AddComponent<SemanticObjectSimple>();
         floor.GetComponent<Rigidbody>().isKinematic = true;
+        floor.GetComponent<Renderer>().material.SetInt("_idval", 1);
 
         GameObject top = WallInfo.CreateBoxMesh(ceilingStart, floorSize, ceilingMaterial, "Ceiling", _curRoom);
         top.AddComponent<SemanticObjectSimple>();
         top.GetComponent<Rigidbody>().isKinematic = true;
+        top.GetComponent<Renderer>().material.SetInt("_idval", 2);
 
         // Setup floor plane
         _allHeightPlanes.Clear();

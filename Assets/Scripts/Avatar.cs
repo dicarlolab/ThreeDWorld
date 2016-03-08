@@ -123,7 +123,7 @@ public class Avatar : MonoBehaviour
         const float radius = 0.5f;
         Vector3 roomDim = ProceduralGeneration.Instance.roomDim;
         int xDim = Mathf.FloorToInt(roomDim.x) - 1, zDim = Mathf.FloorToInt(roomDim.z) - 1;
-        float startHeight = roomDim.y - (1.1f * radius);
+        float startHeight = (1.1f * radius);
         for (int i = 0; i < 1000; ++i)
         {
             Vector3 spawnTest = new Vector3(radius + Random.Range(0, xDim), startHeight, radius + Random.Range(0, zDim));
@@ -132,12 +132,14 @@ public class Avatar : MonoBehaviour
                 RaycastHit hit = new RaycastHit();
                 if (Physics.SphereCast(spawnTest, radius, Vector3.down, out hit, startHeight))
                 {
-                    spawnTest.y -= Random.Range(0, hit.distance);
+                    spawnTest.y += Random.Range(0, hit.distance);
                     transform.position = spawnTest;
+                    transform.rotation = Quaternion.identity;
                     return;
                 }
 
                 transform.position = spawnTest;
+                transform.rotation = Quaternion.identity;
                 return;
             }
         }
