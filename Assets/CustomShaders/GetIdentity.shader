@@ -1,6 +1,6 @@
 ﻿Shader "Get Identity" {
 	Properties {
-		_idval ("Object Identity", Float) = 0.0
+		_idval ("Object Identity", Float) = 1.0
 	}
     SubShader {
         Pass {
@@ -22,7 +22,7 @@
             {
                 v2f o;
                 o.pos = mul (UNITY_MATRIX_MVP, v.vertex);
-                o.color = fixed3(_idval, 0, 0);
+                o.color = fixed3(1./_idval, 0, 0);
                 return o;
             }
 

@@ -524,8 +524,8 @@ public class ProceduralGeneration : MonoBehaviour
 			if (newInstance.GetComponent<Renderer>() != null)
 			{
 				print(newInstance.GetComponent<Renderer>().material);
-				newInstance.GetComponent<Renderer>().material.SetInt("_idval", _curRoom.childCount);
-				print(newInstance.GetComponent<Renderer>().material.GetInt("_idval"));
+				newInstance.GetComponent<Renderer>().material.SetFloat("_idval", _curRoom.childCount);
+				print(newInstance.GetComponent<Renderer>().material.GetFloat("_idval"));
 			} else 
 			{
 				print("null material");
