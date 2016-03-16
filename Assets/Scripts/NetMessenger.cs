@@ -272,10 +272,10 @@ public class NetMessenger : MonoBehaviour
         switch(msgHeader.ToString())
         {
             case MSG_S_ConfirmClientJoin:
-                SimulateClientInput(client, jsonData);
+                SimulateClientInput(client, jsonData, msg);
                 break;
             case MSG_S_FrameData:
-                SimulateClientInput(client, jsonData);
+                SimulateClientInput(client, jsonData, msg);
                 break;
             default:
                 Debug.LogWarningFormat("Invalid message from server! Unknown msg_type '{0}'\n{1}", msgHeader, jsonData.ToJSON(0));
@@ -308,21 +308,21 @@ public class NetMessenger : MonoBehaviour
         return output;
     }
     
-    public void SimulateClientInput(RequestSocket client, JSONClass jsonData)
+    public void SimulateClientInput(RequestSocket client, JSONClass jsonData, NetMQMessage msg)
     {
         ResponseSocket server = GetServerForClient(client);
         Avatar myAvatar = _avatars[server];
 
-//        if (SimulationManager.argsConfig["save_out_debug_pngs"].ReadBool(false))
-//        {
-//            // Just save out the png data to the local filesystem(Debugging code only)
-//            if (framedDataMsg.FrameCount > 1)
-//            {
-//                for(int i = 0; i < myAvatar.shaders.Count; ++i)
-//                    CameraStreamer.SaveOutImages(framedDataMsg[1 + i].ToByteArray(), i);
-//                CameraStreamer.fileIndex++;
-//            }
-//        }
+        if (SimulationManager.argsConfig["save_out_debug_pngs"].ReadBool(false))
+        {
+            // Just save out the png data to the local filesystem(Debugging code only)
+            if (msg.FrameCount > 1)
+            {
+                for(int i = 0; i < myAvatar.shaders.Count; ++i)
+                    Debug.LogFormat("Saving out: {0}", CameraStreamer.SaveOutImages(msg[msg.FrameCount + i - myAvatar.shaders.Count].ToByteArray(), i));
+                CameraStreamer.fileIndex++;
+            }
+        }
 
         // Send input message
         JSONClass msgData = CreateMsgJson(MSG_R_FrameInput);
