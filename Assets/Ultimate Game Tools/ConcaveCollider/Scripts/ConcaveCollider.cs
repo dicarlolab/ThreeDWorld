@@ -11,22 +11,29 @@ public class ConcaveCollider : MonoBehaviour
     {
         Normal,
         Fast,
+        VHACD,
         Legacy
     }
-                       public EAlgorithm       Algorithm                   = EAlgorithm.Normal;
-                       public int              MaxHullVertices             = 128;
+                       public EAlgorithm       Algorithm                   = EAlgorithm.VHACD;
+                       public int              MaxHullVertices             = 64;
                        public int              MaxHulls                    = 128;
                        public float            InternalScale               = 10.0f;
-                       public float            Precision                   = 1.0f;
+                       public float            Precision                   = 0.8f;
                        public bool             CreateMeshAssets            = true;
                        public bool             CreateHullMesh              = false;
-                       public bool             DebugLog                    = false;
+                       public bool             DebugLog                    = true;
                        public int              LegacyDepth                 = 6;
                        public bool             ShowAdvancedOptions         = false;
                        public float            MinHullVolume               = 0.00001f;
-                       public float            BackFaceDistanceFactor      = 0.02f;
+                       public float            BackFaceDistanceFactor      = 0.2f;
                        public bool             NormalizeInputMesh          = false;
                        public bool             ForceNoMultithreading       = false;
+
+                       public float            VHACD_Concavity             = 0.001f;
+                       public float            VHACD_MinVolumePerCH        = 0.001f;
+                       public int              VHACD_NumVoxels             = 80000;
+                       public int              VHACD_MaxVerticesPerCH      = 64;
+                       public bool             VHACD_NormalizeMesh         = false;
 
                        public PhysicMaterial   PhysMaterial                = null;
                        public bool             IsTrigger                   = false;
@@ -130,14 +137,23 @@ public class ConcaveCollider : MonoBehaviour
 
     public void CancelComputation()
     {
-        CancelConvexDecomposition();
+        if(Algorithm == EAlgorithm.VHACD)
+        {
+            ConcaveColliderDll20.CancelConvexDecomposition();
+        }
+        else
+        {
+            CancelConvexDecomposition();
+        }
     }
 
 #if UNITY_EDITOR
+
     public bool ComputeHulls(LogDelegate log, ProgressDelegate progress)
     {
         bool hadError = false;
         string strMeshAssetPath = "";
+
         if(CreateMeshAssets)
         {
             string uniqueID = null;;
@@ -173,54 +189,112 @@ public class ConcaveCollider : MonoBehaviour
             bForceNoMultithreading = true;
         }
 
-        DllInit(!bForceNoMultithreading);
+        SConvexDecompositionInfoInOut      info      = new SConvexDecompositionInfoInOut();
+        SConvexDecompositionInfoInOutVHACD infoVHACD = new SConvexDecompositionInfoInOutVHACD();
 
-        if(log != null)
+        if(Algorithm == EAlgorithm.VHACD)
         {
-            SetLogFunctionPointer(Marshal.GetFunctionPointerForDelegate(log));
+            ConcaveColliderDll20.DllInit(!bForceNoMultithreading);
+
+            if(log != null)
+            {
+                ConcaveColliderDll20.SetLogFunctionPointer(Marshal.GetFunctionPointerForDelegate(log));
+            }
+            else
+            {
+                ConcaveColliderDll20.SetLogFunctionPointer(IntPtr.Zero);
+            }
+
+            if(progress != null)
+            {
+                ConcaveColliderDll20.SetProgressFunctionPointer(Marshal.GetFunctionPointerForDelegate(progress));
+            }
+            else
+            {
+                ConcaveColliderDll20.SetProgressFunctionPointer(IntPtr.Zero);
+            }
         }
         else
         {
-            SetLogFunctionPointer(IntPtr.Zero);
-        }
+            DllInit(!bForceNoMultithreading);
 
-        if(progress != null)
-        {
-            SetProgressFunctionPointer(Marshal.GetFunctionPointerForDelegate(progress));
-        }
-        else
-        {
-            SetProgressFunctionPointer(IntPtr.Zero);
-        }
+            if(log != null)
+            {
+                SetLogFunctionPointer(Marshal.GetFunctionPointerForDelegate(log));
+            }
+            else
+            {
+                SetLogFunctionPointer(IntPtr.Zero);
+            }
 
-        SConvexDecompositionInfoInOut info = new SConvexDecompositionInfoInOut();
+            if(progress != null)
+            {
+                SetProgressFunctionPointer(Marshal.GetFunctionPointerForDelegate(progress));
+            }
+            else
+            {
+                SetProgressFunctionPointer(IntPtr.Zero);
+            }
+        }
 
         int nMeshCount = 0;
+
+        bool bDllCloseVHACD = false;
 
         if(theMesh)
         {
             if(theMesh.sharedMesh)
             {
-                info.uMaxHullVertices        = (uint)(Mathf.Max(3, MaxHullVertices));
-                info.uMaxHulls               = (uint)(Mathf.Max(1, MaxHulls));
-                info.fPrecision              = 1.0f - Mathf.Clamp01(Precision);
-                info.fBackFaceDistanceFactor = BackFaceDistanceFactor;
-                info.uLegacyDepth            = Algorithm == EAlgorithm.Legacy ? (uint)(Mathf.Max(1, LegacyDepth)) : 0;
-                info.uNormalizeInputMesh     = NormalizeInputMesh == true ? (uint)1 : (uint)0;
-                info.uUseFastVersion         = Algorithm == EAlgorithm.Fast ? (uint)1 : (uint)0;
-
-                info.uTriangleCount          = (uint)theMesh.sharedMesh.triangles.Length / 3;
-                info.uVertexCount            = (uint)theMesh.sharedMesh.vertexCount;
-
-                if(DebugLog)
+                if(Algorithm == EAlgorithm.VHACD)
                 {
-                    Debug.Log(string.Format("Processing mesh: {0} triangles, {1} vertices.", info.uTriangleCount, info.uVertexCount));
+	                  infoVHACD.fConcavity               = VHACD_Concavity;
+	                  infoVHACD.fAlpha                   = 0.05f;
+	                  infoVHACD.fBeta                    = 0.05f;
+	                  infoVHACD.fGamma                   = 0.05f;
+	                  infoVHACD.fDelta                   = 0.0005f;
+	                  infoVHACD.fMinVolumePerCH          = VHACD_MinVolumePerCH;
+	                  infoVHACD.uResolution              = (uint)VHACD_NumVoxels;
+	                  infoVHACD.uMaxNumVerticesPerCH     = (uint)VHACD_MaxVerticesPerCH;
+	                  infoVHACD.nDepth                   = 20;
+	                  infoVHACD.nPlaneDownsampling       = 4;
+	                  infoVHACD.nConvexhullDownsampling  = 4;
+	                  infoVHACD.nPca                     = VHACD_NormalizeMesh ? 1 : 0;
+	                  infoVHACD.nMode                    = 0;
+	                  infoVHACD.nConvexhullApproximation = 1;
+	                  infoVHACD.nOclAcceleration         = 1;
+
+                    infoVHACD.uTriangleCount          = (uint)theMesh.sharedMesh.triangles.Length / 3;
+                    infoVHACD.uVertexCount            = (uint)theMesh.sharedMesh.vertexCount;
+
+                    if(DebugLog)
+                    {
+                        Debug.Log(string.Format("Processing mesh: {0} triangles, {1} vertices.", infoVHACD.uTriangleCount, infoVHACD.uVertexCount));
+                    }
                 }
+                else
+                {
+                    info.uMaxHullVertices        = (uint)(Mathf.Max(3, MaxHullVertices));
+                    info.uMaxHulls               = (uint)(Mathf.Max(1, MaxHulls));
+                    info.fPrecision              = 1.0f - Mathf.Clamp01(Precision);
+                    info.fBackFaceDistanceFactor = BackFaceDistanceFactor;
+                    info.uLegacyDepth            = Algorithm == EAlgorithm.Legacy ? (uint)(Mathf.Max(1, LegacyDepth)) : 0;
+                    info.uNormalizeInputMesh     = NormalizeInputMesh == true ? (uint)1 : (uint)0;
+                    info.uUseFastVersion         = Algorithm == EAlgorithm.Fast ? (uint)1 : (uint)0;
+
+                    info.uTriangleCount          = (uint)theMesh.sharedMesh.triangles.Length / 3;
+                    info.uVertexCount            = (uint)theMesh.sharedMesh.vertexCount;
+
+                    if(DebugLog)
+                    {
+                        Debug.Log(string.Format("Processing mesh: {0} triangles, {1} vertices.", info.uTriangleCount, info.uVertexCount));
+                    }
+                }
+
 
                 Vector3[] av3Vertices = theMesh.sharedMesh.vertices;
                 float fMeshRescale    = 1.0f;
 
-                if(NormalizeInputMesh == false && InternalScale > 0.0f)
+                if(NormalizeInputMesh == false && InternalScale > 0.0f && Algorithm != EAlgorithm.VHACD)
                 {
                     av3Vertices = new Vector3[theMesh.sharedMesh.vertexCount];
                     float fMaxDistSquared = 0.0f;
@@ -248,13 +322,29 @@ public class ConcaveCollider : MonoBehaviour
                     }
                 }
 
-                if(DoConvexDecomposition(ref info, av3Vertices, theMesh.sharedMesh.triangles))
+                bool bConvexDecompositionOK = false;
+
+                int nHullsOut = 0;
+
+                if(Algorithm == EAlgorithm.VHACD)
                 {
-                    if(info.nHullsOut > 0)
+                    bConvexDecompositionOK = ConcaveColliderDll20.DoConvexDecomposition(ref infoVHACD, av3Vertices, theMesh.sharedMesh.triangles);
+                    nHullsOut = infoVHACD.nHullsOut;
+                    bDllCloseVHACD = true;
+                }
+                else
+                {
+                    bConvexDecompositionOK = DoConvexDecomposition(ref info, av3Vertices, theMesh.sharedMesh.triangles);
+                    nHullsOut = info.nHullsOut;
+                }
+
+                if(bConvexDecompositionOK)
+                {
+                    if(nHullsOut > 0)
                     {
                         if(DebugLog)
                         {
-                            Debug.Log(string.Format("Created {0} hulls", info.nHullsOut));
+                            Debug.Log(string.Format("Created {0} hulls", nHullsOut));
                         }
 
                         DestroyHulls();
@@ -264,9 +354,9 @@ public class ConcaveCollider : MonoBehaviour
                             collider.enabled = false;
                         }
 
-                        m_aGoHulls = new GameObject[info.nHullsOut];
+                        m_aGoHulls = new GameObject[nHullsOut];
                     }
-                    else if(info.nHullsOut == 0)
+                    else if(nHullsOut == 0)
                     {
                         hadError = true;
                         if(log != null) log("Error: No hulls were generated");
@@ -284,10 +374,18 @@ public class ConcaveCollider : MonoBehaviour
                         hullParent.transform.SetParent(this.transform, false);
                     }
 
-                    for(int nHull = 0; nHull < info.nHullsOut; nHull++)
+                    for(int nHull = 0; nHull < nHullsOut; nHull++)
                     {
                         SConvexDecompositionHullInfo hullInfo = new SConvexDecompositionHullInfo();
-                        GetHullInfo((uint)nHull, ref hullInfo);
+
+                        if(Algorithm == EAlgorithm.VHACD)
+                        {
+                            ConcaveColliderDll20.GetHullInfo((uint)nHull, ref hullInfo);
+                        }
+                        else
+                        {
+                            GetHullInfo((uint)nHull, ref hullInfo);
+                        }
 
                         if(hullInfo.nTriangleCount > 0)
                         {
@@ -303,23 +401,30 @@ public class ConcaveCollider : MonoBehaviour
                             float fHullVolume     = -1.0f;
                             float fInvMeshRescale = 1.0f / fMeshRescale;
 
-                            FillHullMeshData((uint)nHull, ref fHullVolume, hullIndices, hullVertices);
+                            if(Algorithm == EAlgorithm.VHACD)
+                            {
+                                ConcaveColliderDll20.FillHullMeshData((uint)nHull, ref fHullVolume, hullIndices, hullVertices);
+                            }
+                            else
+                            {
+                                FillHullMeshData((uint)nHull, ref fHullVolume, hullIndices, hullVertices);
+                            }
 
-                            if(NormalizeInputMesh == false && InternalScale > 0.0f)
+                            if(NormalizeInputMesh == false && InternalScale > 0.0f && Algorithm != EAlgorithm.VHACD)
                             {
                                 fInvMeshRescale = 1.0f / fMeshRescale;
 
                                 for(int nVertex = 0; nVertex < hullVertices.Length; nVertex++)
                                 {
                                     hullVertices[nVertex] *= fInvMeshRescale;
-                                    hullVertices[nVertex]  = Vector3.Scale(hullVertices[nVertex], transform.lossyScale);
+                                    hullVertices[nVertex]  = Vector3.Scale(hullVertices[nVertex], transform.localScale);
                                 }
                             }
                             else
                             {
                                 for(int nVertex = 0; nVertex < hullVertices.Length; nVertex++)
                                 {
-                                    hullVertices[nVertex] = Vector3.Scale(hullVertices[nVertex], transform.lossyScale);
+                                    hullVertices[nVertex] = Vector3.Scale(hullVertices[nVertex], transform.localScale);
                                 }
                             }
 
@@ -331,7 +436,7 @@ public class ConcaveCollider : MonoBehaviour
 
                             fHullVolume *= Mathf.Pow(fInvMeshRescale, 3.0f);
                             
-                            if(fHullVolume < MinHullVolume)
+                            if(fHullVolume < MinHullVolume && Algorithm != EAlgorithm.VHACD)
                             {
                                 if(DebugLog)
                                 {
@@ -405,7 +510,7 @@ public class ConcaveCollider : MonoBehaviour
                                     {
                                         if(progress != null)
                                         {
-                                            progress("Creating mesh assets", info.nHullsOut > 1 ? (nHull / (info.nHullsOut - 1.0f)) * 100.0f : 100.0f);
+                                            progress("Creating mesh assets", nHullsOut > 1 ? (nHull / (nHullsOut - 1.0f)) * 100.0f : 100.0f);
                                         }
 
                                         // Avoid some shader warnings
@@ -454,7 +559,17 @@ public class ConcaveCollider : MonoBehaviour
             if(log != null) log("Error: " + this.name + " has no mesh");
         }
 
-        DllClose();
+        if(Algorithm == EAlgorithm.VHACD)
+        {
+            if(bDllCloseVHACD)
+            {
+                ConcaveColliderDll20.DllClose();
+            }
+        }
+        else
+        {
+            DllClose();
+        }
         return !hadError;
     }
 
@@ -518,6 +633,7 @@ public class ConcaveCollider : MonoBehaviour
             return;
         ConcaveCollider current = obj.GetComponent<ConcaveCollider>();
         bool hadComponent = current != null;
+        Debug.LogWarningFormat("Processing mesh: {0}", obj.name);
         if (current == null)
             current = obj.AddComponent<ConcaveCollider>();
         try {
@@ -530,6 +646,7 @@ public class ConcaveCollider : MonoBehaviour
         {
             Debug.LogWarningFormat("Error computing hulls for {0}: {1}\n{2}", obj.name, e.Message, e.StackTrace);
         }
+        Debug.LogWarningFormat("Finished processing mesh: {0}", obj.name);
         UnityEditor.EditorUtility.ClearProgressBar();
         if (!hadComponent)
             DestroyImmediate(current, true);
@@ -550,6 +667,8 @@ public class ConcaveCollider : MonoBehaviour
     [StructLayout(LayoutKind.Sequential)]
     struct SConvexDecompositionInfoInOut
     {
+        // In parameters
+
         public uint     uMaxHullVertices;
         public uint     uMaxHulls;
         public float    fPrecision;
@@ -564,6 +683,35 @@ public class ConcaveCollider : MonoBehaviour
         // Out parameters
 
         public int      nHullsOut;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    struct SConvexDecompositionInfoInOutVHACD
+    {
+    	  // In parameters
+
+	      public uint  uTriangleCount;
+	      public uint  uVertexCount;
+
+	      public float fConcavity;
+	      public float fAlpha;
+	      public float fBeta;
+	      public float fGamma;
+	      public float fDelta;
+	      public float fMinVolumePerCH;
+	      public uint  uResolution;
+	      public uint  uMaxNumVerticesPerCH;
+	      public int   nDepth;
+	      public int   nPlaneDownsampling;
+	      public int   nConvexhullDownsampling;
+	      public int   nPca;
+	      public int   nMode;
+	      public int   nConvexhullApproximation;
+	      public int   nOclAcceleration;
+
+	      // Out parameters
+
+	      public int   nHullsOut;
     }
 
     [StructLayout(LayoutKind.Sequential)]
@@ -596,4 +744,33 @@ public class ConcaveCollider : MonoBehaviour
 
     [DllImport("ConvexDecompositionDll")]
     private static extern bool FillHullMeshData(uint uHullIndex, ref float pfVolumeOut, int[] pnIndicesOut, Vector3[] pfVerticesOut);
+
+    private class ConcaveColliderDll20
+    {
+        // Version 2.0 with VHACD
+
+        [DllImport("ConvexDecompositionDll20")]
+        public static extern void DllInit(bool bUseMultithreading);
+
+        [DllImport("ConvexDecompositionDll20")]
+        public static extern void DllClose();
+
+        [DllImport("ConvexDecompositionDll20")]
+        public static extern void SetLogFunctionPointer(IntPtr pfnUnity3DLog);
+
+        [DllImport("ConvexDecompositionDll20")]
+        public static extern void SetProgressFunctionPointer(IntPtr pfnUnity3DProgress);
+
+        [DllImport("ConvexDecompositionDll20")]
+        public static extern void CancelConvexDecomposition();
+
+        [DllImport("ConvexDecompositionDll20")]
+        public static extern bool DoConvexDecomposition(ref SConvexDecompositionInfoInOutVHACD infoInOut, Vector3[] pfVertices, int[] puIndices);
+
+        [DllImport("ConvexDecompositionDll20")]
+        public static extern bool GetHullInfo(uint uHullIndex, ref SConvexDecompositionHullInfo infoOut);
+
+        [DllImport("ConvexDecompositionDll20")]
+        public static extern bool FillHullMeshData(uint uHullIndex, ref float pfVolumeOut, int[] pnIndicesOut, Vector3[] pfVerticesOut);
+    }
 }
