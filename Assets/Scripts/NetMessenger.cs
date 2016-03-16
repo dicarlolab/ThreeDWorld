@@ -234,6 +234,12 @@ public class NetMessenger : MonoBehaviour
     {
         // Setup new avatar object from prefab
         Avatar newAvatar = UnityEngine.Object.Instantiate<Avatar>(avatarPrefab);
+        if (_avatars.ContainsKey(server))
+        {
+            Avatar oldAvatar = _avatars[server];
+            if (oldAvatar != null && oldAvatar.gameObject != null)
+                GameObject.Destroy(_avatars[server].gameObject);
+        }
         _avatars[server] = newAvatar;
         newAvatar.InitNetData(this, server);
 //

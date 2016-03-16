@@ -114,6 +114,13 @@ public class CameraStreamer : MonoBehaviour
             request.callbackFunc(request);
     }
 
+    private void OnDisable()
+    {
+        if (_textureCam != null && _textureCam.gameObject != null)
+            GameObject.Destroy(_textureCam.gameObject);
+        _textureCam = null;
+    }
+
     private CapturedImage TakeSnapshotNow(Shader targetShader)
     {
         // Create a new camera if we need to that we will be manually rendering
