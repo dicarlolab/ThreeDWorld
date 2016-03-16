@@ -22,6 +22,12 @@ public class ConcaveColliderEditor : Editor
     SerializedProperty PropIsTrigger;
     SerializedProperty PropMaterial;
 
+    SerializedProperty PropVHACD_Concavity;
+    SerializedProperty PropVHACD_MinVolumePerCH;
+    SerializedProperty PropVHACD_NumVoxels;
+    SerializedProperty PropVHACD_MaxVerticesPerCH;
+    SerializedProperty PropVHACD_NormalizeMesh;
+
     ConcaveCollider m_concaveCollider = null;
 
     void OnEnable()
@@ -42,6 +48,12 @@ public class ConcaveColliderEditor : Editor
         PropForceNoMultithreading  = serializedObject.FindProperty("ForceNoMultithreading");
         PropIsTrigger              = serializedObject.FindProperty("IsTrigger");
         PropMaterial               = serializedObject.FindProperty("PhysMaterial");
+
+        PropVHACD_Concavity        = serializedObject.FindProperty("VHACD_Concavity");
+        PropVHACD_MinVolumePerCH   = serializedObject.FindProperty("VHACD_MinVolumePerCH");
+        PropVHACD_NumVoxels        = serializedObject.FindProperty("VHACD_NumVoxels");
+        PropVHACD_MaxVerticesPerCH = serializedObject.FindProperty("VHACD_MaxVerticesPerCH");
+        PropVHACD_NormalizeMesh    = serializedObject.FindProperty("VHACD_NormalizeMesh");
     }
 
     void Log(string message)
@@ -76,28 +88,43 @@ public class ConcaveColliderEditor : Editor
 
         EditorGUILayout.Space();
         EditorGUILayout.PropertyField(PropAlgorithm, new GUIContent("Algorithm", "Chooses which convex decomposition algorithm to use"));
-        EditorGUILayout.IntSlider(PropMaxHullVertices,  3,    255,    new GUIContent("Max Hull Vertices", "Limits the number of vertices each collider will have"));
-        EditorGUILayout.IntSlider(PropMaxHulls,         1,    255,    new GUIContent("Max Hulls", "Limits the number of colliders created"));
-        EditorGUILayout.Slider   (PropInternalScale,    0.0f, 200.0f, new GUIContent("Internal Scale", "Mesh will internally be processed at this size for convex decomposition. Varying this value may get better results."));
-        EditorGUILayout.Slider   (PropPrecision,        0.0f, 1.0f,   new GUIContent("Precision", "The more the value, the more precision but also more hulls are created"));
 
-        if(PropAlgorithm.enumNames[PropAlgorithm.enumValueIndex] == ConcaveCollider.EAlgorithm.Legacy.ToString())
+        if(PropAlgorithm.enumNames[PropAlgorithm.enumValueIndex] != ConcaveCollider.EAlgorithm.VHACD.ToString())
         {
-            EditorGUILayout.IntSlider(PropLegacyDepth, 0, 20, new GUIContent("Legacy Steps", "How many iterations to compute. More steps = more hulls and more computing time"));
+            EditorGUILayout.IntSlider(PropMaxHullVertices,  3,    255,    new GUIContent("Max Hull Vertices", "Limits the number of vertices each collider will have"));
+            EditorGUILayout.IntSlider(PropMaxHulls,         1,    255,    new GUIContent("Max Hulls", "Limits the number of colliders created"));
+            EditorGUILayout.Slider   (PropInternalScale,    0.0f, 200.0f, new GUIContent("Internal Scale", "Mesh will internally be processed at this size for convex decomposition. Varying this value may get better results."));
+            EditorGUILayout.Slider   (PropPrecision,        0.0f, 1.0f,   new GUIContent("Precision", "The more the value, the more precision but also more hulls are created"));
+
+            if(PropAlgorithm.enumNames[PropAlgorithm.enumValueIndex] == ConcaveCollider.EAlgorithm.Legacy.ToString())
+            {
+                EditorGUILayout.IntSlider(PropLegacyDepth, 0, 20, new GUIContent("Legacy Steps", "How many iterations to compute. More steps = more hulls and more computing time"));
+            }
+        }
+        else
+        {
+            EditorGUILayout.Slider   (PropVHACD_Concavity,         0.0f,    1.0f, new GUIContent("Concavity", "Maximum allowed concavity."));
+            EditorGUILayout.Slider   (PropVHACD_MinVolumePerCH,    0.0f,   0.01f, new GUIContent("Min Volume Per Hull", "Controls the adaptive sampling of the generated convex-hulls. Lower values will generate more vertices/triangles"));
+            EditorGUILayout.IntSlider(PropVHACD_NumVoxels,       100000, 5000000, new GUIContent("Max Voxels", "Maximum number of voxels generated in the voxelization stage. The more voxels the more precision but more computation time"));
+            EditorGUILayout.IntSlider(PropVHACD_MaxVerticesPerCH,     3,     255, new GUIContent("Max Hull Vertices", "Limits the number of vertices each collider will have"));
+            PropVHACD_NormalizeMesh.boolValue = EditorGUILayout.Toggle(new GUIContent("Normalize Input Mesh",    "Normalizes the input mesh for convex decomposition"), PropVHACD_NormalizeMesh.boolValue);
         }
 
         PropCreateMeshAssets.boolValue      = EditorGUILayout.Toggle(new GUIContent("Enable Prefab Usage", "Will generate mesh assets for all hulls. This enables prefab instancing at both editing and runtime"), PropCreateMeshAssets.boolValue);  
         PropCreateHullMesh.boolValue        = EditorGUILayout.Toggle(new GUIContent("Add Hull Meshfilter", "Besides the collider components, also adds a MeshFilter to each hull that can be used for other things"), PropCreateHullMesh.boolValue);
         PropDebugLog.boolValue              = EditorGUILayout.Toggle(new GUIContent("Output debug messages", "Shows additional information in the log window after processing"),   PropDebugLog.boolValue);
 
-        PropShowAdvancedOptions.boolValue = EditorGUILayout.Foldout(PropShowAdvancedOptions.boolValue, new GUIContent("Advanced Options"));
-
-        if(PropShowAdvancedOptions.boolValue)
+        if(PropAlgorithm.enumNames[PropAlgorithm.enumValueIndex] != ConcaveCollider.EAlgorithm.VHACD.ToString())
         {
-            PropMinHullVolume.floatValue = EditorGUILayout.FloatField(new GUIContent("    Min Hull Volume", "Hulls created with less than this volume will be approximated using boxes"), PropMinHullVolume.floatValue);
-            EditorGUILayout.Slider(PropBackFaceDistanceFactor, 0.0001f, 1.0f, new GUIContent("    Back Face Distance Factor", "Set to larger values for hollow objects"));
-            PropNormalizeInputMesh.boolValue    = EditorGUILayout.Toggle(new GUIContent("    Normalize Input Mesh",    "Normalizes the input mesh for convex decomposition (overrides the Space Proportions parameter)"), PropNormalizeInputMesh.boolValue);
-            PropForceNoMultithreading.boolValue = EditorGUILayout.Toggle(new GUIContent("    Force No Multithreading", "Disables multithreading on the collider computation. Use only if the process hangs"), PropForceNoMultithreading.boolValue);
+            PropShowAdvancedOptions.boolValue = EditorGUILayout.Foldout(PropShowAdvancedOptions.boolValue, new GUIContent("Advanced Options"));
+
+            if(PropShowAdvancedOptions.boolValue)
+            {
+                PropMinHullVolume.floatValue = EditorGUILayout.FloatField(new GUIContent("    Min Hull Volume", "Hulls created with less than this volume will be approximated using boxes"), PropMinHullVolume.floatValue);
+                EditorGUILayout.Slider(PropBackFaceDistanceFactor, 0.0001f, 1.0f, new GUIContent("    Back Face Distance Factor", "Set to larger values for hollow objects"));
+                PropNormalizeInputMesh.boolValue    = EditorGUILayout.Toggle(new GUIContent("    Normalize Input Mesh",    "Normalizes the input mesh for convex decomposition (overrides the Space Proportions parameter)"), PropNormalizeInputMesh.boolValue);
+                PropForceNoMultithreading.boolValue = EditorGUILayout.Toggle(new GUIContent("    Force No Multithreading", "Disables multithreading on the collider computation. Use only if the process hangs"), PropForceNoMultithreading.boolValue);
+            }
         }
 
         EditorGUILayout.Separator();
