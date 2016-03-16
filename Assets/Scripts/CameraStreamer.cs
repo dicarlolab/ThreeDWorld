@@ -93,7 +93,7 @@ public class CameraStreamer : MonoBehaviour
     // Function to save out raw image data to disk as png files(mainly for debugging)
     public static string SaveOutImages(byte[] imageData, int shaderIndex)
     {
-        string newFileName = string.Format("{0}/{1}{2}_shader{3}.png", Application.persistentDataPath, fileName, fileIndex, shaderIndex);
+        string newFileName = string.Format("{0}/{1}{2}_shader{3}.bmp", Application.persistentDataPath, fileName, fileIndex, shaderIndex);
         System.IO.File.WriteAllBytes(newFileName, imageData);
         return newFileName;
     }
@@ -130,7 +130,7 @@ public class CameraStreamer : MonoBehaviour
             GameObject newObj = new GameObject("Texture-Writing Camera");
             _textureCam = newObj.AddComponent<Camera>();
             _textureCam.enabled = false;
-            _textureCam.targetTexture = new RenderTexture(targetCam.pixelWidth, targetCam.pixelHeight, 0);
+            _textureCam.targetTexture = new RenderTexture(targetCam.pixelWidth, targetCam.pixelHeight, 0, RenderTextureFormat.ARGB32);
             if (testImage != null)
                 testImage.texture = _textureCam.targetTexture;
         }
@@ -151,6 +151,7 @@ public class CameraStreamer : MonoBehaviour
         _outPhoto.Apply();
         CapturedImage retImage = new CapturedImage();
         retImage.pictureBuffer = _outPhoto.EncodeToPNG();
+//        retImage.pictureBuffer = _outPhoto.GetRawTextureData();
         return retImage;
     }
 #endregion
