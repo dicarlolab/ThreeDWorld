@@ -20,6 +20,7 @@ public class NetMessenger : MonoBehaviour
     public bool shouldCreateTestClient = false;
     public bool shouldCreateServer = true;
     public bool debugNetworkMessages = false;
+    public bool saveDebugPngFiles = false;
     public RequestSocket clientSimulation = null;
 
     private NetMQContext _ctx;
@@ -64,6 +65,7 @@ public class NetMessenger : MonoBehaviour
         shouldCreateTestClient = SimulationManager.argsConfig["create_test_client"].ReadBool(shouldCreateTestClient);
         shouldCreateServer = SimulationManager.argsConfig["create_server"].ReadBool(shouldCreateServer);
         debugNetworkMessages = SimulationManager.argsConfig["debug_network_messages"].ReadBool(debugNetworkMessages);
+        saveDebugPngFiles = SimulationManager.argsConfig["save_out_debug_pngs"].ReadBool(false);
 
         // Create Procedural generation
         if (ProceduralGeneration.Instance == null && shouldCreateServer)
@@ -313,7 +315,7 @@ public class NetMessenger : MonoBehaviour
         ResponseSocket server = GetServerForClient(client);
         Avatar myAvatar = _avatars[server];
 
-        if (SimulationManager.argsConfig["save_out_debug_pngs"].ReadBool(false))
+        if (saveDebugPngFiles)
         {
             // Just save out the png data to the local filesystem(Debugging code only)
             if (msg.FrameCount > 1)
