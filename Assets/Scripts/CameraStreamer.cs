@@ -91,10 +91,11 @@ public class CameraStreamer : MonoBehaviour
     }
     
     // Function to save out raw image data to disk as png files(mainly for debugging)
-    public static void SaveOutImages(byte[] imageData, int shaderIndex)
+    public static string SaveOutImages(byte[] imageData, int shaderIndex)
     {
         string newFileName = string.Format("{0}/{1}{2}_shader{3}.png", Application.persistentDataPath, fileName, fileIndex, shaderIndex);
         System.IO.File.WriteAllBytes(newFileName, imageData);
+        return newFileName;
     }
 #endregion
 
