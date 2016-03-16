@@ -438,31 +438,51 @@ public class ProceduralGeneration : MonoBehaviour
             allThings[0].CompileListOfProceduralComponents(shouldRecompute);
     }
 
+    public void SavePrefabInformation(GeneratablePrefab prefab, bool shouldRecomputePrefabInformation, bool replaceOld = true)
+    {
+        const string resPrefix = "Resources/";
+        string assetPath = AssetDatabase.GetAssetPath(prefab);
+        if (string.IsNullOrEmpty(assetPath))
+            return;
+        string newFileName = assetPath.Substring(assetPath.LastIndexOf(resPrefix) + resPrefix.Length);
+        newFileName = newFileName.Substring(0, newFileName.LastIndexOf("."));
+        int replaceIndex = -1;
+        if (replaceOld)
+        {
+            replaceIndex = availablePrefabs.FindIndex( (PrefabInfo testInfo)=>{
+                return testInfo.fileName == newFileName;
+            });
+            availablePrefabs.RemoveAt(replaceIndex);
+        }
+
+        if (prefab.shouldUse)
+        {
+            if (shouldRecomputePrefabInformation)
+                prefab.ProcessPrefab();
+            PrefabInfo newInfo = new PrefabInfo();
+            newInfo.fileName = newFileName;
+            newInfo.complexity = prefab.myComplexity;
+            newInfo.bounds = prefab.myBounds;
+            newInfo.isLight = prefab.isLight;
+            newInfo.anchorType = prefab.attachMethod;
+            foreach(GeneratablePrefab.StackableInfo stackRegion in prefab.stackableAreas)
+                newInfo.stackableAreas.Add(stackRegion);
+            if (replaceIndex < 0)
+                availablePrefabs.Add(newInfo);
+            else
+                availablePrefabs.Insert(replaceIndex, newInfo);
+        }        
+        EditorUtility.SetDirty(this);
+    }
+
     // Save out core information so we can decide whether to place the objects dynamically even if they aren't loaded yet
     private void CompileListOfProceduralComponents(bool shouldRecomputePrefabInformation)
     {
         GeneratablePrefab [] allThings = Resources.LoadAll<GeneratablePrefab>("");
-        const string resPrefix = "Resources/";
         availablePrefabs.Clear();
         foreach(GeneratablePrefab prefab in allThings)
-        {
-            string assetPath = AssetDatabase.GetAssetPath(prefab);
-            if (!string.IsNullOrEmpty(assetPath) && prefab.shouldUse)
-            {
-                if (shouldRecomputePrefabInformation)
-                    prefab.ProcessPrefab();
-                PrefabInfo newInfo = new PrefabInfo();
-                newInfo.fileName = assetPath.Substring(assetPath.LastIndexOf(resPrefix) + resPrefix.Length);
-                newInfo.fileName = newInfo.fileName.Substring(0, newInfo.fileName.LastIndexOf("."));
-                newInfo.complexity = prefab.myComplexity;
-                newInfo.bounds = prefab.myBounds;
-                newInfo.isLight = prefab.isLight;
-                newInfo.anchorType = prefab.attachMethod;
-                foreach(GeneratablePrefab.StackableInfo stackRegion in prefab.stackableAreas)
-                    newInfo.stackableAreas.Add(stackRegion);
-                availablePrefabs.Add(newInfo);
-            }
-        }
+            SavePrefabInformation(prefab, shouldRecomputePrefabInformation, false);
+        EditorUtility.SetDirty(this);
     }
 #endif
 
