@@ -8,7 +8,8 @@
     "create_server": true,
     "debug_network_messages": false,
     "debug_procedural_generation_logs": false,
-    "save_out_debug_pngs": false,
+    "save_out_debug_image_files": false,
+    "use_png_format": false,
     
     // Logging
     "log_level": "log",         // Can be "log", "warning", "error", or "none" for the various log levels
