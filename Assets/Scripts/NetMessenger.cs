@@ -66,7 +66,7 @@ public class NetMessenger : MonoBehaviour
         shouldCreateTestClient = SimulationManager.argsConfig["create_test_client"].ReadBool(shouldCreateTestClient);
         shouldCreateServer = SimulationManager.argsConfig["create_server"].ReadBool(shouldCreateServer);
         debugNetworkMessages = SimulationManager.argsConfig["debug_network_messages"].ReadBool(debugNetworkMessages);
-        CameraStreamer.usePngFormat = SimulationManager.argsConfig["use_png_format"].ReadBool(false);
+        CameraStreamer.preferredImageFormat = SimulationManager.argsConfig["image_format"].ReadString("bmp");
         saveDebugImageFiles = SimulationManager.argsConfig["save_out_debug_image_files"].ReadBool(false);
 
         // Create Procedural generation

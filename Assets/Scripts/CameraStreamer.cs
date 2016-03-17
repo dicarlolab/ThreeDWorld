@@ -40,7 +40,7 @@ public class CameraStreamer : MonoBehaviour
     private Texture2D _outPhoto = null;
     // If not empty, this queue will have the camera will capture a render and send a callback
     private Queue<CaptureRequest> _captureRequests = new Queue<CaptureRequest>();
-    public static bool usePngFormat = false;
+    public static string preferredImageFormat = "bmp";
     public static int fileIndex = 0;
     const string fileName = "testImg";
 #endregion
@@ -94,7 +94,7 @@ public class CameraStreamer : MonoBehaviour
     // Function to save out raw image data to disk as png files(mainly for debugging)
     public static string SaveOutImages(byte[] imageData, int shaderIndex)
     {
-        string newFileName = string.Format("{0}/{1}{2}_shader{3}.{4}", Application.persistentDataPath, fileName, fileIndex, shaderIndex, usePngFormat ? "png" : "bmp");
+        string newFileName = string.Format("{0}/{1}{2}_shader{3}.{4}", Application.persistentDataPath, fileName, fileIndex, shaderIndex, preferredImageFormat);
         System.IO.File.WriteAllBytes(newFileName, imageData);
         return newFileName;
     }
@@ -198,8 +198,10 @@ public class CameraStreamer : MonoBehaviour
         _outPhoto.ReadPixels(new Rect(0, 0, pixWidth, pixHeight), 0, 0);
         _outPhoto.Apply();
         CapturedImage retImage = new CapturedImage();
-        if (usePngFormat)
+        if (preferredImageFormat == "png")
             retImage.pictureBuffer = _outPhoto.EncodeToPNG();
+        else if (preferredImageFormat == "jpg")
+            retImage.pictureBuffer = _outPhoto.EncodeToJPG();
         else
             EncodeBMP(ref retImage, _outPhoto, pixWidth, pixHeight);
         return retImage;
