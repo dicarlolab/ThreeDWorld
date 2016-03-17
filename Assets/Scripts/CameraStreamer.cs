@@ -43,6 +43,11 @@ public class CameraStreamer : MonoBehaviour
     public static string preferredImageFormat = "bmp";
     public static int fileIndex = 0;
     const string fileName = "testImg";
+
+    // BMP Header caching info
+    private static byte[] _bmpHeader = null;
+    private static UInt32 _lastBmpDimX = 0;
+    private static UInt32 _lastBmpDimY = 0;
 #endregion
 
 #region Unity callbacks
@@ -123,46 +128,50 @@ public class CameraStreamer : MonoBehaviour
         _textureCam = null;
     }
 
-    private static byte[] CreateBMPHeader(UInt32 dimX, UInt32 dimY)
+    private static void UpdateBMPHeader(UInt32 dimX, UInt32 dimY)
     {
-        const UInt32 HEADER_SIZE = 70;
-        UInt32 size = dimX * dimY, hSze = size + HEADER_SIZE;
-
-        return new byte[]{
-            0x42, 0x4D,
-            BitConverter.GetBytes(hSze)[0], BitConverter.GetBytes(hSze)[1], BitConverter.GetBytes(hSze)[2], BitConverter.GetBytes(hSze)[3], // Size + header length(70)
-            0x00, 0x00, 0x00, 0x00,
-            0x46, 0x00, 0x00, 0x00,
-            0x38, 0x00, 0x00, 0x00,
-            BitConverter.GetBytes(dimX)[0], BitConverter.GetBytes(dimX)[1], BitConverter.GetBytes(dimX)[2], BitConverter.GetBytes(dimX)[3], // Width
-            BitConverter.GetBytes(dimY)[0], BitConverter.GetBytes(dimY)[1], BitConverter.GetBytes(dimY)[2], BitConverter.GetBytes(dimY)[3], // Height
-            0x01, 0x00, 0x20, 0x00,
-            0x03, 0x00, 0x00, 0x00,
-            BitConverter.GetBytes(size)[0], BitConverter.GetBytes(size)[1], BitConverter.GetBytes(size)[2], BitConverter.GetBytes(size)[3], // Size
-            0x13, 0x0B, 0x00, 0x00,
-            0x13, 0x0B, 0x00, 0x00,
-            0x00, 0x00, 0x00, 0x00,
-            0x00, 0x00, 0x00, 0x00,
-            0x00, 0x00, 0x00, 0xFF,
-            0x00, 0x00, 0xFF, 0x00,
-            0x00, 0xFF, 0x00, 0x00,
-            0x00, 0x00, 0x00, 0x00
-        };
+        if (dimX != _lastBmpDimX || dimY != _lastBmpDimY || _bmpHeader == null)
+        {
+            const UInt32 HEADER_SIZE = 70;
+            UInt32 size = dimX * dimY, hSze = size + HEADER_SIZE;
+            _bmpHeader = new byte[]{
+                0x42, 0x4D,
+                BitConverter.GetBytes(hSze)[0], BitConverter.GetBytes(hSze)[1], BitConverter.GetBytes(hSze)[2], BitConverter.GetBytes(hSze)[3], // Size + header length(70)
+                0x00, 0x00, 0x00, 0x00,
+                0x46, 0x00, 0x00, 0x00,
+                0x38, 0x00, 0x00, 0x00,
+                BitConverter.GetBytes(dimX)[0], BitConverter.GetBytes(dimX)[1], BitConverter.GetBytes(dimX)[2], BitConverter.GetBytes(dimX)[3], // Width
+                BitConverter.GetBytes(dimY)[0], BitConverter.GetBytes(dimY)[1], BitConverter.GetBytes(dimY)[2], BitConverter.GetBytes(dimY)[3], // Height
+                0x01, 0x00, 0x20, 0x00,
+                0x03, 0x00, 0x00, 0x00,
+                BitConverter.GetBytes(size)[0], BitConverter.GetBytes(size)[1], BitConverter.GetBytes(size)[2], BitConverter.GetBytes(size)[3], // Size
+                0x13, 0x0B, 0x00, 0x00,
+                0x13, 0x0B, 0x00, 0x00,
+                0x00, 0x00, 0x00, 0x00,
+                0x00, 0x00, 0x00, 0x00,
+                0x00, 0x00, 0x00, 0xFF,
+                0x00, 0x00, 0xFF, 0x00,
+                0x00, 0xFF, 0x00, 0x00,
+                0x00, 0x00, 0x00, 0x00
+            };
+            _lastBmpDimX = dimX;
+            _lastBmpDimY = dimY;
+        }
     }
 
     private static void EncodeBMP(ref CapturedImage imgData, Texture2D textureSrc, int width, int height)
     {
         // Write out BMP file
-        byte [] header = CreateBMPHeader((UInt32)width, (UInt32)height);
-        int byteArrayLength = header.Length + width * height * 4;
+        UpdateBMPHeader((UInt32)width, (UInt32)height);
+        int byteArrayLength = _bmpHeader.Length + width * height * 4;
         Color32[] pixels = textureSrc.GetPixels32();
         if (imgData.pictureBuffer == null || imgData.pictureBuffer.Length != byteArrayLength)
             imgData.pictureBuffer = new byte[byteArrayLength];
         int byteIndex = 0;
-        System.Buffer.BlockCopy(header, 0, imgData.pictureBuffer, 0, header.Length);
+        System.Buffer.BlockCopy(_bmpHeader, 0, imgData.pictureBuffer, 0, _bmpHeader.Length);
         for(int i = 0; i < pixels.Length; ++i)
         {
-            byteIndex = 4*i + header.Length;
+            byteIndex = 4*i + _bmpHeader.Length;
             imgData.pictureBuffer[byteIndex+0] = pixels[i].a;
             imgData.pictureBuffer[byteIndex+1] = pixels[i].b;
             imgData.pictureBuffer[byteIndex+2] = pixels[i].g;
