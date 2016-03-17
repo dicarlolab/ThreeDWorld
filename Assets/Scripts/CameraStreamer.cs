@@ -125,9 +125,10 @@ public class CameraStreamer : MonoBehaviour
 
     private static byte[] CreateBMPHeader(UInt32 dimX, UInt32 dimY)
     {
-        UInt32 size = dimX * dimY, hSze = size + 70;
+        const UInt32 HEADER_SIZE = 70;
+        UInt32 size = dimX * dimY, hSze = size + HEADER_SIZE;
 
-        byte[] HEADER_BYTES = {
+        return new byte[]{
             0x42, 0x4D,
             BitConverter.GetBytes(hSze)[0], BitConverter.GetBytes(hSze)[1], BitConverter.GetBytes(hSze)[2], BitConverter.GetBytes(hSze)[3], // Size + header length(70)
             0x00, 0x00, 0x00, 0x00,
@@ -147,7 +148,26 @@ public class CameraStreamer : MonoBehaviour
             0x00, 0xFF, 0x00, 0x00,
             0x00, 0x00, 0x00, 0x00
         };
-        return HEADER_BYTES;
+    }
+
+    private static void EncodeBMP(ref CapturedImage imgData, Texture2D textureSrc, int width, int height)
+    {
+        // Write out BMP file
+        byte [] header = CreateBMPHeader((UInt32)width, (UInt32)height);
+        int byteArrayLength = header.Length + width * height * 4;
+        Color32[] pixels = textureSrc.GetPixels32();
+        if (imgData.pictureBuffer == null || imgData.pictureBuffer.Length != byteArrayLength)
+            imgData.pictureBuffer = new byte[byteArrayLength];
+        int byteIndex = 0;
+        System.Buffer.BlockCopy(header, 0, imgData.pictureBuffer, 0, header.Length);
+        for(int i = 0; i < pixels.Length; ++i)
+        {
+            byteIndex = 4*i + header.Length;
+            imgData.pictureBuffer[byteIndex+0] = pixels[i].a;
+            imgData.pictureBuffer[byteIndex+1] = pixels[i].b;
+            imgData.pictureBuffer[byteIndex+2] = pixels[i].g;
+            imgData.pictureBuffer[byteIndex+3] = pixels[i].r;
+        }        
     }
 
     private CapturedImage TakeSnapshotNow(Shader targetShader)
@@ -181,24 +201,7 @@ public class CameraStreamer : MonoBehaviour
         if (usePngFormat)
             retImage.pictureBuffer = _outPhoto.EncodeToPNG();
         else
-        {
-            // Write out BMP file
-            byte [] header = CreateBMPHeader((UInt32)pixWidth, (UInt32)pixHeight);
-            int byteArrayLength = header.Length + pixWidth * pixHeight * 4;
-            Color32[] pixels = _outPhoto.GetPixels32();
-            if (retImage.pictureBuffer == null || retImage.pictureBuffer.Length != byteArrayLength)
-                retImage.pictureBuffer = new byte[byteArrayLength];
-            int byteIndex = 0;
-            System.Buffer.BlockCopy(header, 0, retImage.pictureBuffer, 0, header.Length);
-            for(int i = 0; i < pixels.Length; ++i)
-            {
-                byteIndex = 4*i + header.Length;
-                retImage.pictureBuffer[byteIndex+0] = pixels[i].a;
-                retImage.pictureBuffer[byteIndex+1] = pixels[i].b;
-                retImage.pictureBuffer[byteIndex+2] = pixels[i].g;
-                retImage.pictureBuffer[byteIndex+3] = pixels[i].r;
-            }
-        }
+            EncodeBMP(ref retImage, _outPhoto, pixWidth, pixHeight);
         return retImage;
     }
 #endregion
