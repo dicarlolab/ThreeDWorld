@@ -520,11 +520,15 @@ public class ProceduralGeneration : MonoBehaviour
             newInstance.transform.rotation = modifiedRotation * newInstance.transform.rotation;
             newInstance.name = string.Format("{0} #{1} on {2}", newPrefab.name, (_curRoom != null) ? _curRoom.childCount.ToString() : "?", targetHeightPlane.name);
 
-			if (newInstance.GetComponent<Renderer>() != null)
+			Renderer[] RendererList = newInstance.GetComponentsInChildren<Renderer>();
+			foreach (Renderer _rend in RendererList)
 			{
-				newInstance.GetComponent<Renderer>().material.SetInt("_idval", _curRoom.childCount + 2);
-			} 
-
+				foreach (Material _mat in _rend.materials)
+				{
+				    _mat.SetInt("_idval", _curRoom.childCount + 2);	
+				}
+			}	
+	
             // Create test cube
             if (DEBUG_testCubePrefab != null)
             {
@@ -589,12 +593,36 @@ public class ProceduralGeneration : MonoBehaviour
         GameObject floor = WallInfo.CreateBoxMesh(floorStart, floorSize, floorMaterial, "Floor", _curRoom);
         floor.AddComponent<SemanticObjectSimple>();
         floor.GetComponent<Rigidbody>().isKinematic = true;
-        floor.GetComponent<Renderer>().material.SetInt("_idval", 1);
+        
+        Renderer[] RendererList = floor.GetComponentsInChildren<Renderer>();
+		foreach (Renderer _rend in RendererList)
+		{
+			foreach (Material _mat in _rend.materials)
+			{
+				_mat.SetInt("_idval", 1);	
+			}
+		}
+		//{
+		//	_rend.material.SetInt("_idval", 1);	
+		//}	
+        //floor.GetComponent<Renderer>().material.SetInt("_idval", 1);
 
         GameObject top = WallInfo.CreateBoxMesh(ceilingStart, floorSize, ceilingMaterial, "Ceiling", _curRoom);
         top.AddComponent<SemanticObjectSimple>();
         top.GetComponent<Rigidbody>().isKinematic = true;
-        top.GetComponent<Renderer>().material.SetInt("_idval", 2);
+        RendererList = top.GetComponentsInChildren<Renderer>();
+		foreach (Renderer _rend in RendererList)
+		{
+			foreach (Material _mat in _rend.materials)
+			{
+				_mat.SetInt("_idval", 2);	
+			}
+		}
+		//{
+		//	_rend.material.SetInt("_idval", 2);	
+		//}
+        
+        //top.GetComponent<Renderer>().material.SetInt("_idval", 2);
 
         // Setup floor plane
         _allHeightPlanes.Clear();
