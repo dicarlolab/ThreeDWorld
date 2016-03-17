@@ -122,6 +122,33 @@ public class CameraStreamer : MonoBehaviour
         _textureCam = null;
     }
 
+    private static byte[] CreateBMPHeader(UInt32 dimX, UInt32 dimY)
+    {
+        UInt32 size = dimX * dimY, hSze = size + 70;
+
+        byte[] HEADER_BYTES = {
+            0x42, 0x4D,
+            BitConverter.GetBytes(hSze)[0], BitConverter.GetBytes(hSze)[1], BitConverter.GetBytes(hSze)[2], BitConverter.GetBytes(hSze)[3], // Size + header length(70)
+            0x00, 0x00, 0x00, 0x00,
+            0x46, 0x00, 0x00, 0x00,
+            0x38, 0x00, 0x00, 0x00,
+            BitConverter.GetBytes(dimX)[0], BitConverter.GetBytes(dimX)[1], BitConverter.GetBytes(dimX)[2], BitConverter.GetBytes(dimX)[3], // Width
+            BitConverter.GetBytes(dimY)[0], BitConverter.GetBytes(dimY)[1], BitConverter.GetBytes(dimY)[2], BitConverter.GetBytes(dimY)[3], // Height
+            0x01, 0x00, 0x20, 0x00,
+            0x03, 0x00, 0x00, 0x00,
+            BitConverter.GetBytes(size)[0], BitConverter.GetBytes(size)[1], BitConverter.GetBytes(size)[2], BitConverter.GetBytes(size)[3], // Size
+            0x13, 0x0B, 0x00, 0x00,
+            0x13, 0x0B, 0x00, 0x00,
+            0x00, 0x00, 0x00, 0x00,
+            0x00, 0x00, 0x00, 0x00,
+            0x00, 0x00, 0x00, 0xFF,
+            0x00, 0x00, 0xFF, 0x00,
+            0x00, 0xFF, 0x00, 0x00,
+            0x00, 0x00, 0x00, 0x00
+        };
+        return HEADER_BYTES;
+    }
+
     private CapturedImage TakeSnapshotNow(Shader targetShader)
     {
         // Create a new camera if we need to that we will be manually rendering
@@ -150,8 +177,22 @@ public class CameraStreamer : MonoBehaviour
         _outPhoto.ReadPixels(new Rect(0, 0, pixWidth, pixHeight), 0, 0);
         _outPhoto.Apply();
         CapturedImage retImage = new CapturedImage();
-        retImage.pictureBuffer = _outPhoto.EncodeToPNG();
-//        retImage.pictureBuffer = _outPhoto.GetRawTextureData();
+//        retImage.pictureBuffer = _outPhoto.EncodeToPNG();
+        byte [] header = CreateBMPHeader((UInt32)pixWidth, (UInt32)pixHeight);
+        int byteArrayLength = header.Length + pixWidth * pixHeight * 4;
+        Color32[] pixels = _outPhoto.GetPixels32();
+        if (retImage.pictureBuffer == null || retImage.pictureBuffer.Length != byteArrayLength)
+            retImage.pictureBuffer = new byte[byteArrayLength];
+        int byteIndex = 0;
+        System.Buffer.BlockCopy(header, 0, retImage.pictureBuffer, 0, header.Length);
+        for(int i = 0; i < pixels.Length; ++i)
+        {
+            byteIndex = 4*i + header.Length;
+            retImage.pictureBuffer[byteIndex+0] = pixels[i].a;
+            retImage.pictureBuffer[byteIndex+1] = pixels[i].b;
+            retImage.pictureBuffer[byteIndex+2] = pixels[i].g;
+            retImage.pictureBuffer[byteIndex+3] = pixels[i].r;
+        }
         return retImage;
     }
 #endregion
