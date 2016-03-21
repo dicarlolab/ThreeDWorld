@@ -19,7 +19,7 @@ public class NetMessenger : MonoBehaviour
     public Avatar avatarPrefab;
     public string portNumber = "5556";
     public string hostAddress = "127.0.0.1";
-    public bool fakeResponses = true;
+    public bool logTimingInfo = false;
     public bool shouldCreateTestClient = false;
     public bool shouldCreateServer = true;
     public bool debugNetworkMessages = false;
@@ -57,10 +57,6 @@ public class NetMessenger : MonoBehaviour
     // To Receive From Client
     const string MSG_R_ClientJoin = "CLIENT_JOIN";
     const string MSG_R_FrameInput = "CLIENT_INPUT";
-
-    const string shortString = "12";
-    const string longString = "1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890";
-    const string longerString = "1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890";
 #endregion
 
     public List<Avatar> GetAllAvatars()
@@ -84,6 +80,7 @@ public class NetMessenger : MonoBehaviour
         portNumber = SimulationManager.argsConfig["port_number"].ReadString(portNumber);
         hostAddress = SimulationManager.argsConfig["host_address"].ReadString(hostAddress);
         shouldCreateTestClient = SimulationManager.argsConfig["create_test_client"].ReadBool(shouldCreateTestClient);
+        logTimingInfo = SimulationManager.argsConfig["log_timing_info"].ReadBool(logTimingInfo);
         shouldCreateServer = SimulationManager.argsConfig["create_server"].ReadBool(shouldCreateServer);
         debugNetworkMessages = SimulationManager.argsConfig["debug_network_messages"].ReadBool(debugNetworkMessages);
         CameraStreamer.preferredImageFormat = SimulationManager.argsConfig["image_format"].ReadString("bmp");
@@ -111,9 +108,12 @@ public class NetMessenger : MonoBehaviour
         testInput = Input.GetKey(KeyCode.S);
         if (hasServerMsg)
         {
-            DateTime newTime = DateTime.Now;
-            Debug.LogFormat("Got message from client after {0}", newTime.Subtract(lastServerMsgTime).TotalMilliseconds);
-            lastServerMsgTime = newTime;
+            if (logTimingInfo)
+            {
+                DateTime newTime = DateTime.Now;
+                Debug.LogFormat("Got message from client after {0}", newTime.Subtract(lastServerMsgTime).TotalMilliseconds);
+                lastServerMsgTime = newTime;
+            }
             List<MyMessageInfo> needsReplies = new List<MyMessageInfo>();
 
             // Retrieve messages from the connection thread
@@ -132,9 +132,12 @@ public class NetMessenger : MonoBehaviour
 
         if (hasClientMsg)
         {
-            DateTime newTime = DateTime.Now;
-            Debug.LogFormat("Got message from server after {0}", newTime.Subtract(lastClientMsgTime).TotalMilliseconds);
-            lastClientMsgTime = newTime;
+            if (logTimingInfo)
+            {
+                DateTime newTime = DateTime.Now;
+                Debug.LogFormat("Got message from server after {0}", newTime.Subtract(lastClientMsgTime).TotalMilliseconds);
+                lastClientMsgTime = newTime;
+            }
             List<MyMessageInfo> needsReplies = new List<MyMessageInfo>();
 
             // Retrieve messages from the connection thread
@@ -229,7 +232,8 @@ public class NetMessenger : MonoBehaviour
             NetworkStream s = c.GetStream();
             if (s.DataAvailable)
             {
-//                Debug.LogWarning("Server: Has msg to Read " + DateTime.Now.Millisecond);
+                if (logTimingInfo)
+                    Debug.LogWarningFormat("Server: Has a msg to Read @{0}.{1} seconds", DateTime.Now.Second, DateTime.Now.Millisecond);
                 StreamReader sr = new System.IO.StreamReader(s);
                 using (SemaphoreWrapper sem = new SemaphoreWrapper("Sem Server Messages"))
                 {
@@ -240,7 +244,8 @@ public class NetMessenger : MonoBehaviour
                         hasServerMsg = true;
                     }
                 }
-//                Debug.LogWarning("Server: Finished Reading " + DateTime.Now.Millisecond);
+                if (logTimingInfo)
+                    Debug.LogWarningFormat("Server: Finished Reading @{0}.{1} seconds", DateTime.Now.Second, DateTime.Now.Millisecond);
             }
         }
         catch(SocketException e)
@@ -282,14 +287,15 @@ public class NetMessenger : MonoBehaviour
                 }
                 if (hasServerMsgToSend)
                 {
-//                    Debug.LogWarning("Server: Has some msg to Send " + DateTime.Now.Millisecond);
                     using (SemaphoreWrapper sem = new SemaphoreWrapper("outgoingServerMsg"))
                     {
-//                        Debug.LogWarning("Server: Has "+outgoingServerMsg.Count+" msg to Send " + DateTime.Now.Millisecond);
+                        if (logTimingInfo)
+                            Debug.LogWarningFormat("Server: Has {0} msg to Send @{1}.{2} seconds", outgoingServerMsg.Count, DateTime.Now.Second, DateTime.Now.Millisecond);
                         while (outgoingServerMsg.Count > 0)
                             outgoingServerMsg.Dequeue().Send();
                         hasServerMsgToSend = false;
-//                        Debug.LogWarning("Server: Finished sending "+outgoingServerMsg.Count+" msg " + DateTime.Now.Millisecond);
+                        if (logTimingInfo)
+                            Debug.LogWarningFormat("Server: Finished sending {0} msgs @{1}.{2} seconds", outgoingServerMsg.Count, DateTime.Now.Second, DateTime.Now.Millisecond);
                     }
                 }
                 Thread.Sleep(0);
@@ -320,9 +326,10 @@ public class NetMessenger : MonoBehaviour
             {
                 if (s.DataAvailable)
                 {
-                    Debug.LogWarning("Client: Has msg to Read " + DateTime.Now.Millisecond);
                     while (s.DataAvailable)
                     {
+                        if (logTimingInfo)
+                            Debug.LogWarningFormat("Client: Has a msg to Read @{0}.{1} seconds", DateTime.Now.Second, DateTime.Now.Millisecond);
                         MyMessageInfo newMsg = new MyMessageInfo(clientTcp);
                         newMsg.Read();
                         using (SemaphoreWrapper sem = new SemaphoreWrapper("Sem Client Messages"))
@@ -330,19 +337,21 @@ public class NetMessenger : MonoBehaviour
                             pendingClientMessages.Add(newMsg);
                             hasClientMsg = true;
                         }
+                        if (logTimingInfo)
+                            Debug.LogWarningFormat("Client: Finished Reading @{0}.{1} seconds", DateTime.Now.Second, DateTime.Now.Millisecond);
                     }
-                    Debug.LogWarning("Client: Finished reading " + DateTime.Now.Millisecond);
                 }
                 if (hasClientMsgToSend)
                 {
-//                    Debug.LogWarning("Client: Has some msg to Send " + DateTime.Now.Millisecond);
                     using (SemaphoreWrapper sem = new SemaphoreWrapper("outgoingTestClientMsg"))
                     {
-//                        Debug.LogWarning("Client: Has "+outgoingTestClientMsg.Count+" msg to Send " + DateTime.Now.Millisecond);
+                        if (logTimingInfo)
+                            Debug.LogWarningFormat("Client: Has {0} msg to Send @{1}.{2} seconds", outgoingTestClientMsg.Count, DateTime.Now.Second, DateTime.Now.Millisecond);
                         while (outgoingTestClientMsg.Count > 0)
                             outgoingTestClientMsg.Dequeue().Send();
                         hasClientMsgToSend = false;
-//                        Debug.LogWarning("Client: Finished sending "+outgoingTestClientMsg.Count+" msg to Send " + DateTime.Now.Millisecond);
+                        if (logTimingInfo)
+                            Debug.LogWarningFormat("Client: Finished sending {0} msgs @{1}.{2} seconds", outgoingTestClientMsg.Count, DateTime.Now.Second, DateTime.Now.Millisecond);
                     }
                 }
                 Thread.Sleep(0);
@@ -398,23 +407,9 @@ public class NetMessenger : MonoBehaviour
     // General handling for receiving messages on the server
     public void OnReceiveMessageFromClient(MyMessageInfo msg)
     {
-        Debug.LogFormat("Read in {0} characters in msg for server.", (msg.text == null) ? 0 : msg.text.Length);
         if (debugNetworkMessages)
             Debug.LogFormat("Received Msg on Server: {0}", ReadOutMessage(msg));
-//        if (fakeResponses)
-//        {
-//            float newTime = Time.unscaledTime;
-//            Debug.LogFormat("Server: sinceServer:{0} sinceClient:{1} Total:{2}", newTime - lastServerMsg, newTime - lastClientMsg, newTime);
-//            lastServerMsg = Time.unscaledTime;
-////            _lastMessageSent.Clear();
-////            _lastMessage.Append("test");
-////            _lastMessageSent.Append(msgData.ToJSON(0));
-//            PrepDebugMessage(_debugMessage);
-//            server.SendMultipartMessage(_debugMessage);
-////            server.Send("test");
-//            return;
-//        }
-
+        
         string msgHeader = msg.text;
         JSONClass jsonData = msg.ReadJson(out msgHeader);
         if (jsonData == null)
@@ -449,7 +444,6 @@ public class NetMessenger : MonoBehaviour
 
     public void OnClientJoin(MyMessageInfo msgBase, JSONClass data)
     {
-        Debug.LogWarning("Calling OnClientJoin: " + data.ToJSON(0));
         // Setup new avatar object from prefab
         Avatar newAvatar = UnityEngine.Object.Instantiate<Avatar>(avatarPrefab);
         while(_avatars.Count > 0)
@@ -462,11 +456,6 @@ public class NetMessenger : MonoBehaviour
         }
         _avatars[msgBase.myClient] = newAvatar;
         newAvatar.InitNetData(this, msgBase.myClient);
-//
-//        // Send confirmation message
-//        lastMessageSent.Clear();
-//        lastMessageSent.Append(MSG_S_ConfirmClientJoin);
-//        server.SendMultipartMessage(lastMessageSent);
     }
 #endregion
     
@@ -476,20 +465,6 @@ public class NetMessenger : MonoBehaviour
     {
         if (debugNetworkMessages)
             Debug.LogFormat("Received Msg on Client: {0}", ReadOutMessage(msg));
-
-//        if (fakeResponses)
-//        {
-//            float newTime = Time.unscaledTime;
-//            Debug.LogFormat("Client: sinceServer:{0} sinceClient:{1} Total:{2}", newTime - lastServerMsg, newTime - lastClientMsg, newTime);
-//            lastClientMsg = newTime;
-//            PrepDebugMessage(_debugMessage);
-////            _lastMessageSent.Clear();
-////            _lastMessage.Append("test");
-////            _lastMessageSent.Append(msgData.ToJSON(0));
-//            client.SendMultipartMessage(_debugMessage);
-////            client.Send("test");
-//            return;
-//        }
 
         string msgHeader = msg.text;
         JSONClass jsonData = msg.ReadJson(out msgHeader);
@@ -677,8 +652,6 @@ public class MyMessageInfo
         string header = string.Format("{0}", (text == null) ? 0 : text.Length);
         for(int i = 0; i < byteData.Count; ++i)
             header += string.Format(" {0}", byteData[i].Length);
-
-        Debug.LogWarningFormat("Writing header: '{0}'", header);
 
         bw.Write(header);
         if (!string.IsNullOrEmpty(text))
