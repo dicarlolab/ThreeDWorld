@@ -371,6 +371,22 @@ public class ProceduralGeneration : MonoBehaviour
 
     private static void MakeSimplePrefabObj(GameObject obj)
     {
+        // Find vrml text if we have it
+        string vrmlText = null;
+        string vrmlPath = AssetDatabase.GetAssetPath(obj);
+        if (vrmlPath != null)
+        {
+            vrmlPath = vrmlPath.Replace(".obj", "_vhacd.wrl");
+            string fullPath = System.IO.Path.Combine(Application.dataPath, vrmlPath.Substring(7));
+            if (System.IO.File.Exists(fullPath))
+            {
+                using (System.IO.StreamReader reader = new System.IO.StreamReader(fullPath))
+                {
+                    vrmlText = reader.ReadToEnd();
+                }
+            }
+        }
+
         GameObject instance = GameObject.Instantiate(obj) as GameObject;
         instance.name = obj.name;
 
@@ -394,23 +410,9 @@ public class ProceduralGeneration : MonoBehaviour
             prefab = PrefabUtility.ReplacePrefab(instance, prefab);
         GameObject.DestroyImmediate(instance);
 
+
         // Create colliders for the prefab
-        // Using reflection to avoid failing when compiling on machine without ConcaveCollider scripts.
-        // ConcaveCollider.FH_CreateColliders(prefab, true);
-        System.Type t = System.Type.GetType("ConcaveCollider");
-        if (t != null)
-        {
-            System.Reflection.MethodInfo method = t.GetMethod("FH_CreateColliders", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public);
-            if (method != null)
-            {
-                object[] parameters = {prefab, true};
-                method.Invoke(null, parameters);
-            }
-            else
-                Debug.LogWarning("ConcaveCollider::FH_CreateColliders method doesn't exist!");
-        }
-        else
-            Debug.LogWarning("ConcaveCollider class doesn't exist!");
+        ConcaveCollider.FH_CreateColliders(prefab, vrmlText, true);
 
         // Save out updated metadata settings
         GeneratablePrefab metaData = prefab.GetComponent<GeneratablePrefab>();
