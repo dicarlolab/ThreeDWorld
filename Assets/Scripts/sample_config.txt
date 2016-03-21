@@ -9,6 +9,7 @@
     "debug_network_messages": false,
     "debug_procedural_generation_logs": false,
     "save_out_debug_image_files": false,
+    "log_timing_info": false,
     "image_format": "bmp", // [bmp, png, jpg]
     
     // Logging
