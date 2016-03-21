@@ -454,7 +454,8 @@ public class ProceduralGeneration : MonoBehaviour
             replaceIndex = availablePrefabs.FindIndex( (PrefabInfo testInfo)=>{
                 return testInfo.fileName == newFileName;
             });
-            availablePrefabs.RemoveAt(replaceIndex);
+            if (replaceIndex >= 0)
+                availablePrefabs.RemoveAt(replaceIndex);
         }
 
         if (prefab.shouldUse)
