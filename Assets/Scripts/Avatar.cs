@@ -26,7 +26,7 @@ public class Avatar : MonoBehaviour
     private Rigidbody _myRigidbody = null;
     private bool _readyForSimulation = false;
     private NetMessenger _myMessenger = null;
-    private System.Net.Sockets.TcpClient _myServer = null;
+    private NetMQ.Sockets.ResponseSocket _myServer = null;
     private CameraStreamer.CaptureRequest _request;
 #endregion
 
@@ -47,7 +47,7 @@ public class Avatar : MonoBehaviour
     }
     
     // The server-to-client connection associated with this avatar
-    public System.Net.Sockets.TcpClient myServer {
+    public NetMQ.Sockets.ResponseSocket myServer {
         get { return _myServer; }
     }
     
@@ -142,7 +142,7 @@ public class Avatar : MonoBehaviour
         Debug.LogWarning("Couldn't find a spot to place the avatar!");
     }
 
-    public void InitNetData(NetMessenger myNewMessenger, System.Net.Sockets.TcpClient myNewServer)
+    public void InitNetData(NetMessenger myNewMessenger, NetMQ.Sockets.ResponseSocket myNewServer)
     {
         Debug.Log("Calling InitNetData");
         _myMessenger = myNewMessenger;
