@@ -617,8 +617,9 @@ public class ConcaveCollider : MonoBehaviour
             Vector3[] verts = new Vector3[vertMatches.Count];
             int[] indices = new int[indexMatches.Count * 3];
             int secondCounter = 0;
+            // Have to reflect the x value for some reason
             foreach(Match vm in vertMatches)
-                verts[secondCounter++] = new Vector3(float.Parse(vm.Groups["x"].Value), float.Parse(vm.Groups["y"].Value), float.Parse(vm.Groups["z"].Value));
+                verts[secondCounter++] = new Vector3(-float.Parse(vm.Groups["x"].Value), float.Parse(vm.Groups["y"].Value), float.Parse(vm.Groups["z"].Value));
             secondCounter = 0;
             foreach(Match im in indexMatches)
             {
@@ -705,6 +706,7 @@ public class ConcaveCollider : MonoBehaviour
 
     private static void FH_CreateHullsFromVrml(GameObject obj, string vrml, ProgressDelegate progress)
     {
+        Debug.Log("Loading VRML for " + obj.name);
         List<Mesh> meshes = ReadVrml(vrml, progress);
         int nMeshCount = 0;
 
@@ -764,9 +766,12 @@ public class ConcaveCollider : MonoBehaviour
 
         GameObject[] m_aGoHulls = new GameObject[nHullsOut];
 
+        obj.transform.rotation = Quaternion.Euler(new Vector3(0,0f,0));
+        Vector3 newScale = obj.transform.localScale;
+//        newScale.z = -newScale.z;
         for(int nHull = 0; nHull < nHullsOut && !shouldCancelBatch; nHull++)
         {
-            progress("Transforming vertices and saving assets", 100f * (nHull + 0.5f) / nHullsOut);
+            progress("Transforming VRML vertices and saving out mesh data", 100f * (nHull + 0.5f) / nHullsOut);
             Mesh refMesh = meshes[nHull];
             if(refMesh.vertexCount > 0)
             {
@@ -776,15 +781,14 @@ public class ConcaveCollider : MonoBehaviour
                 m_aGoHulls[nHull].transform.parent   = hullParent;
                 m_aGoHulls[nHull].layer              = obj.layer;
 
+
                 Vector3[] hullVertices = refMesh.vertices;
 
 //                    float fHullVolume     = -1.0f;
 //                    float fInvMeshRescale = 1.0f / fMeshRescale;
 
                 for(int nVertex = 0; nVertex < hullVertices.Length; nVertex++)
-                {
-                    hullVertices[nVertex] = Vector3.Scale(hullVertices[nVertex], obj.transform.localScale);
-                }
+                    hullVertices[nVertex] = Vector3.Scale(hullVertices[nVertex], newScale);
 
                 Mesh hullMesh = refMesh;
                 hullMesh.vertices  = hullVertices;

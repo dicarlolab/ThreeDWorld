@@ -376,8 +376,10 @@ public class ProceduralGeneration : MonoBehaviour
         string vrmlPath = AssetDatabase.GetAssetPath(obj);
         if (vrmlPath != null)
         {
-            vrmlPath = vrmlPath.Replace(".obj", "_vhacd.wrl");
+            vrmlPath = vrmlPath.Replace(".obj", ".wrl");
             string fullPath = System.IO.Path.Combine(Application.dataPath, vrmlPath.Substring(7));
+            if (!System.IO.File.Exists(fullPath))
+                fullPath = fullPath.Replace(".wrl", "_vhacd.wrl");
             if (System.IO.File.Exists(fullPath))
             {
                 using (System.IO.StreamReader reader = new System.IO.StreamReader(fullPath))
@@ -385,6 +387,8 @@ public class ProceduralGeneration : MonoBehaviour
                     vrmlText = reader.ReadToEnd();
                 }
             }
+            else
+                Debug.LogFormat("Cannot find {0}\n{1}", vrmlPath, fullPath);
         }
 
         GameObject instance = GameObject.Instantiate(obj) as GameObject;
