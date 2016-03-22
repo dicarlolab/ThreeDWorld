@@ -91,7 +91,7 @@ public class NetMessenger : MonoBehaviour
             GameObject.Instantiate(Resources.Load("Prefabs/ProceduralGeneration"));
 
         // Start up connections
-        CreateNewSocketConnection2();
+        CreateNewSocketConnection();
     }
 
     public bool AreAllAvatarsReady()
@@ -105,13 +105,21 @@ public class NetMessenger : MonoBehaviour
 
     private void Update()
     {
+        if (Camera.current != null)
+        {
+            Camera cam = Camera.current;
+            Debug.LogFormat("Disabling camera {0} from {1}/{2}", cam.name, cam.enabled, cam.gameObject.activeInHierarchy);
+            cam.enabled = false;
+        }
+//        Debug.LogFormat("UPDATE: curFrame: {0}, curTime: {2}, physTime: {1}, dt: {3}", Time.frameCount, Time.fixedTime, Time.time, Time.deltaTime);
+//        DisplayThreadDebug();
         testInput = Input.GetKey(KeyCode.S);
         if (hasServerMsg)
         {
             if (logTimingInfo)
             {
                 DateTime newTime = DateTime.Now;
-                Debug.LogFormat("Got message from client after {0}", newTime.Subtract(lastServerMsgTime).TotalMilliseconds);
+                Debug.LogFormat("Got message from client after {0} {1} f#{2}, p:{3}", newTime.Subtract(lastServerMsgTime).TotalMilliseconds, Utils.GetTimeStamp(), Time.frameCount, Time.fixedTime);
                 lastServerMsgTime = newTime;
             }
             List<MyMessageInfo> needsReplies = new List<MyMessageInfo>();
@@ -135,7 +143,7 @@ public class NetMessenger : MonoBehaviour
             if (logTimingInfo)
             {
                 DateTime newTime = DateTime.Now;
-                Debug.LogFormat("Got message from server after {0}", newTime.Subtract(lastClientMsgTime).TotalMilliseconds);
+                Debug.LogFormat("Got message from server after {0} {1} f#{2}, p:{3}", newTime.Subtract(lastClientMsgTime).TotalMilliseconds, Utils.GetTimeStamp(), Time.frameCount, Time.fixedTime);
                 lastClientMsgTime = newTime;
             }
             List<MyMessageInfo> needsReplies = new List<MyMessageInfo>();
@@ -167,6 +175,7 @@ public class NetMessenger : MonoBehaviour
 
     private void FixedUpdate()
     {
+//        Debug.LogFormat("Fixed: curFrame: {0}, physFramesLeft: {1}, physTime: {2}, {3}", Time.frameCount, SimulationManager.framesToProcess, Time.fixedTime, Utils.GetTimeStamp());
         // TODO: Handle this for when we have multiple Avatars
         if (SimulationManager.FinishUpdatingFrames())
         {
@@ -204,7 +213,7 @@ public class NetMessenger : MonoBehaviour
 #region Setup
     private void OnClientJoin(IAsyncResult result)
     {
-        Debug.Log("Got new client connection!");
+        ThreadDebug(string.Format("Got new client connection!"));
         TcpClient newClient;
         using (SemaphoreWrapper sem = new SemaphoreWrapper("Clients List"))
         {
@@ -220,11 +229,42 @@ public class NetMessenger : MonoBehaviour
         QueueMsgFromServer(newInfo);
     }
 
+    public string threadDebug = "";
+    public void ThreadDebug(string str)
+    {
+        using (SemaphoreWrapper sem = new SemaphoreWrapper("ThreadDebug"))
+        {
+            threadDebug += str + "\n";
+        }
+    }
+
+    public void ThreadDebugError(string str)
+    {
+        using (SemaphoreWrapper sem = new SemaphoreWrapper("ThreadDebug"))
+        {
+            threadDebug += str + "\n";
+        }
+        Debug.LogError(str);
+    }
+
+    public void DisplayThreadDebug()
+    {
+        using (SemaphoreWrapper sem = new SemaphoreWrapper("ThreadDebug"))
+        {
+            if (!string.IsNullOrEmpty(threadDebug))
+            {
+                Debug.LogWarning("Printing msg: " + threadDebug);
+//                Debug.LogWarning(threadDebug);
+                threadDebug = "";
+            }
+        }
+    }
+
     private bool ReadServerMessages(TcpClient c)
     {
         if (!c.Connected)
         {
-            Debug.LogWarning("Removing disconnected client");
+            ThreadDebug(string.Format("Removing disconnected client"));
             return false;
         }
         try
@@ -233,7 +273,7 @@ public class NetMessenger : MonoBehaviour
             if (s.DataAvailable)
             {
                 if (logTimingInfo)
-                    Debug.LogWarningFormat("Server: Has a msg to Read @{0}.{1} seconds", DateTime.Now.Second, DateTime.Now.Millisecond);
+                    ThreadDebug(string.Format("Server: Has a msg to Read @{0}.{1} seconds", DateTime.Now.Second, DateTime.Now.Millisecond));
                 StreamReader sr = new System.IO.StreamReader(s);
                 using (SemaphoreWrapper sem = new SemaphoreWrapper("Sem Server Messages"))
                 {
@@ -245,7 +285,7 @@ public class NetMessenger : MonoBehaviour
                     }
                 }
                 if (logTimingInfo)
-                    Debug.LogWarningFormat("Server: Finished Reading @{0}.{1} seconds", DateTime.Now.Second, DateTime.Now.Millisecond);
+                    ThreadDebug(string.Format("Server: Finished Reading @{0}.{1} seconds", DateTime.Now.Second, DateTime.Now.Millisecond));
             }
         }
         catch(SocketException e)
@@ -290,12 +330,12 @@ public class NetMessenger : MonoBehaviour
                     using (SemaphoreWrapper sem = new SemaphoreWrapper("outgoingServerMsg"))
                     {
                         if (logTimingInfo)
-                            Debug.LogWarningFormat("Server: Has {0} msg to Send @{1}.{2} seconds", outgoingServerMsg.Count, DateTime.Now.Second, DateTime.Now.Millisecond);
+                            ThreadDebug(string.Format("Server: Has {0} msg to Send @{1}.{2} seconds", outgoingServerMsg.Count, DateTime.Now.Second, DateTime.Now.Millisecond));
                         while (outgoingServerMsg.Count > 0)
                             outgoingServerMsg.Dequeue().Send();
                         hasServerMsgToSend = false;
                         if (logTimingInfo)
-                            Debug.LogWarningFormat("Server: Finished sending {0} msgs @{1}.{2} seconds", outgoingServerMsg.Count, DateTime.Now.Second, DateTime.Now.Millisecond);
+                            ThreadDebug(string.Format("Server: Finished sending {0} msgs @{1}.{2} seconds", outgoingServerMsg.Count, DateTime.Now.Second, DateTime.Now.Millisecond));
                     }
                 }
                 Thread.Sleep(0);
@@ -303,12 +343,12 @@ public class NetMessenger : MonoBehaviour
         }
         catch (Exception e)
         {
-            Debug.LogWarning("ServerTcpThread catch" + Thread.CurrentThread.ManagedThreadId);
+            ThreadDebug(string.Format("ServerTcpThread catch" + Thread.CurrentThread.ManagedThreadId));
             Debug.LogException(e);
         }
         finally
         {
-            Debug.LogWarning("ServerTcpThread finally" + Thread.CurrentThread.ManagedThreadId);
+            ThreadDebug(string.Format("ServerTcpThread finally" + Thread.CurrentThread.ManagedThreadId));
             serverTcp.Stop();
         }
     }
@@ -329,7 +369,7 @@ public class NetMessenger : MonoBehaviour
                     while (s.DataAvailable)
                     {
                         if (logTimingInfo)
-                            Debug.LogWarningFormat("Client: Has a msg to Read @{0}.{1} seconds", DateTime.Now.Second, DateTime.Now.Millisecond);
+                            ThreadDebug(string.Format("Client: Has a msg to Read @{0}.{1} seconds", DateTime.Now.Second, DateTime.Now.Millisecond));
                         MyMessageInfo newMsg = new MyMessageInfo(clientTcp);
                         newMsg.Read();
                         using (SemaphoreWrapper sem = new SemaphoreWrapper("Sem Client Messages"))
@@ -338,7 +378,7 @@ public class NetMessenger : MonoBehaviour
                             hasClientMsg = true;
                         }
                         if (logTimingInfo)
-                            Debug.LogWarningFormat("Client: Finished Reading @{0}.{1} seconds", DateTime.Now.Second, DateTime.Now.Millisecond);
+                            ThreadDebug(string.Format("Client: Finished Reading @{0}.{1} seconds", DateTime.Now.Second, DateTime.Now.Millisecond));
                     }
                 }
                 if (hasClientMsgToSend)
@@ -346,12 +386,12 @@ public class NetMessenger : MonoBehaviour
                     using (SemaphoreWrapper sem = new SemaphoreWrapper("outgoingTestClientMsg"))
                     {
                         if (logTimingInfo)
-                            Debug.LogWarningFormat("Client: Has {0} msg to Send @{1}.{2} seconds", outgoingTestClientMsg.Count, DateTime.Now.Second, DateTime.Now.Millisecond);
+                            ThreadDebug(string.Format("Client: Has {0} msg to Send @{1}.{2} seconds", outgoingTestClientMsg.Count, DateTime.Now.Second, DateTime.Now.Millisecond));
                         while (outgoingTestClientMsg.Count > 0)
                             outgoingTestClientMsg.Dequeue().Send();
                         hasClientMsgToSend = false;
                         if (logTimingInfo)
-                            Debug.LogWarningFormat("Client: Finished sending {0} msgs @{1}.{2} seconds", outgoingTestClientMsg.Count, DateTime.Now.Second, DateTime.Now.Millisecond);
+                            ThreadDebug(string.Format("Client: Finished sending {0} msgs @{1}.{2} seconds", outgoingTestClientMsg.Count, DateTime.Now.Second, DateTime.Now.Millisecond));
                     }
                 }
                 Thread.Sleep(0);
@@ -359,19 +399,19 @@ public class NetMessenger : MonoBehaviour
         }
         catch (Exception e)
         {
-            Debug.LogWarning("TestClientTcpThread catch" + Thread.CurrentThread.ManagedThreadId);
+            ThreadDebug(string.Format("TestClientTcpThread catch" + Thread.CurrentThread.ManagedThreadId));
             Debug.LogException(e);
         }
         finally
         {
-            Debug.LogWarning("TestClientTcpThread finally " + Thread.CurrentThread.ManagedThreadId);
+            ThreadDebug(string.Format("TestClientTcpThread finally " + Thread.CurrentThread.ManagedThreadId));
             clientTcp.Close();
         }
     }
 
-    public void CreateNewSocketConnection2()
+    public void CreateNewSocketConnection()
     {
-        Debug.Log("CreateNewSocketConnection2");
+        Debug.Log("CreateNewSocketConnection");
         if (shouldCreateServer)
         {
             thread = new Thread(ServerTcpThread);
@@ -404,22 +444,22 @@ public class NetMessenger : MonoBehaviour
 
 #endregion
 #region Receive messages from the client on the server
-    // General handling for receiving messages on the server
+    // General handling for receiving messages on the server(main thread)
     public void OnReceiveMessageFromClient(MyMessageInfo msg)
     {
         if (debugNetworkMessages)
-            Debug.LogFormat("Received Msg on Server: {0}", ReadOutMessage(msg));
+            Debug.Log(string.Format("Received Msg on Server: {0}", ReadOutMessage(msg)));
         
         string msgHeader = msg.text;
         JSONClass jsonData = msg.ReadJson(out msgHeader);
         if (jsonData == null)
         {
-            Debug.LogError("Invalid message from client! Cannot parse JSON!\n" + ReadOutMessage(msg));
+            Debug.LogError(string.Format("Invalid message from client! Cannot parse JSON!\n" + ReadOutMessage(msg)));
             return;
         }
         if (msgHeader == null)
         {
-            Debug.LogError("Invalid message from client! No msg_type!\n" + jsonData.ToJSON(0));
+            Debug.LogError("Invalid message from client! No msg_type!" + jsonData.ToJSON(0));
             return;
         }
 
@@ -432,13 +472,19 @@ public class NetMessenger : MonoBehaviour
                 RecieveClientInput(msg, jsonData);
                 break;
             default:
-                Debug.LogWarningFormat("Invalid message from client! Unknown msg_type '{0}'\n{1}", msgHeader, jsonData.ToJSON(0));
+                Debug.LogWarning(string.Format("Invalid message from client! Unknown msg_type '{0}'\n{1}", msgHeader, jsonData.ToJSON(0)));
                 break;
         }
     }
 
     public void RecieveClientInput(MyMessageInfo msgBase, JSONClass jsonData)
     {
+        if (!_avatars.ContainsKey(msgBase.myClient))
+        {
+            Debug.LogWarning("No avatar yet: Calling OnClientJoin" + jsonData.ToJSON(0));
+            OnClientJoin(msgBase, jsonData);
+            return;
+        }
         _avatars[msgBase.myClient].HandleNetInput(jsonData);
     }
 
@@ -464,18 +510,27 @@ public class NetMessenger : MonoBehaviour
     private void OnReceiveMessageFromServer(MyMessageInfo msg)
     {
         if (debugNetworkMessages)
-            Debug.LogFormat("Received Msg on Client: {0}", ReadOutMessage(msg));
+            Debug.Log(string.Format("Received Msg on Client: {0}", ReadOutMessage(msg)));
 
         string msgHeader = msg.text;
-        JSONClass jsonData = msg.ReadJson(out msgHeader);
+        JSONClass jsonData = null;
+        if (msg.text.Length > 1000)
+        {
+            // Hack for avoiding slow parsing of large JSON since we aren't really reading the values
+            msgHeader = MSG_S_FrameData;
+            jsonData = CreateMsgJson(msgHeader);
+        }
+        else
+            jsonData = msg.ReadJson(out msgHeader);
+        
         if (jsonData == null)
         {
-            Debug.LogError("Invalid message from server! Cannot parse JSON!\n" + ReadOutMessage(msg));
+            Debug.LogWarning("Invalid message from server! Cannot parse JSON!\n" + ReadOutMessage(msg));
             return;
         }
         if (msgHeader == null)
         {
-            Debug.LogError("Invalid message from server! No msg_type!\n" + jsonData.ToJSON(0));
+            Debug.LogWarning("Invalid message from server! No msg_type!\n" + jsonData.ToJSON(0));
             return;
         }
 
@@ -488,14 +543,27 @@ public class NetMessenger : MonoBehaviour
                 SimulateClientInput(msg, jsonData);
                 break;
             default:
-                Debug.LogWarningFormat("Invalid message from server! Unknown msg_type '{0}'\n{1}", msgHeader, jsonData.ToJSON(0));
+                Debug.LogWarning(string.Format("Invalid message from server! Unknown msg_type '{0}'\n{1}", msgHeader, jsonData.ToJSON(0)));
                 break;
         }
     }
 
     static public string ReadOutMessage(MyMessageInfo msg)
     {
-        string output = string.Format("({0} characters, {1} byte arrays)", (msg.text == null) ? 0 : msg.text.Length, msg.byteData.Count);
+        string output = string.Format("({0} characters)", (msg.text == null) ? 0 : msg.text.Length);
+        if (msg.byteData.Count > 0)
+        {
+            output += ", byte arrays: ";
+            bool isFirst = true;
+            foreach(byte[] a in msg.byteData)
+            {
+                if (!isFirst)
+                    output += ", ";
+                output += string.Format("{0}{1}", isFirst ? "" : ", ", a.Length);
+                isFirst = false;
+            }
+        }
+        output += ")";
         if (msg.text != null)
             output += string.Format("\ntext: \"{0}\"", msg.text);
         return output;
@@ -520,7 +588,7 @@ public class NetMessenger : MonoBehaviour
             if (msg.byteData.Count > 0)
             {
                 for(int i = 0; i < myAvatar.shaders.Count; ++i)
-                    Debug.LogFormat("Saving out: {0}", CameraStreamer.SaveOutImages(msg.byteData[i], i));
+                    ThreadDebug(string.Format("Saving out: {0}", CameraStreamer.SaveOutImages(msg.byteData[i], i)));
                 CameraStreamer.fileIndex++;
             }
         }

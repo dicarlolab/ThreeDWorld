@@ -10,6 +10,10 @@ using UnityEditor;
 
 public class Utils
 {
+    public static string GetTimeStamp()
+    {
+        return string.Format("@{0}.{1} seconds", System.DateTime.Now.Second, System.DateTime.Now.Millisecond);
+    }
 }
 
 [System.Serializable]

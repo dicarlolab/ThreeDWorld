@@ -20,6 +20,8 @@ public static class SimulationManager
     private static SimpleJSON.JSONClass _readJsonArgs = null;
     private static int framesToProcess = 0;
     private static int totalFramesProcessed = 0;
+    private static float physicsTimeMultiplier = 1.0f;
+    private static int targetFrameRate = 300;
     private static bool _hasFinishedInit = false;
     private static NetMessenger myNetMessenger = null;
     private static MyLogLevel logLevel = MyLogLevel.LogAll;
@@ -53,7 +55,8 @@ public static class SimulationManager
         {
             --framesToProcess;
             ++totalFramesProcessed;
-            Time.timeScale = (framesToProcess > 0) ? 1.0f : 0.0f;
+            Time.timeScale = (framesToProcess > 0) ? physicsTimeMultiplier : 0.0f;
+            Application.targetFrameRate = -1;
             return framesToProcess == 0;
         }
         return false;
@@ -61,15 +64,15 @@ public static class SimulationManager
 
     public static void ToggleUpdates()
     {
+        Application.targetFrameRate = targetFrameRate;
         framesToProcess = numPhysicsFramesPerUpdate;
-        Time.timeScale = (framesToProcess > 0) ? 1.0f : 0.0f;
+        Time.timeScale = (framesToProcess > 0) ? physicsTimeMultiplier : 0.0f;
         foreach(Avatar a in myNetMessenger.GetAllAvatars())
             a.readyForSimulation = false;
     }
     
     public static void CheckToggleUpdates()
     {
-//        Debug.Log("Avatars ready: " + myNetMessenger.AreAllAvatarsReady());
         if (myNetMessenger.AreAllAvatarsReady())
             ToggleUpdates();
     }
@@ -194,6 +197,20 @@ public static class SimulationManager
         int screenWidth = _readJsonArgs["screen_width"].ReadInt(Screen.width);
         int screenHeight = _readJsonArgs["screen_height"].ReadInt(Screen.height);
         Screen.SetResolution(screenWidth, screenHeight, Screen.fullScreen);
+
+        numPhysicsFramesPerUpdate = _readJsonArgs["num_time_steps"].ReadInt(numPhysicsFramesPerUpdate);
+        Time.fixedDeltaTime = _readJsonArgs["time_step"].ReadFloat(Time.fixedDeltaTime);
+        targetFrameRate = _readJsonArgs["target_fps"].ReadInt(targetFrameRate);
+        physicsTimeMultiplier = targetFrameRate * (Time.fixedDeltaTime * numPhysicsFramesPerUpdate * 1.05f);
+        // Multiplier must be float between 0 and 100.0f
+        if (physicsTimeMultiplier > 100)
+        {
+            targetFrameRate = Mathf.FloorToInt(targetFrameRate * 100f / physicsTimeMultiplier);
+            physicsTimeMultiplier = targetFrameRate * (Time.fixedDeltaTime * numPhysicsFramesPerUpdate * 1.05f);
+        }
+        QualitySettings.vSyncCount = 0;
+        Application.targetFrameRate = targetFrameRate;
+//        Debug.LogFormat("Setting target render FPS to {0} with speedup: {1} with phys timestep of {2} and {3} phys frames, maxDT: {4}", targetFrameRate, physicsTimeMultiplier, Time.fixedDeltaTime, numPhysicsFramesPerUpdate, Time.maximumDeltaTime);
 
         // Init NetMessenger
         myNetMessenger = GameObject.FindObjectOfType<NetMessenger>();
