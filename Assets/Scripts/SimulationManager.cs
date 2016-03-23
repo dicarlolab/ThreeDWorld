@@ -202,7 +202,7 @@ public static class SimulationManager
 
         numPhysicsFramesPerUpdate = _readJsonArgs["num_time_steps"].ReadInt(numPhysicsFramesPerUpdate);
         Time.fixedDeltaTime = _readJsonArgs["time_step"].ReadFloat(Time.fixedDeltaTime);
-        profilerFrames = _readJsonArgs["profiler_frames"].ReadFloat(profilerFrames);
+        profilerFrames = _readJsonArgs["profiler_frames"].ReadInt(profilerFrames);
         targetFrameRate = _readJsonArgs["target_fps"].ReadInt(targetFrameRate);
         physicsTimeMultiplier = targetFrameRate * (Time.fixedDeltaTime * numPhysicsFramesPerUpdate * 1.05f);
         // Multiplier must be float between 0 and 100.0f
