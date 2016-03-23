@@ -10,9 +10,17 @@ using UnityEditor;
 
 public class Utils
 {
-    public static string GetTimeStamp()
+    public static System.DateTime lastTime = System.DateTime.Now;
+    public static string GetTimeStampAbsolute()
     {
         return string.Format("@{0}.{1} seconds", System.DateTime.Now.Second, System.DateTime.Now.Millisecond);
+    }
+    public static string GetTimeStamp()
+    {
+        System.DateTime now = System.DateTime.Now;
+        System.TimeSpan diff = now.Subtract(lastTime);
+        lastTime = now;
+        return string.Format("@{0} ms since last", diff.TotalMilliseconds);
     }
 }
 

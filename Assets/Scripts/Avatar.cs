@@ -88,9 +88,11 @@ public class Avatar : MonoBehaviour
     }
 
     // Looks for all the SemanticObject's that are within the range
-    public void UpdateObservedObjects()
+    public void UpdateObservedObjects(bool shouldUpdate = true)
     {
         _observedObjs.Clear();
+        if (!shouldUpdate)
+            return;
         Collider[] observedObjects = Physics.OverlapSphere(transform.position, observedRange);
         foreach(Collider col in observedObjects)
         {

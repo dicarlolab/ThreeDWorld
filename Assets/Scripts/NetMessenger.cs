@@ -21,6 +21,7 @@ public class NetMessenger : MonoBehaviour
     public bool shouldCreateServer = true;
     public bool debugNetworkMessages = false;
     public bool logTimingInfo = false;
+    public bool shouldObserveObjs = false;
     public bool saveDebugImageFiles = false;
     public bool usePngFiles = false;
     public RequestSocket clientSimulation = null;
@@ -66,6 +67,7 @@ public class NetMessenger : MonoBehaviour
         // Read port number
         portNumber = SimulationManager.argsConfig["port_number"].ReadString(portNumber);
         hostAddress = SimulationManager.argsConfig["host_address"].ReadString(hostAddress);
+        shouldObserveObjs = SimulationManager.argsConfig["collect_obj_info"].ReadBool(shouldObserveObjs);
         shouldCreateTestClient = SimulationManager.argsConfig["create_test_client"].ReadBool(shouldCreateTestClient);
         shouldCreateServer = SimulationManager.argsConfig["create_server"].ReadBool(shouldCreateServer);
         debugNetworkMessages = SimulationManager.argsConfig["debug_network_messages"].ReadBool(debugNetworkMessages);
@@ -124,7 +126,7 @@ public class NetMessenger : MonoBehaviour
             HashSet<SemanticObject> allObserved = new HashSet<SemanticObject>();
             foreach(Avatar a in _avatars.Values)
             {
-                a.UpdateObservedObjects();
+                a.UpdateObservedObjects(shouldObserveObjs);
                 allObserved.UnionWith(a.observedObjs);
             }
 
@@ -368,16 +370,19 @@ public class NetMessenger : MonoBehaviour
         JsonData jsonData = CreateMsgJson(MSG_S_FrameData);
         // TODO: Additional frame message description?
 
-        // Look up relationship values for all observed semantics objects
-        jsonData["observed_objects"] = new JsonData(JsonType.Array);
-        jsonData["observed_relations"] = new JsonData(JsonType.Object);
-        foreach(SemanticObject o in a.observedObjs)
-            jsonData["observed_objects"].Add(o.identifier);
-        foreach(SemanticRelationship rel in _relationsToTest)
-            jsonData["observed_relations"][rel.name] = rel.GetJsonString(a.observedObjs);
+        if (shouldObserveObjs)
+        {
+            // Look up relationship values for all observed semantics objects
+            jsonData["observed_objects"] = new JsonData(JsonType.Array);
+            jsonData["observed_relations"] = new JsonData(JsonType.Object);
+            foreach(SemanticObject o in a.observedObjs)
+                jsonData["observed_objects"].Add(o.identifier);
+            foreach(SemanticRelationship rel in _relationsToTest)
+                jsonData["observed_relations"][rel.name] = rel.GetJsonString(a.observedObjs);
 
-        jsonData["avatar_position"] = a.transform.position.ToJson();
-        jsonData["avatar_rotation"] = a.transform.rotation.ToJson();
+            jsonData["avatar_position"] = a.transform.position.ToJson();
+            jsonData["avatar_rotation"] = a.transform.rotation.ToJson();
+        }
 //        // Add in captured frames
 //        int numValues = Mathf.Min(streamCapture.shadersList.Count, streamCapture.capturedImages.Count);
 //        JSONArray imagesArray = new JsonData(JsonType.Array);
