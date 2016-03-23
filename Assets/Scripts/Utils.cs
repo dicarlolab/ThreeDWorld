@@ -302,7 +302,6 @@ public static class UtilExtensionMethods
         if (node == null || !node.IsArray || node.Count != 3)
             return false;
         Vector3 placeholder = overwriteValue;
-        Debug.Log("ReadVector3 "+ node.ToJSON());
         if (node[0].ReadFloat(ref placeholder.x) && node[1].ReadFloat(ref placeholder.y) && node[2].ReadFloat(ref placeholder.z))
         {
             overwriteValue.x = placeholder.x;
