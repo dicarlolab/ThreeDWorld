@@ -5,14 +5,14 @@ using System;
 using UnityEngine.UI;
 using System.Collections.Generic;
 using NetMQ.Sockets;
-using SimpleJSON;
+using LitJson;
 
 /// <summary>
 /// Manages connections with all clients
 /// </summary>
 public class NetMessenger : MonoBehaviour
 {
-#region Fields
+    #region Fields
     // Template for the avatar to create for each connection
     public Avatar avatarPrefab;
     public string portNumber = "5556";
@@ -20,8 +20,13 @@ public class NetMessenger : MonoBehaviour
     public bool shouldCreateTestClient = false;
     public bool shouldCreateServer = true;
     public bool debugNetworkMessages = false;
+    public static bool logTimingInfo = false;
+    public static bool logSimpleTimeInfo = false;
+    public bool saveDebugImageFiles = false;
+    public bool usePngFiles = false;
     public RequestSocket clientSimulation = null;
 
+    private DateTime _timeForLastMsg;
     private NetMQContext _ctx;
     private NetMQMessage _lastMessage = new NetMQMessage();
     private NetMQMessage _lastMessageSent = new NetMQMessage();
@@ -29,9 +34,9 @@ public class NetMessenger : MonoBehaviour
     private Dictionary<ResponseSocket, Avatar> _avatars = new Dictionary<ResponseSocket, Avatar>();
     private Dictionary<ResponseSocket, RequestSocket> _avatarClients = new Dictionary<ResponseSocket, RequestSocket>();
     private List<SemanticRelationship> _relationsToTest = new List<SemanticRelationship>();
-#endregion
+    #endregion
 
-#region Const message values
+    #region Const message values
     // To Send From Server
     const string MSG_S_ConfirmClientJoin = "CLIENT_INIT";
     const string MSG_S_FrameData = "FRAME_UPDATE";
@@ -39,7 +44,7 @@ public class NetMessenger : MonoBehaviour
     // To Receive From Client
     const string MSG_R_ClientJoin = "CLIENT_JOIN";
     const string MSG_R_FrameInput = "CLIENT_INPUT";
-#endregion
+    #endregion
 
     public List<Avatar> GetAllAvatars()
     {
@@ -47,12 +52,13 @@ public class NetMessenger : MonoBehaviour
         return ret;
     }
 
-#region Unity callbacks
+    #region Unity callbacks
     void Start()
     {
+        _timeForLastMsg = DateTime.Now;
         _relationsToTest.Add(new OnRelation());
-		_relationsToTest.Add (new PushRelation ());
-		_relationsToTest.Add (new TouchingRelation ());
+        _relationsToTest.Add (new PushRelation ());
+        _relationsToTest.Add (new TouchingRelation ());
         SimulationManager.Init();
     }
 
@@ -64,6 +70,10 @@ public class NetMessenger : MonoBehaviour
         shouldCreateTestClient = SimulationManager.argsConfig["create_test_client"].ReadBool(shouldCreateTestClient);
         shouldCreateServer = SimulationManager.argsConfig["create_server"].ReadBool(shouldCreateServer);
         debugNetworkMessages = SimulationManager.argsConfig["debug_network_messages"].ReadBool(debugNetworkMessages);
+        logSimpleTimeInfo = SimulationManager.argsConfig["log_timing_info"].ReadBool(logSimpleTimeInfo);
+        logTimingInfo = SimulationManager.argsConfig["log_detailed_timing_info"].ReadBool(logTimingInfo);
+        CameraStreamer.preferredImageFormat = SimulationManager.argsConfig["image_format"].ReadString("bmp");
+        saveDebugImageFiles = SimulationManager.argsConfig["save_out_debug_image_files"].ReadBool(false);
 
         // Create Procedural generation
         if (ProceduralGeneration.Instance == null && shouldCreateServer)
@@ -81,7 +91,7 @@ public class NetMessenger : MonoBehaviour
             allReady = allReady && a.readyForSimulation;
         return allReady;
     }
-    
+
     void Update()
     {
         if (clientSimulation != null)
@@ -93,7 +103,7 @@ public class NetMessenger : MonoBehaviour
         }
         foreach(ResponseSocket server in _createdSockets)
         {
-//            Debug.LogFormat("Server In: {0}, Out: {1}", server.HasIn, server.HasOut);
+            //            Debug.LogFormat("Server In: {0}, Out: {1}", server.HasIn, server.HasOut);
             if (server.HasIn && server.TryReceiveMultipartMessage(TimeSpan.Zero, ref _lastMessage))
                 HandleFrameMessage(server, _lastMessage);
             RequestSocket client = null;
@@ -101,31 +111,44 @@ public class NetMessenger : MonoBehaviour
                 client = _avatarClients[server];
             if (client != null)
             {
-//                Debug.LogFormat("Client In: {0}, Out: {1}", client.HasIn, client.HasOut);
+                //                Debug.LogFormat("Client In: {0}, Out: {1}", client.HasIn, client.HasOut);
                 if (client.HasIn && client.TryReceiveMultipartMessage(TimeSpan.Zero, ref _lastMessage))
                     HandleClientFrameMessage(client, _lastMessage);
             }
         }
     }
-
     private void FixedUpdate()
     {
         // TODO: Handle this for when we have multiple Avatars
         if (SimulationManager.FinishUpdatingFrames())
         {
+            if (logTimingInfo)
+                Debug.LogFormat("Start FinishUpdatingFrames() {0}", Utils.GetTimeStamp());
             HashSet<SemanticObject> allObserved = new HashSet<SemanticObject>();
+            HashSet<string> relationshipsActive = new HashSet<string>();
             foreach(Avatar a in _avatars.Values)
             {
                 a.UpdateObservedObjects();
                 allObserved.UnionWith(a.observedObjs);
+                relationshipsActive.UnionWith(a.relationshipsToRetrieve);
             }
+            if (logTimingInfo)
+                Debug.LogFormat("Finished find avatar observed objects {0}", Utils.GetTimeStamp());
 
             // Process all the relation changes
+            bool hasAll = relationshipsActive.Contains("ALL");
             foreach(SemanticRelationship rel in _relationsToTest)
-                rel.Setup(allObserved);
+            {
+                if (hasAll || relationshipsActive.Contains(rel.name))
+                    rel.Setup(allObserved);
+            }
+            if (logTimingInfo)
+                Debug.LogFormat("Finished relationships setup {0}", Utils.GetTimeStamp());
 
             foreach(Avatar a in _avatars.Values)
                 a.ReadyFramesForRequest();
+            if (logTimingInfo)
+                Debug.LogFormat("Finished FinishUpdatingFrames() {0}", Utils.GetTimeStamp());
         }
     }
 
@@ -163,9 +186,9 @@ public class NetMessenger : MonoBehaviour
             _ctx = null;
         }
     }
-#endregion
+    #endregion
 
-#region Setup
+    #region Setup
     private void CreateNewSocketConnection()
     {
         ResponseSocket server = _ctx.CreateResponseSocket();
@@ -180,7 +203,7 @@ public class NetMessenger : MonoBehaviour
         {
             clientSimulation = _ctx.CreateRequestSocket();
             clientSimulation.Connect("tcp://" + hostAddress + ":" + portNumber);
-            clientSimulation.SendFrame(CreateMsgJson(MSG_R_ClientJoin).ToJSON(0));
+            clientSimulation.SendFrame(CreateMsgJson(MSG_R_ClientJoin).ToJSON());
         }
     }
 
@@ -189,17 +212,23 @@ public class NetMessenger : MonoBehaviour
         RequestSocket client = _ctx.CreateRequestSocket();
         client.Connect("tcp://" + hostAddress + ":" + portNumber);
         _avatarClients[server] = client;
-        client.SendFrame(CreateMsgJson(MSG_R_ClientJoin).ToJSON(0));
+        client.SendFrame(CreateMsgJson(MSG_R_ClientJoin).ToJSON());
     }
-#endregion
+    #endregion
 
-#region Receive messages from the client
+    #region Receive messages from the client
     public void HandleFrameMessage(ResponseSocket server, NetMQMessage msg)
     {
+        if (logTimingInfo || logSimpleTimeInfo)
+        {
+            DateTime newTime = DateTime.Now;
+            Debug.LogFormat("Time since received last msg: {0} ms", newTime.Subtract(_timeForLastMsg).TotalMilliseconds);
+            _timeForLastMsg = newTime;
+        }
         if (debugNetworkMessages)
             Debug.LogFormat("Received Msg on Server: {0}", ReadOutMessage(msg));
         string msgHeader = msg.First.ConvertToString();
-        JSONClass jsonData = msg.ReadJson(out msgHeader);
+        JsonData jsonData = msg.ReadJson(out msgHeader);
         if (jsonData == null)
         {
             Debug.LogError("Invalid message from client! Cannot parse JSON!\n" + ReadOutMessage(msg));
@@ -207,7 +236,7 @@ public class NetMessenger : MonoBehaviour
         }
         if (msgHeader == null)
         {
-            Debug.LogError("Invalid message from client! No msg_type!\n" + jsonData.ToJSON(0));
+            Debug.LogError("Invalid message from client! No msg_type!\n" + jsonData.ToJSON());
             return;
         }
 
@@ -220,17 +249,17 @@ public class NetMessenger : MonoBehaviour
                 RecieveClientInput(server, jsonData);
                 break;
             default:
-                Debug.LogWarningFormat("Invalid message from client! Unknown msg_type '{0}'\n{1}", msgHeader, jsonData.ToJSON(0));
+                Debug.LogWarningFormat("Invalid message from client! Unknown msg_type '{0}'\n{1}", msgHeader, jsonData.ToJSON());
                 break;
         }
     }
 
-    public void RecieveClientInput(ResponseSocket server, JSONClass jsonData)
+    public void RecieveClientInput(ResponseSocket server, JsonData jsonData)
     {
         _avatars[server].HandleNetInput(jsonData);
     }
 
-    public void OnClientJoin(ResponseSocket server, JSONClass data)
+    public void OnClientJoin(ResponseSocket server, JsonData data)
     {
         // Setup new avatar object from prefab
         Avatar newAvatar = UnityEngine.Object.Instantiate<Avatar>(avatarPrefab);
@@ -242,22 +271,36 @@ public class NetMessenger : MonoBehaviour
         }
         _avatars[server] = newAvatar;
         newAvatar.InitNetData(this, server);
-//
-//        // Send confirmation message
-//        lastMessageSent.Clear();
-//        lastMessageSent.Append(MSG_S_ConfirmClientJoin);
-//        server.SendMultipartMessage(lastMessageSent);
+        //
+        //        // Send confirmation message
+        //        lastMessageSent.Clear();
+        //        lastMessageSent.Append(MSG_S_ConfirmClientJoin);
+        //        server.SendMultipartMessage(lastMessageSent);
     }
-#endregion
-    
-#region Simulate recieving message on the client
+    #endregion
+
+    #region Simulate recieving message on the client
     // Used for debugging without an agent
     public void HandleClientFrameMessage(RequestSocket client, NetMQMessage msg)
     {
         if (debugNetworkMessages)
             Debug.LogFormat("Received Msg on Client: {0}", ReadOutMessage(msg));
         string msgHeader = msg.First.ConvertToString();
-        JSONClass jsonData = msg.ReadJson(out msgHeader);
+
+        // Hack to avoid slow parsing of long json values since we're not reading it anyways
+        JsonData jsonData = null;
+        if (msg.FrameCount > 0)
+        {
+            string jsonString = msg[0].ConvertToString();
+            if (jsonString != null && jsonString.Length > 1000)
+            {
+                msgHeader = MSG_S_FrameData;
+                jsonData = CreateMsgJson(msgHeader);
+            }
+            else
+                jsonData = msg.ReadJson(out msgHeader);
+        }
+
         if (jsonData == null)
         {
             Debug.LogError("Invalid message from server! Cannot parse JSON!\n" + ReadOutMessage(msg));
@@ -265,7 +308,7 @@ public class NetMessenger : MonoBehaviour
         }
         if (msgHeader == null)
         {
-            Debug.LogError("Invalid message from server! No msg_type!\n" + jsonData.ToJSON(0));
+            Debug.LogError("Invalid message from server! No msg_type!\n" + jsonData.ToJSON());
             return;
         }
 
@@ -278,7 +321,7 @@ public class NetMessenger : MonoBehaviour
                 SimulateClientInput(client, jsonData, msg);
                 break;
             default:
-                Debug.LogWarningFormat("Invalid message from server! Unknown msg_type '{0}'\n{1}", msgHeader, jsonData.ToJSON(0));
+                Debug.LogWarningFormat("Invalid message from server! Unknown msg_type '{0}'\n{1}", msgHeader, jsonData.ToJSON());
                 break;
         }
     }
@@ -307,13 +350,13 @@ public class NetMessenger : MonoBehaviour
         }
         return output;
     }
-    
-    public void SimulateClientInput(RequestSocket client, JSONClass jsonData, NetMQMessage msg)
+
+    public void SimulateClientInput(RequestSocket client, JsonData jsonData, NetMQMessage msg)
     {
         ResponseSocket server = GetServerForClient(client);
         Avatar myAvatar = _avatars[server];
 
-        if (SimulationManager.argsConfig["save_out_debug_pngs"].ReadBool(false))
+        if (saveDebugImageFiles)
         {
             // Just save out the png data to the local filesystem(Debugging code only)
             if (msg.FrameCount > 1)
@@ -325,44 +368,52 @@ public class NetMessenger : MonoBehaviour
         }
 
         // Send input message
-        JSONClass msgData = CreateMsgJson(MSG_R_FrameInput);
+        JsonData msgData = CreateMsgJson(MSG_R_FrameInput);
         myAvatar.myInput.SimulateInputFromController(ref msgData);
         _lastMessageSent.Clear();
-        _lastMessageSent.Append(msgData.ToJSON(0));
+        _lastMessageSent.Append(msgData.ToJSON());
         client.SendMultipartMessage(_lastMessageSent);
     }
-#endregion
+    #endregion
     public void SendFrameUpdate(CameraStreamer.CaptureRequest streamCapture, Avatar a)
     {
+        if (logTimingInfo)
+            Debug.LogFormat("Start SendFrameUpdate() {0} {1}", a.name, Utils.GetTimeStamp());
         _lastMessageSent.Clear();
-        JSONClass jsonData = CreateMsgJson(MSG_S_FrameData);
+        JsonData jsonData = CreateMsgJson(MSG_S_FrameData);
         // TODO: Additional frame message description?
-        
-        // Look up relationship values for all observed semantics objects
-        jsonData["observed_objects"] = new JSONArray();
-        jsonData["observed_relations"] = new JSONClass();
-        foreach(SemanticObject o in a.observedObjs)
-            jsonData["observed_objects"].Add(o.identifier);
-        foreach(SemanticRelationship rel in _relationsToTest)
-            jsonData["observed_relations"][rel.name] = rel.GetJsonString(a.observedObjs);
 
+        if (a.shouldCollectObjectInfo)
+        {
+            // Look up relationship values for all observed semantics objects
+            jsonData["observed_objects"] = new JsonData(JsonType.Array);
+            foreach(SemanticObject o in a.observedObjs)
+                jsonData["observed_objects"].Add(o.identifier);
+            jsonData["observed_relations"] = new JsonData(JsonType.Object);
+            bool collectAllRelationships = a.relationshipsToRetrieve.Contains("ALL");
+            foreach(SemanticRelationship rel in _relationsToTest)
+            {
+                if (collectAllRelationships || a.relationshipsToRetrieve.Contains(rel.name))
+                    jsonData["observed_relations"][rel.name] = rel.GetJsonString(a.observedObjs);
+            }
+        }
         jsonData["avatar_position"] = a.transform.position.ToJson();
         jsonData["avatar_rotation"] = a.transform.rotation.ToJson();
 //        // Add in captured frames
 //        int numValues = Mathf.Min(streamCapture.shadersList.Count, streamCapture.capturedImages.Count);
-//        JSONArray imagesArray = new JSONArray();
+//        JSONArray imagesArray = new JsonData(JsonType.Array);
 //        for(int i = 0; i < numValues; ++i)
 //            imagesArray.Add(new JSONData(Convert.ToBase64String(streamCapture.capturedImages[i].pictureBuffer)));
 //        jsonData["captured_pngs"] = imagesArray;
 
 		//add initial scene info
 		if (a.sendSceneInfo) {
-			jsonData["sceneInfo"] = new JSONArray();
+            jsonData["sceneInfo"] = new JsonData(JsonType.Array);
 			GameObject[] allObjects = UnityEngine.Object.FindObjectsOfType<GameObject>() ;
 			foreach(GameObject go in allObjects){
 			   if (go.GetComponent<Renderer>() != null) {
-					JSONArray _info;
-					_info = new JSONArray();
+                    JsonData _info;
+                    _info = new JsonData(JsonType.Array);
 				   _info.Add(go.name);
 				   _info.Add(go.GetComponent<Renderer>().material.GetInt("_idval").ToString());
 				   jsonData["sceneInfo"].Add(_info);
@@ -370,16 +421,25 @@ public class NetMessenger : MonoBehaviour
 	    	}
 	    }
 	    
+        if (logTimingInfo)
+            Debug.LogFormat("Finished collect Json data {0}", Utils.GetTimeStamp());
         // Send out the real message
-        _lastMessageSent.Append(jsonData.ToJSON(0));
+        string jsonString = LitJson.JsonMapper.ToJson(jsonData);
+        _lastMessageSent.Append(jsonString);
+        if (logTimingInfo)
+            Debug.LogFormat("Finished encode json data of length {1}, {0}", Utils.GetTimeStamp(), jsonString.Length);
 
         // Add in captured frames(directly, non-JSON)
         int numValues = Mathf.Min(streamCapture.shadersList.Count, streamCapture.capturedImages.Count);
         for(int i = 0; i < numValues; ++i)
             _lastMessageSent.Append(streamCapture.capturedImages[i].pictureBuffer);
+        if (logTimingInfo)
+            Debug.LogFormat("Finished Encode Image data {0}", Utils.GetTimeStamp());
 
         a.myServer.SendMultipartMessage(_lastMessageSent);
 //        Debug.LogFormat("Sending frame message with {0} frames for {1} values", lastMessageSent.FrameCount, numValues);
+        if (logTimingInfo)
+            Debug.LogFormat("Finish SendFrameUpdate() {0} {1}", a.name, Utils.GetTimeStamp());
     }
 
     public ResponseSocket GetServerForClient(RequestSocket client)
@@ -392,9 +452,9 @@ public class NetMessenger : MonoBehaviour
         return null;
     }
 
-    public static JSONClass CreateMsgJson(string msgType)
+    public static JsonData CreateMsgJson(string msgType)
     {
-        JSONClass ret = new JSONClass();
+        JsonData ret = new JsonData(JsonType.Object);
         ret["msg_type"] = msgType;
         return ret;
     }

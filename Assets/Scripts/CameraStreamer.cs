@@ -40,8 +40,14 @@ public class CameraStreamer : MonoBehaviour
     private Texture2D _outPhoto = null;
     // If not empty, this queue will have the camera will capture a render and send a callback
     private Queue<CaptureRequest> _captureRequests = new Queue<CaptureRequest>();
+    public static string preferredImageFormat = "bmp";
     public static int fileIndex = 0;
     const string fileName = "testImg";
+
+    // BMP Header caching info
+    private static byte[] _bmpHeader = null;
+    private static UInt32 _lastBmpDimX = 0;
+    private static UInt32 _lastBmpDimY = 0;
 #endregion
 
 #region Unity callbacks
@@ -76,7 +82,11 @@ public class CameraStreamer : MonoBehaviour
     // at the end of the frame(to avoid conflicts with the main rendering logic)
     public IEnumerator CaptureCoroutine()
     {
+        if (NetMessenger.logTimingInfo)
+            Debug.LogFormat("Start CaptureCoroutine() {0}", Utils.GetTimeStamp());
         yield return new WaitForEndOfFrame();
+        if (NetMessenger.logTimingInfo)
+            Debug.LogFormat("Reached end of frame {0}", Utils.GetTimeStamp());
         while(_captureRequests.Count > 0)
             ProcessCaptureRequest(_captureRequests.Dequeue());
     }
@@ -93,7 +103,7 @@ public class CameraStreamer : MonoBehaviour
     // Function to save out raw image data to disk as png files(mainly for debugging)
     public static string SaveOutImages(byte[] imageData, int shaderIndex)
     {
-        string newFileName = string.Format("{0}/{1}{2}_shader{3}.png", Application.persistentDataPath, fileName, fileIndex, shaderIndex);
+        string newFileName = string.Format("{0}/{1}{2}_shader{3}.{4}", Application.persistentDataPath, fileName, fileIndex, shaderIndex, preferredImageFormat);
         System.IO.File.WriteAllBytes(newFileName, imageData);
         return newFileName;
     }
@@ -122,15 +132,68 @@ public class CameraStreamer : MonoBehaviour
         _textureCam = null;
     }
 
+    private static void UpdateBMPHeader(UInt32 dimX, UInt32 dimY)
+    {
+        if (dimX != _lastBmpDimX || dimY != _lastBmpDimY || _bmpHeader == null)
+        {
+            const UInt32 HEADER_SIZE = 70;
+            UInt32 size = dimX * dimY, hSze = size + HEADER_SIZE;
+            _bmpHeader = new byte[]{
+                0x42, 0x4D,
+                BitConverter.GetBytes(hSze)[0], BitConverter.GetBytes(hSze)[1], BitConverter.GetBytes(hSze)[2], BitConverter.GetBytes(hSze)[3], // Size + header length(70)
+                0x00, 0x00, 0x00, 0x00,
+                0x46, 0x00, 0x00, 0x00,
+                0x38, 0x00, 0x00, 0x00,
+                BitConverter.GetBytes(dimX)[0], BitConverter.GetBytes(dimX)[1], BitConverter.GetBytes(dimX)[2], BitConverter.GetBytes(dimX)[3], // Width
+                BitConverter.GetBytes(dimY)[0], BitConverter.GetBytes(dimY)[1], BitConverter.GetBytes(dimY)[2], BitConverter.GetBytes(dimY)[3], // Height
+                0x01, 0x00, 0x20, 0x00,
+                0x03, 0x00, 0x00, 0x00,
+                BitConverter.GetBytes(size)[0], BitConverter.GetBytes(size)[1], BitConverter.GetBytes(size)[2], BitConverter.GetBytes(size)[3], // Size
+                0x13, 0x0B, 0x00, 0x00,
+                0x13, 0x0B, 0x00, 0x00,
+                0x00, 0x00, 0x00, 0x00,
+                0x00, 0x00, 0x00, 0x00,
+                0x00, 0x00, 0x00, 0xFF,
+                0x00, 0x00, 0xFF, 0x00,
+                0x00, 0xFF, 0x00, 0x00,
+                0x00, 0x00, 0x00, 0x00
+            };
+            _lastBmpDimX = dimX;
+            _lastBmpDimY = dimY;
+        }
+    }
+
+    private static void EncodeBMP(ref CapturedImage imgData, Texture2D textureSrc, int width, int height)
+    {
+        // Write out BMP file
+        UpdateBMPHeader((UInt32)width, (UInt32)height);
+        int byteArrayLength = _bmpHeader.Length + width * height * 4;
+        Color32[] pixels = textureSrc.GetPixels32();
+        if (imgData.pictureBuffer == null || imgData.pictureBuffer.Length != byteArrayLength)
+            imgData.pictureBuffer = new byte[byteArrayLength];
+        int byteIndex = 0;
+        System.Buffer.BlockCopy(_bmpHeader, 0, imgData.pictureBuffer, 0, _bmpHeader.Length);
+        for(int i = 0; i < pixels.Length; ++i)
+        {
+            byteIndex = 4*i + _bmpHeader.Length;
+            imgData.pictureBuffer[byteIndex+0] = pixels[i].a;
+            imgData.pictureBuffer[byteIndex+1] = pixels[i].b;
+            imgData.pictureBuffer[byteIndex+2] = pixels[i].g;
+            imgData.pictureBuffer[byteIndex+3] = pixels[i].r;
+        }        
+    }
+
     private CapturedImage TakeSnapshotNow(Shader targetShader)
     {
+        if (NetMessenger.logTimingInfo)
+            Debug.LogFormat("Start TakeShapshotNow() {0} {1}", (targetShader == null) ? "(null)" : targetShader.name, Utils.GetTimeStamp());
         // Create a new camera if we need to that we will be manually rendering
         if (_textureCam == null)
         {
             GameObject newObj = new GameObject("Texture-Writing Camera");
             _textureCam = newObj.AddComponent<Camera>();
             _textureCam.enabled = false;
-            _textureCam.targetTexture = new RenderTexture(targetCam.pixelWidth, targetCam.pixelHeight, 0);
+            _textureCam.targetTexture = new RenderTexture(targetCam.pixelWidth, targetCam.pixelHeight, 0, RenderTextureFormat.ARGB32);
             if (testImage != null)
                 testImage.texture = _textureCam.targetTexture;
         }
@@ -140,6 +203,8 @@ public class CameraStreamer : MonoBehaviour
             targetCam.RenderWithShader(targetShader, null);
         else
             targetCam.Render();
+        if (NetMessenger.logTimingInfo)
+            Debug.LogFormat("  Finished Rendering {0}", Utils.GetTimeStamp());
 
         // Copy and convert rendered image to PNG format as a byte array
         const bool SHOULD_USE_MIPMAPS = false;
@@ -149,8 +214,19 @@ public class CameraStreamer : MonoBehaviour
             _outPhoto = new Texture2D(pixWidth, pixHeight, TextureFormat.ARGB32, SHOULD_USE_MIPMAPS);
         _outPhoto.ReadPixels(new Rect(0, 0, pixWidth, pixHeight), 0, 0);
         _outPhoto.Apply();
+
+        if (NetMessenger.logTimingInfo)
+            Debug.LogFormat("  Created texture(internal format) {0}", Utils.GetTimeStamp());
+
         CapturedImage retImage = new CapturedImage();
-        retImage.pictureBuffer = _outPhoto.EncodeToPNG();
+        if (preferredImageFormat == "png")
+            retImage.pictureBuffer = _outPhoto.EncodeToPNG();
+        else if (preferredImageFormat == "jpg")
+            retImage.pictureBuffer = _outPhoto.EncodeToJPG();
+        else
+            EncodeBMP(ref retImage, _outPhoto, pixWidth, pixHeight);
+        if (NetMessenger.logTimingInfo)
+            Debug.LogFormat("  Encoded image {0}", Utils.GetTimeStamp());
         return retImage;
     }
 #endregion

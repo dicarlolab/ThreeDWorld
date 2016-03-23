@@ -2,6 +2,8 @@ using UnityEngine;
 using System;
 using System.Collections;
 using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
+using System.Collections.Generic;
 
 [ExecuteInEditMode]
 [AddComponentMenu("Ultimate Game Tools/Colliders/Concave Collider")]
@@ -573,6 +575,15 @@ public class ConcaveCollider : MonoBehaviour
         return !hadError;
     }
 
+    private static ProgressDelegate CreateProgressBar(System.Action onCancel, string title = "Computing hulls")
+    {
+        return (string message, float fPercent)=>
+        {
+            if(UnityEditor.EditorUtility.DisplayCancelableProgressBar(title, message, fPercent / 100.0f) && onCancel != null)
+                onCancel();
+        };
+    }
+
     private void ShowEditorProgressBar(string message, float fPercent)
     {
         if(UnityEditor.EditorUtility.DisplayCancelableProgressBar("Computing hulls", message, fPercent / 100.0f))
@@ -581,14 +592,69 @@ public class ConcaveCollider : MonoBehaviour
         }
     }
 
+    public static List<Mesh> ReadVrml(string contents, ProgressDelegate progress)
+    {
+        if (progress != null)
+            progress("Loading Vrml file", 0.0f);
+        List<Mesh> ret = new List<Mesh>();
+        MatchCollection matches = Regex.Matches(contents, 
+            "Group {.*?"
+            + "point\\s*\\[(?<verts>[^\\]]+).*?"
+            + "coordIndex\\s*\\[(?<indices>[^\\]]+)"
+            + "",
+            RegexOptions.Multiline | RegexOptions.Singleline);
+        int counter = 0;
+        foreach(Match m in matches)
+        {
+            if (progress != null)
+                progress("Converting Vrml file to Unity meshes", 100f * (counter + 0.5f) / matches.Count);
+            Mesh newMesh = new Mesh();
+            MatchCollection vertMatches = Regex.Matches(m.Groups["verts"].Value,
+                "^\\s*(?<x>-?\\d*\\.?\\d+)\\s+(?<y>-?\\d*\\.?\\d+)\\s+(?<z>-?\\d*\\.?\\d+),", RegexOptions.Multiline);
+            MatchCollection indexMatches = Regex.Matches(m.Groups["indices"].Value,
+                "^\\s*(?<x>\\d+),\\s+(?<y>\\d+),\\s+(?<z>\\d+),", RegexOptions.Multiline);
+//            Debug.LogFormat("Found match: v:{3}-{0},i:{4}-{1}, all:{2}", m.Groups["verts"].Value, m.Groups["indices"].Value, m.Value, vertMatches.Count, indexMatches.Count * 3);
+            Vector3[] verts = new Vector3[vertMatches.Count];
+            int[] indices = new int[indexMatches.Count * 3];
+            int secondCounter = 0;
+            // Have to reflect the x value for some reason
+            foreach(Match vm in vertMatches)
+                verts[secondCounter++] = new Vector3(-float.Parse(vm.Groups["x"].Value), float.Parse(vm.Groups["y"].Value), float.Parse(vm.Groups["z"].Value));
+            secondCounter = 0;
+            foreach(Match im in indexMatches)
+            {
+                indices[secondCounter++] = int.Parse(im.Groups["x"].Value);
+                indices[secondCounter++] = int.Parse(im.Groups["y"].Value);
+                indices[secondCounter++] = int.Parse(im.Groups["z"].Value);
+            }
+            newMesh.vertices  = verts;
+            newMesh.triangles = indices;
+            ret.Add(newMesh);
+            counter++;
+        }
+        return ret;
+    }
+
     [UnityEditor.MenuItem ("GameObject/ConcaveCollider/CreateColliders %&c")]
     private static void CreateCollidersMenuCommand()
     {
         GameObject obj = UnityEditor.Selection.activeGameObject;
-        FH_CreateColliders(obj, false);
+        FH_CreateColliders(obj, null, false);
     }
 
-    public static void FH_CreateColliders(GameObject obj, bool isBatchMode)
+    static GameObject batchTarget = null;
+    static bool shouldCancelBatch = false;
+    private static void FH_Cancel()
+    {
+        shouldCancelBatch = true;
+        ConcaveCollider current = null;
+        if (batchTarget != null)
+            current = batchTarget.GetComponent<ConcaveCollider>();
+        if (current != null)
+            current.CancelComputation();
+    }
+
+    public static void FH_CreateColliders(GameObject obj, string vrmlText, bool isBatchMode)
     {
         if (obj == null)
             return;
@@ -611,14 +677,25 @@ public class ConcaveCollider : MonoBehaviour
         {
             Debug.LogFormat("{0} is not prefab: {1}", obj.name, UnityEditor.PrefabUtility.GetPrefabType(obj));
         }
-        MeshFilter [] foundMeshFilters = obj.GetComponentsInChildren<MeshFilter>();
-        if (foundMeshFilters == null || foundMeshFilters.Length == 0)
-            FH_ComputeHulls(obj);
+        shouldCancelBatch = false;
+        ProgressDelegate progressBar = new ConcaveCollider.ProgressDelegate(CreateProgressBar(FH_Cancel));
+        if (vrmlText != null)
+        {
+            FH_CreateHullsFromVrml(obj, vrmlText, progressBar);
+            UnityEditor.EditorUtility.ClearProgressBar();
+        }
         else
         {
-            foreach(MeshFilter curMeshFilter in foundMeshFilters)
-                FH_ComputeHulls(curMeshFilter.gameObject);
+            MeshFilter [] foundMeshFilters = obj.GetComponentsInChildren<MeshFilter>();
+            if (foundMeshFilters == null || foundMeshFilters.Length == 0)
+                FH_ComputeHulls(obj, progressBar);
+            else
+            {
+                foreach(MeshFilter curMeshFilter in foundMeshFilters)
+                    FH_ComputeHulls(curMeshFilter.gameObject, progressBar);
+            }
         }
+        shouldCancelBatch = false;
         if (createdInstance != null)
         {
             UnityEditor.PrefabUtility.ReplacePrefab(createdInstance, prefab);
@@ -627,9 +704,153 @@ public class ConcaveCollider : MonoBehaviour
         InBatchSaveMode = false;
     }
 
-    private static void FH_ComputeHulls(GameObject obj)
+    private static void FH_CreateHullsFromVrml(GameObject obj, string vrml, ProgressDelegate progress)
     {
-        if (obj == null)
+        Debug.Log("Loading VRML for " + obj.name);
+        List<Mesh> meshes = ReadVrml(vrml, progress);
+        int nMeshCount = 0;
+
+        progress("Finding collision mesh asset paths", 0.0f);
+        string strMeshAssetPath = "";
+        bool CreateMeshAssets = true;
+        bool DebugLog = true;
+        PhysicMaterial PhysMaterial = new PhysicMaterial();
+        bool IsTrigger = false;
+        bool CreateHullMesh = true;
+
+        if(CreateMeshAssets)
+        {
+            string uniqueID = null;;
+            Debug.LogFormat("Obj: {0} of type {1}", obj.transform.FullPath(), UnityEditor.PrefabUtility.GetPrefabType(obj));
+            if (UnityEditor.PrefabUtility.GetPrefabParent(obj) != null)
+            {
+                string prefabPath = UnityEditor.AssetDatabase.GetAssetPath(UnityEditor.PrefabUtility.GetPrefabParent(obj));
+                int startIndex = 1 + prefabPath.LastIndexOf("/");
+                prefabPath = prefabPath.Substring(startIndex, prefabPath.LastIndexOf(".") - startIndex);
+                uniqueID = string.Format("{0}_{1}", prefabPath, UnityEditor.PrefabUtility.GetPrefabParent(obj).name);
+            }
+            else
+                uniqueID = string.Format("{0}_{1}", obj.name, obj.GetInstanceID().ToString());
+            strMeshAssetPath = "ColliderMeshes\\" + uniqueID + " _colMesh.asset";
+            if (!InBatchSaveMode)
+                strMeshAssetPath = UnityEditor.EditorUtility.SaveFilePanelInProject("Save mesh asset", strMeshAssetPath, "asset", "Save collider mesh for " + obj.name);
+            else
+                strMeshAssetPath = "Assets/" + strMeshAssetPath;
+
+            if(strMeshAssetPath.Length == 0)
+            {
+                return;
+            }
+        }
+
+        progress("Clearing old colliders", 0.0f);
+        int nHullsOut = meshes.Count;
+        if(DebugLog)
+            Debug.Log(string.Format("Created {0} hulls from VRML", nHullsOut));
+
+        Transform hullParent = obj.transform.Find("Generated Colliders");
+        if(hullParent != null)
+        {
+            if(Application.isEditor && Application.isPlaying == false)
+                DestroyImmediate(hullParent.gameObject);
+            else
+                Destroy(hullParent.gameObject);
+        }
+        hullParent = (new GameObject("Generated Colliders")).transform;
+        hullParent.transform.SetParent(obj.transform, false);
+
+        foreach(Collider collider in obj.GetComponents<Collider>())
+        {
+            collider.enabled = false;
+        }
+
+        GameObject[] m_aGoHulls = new GameObject[nHullsOut];
+
+        obj.transform.rotation = Quaternion.Euler(new Vector3(0,0f,0));
+        Vector3 newScale = obj.transform.localScale;
+//        newScale.z = -newScale.z;
+        for(int nHull = 0; nHull < nHullsOut && !shouldCancelBatch; nHull++)
+        {
+            progress("Transforming VRML vertices and saving out mesh data", 100f * (nHull + 0.5f) / nHullsOut);
+            Mesh refMesh = meshes[nHull];
+            if(refMesh.vertexCount > 0)
+            {
+                m_aGoHulls[nHull] = new GameObject("Hull " + nHull);
+                m_aGoHulls[nHull].transform.position = obj.transform.position;
+                m_aGoHulls[nHull].transform.rotation = obj.transform.rotation;
+                m_aGoHulls[nHull].transform.parent   = hullParent;
+                m_aGoHulls[nHull].layer              = obj.layer;
+
+
+                Vector3[] hullVertices = refMesh.vertices;
+
+//                    float fHullVolume     = -1.0f;
+//                    float fInvMeshRescale = 1.0f / fMeshRescale;
+
+                for(int nVertex = 0; nVertex < hullVertices.Length; nVertex++)
+                    hullVertices[nVertex] = Vector3.Scale(hullVertices[nVertex], newScale);
+
+                Mesh hullMesh = refMesh;
+                hullMesh.vertices  = hullVertices;
+
+                Collider hullCollider = null;
+
+//                    fHullVolume *= Mathf.Pow(fInvMeshRescale, 3.0f);
+
+                // Create mesh collider
+                MeshCollider meshCollider = m_aGoHulls[nHull].AddComponent<MeshCollider>() as MeshCollider;
+
+                meshCollider.sharedMesh = hullMesh;
+                meshCollider.convex     = true;
+
+                hullCollider = meshCollider;
+
+                if(CreateHullMesh)
+                {
+                    MeshFilter meshf = m_aGoHulls[nHull].AddComponent<MeshFilter>();
+                    meshf.sharedMesh = hullMesh;
+                }
+
+                if(CreateMeshAssets)
+                {
+                    if(nMeshCount == 0)
+                    {
+                        // Avoid some shader warnings
+                        hullMesh.RecalculateNormals();
+                        hullMesh.uv = new Vector2[hullVertices.Length];
+
+                        UnityEditor.AssetDatabase.CreateAsset(hullMesh, strMeshAssetPath);
+                    }
+                    else
+                    {
+                        // Avoid some shader warnings
+                        hullMesh.RecalculateNormals();
+                        hullMesh.uv = new Vector2[hullVertices.Length];
+
+                        UnityEditor.AssetDatabase.AddObjectToAsset(hullMesh, strMeshAssetPath);
+                        UnityEditor.AssetDatabase.ImportAsset(UnityEditor.AssetDatabase.GetAssetPath(hullMesh));
+                    }
+                }
+
+                nMeshCount++;
+
+                if(hullCollider)
+                {
+                    hullCollider.material  = PhysMaterial;
+                    hullCollider.isTrigger = IsTrigger;
+                }
+            }
+        }
+
+        if(CreateMeshAssets)
+        {
+            UnityEditor.AssetDatabase.Refresh();
+        }
+    }
+
+    private static void FH_ComputeHulls(GameObject obj, ProgressDelegate progress = null)
+    {
+        if (obj == null || shouldCancelBatch)
             return;
         ConcaveCollider current = obj.GetComponent<ConcaveCollider>();
         bool hadComponent = current != null;
@@ -637,7 +858,7 @@ public class ConcaveCollider : MonoBehaviour
         if (current == null)
             current = obj.AddComponent<ConcaveCollider>();
         try {
-            if (current.ComputeHulls(new ConcaveCollider.LogDelegate(Debug.Log), new ConcaveCollider.ProgressDelegate(current.ShowEditorProgressBar)))
+            if (current.ComputeHulls(new ConcaveCollider.LogDelegate(Debug.Log), progress))
                 Debug.LogFormat("Completed computing hulls for {0}", obj.name);
             else
                 Debug.LogWarningFormat("Error computing hulls for {0}", obj.name);

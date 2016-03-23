@@ -30,6 +30,8 @@ public class Avatar : MonoBehaviour
     private NetMessenger _myMessenger = null;
     private NetMQ.Sockets.ResponseSocket _myServer = null;
     private CameraStreamer.CaptureRequest _request;
+    private bool _shouldCollectObjectInfo = true;
+    private List<string> _relationshipsToRetrieve = new List<string>();
 #endregion
 
 #region Properties
@@ -62,6 +64,16 @@ public class Avatar : MonoBehaviour
     public AbstractInputModule myInput {
         get { return _myInput; }
     }
+
+    public bool shouldCollectObjectInfo {
+        get { return _shouldCollectObjectInfo; }
+        set { _shouldCollectObjectInfo = value; }
+    }
+
+    public List<string> relationshipsToRetrieve {
+        get { return _relationshipsToRetrieve; }
+        set { _relationshipsToRetrieve = value; }
+    }
 #endregion
 
 #region Unity callbacks
@@ -93,7 +105,14 @@ public class Avatar : MonoBehaviour
     public void UpdateObservedObjects()
     {
         _observedObjs.Clear();
+        if (!_shouldCollectObjectInfo)
+            return;
+        if (NetMessenger.logTimingInfo)
+            Debug.LogFormat("Starting Avatar.UpdateObservedObjects() {0}", Utils.GetTimeStamp());
         Collider[] observedObjects = Physics.OverlapSphere(transform.position, observedRange);
+        if (NetMessenger.logTimingInfo)
+            Debug.LogFormat("Finished OverlapSphere() and found {1}, {0}", Utils.GetTimeStamp(), observedObjects.Length);
+
         foreach(Collider col in observedObjects)
         {
             SemanticObjectSimple obj = null;
@@ -115,6 +134,8 @@ public class Avatar : MonoBehaviour
                 }
             }
         }
+        if (NetMessenger.logTimingInfo)
+            Debug.LogFormat("Finished Avatar.UpdateObservedObjects() and found {1} {0}", Utils.GetTimeStamp(), observedObjs.Count);
     }
 
     public void TeleportToValidPosition()
@@ -156,7 +177,7 @@ public class Avatar : MonoBehaviour
     }
 
     // Parse the input sent from the client and use it to update the controls for the next simulation segment
-    public void HandleNetInput(SimpleJSON.JSONClass msgJsonData)
+    public void HandleNetInput(LitJson.JsonData msgJsonData)
     {
         _myInput.HandleNetInput(msgJsonData, ref _targetVelocity);
 
