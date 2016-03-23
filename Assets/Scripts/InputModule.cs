@@ -2,6 +2,7 @@
 using System.Collections;
 using NetMQ;
 using LitJson;
+using System.Collections.Generic;
 
 public abstract class AbstractInputModule
 {
@@ -90,7 +91,11 @@ public class InputModule : AbstractInputModule
 
         if (Input.GetKey(KeyCode.Space))
             data["teleport_random"] = new JsonData(true);
-        
+
+//        data["get_obj_data"] = new JsonData(true);
+//        data["relationships"] = new JsonData(JsonType.Array);
+//        data["relationships"].Add("ALL");
+
 //        // Convert from relative coordinates
 //        Quaternion test = Quaternion.identity;
 //        test = test * Quaternion.AngleAxis(targetRotationVel.z, curRotation * Vector3.forward);
@@ -111,6 +116,15 @@ public class InputModule : AbstractInputModule
         cacheAngVel = _myAvatar.rotSpeed * jsonData["ang_vel"].ReadVector3(Vector3.zero);
         if (jsonData["teleport_random"].ReadBool(false))
             _myAvatar.TeleportToValidPosition();
+        _myAvatar.shouldCollectObjectInfo = jsonData["get_obj_data"].ReadBool(false);
+        List<string> relationships = new List<string>();
+        if (!jsonData["relationships"].ReadList(ref relationships))
+        {
+            string testStr = null;
+            if (jsonData["relationships"].ReadString(ref testStr) && testStr != null && testStr.ToUpper() == "ALL")
+                relationships.Add(testStr);
+        }
+        _myAvatar.relationshipsToRetrieve = relationships;
     }
 
     public override void OnFixedUpdate()

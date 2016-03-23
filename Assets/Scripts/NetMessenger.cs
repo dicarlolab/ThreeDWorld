@@ -21,7 +21,7 @@ public class NetMessenger : MonoBehaviour
     public bool shouldCreateServer = true;
     public bool debugNetworkMessages = false;
     public static bool logTimingInfo = false;
-    public bool shouldObserveObjs = true;
+    public static bool logSimpleTimeInfo = false;
     public bool saveDebugImageFiles = false;
     public bool usePngFiles = false;
     public RequestSocket clientSimulation = null;
@@ -67,11 +67,11 @@ public class NetMessenger : MonoBehaviour
         // Read port number
         portNumber = SimulationManager.argsConfig["port_number"].ReadString(portNumber);
         hostAddress = SimulationManager.argsConfig["host_address"].ReadString(hostAddress);
-        shouldObserveObjs = SimulationManager.argsConfig["collect_obj_info"].ReadBool(shouldObserveObjs);
         shouldCreateTestClient = SimulationManager.argsConfig["create_test_client"].ReadBool(shouldCreateTestClient);
         shouldCreateServer = SimulationManager.argsConfig["create_server"].ReadBool(shouldCreateServer);
         debugNetworkMessages = SimulationManager.argsConfig["debug_network_messages"].ReadBool(debugNetworkMessages);
-        logTimingInfo = SimulationManager.argsConfig["log_timing_info"].ReadBool(logTimingInfo);
+        logSimpleTimeInfo = SimulationManager.argsConfig["log_timing_info"].ReadBool(logSimpleTimeInfo);
+        logTimingInfo = SimulationManager.argsConfig["log_detailed_timing_info"].ReadBool(logTimingInfo);
         CameraStreamer.preferredImageFormat = SimulationManager.argsConfig["image_format"].ReadString("bmp");
         saveDebugImageFiles = SimulationManager.argsConfig["save_out_debug_image_files"].ReadBool(false);
 
@@ -125,17 +125,23 @@ public class NetMessenger : MonoBehaviour
             if (logTimingInfo)
                 Debug.LogFormat("Start FinishUpdatingFrames() {0}", Utils.GetTimeStamp());
             HashSet<SemanticObject> allObserved = new HashSet<SemanticObject>();
+            HashSet<string> relationshipsActive = new HashSet<string>();
             foreach(Avatar a in _avatars.Values)
             {
-                a.UpdateObservedObjects(shouldObserveObjs);
+                a.UpdateObservedObjects();
                 allObserved.UnionWith(a.observedObjs);
+                relationshipsActive.UnionWith(a.relationshipsToRetrieve);
             }
             if (logTimingInfo)
                 Debug.LogFormat("Finished find avatar observed objects {0}", Utils.GetTimeStamp());
 
             // Process all the relation changes
+            bool hasAll = relationshipsActive.Contains("ALL");
             foreach(SemanticRelationship rel in _relationsToTest)
-                rel.Setup(allObserved);
+            {
+                if (hasAll || relationshipsActive.Contains(rel.name))
+                    rel.Setup(allObserved);
+            }
             if (logTimingInfo)
                 Debug.LogFormat("Finished relationships setup {0}", Utils.GetTimeStamp());
 
@@ -213,7 +219,7 @@ public class NetMessenger : MonoBehaviour
     #region Receive messages from the client
     public void HandleFrameMessage(ResponseSocket server, NetMQMessage msg)
     {
-        if (logTimingInfo)
+        if (logTimingInfo || logSimpleTimeInfo)
         {
             DateTime newTime = DateTime.Now;
             Debug.LogFormat("Time since received last msg: {0} ms", newTime.Subtract(_timeForLastMsg).TotalMilliseconds);
@@ -377,19 +383,22 @@ public class NetMessenger : MonoBehaviour
         JsonData jsonData = CreateMsgJson(MSG_S_FrameData);
         // TODO: Additional frame message description?
 
-        if (shouldObserveObjs)
+        if (a.shouldCollectObjectInfo)
         {
             // Look up relationship values for all observed semantics objects
             jsonData["observed_objects"] = new JsonData(JsonType.Array);
-            jsonData["observed_relations"] = new JsonData(JsonType.Object);
             foreach(SemanticObject o in a.observedObjs)
                 jsonData["observed_objects"].Add(o.identifier);
+            jsonData["observed_relations"] = new JsonData(JsonType.Object);
+            bool collectAllRelationships = a.relationshipsToRetrieve.Contains("ALL");
             foreach(SemanticRelationship rel in _relationsToTest)
-                jsonData["observed_relations"][rel.name] = rel.GetJsonString(a.observedObjs);
-
-            jsonData["avatar_position"] = a.transform.position.ToJson();
-            jsonData["avatar_rotation"] = a.transform.rotation.ToJson();
+            {
+                if (collectAllRelationships || a.relationshipsToRetrieve.Contains(rel.name))
+                    jsonData["observed_relations"][rel.name] = rel.GetJsonString(a.observedObjs);
+            }
         }
+        jsonData["avatar_position"] = a.transform.position.ToJson();
+        jsonData["avatar_rotation"] = a.transform.rotation.ToJson();
 //        // Add in captured frames
 //        int numValues = Mathf.Min(streamCapture.shadersList.Count, streamCapture.capturedImages.Count);
 //        JSONArray imagesArray = new JsonData(JsonType.Array);

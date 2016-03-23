@@ -28,6 +28,8 @@ public class Avatar : MonoBehaviour
     private NetMessenger _myMessenger = null;
     private NetMQ.Sockets.ResponseSocket _myServer = null;
     private CameraStreamer.CaptureRequest _request;
+    private bool _shouldCollectObjectInfo = true;
+    private List<string> _relationshipsToRetrieve = new List<string>();
 #endregion
 
 #region Properties
@@ -60,6 +62,16 @@ public class Avatar : MonoBehaviour
     public AbstractInputModule myInput {
         get { return _myInput; }
     }
+
+    public bool shouldCollectObjectInfo {
+        get { return _shouldCollectObjectInfo; }
+        set { _shouldCollectObjectInfo = value; }
+    }
+
+    public List<string> relationshipsToRetrieve {
+        get { return _relationshipsToRetrieve; }
+        set { _relationshipsToRetrieve = value; }
+    }
 #endregion
 
 #region Unity callbacks
@@ -88,10 +100,10 @@ public class Avatar : MonoBehaviour
     }
 
     // Looks for all the SemanticObject's that are within the range
-    public void UpdateObservedObjects(bool shouldUpdate = true)
+    public void UpdateObservedObjects()
     {
         _observedObjs.Clear();
-        if (!shouldUpdate)
+        if (!_shouldCollectObjectInfo)
             return;
         if (NetMessenger.logTimingInfo)
             Debug.LogFormat("Starting Avatar.UpdateObservedObjects() {0}", Utils.GetTimeStamp());
