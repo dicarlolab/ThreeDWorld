@@ -20,6 +20,7 @@ public static class SimulationManager
     public static int numPhysicsFramesPerUpdate = 5;
     private static JsonData _readJsonArgs = null;
     private static int framesToProcess = 0;
+    private static int profilerFrames = 1<<19;
     private static int totalFramesProcessed = 0;
     private static float physicsTimeMultiplier = 1.0f;
     private static int targetFrameRate = 300;
@@ -201,6 +202,7 @@ public static class SimulationManager
 
         numPhysicsFramesPerUpdate = _readJsonArgs["num_time_steps"].ReadInt(numPhysicsFramesPerUpdate);
         Time.fixedDeltaTime = _readJsonArgs["time_step"].ReadFloat(Time.fixedDeltaTime);
+        profilerFrames = _readJsonArgs["profiler_frames"].ReadFloat(profilerFrames);
         targetFrameRate = _readJsonArgs["target_fps"].ReadInt(targetFrameRate);
         physicsTimeMultiplier = targetFrameRate * (Time.fixedDeltaTime * numPhysicsFramesPerUpdate * 1.05f);
         // Multiplier must be float between 0 and 100.0f
@@ -210,7 +212,7 @@ public static class SimulationManager
             physicsTimeMultiplier = targetFrameRate * (Time.fixedDeltaTime * numPhysicsFramesPerUpdate * 1.05f);
         }
         QualitySettings.vSyncCount = 0;
-        Profiler.maxNumberOfSamplesPerFrame = 8 << 20; // Set to 8M instead of default 512k
+        Profiler.maxNumberOfSamplesPerFrame = profilerFrames;
         Application.targetFrameRate = targetFrameRate;
 //        Debug.LogFormat("Setting target render FPS to {0} with speedup: {1} with phys timestep of {2} and {3} phys frames, maxDT: {4}", targetFrameRate, physicsTimeMultiplier, Time.fixedDeltaTime, numPhysicsFramesPerUpdate, Time.maximumDeltaTime);
 
