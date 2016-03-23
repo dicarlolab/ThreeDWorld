@@ -82,7 +82,11 @@ public class CameraStreamer : MonoBehaviour
     // at the end of the frame(to avoid conflicts with the main rendering logic)
     public IEnumerator CaptureCoroutine()
     {
+        if (NetMessenger.logTimingInfo)
+            Debug.LogFormat("Start CaptureCoroutine() {0}", Utils.GetTimeStamp());
         yield return new WaitForEndOfFrame();
+        if (NetMessenger.logTimingInfo)
+            Debug.LogFormat("Reached end of frame {0}", Utils.GetTimeStamp());
         while(_captureRequests.Count > 0)
             ProcessCaptureRequest(_captureRequests.Dequeue());
     }
@@ -181,6 +185,8 @@ public class CameraStreamer : MonoBehaviour
 
     private CapturedImage TakeSnapshotNow(Shader targetShader)
     {
+        if (NetMessenger.logTimingInfo)
+            Debug.LogFormat("Start TakeShapshotNow() {0} {1}", (targetShader == null) ? "(null)" : targetShader.name, Utils.GetTimeStamp());
         // Create a new camera if we need to that we will be manually rendering
         if (_textureCam == null)
         {
@@ -197,6 +203,8 @@ public class CameraStreamer : MonoBehaviour
             targetCam.RenderWithShader(targetShader, null);
         else
             targetCam.Render();
+        if (NetMessenger.logTimingInfo)
+            Debug.LogFormat("  Finished Rendering {0}", Utils.GetTimeStamp());
 
         // Copy and convert rendered image to PNG format as a byte array
         const bool SHOULD_USE_MIPMAPS = false;
@@ -206,6 +214,10 @@ public class CameraStreamer : MonoBehaviour
             _outPhoto = new Texture2D(pixWidth, pixHeight, TextureFormat.ARGB32, SHOULD_USE_MIPMAPS);
         _outPhoto.ReadPixels(new Rect(0, 0, pixWidth, pixHeight), 0, 0);
         _outPhoto.Apply();
+
+        if (NetMessenger.logTimingInfo)
+            Debug.LogFormat("  Created texture(internal format) {0}", Utils.GetTimeStamp());
+
         CapturedImage retImage = new CapturedImage();
         if (preferredImageFormat == "png")
             retImage.pictureBuffer = _outPhoto.EncodeToPNG();
@@ -213,6 +225,8 @@ public class CameraStreamer : MonoBehaviour
             retImage.pictureBuffer = _outPhoto.EncodeToJPG();
         else
             EncodeBMP(ref retImage, _outPhoto, pixWidth, pixHeight);
+        if (NetMessenger.logTimingInfo)
+            Debug.LogFormat("  Encoded image {0}", Utils.GetTimeStamp());
         return retImage;
     }
 #endregion

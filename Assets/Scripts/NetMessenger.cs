@@ -20,8 +20,8 @@ public class NetMessenger : MonoBehaviour
     public bool shouldCreateTestClient = false;
     public bool shouldCreateServer = true;
     public bool debugNetworkMessages = false;
-    public bool logTimingInfo = false;
-    public bool shouldObserveObjs = false;
+    public static bool logTimingInfo = false;
+    public bool shouldObserveObjs = true;
     public bool saveDebugImageFiles = false;
     public bool usePngFiles = false;
     public RequestSocket clientSimulation = null;
@@ -117,25 +117,32 @@ public class NetMessenger : MonoBehaviour
             }
         }
     }
-
     private void FixedUpdate()
     {
         // TODO: Handle this for when we have multiple Avatars
         if (SimulationManager.FinishUpdatingFrames())
         {
+            if (logTimingInfo)
+                Debug.LogFormat("Start FinishUpdatingFrames() {0}", Utils.GetTimeStamp());
             HashSet<SemanticObject> allObserved = new HashSet<SemanticObject>();
             foreach(Avatar a in _avatars.Values)
             {
                 a.UpdateObservedObjects(shouldObserveObjs);
                 allObserved.UnionWith(a.observedObjs);
             }
+            if (logTimingInfo)
+                Debug.LogFormat("Finished find avatar observed objects {0}", Utils.GetTimeStamp());
 
             // Process all the relation changes
             foreach(SemanticRelationship rel in _relationsToTest)
                 rel.Setup(allObserved);
+            if (logTimingInfo)
+                Debug.LogFormat("Finished relationships setup {0}", Utils.GetTimeStamp());
 
             foreach(Avatar a in _avatars.Values)
                 a.ReadyFramesForRequest();
+            if (logTimingInfo)
+                Debug.LogFormat("Finished FinishUpdatingFrames() {0}", Utils.GetTimeStamp());
         }
     }
 
@@ -396,7 +403,7 @@ public class NetMessenger : MonoBehaviour
         string jsonString = LitJson.JsonMapper.ToJson(jsonData);
         _lastMessageSent.Append(jsonString);
         if (logTimingInfo)
-            Debug.LogFormat("Finished encode json data {0}", Utils.GetTimeStamp());
+            Debug.LogFormat("Finished encode json data of length {1}, {0}", Utils.GetTimeStamp(), jsonString.Length);
 
         // Add in captured frames(directly, non-JSON)
         int numValues = Mathf.Min(streamCapture.shadersList.Count, streamCapture.capturedImages.Count);

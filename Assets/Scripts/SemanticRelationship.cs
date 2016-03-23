@@ -30,9 +30,13 @@ public abstract class SemanticRelationship
     // having a relationship with the given object and outputs as a JSON object
     public virtual JsonData GetJsonString(List<SemanticObject> affectedNodes)
     {
+        if (NetMessenger.logTimingInfo)
+            Debug.LogFormat("Get Json for relationship {1}, {0}", Utils.GetTimeStamp(), name);
         JsonData retClass = new JsonData(JsonType.Object);
         Dictionary<SemanticObject, List<SemanticObject>> relationMap;
         Evaluate(affectedNodes, out relationMap);
+        if (NetMessenger.logTimingInfo)
+            Debug.LogFormat("  Finished evaluate relationships {0}", Utils.GetTimeStamp());
         foreach(SemanticObject obj in relationMap.Keys)
         {
             JsonData lst = new JsonData(JsonType.Array);
@@ -40,6 +44,8 @@ public abstract class SemanticRelationship
                 lst.Add(entry.identifier);
             retClass[obj.identifier] = lst;
         }
+        if (NetMessenger.logTimingInfo)
+            Debug.LogFormat("  Finished creating relationships json map {0} with {1} keys", Utils.GetTimeStamp(), relationMap.Keys.Count);
         return retClass;
     }
 

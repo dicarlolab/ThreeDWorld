@@ -20,7 +20,7 @@ public static class SimulationManager
     public static int numPhysicsFramesPerUpdate = 5;
     private static JsonData _readJsonArgs = null;
     private static int framesToProcess = 0;
-    private static int profilerFrames = 1<<19;
+    private static int profilerFrames = 1<<19; // Max of 8 << 20
     private static int totalFramesProcessed = 0;
     private static float physicsTimeMultiplier = 1.0f;
     private static int targetFrameRate = 300;
@@ -58,6 +58,7 @@ public static class SimulationManager
             --framesToProcess;
             ++totalFramesProcessed;
             Time.timeScale = (framesToProcess > 0) ? physicsTimeMultiplier : 0.0f;
+            Time.captureFramerate = (framesToProcess > 0) ? Mathf.FloorToInt(physicsTimeMultiplier / (Time.fixedDeltaTime * numPhysicsFramesPerUpdate)) : 0;
             Application.targetFrameRate = -1;
             return framesToProcess == 0;
         }
@@ -69,6 +70,7 @@ public static class SimulationManager
         Application.targetFrameRate = targetFrameRate;
         framesToProcess = numPhysicsFramesPerUpdate;
         Time.timeScale = (framesToProcess > 0) ? physicsTimeMultiplier : 0.0f;
+        Time.captureFramerate = (framesToProcess > 0) ? Mathf.FloorToInt(physicsTimeMultiplier / (Time.fixedDeltaTime * numPhysicsFramesPerUpdate)) : 0;
         foreach(Avatar a in myNetMessenger.GetAllAvatars())
             a.readyForSimulation = false;
     }
