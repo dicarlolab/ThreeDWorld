@@ -406,6 +406,21 @@ public class NetMessenger : MonoBehaviour
 //            imagesArray.Add(new JSONData(Convert.ToBase64String(streamCapture.capturedImages[i].pictureBuffer)));
 //        jsonData["captured_pngs"] = imagesArray;
 
+		//add initial scene info
+		if (a.sendSceneInfo) {
+            jsonData["sceneInfo"] = new JsonData(JsonType.Array);
+			GameObject[] allObjects = UnityEngine.Object.FindObjectsOfType<GameObject>() ;
+			foreach(GameObject go in allObjects){
+			   if (go.GetComponent<Renderer>() != null) {
+                    JsonData _info;
+                    _info = new JsonData(JsonType.Array);
+				   _info.Add(go.name);
+				   _info.Add(go.GetComponent<Renderer>().material.GetInt("_idval").ToString());
+				   jsonData["sceneInfo"].Add(_info);
+			   }
+	    	}
+	    }
+	    
         if (logTimingInfo)
             Debug.LogFormat("Finished collect Json data {0}", Utils.GetTimeStamp());
         // Send out the real message
