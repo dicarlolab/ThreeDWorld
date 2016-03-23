@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using NetMQ;
-using SimpleJSON;
+using LitJson;
 
 public abstract class AbstractInputModule
 {
@@ -19,10 +19,10 @@ public abstract class AbstractInputModule
     }
 
     // Read controller input and translate it into commands from an agent
-    public abstract void SimulateInputFromController(ref JSONClass responseMsgData);
+    public abstract void SimulateInputFromController(ref JsonData responseMsgData);
     
     // Parse the input sent from the client and use it to update the controls for the next simulation segment
-    public abstract void HandleNetInput(JSONClass msgJsonData, ref Vector3 targetVel);
+    public abstract void HandleNetInput(JsonData msgJsonData, ref Vector3 targetVel);
 
     public abstract void OnFixedUpdate();
 #region Encoding/Decoding
@@ -72,7 +72,7 @@ public class InputModule : AbstractInputModule
 
     public InputModule(Avatar myAvatar) : base(myAvatar) {}
 
-    public override void SimulateInputFromController(ref JSONClass data)
+    public override void SimulateInputFromController(ref JsonData data)
     {
         // Set movement
         Quaternion curRotation = _myAvatar.transform.rotation;
@@ -89,7 +89,7 @@ public class InputModule : AbstractInputModule
         targetRotationVel.z = -Input.GetAxis("HorizontalD");
 
         if (Input.GetKey(KeyCode.Space))
-            data["teleport_random"] = new JSONData(true);
+            data["teleport_random"] = new JsonData(true);
         
 //        // Convert from relative coordinates
 //        Quaternion test = Quaternion.identity;
@@ -103,7 +103,7 @@ public class InputModule : AbstractInputModule
     }
 
     // Parse the input sent from the client and use it to update the controls for the next simulation segment
-    public override void HandleNetInput(JSONClass jsonData, ref Vector3 targetVel)
+    public override void HandleNetInput(JsonData jsonData, ref Vector3 targetVel)
     {
         // Get movement
         cacheVel = _myAvatar.moveSpeed * jsonData["vel"].ReadVector3(Vector3.zero);

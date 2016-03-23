@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using LitJson;
 
 /// <summary>
 /// Component that forces Unity Rigidbodies physics to only update
@@ -17,7 +18,7 @@ public static class SimulationManager
     }
 #region Fields
     public static int numPhysicsFramesPerUpdate = 5;
-    private static SimpleJSON.JSONClass _readJsonArgs = null;
+    private static JsonData _readJsonArgs = null;
     private static int framesToProcess = 0;
     private static int totalFramesProcessed = 0;
     private static float physicsTimeMultiplier = 1.0f;
@@ -42,7 +43,7 @@ public static class SimulationManager
         }
     }
 
-    public static SimpleJSON.JSONClass argsConfig {
+    public static JsonData argsConfig {
         get {
             return _readJsonArgs;
         }
@@ -106,11 +107,11 @@ public static class SimulationManager
 #endif
     }
 
-    private static void ReadLogLevel(SimpleJSON.JSONNode json, ref MyLogLevel value)
+    private static void ReadLogLevel(JsonData json, ref MyLogLevel value)
     {
-        if (json != null && json.Tag == SimpleJSON.JSONBinaryTag.Value)
+        if (json != null && json.IsString)
         {
-            string testVal = json.Value.ToLowerInvariant();
+            string testVal = ((string)json).ToLowerInvariant();
             if (testVal == "log")
                 value = MyLogLevel.LogAll;
             if (testVal == "warning")
@@ -153,14 +154,14 @@ public static class SimulationManager
 #endif
         if (testConfigInfo == null)
             return;
-        _readJsonArgs = SimpleJSON.JSON.Parse(testConfigInfo) as SimpleJSON.JSONClass;
+        _readJsonArgs = JsonMapper.ToObject(testConfigInfo);
         if (_readJsonArgs!= null)
         {
             ReadLogLevel(_readJsonArgs["log_level"], ref logLevel);
             ReadLogLevel(_readJsonArgs["stack_log_level"], ref stackLogLevel);
             logFileLocation = _readJsonArgs["output_log_file"].ReadString(logFileLocation);
         }
-        Debug.LogFormat("Completed reading configuration at {0}:\n{1}", fileName, _readJsonArgs.ToJSON(0));
+        Debug.LogFormat("Completed reading configuration at {0}:\n{1}", fileName, _readJsonArgs.ToJSON());
     }
 
     // Should use argument -executeMethod SimulationManager.Init
@@ -191,7 +192,7 @@ public static class SimulationManager
 
         ParseJsonInfo(configLocation);
         if (argsConfig == null)
-            _readJsonArgs = new SimpleJSON.JSONClass();
+            _readJsonArgs = new JsonData(JsonType.Object);
 
         // Set resolution
         int screenWidth = _readJsonArgs["screen_width"].ReadInt(Screen.width);
@@ -209,6 +210,7 @@ public static class SimulationManager
             physicsTimeMultiplier = targetFrameRate * (Time.fixedDeltaTime * numPhysicsFramesPerUpdate * 1.05f);
         }
         QualitySettings.vSyncCount = 0;
+        Profiler.maxNumberOfSamplesPerFrame = 8 << 20; // Set to 8M instead of default 512k
         Application.targetFrameRate = targetFrameRate;
 //        Debug.LogFormat("Setting target render FPS to {0} with speedup: {1} with phys timestep of {2} and {3} phys frames, maxDT: {4}", targetFrameRate, physicsTimeMultiplier, Time.fixedDeltaTime, numPhysicsFramesPerUpdate, Time.maximumDeltaTime);
 

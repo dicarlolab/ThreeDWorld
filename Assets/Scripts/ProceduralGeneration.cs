@@ -99,7 +99,7 @@ public class ProceduralGeneration : MonoBehaviour
 
     public void Init()
     {
-        SimpleJSON.JSONClass json = SimulationManager.argsConfig;
+        LitJson.JsonData json = SimulationManager.argsConfig;
         if (json != null)
         {
             // Override settings with those in config

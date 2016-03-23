@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using SimpleJSON;
+using LitJson;
 
 /// <summary>
 /// Represents a type of semantic relation between two SemanticObject's
@@ -28,17 +28,17 @@ public abstract class SemanticRelationship
 
     // Utility function that takes a list of SemanticObject's evaluated as 
     // having a relationship with the given object and outputs as a JSON object
-    public virtual JSONNode GetJsonString(List<SemanticObject> affectedNodes)
+    public virtual JsonData GetJsonString(List<SemanticObject> affectedNodes)
     {
-        JSONClass retClass = new JSONClass();
+        JsonData retClass = new JsonData(JsonType.Object);
         Dictionary<SemanticObject, List<SemanticObject>> relationMap;
         Evaluate(affectedNodes, out relationMap);
         foreach(SemanticObject obj in relationMap.Keys)
         {
-            JSONArray lst = new JSONArray();
+            JsonData lst = new JsonData(JsonType.Array);
             foreach(SemanticObject entry in relationMap[obj])
                 lst.Add(entry.identifier);
-            retClass.Add(obj.identifier, lst);
+            retClass[obj.identifier] = lst;
         }
         return retClass;
     }

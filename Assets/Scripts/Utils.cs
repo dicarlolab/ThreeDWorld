@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using SimpleJSON;
+using LitJson;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -135,12 +135,12 @@ public static class UtilExtensionMethods
         return xfm.parent + "/" + xfm.name;
     }
 
-//    public static JSONClass ReadJson(this MyMessageInfo me, out string messageType)
+//    public static JsonData ReadJson(this MyMessageInfo me, out string messageType)
 //    {
 //        messageType = null;
 //        if (me != null && me.text != null)
 //        {
-//            JSONClass ret = JSONData.Parse(me.text) as JSONClass;
+//            JsonData ret = JSONData.Parse(me.text) as JsonData;
 //            if (ret != null)
 //                messageType = ret["msg_type"].ReadString(messageType);
 //            return ret;
@@ -148,12 +148,12 @@ public static class UtilExtensionMethods
 //        return null;
 //    }
 
-    public static JSONClass ReadJson(this NetMQ.NetMQMessage me, out string messageType)
+    public static JsonData ReadJson(this NetMQ.NetMQMessage me, out string messageType)
     {
         messageType = null;
         if (me != null && me.FrameCount > 0)
         {
-            JSONClass ret = me[0].ToJson();
+            JsonData ret = me[0].ToJson();
             if (ret != null)
                 messageType = ret["msg_type"].ReadString(messageType);
             return ret;
@@ -161,15 +161,19 @@ public static class UtilExtensionMethods
         return null;
     }
 
-    public static JSONClass ToJson(this NetMQ.NetMQFrame me)
+    public static JsonData ToJson(this NetMQ.NetMQFrame me)
     {
         string jsonString = me.ConvertToString();
         if (jsonString != null)
-        {
-            JSONNode node = JSONData.Parse(jsonString);
-            return node as JSONClass;
-        }
+            return JsonMapper.ToObject(jsonString);
         return null;
+    }
+
+    public static string ToJSON(this JsonData me, int prefix = 0)
+    {
+        if (me == null)
+            return null;
+        return JsonMapper.ToJson(me);
     }
 
     public static Vector3 Abs(this Vector3 v)
@@ -183,22 +187,22 @@ public static class UtilExtensionMethods
         return v;
     }
 
-    public static JSONArray ToJson(this Vector3 v)
+    public static JsonData ToJson(this Vector3 v)
     {
-        JSONArray ret = new JSONArray();
-        ret.Add(new JSONData(v.x));
-        ret.Add(new JSONData(v.y));
-        ret.Add(new JSONData(v.z));
+        JsonData ret = new JsonData(JsonType.Array);
+        ret.Add(new JsonData(v.x));
+        ret.Add(new JsonData(v.y));
+        ret.Add(new JsonData(v.z));
         return ret;
     }
 
-    public static JSONArray ToJson(this Quaternion q)
+    public static JsonData ToJson(this Quaternion q)
     {
-        JSONArray ret = new JSONArray();
-        ret.Add(new JSONData(q.w));
-        ret.Add(new JSONData(q.x));
-        ret.Add(new JSONData(q.y));
-        ret.Add(new JSONData(q.z));
+        JsonData ret = new JsonData(JsonType.Array);
+        ret.Add(new JsonData(q.w));
+        ret.Add(new JsonData(q.x));
+        ret.Add(new JsonData(q.y));
+        ret.Add(new JsonData(q.z));
         return ret;
     }
 
@@ -237,75 +241,68 @@ public static class UtilExtensionMethods
     }
 #endif
 
-    public static bool IsNumeric(this SimpleJSON.JSONNode node)
+    public static bool IsNumeric(this JsonData node)
     {
-        SimpleJSON.JSONBinaryTag tag = node.Tag;
-        switch(tag)
-        {
-            case SimpleJSON.JSONBinaryTag.DoubleValue:
-            case SimpleJSON.JSONBinaryTag.FloatValue:
-            case SimpleJSON.JSONBinaryTag.IntValue:
-                return true;
-        }
-        return false;
+        return node != null && (node.IsDouble || node.IsInt || node.IsLong);
     }
 
-    public static string ReadString(this SimpleJSON.JSONNode node, string defaultValue = "")
+    public static string ReadString(this JsonData node, string defaultValue = "")
     {
-        if (node == null || node.Tag != SimpleJSON.JSONBinaryTag.Value)
+        if (node == null || !node.IsString)
             return defaultValue;
-        return node.Value;
+        return (string)node;
     }
 
-    public static bool ReadString(this SimpleJSON.JSONNode node, ref string overwriteValue)
+    public static bool ReadString(this JsonData node, ref string overwriteValue)
     {
-        if (node == null || node.Tag != SimpleJSON.JSONBinaryTag.Value)
+        if (node == null || !node.IsString)
             return false;
-        overwriteValue = node.Value;
+        overwriteValue = (string)node;
         return true;
     }
 
-    public static int ReadInt(this SimpleJSON.JSONNode node, int defaultValue = 0)
+    public static int ReadInt(this JsonData node, int defaultValue = 0)
     {
-        if (node == null || !node.IsNumeric())
+        if (node == null || !node.IsInt)
             return defaultValue;
-        return node.AsInt;
+        return (int)node;
     }
 
-    public static bool ReadInt(this SimpleJSON.JSONNode node, ref int overwriteValue)
+    public static bool ReadInt(this JsonData node, ref int overwriteValue)
     {
         if (node == null || !node.IsNumeric())
             return false;
-        overwriteValue = node.AsInt;
+        overwriteValue = (int)node;
         return true;
     }
 
-    public static float ReadFloat(this SimpleJSON.JSONNode node, float defaultValue = 0.0f)
+    public static float ReadFloat(this JsonData node, float defaultValue = 0.0f)
     {
         if (node == null || !node.IsNumeric())
             return defaultValue;
-        return node.AsFloat;
+        return (float)node;
     }
 
-    public static bool ReadFloat(this SimpleJSON.JSONNode node, ref float overwriteValue)
+    public static bool ReadFloat(this JsonData node, ref float overwriteValue)
     {
         if (node == null || !node.IsNumeric())
             return false;
-        overwriteValue = node.AsFloat;
+        overwriteValue = (float)node;
         return true;
     }
 
-    public static Vector3 ReadVector3(this SimpleJSON.JSONNode node, Vector3 defaultValue = new Vector3())
+    public static Vector3 ReadVector3(this JsonData node, Vector3 defaultValue = new Vector3())
     {
         ReadVector3(node, ref defaultValue);
         return defaultValue;
     }
 
-    public static bool ReadVector3(this SimpleJSON.JSONNode node, ref Vector3 overwriteValue)
+    public static bool ReadVector3(this JsonData node, ref Vector3 overwriteValue)
     {
-        if (node == null || node.Tag != SimpleJSON.JSONBinaryTag.Array || node.Count != 3)
+        if (node == null || !node.IsArray || node.Count != 3)
             return false;
         Vector3 placeholder = overwriteValue;
+        Debug.Log("ReadVector3 "+ node.ToJSON());
         if (node[0].ReadFloat(ref placeholder.x) && node[1].ReadFloat(ref placeholder.y) && node[2].ReadFloat(ref placeholder.z))
         {
             overwriteValue.x = placeholder.x;
@@ -316,9 +313,9 @@ public static class UtilExtensionMethods
         return false;
     }
 
-    public static bool ReadList(this SimpleJSON.JSONNode node, ref List<string> overwriteValue)
+    public static bool ReadList(this JsonData node, ref List<string> overwriteValue)
     {
-        if (node == null || node.Tag != SimpleJSON.JSONBinaryTag.Array)
+        if (node == null || !node.IsArray)
             return false;
         overwriteValue.Clear();
         string newVal = null;
@@ -330,18 +327,18 @@ public static class UtilExtensionMethods
         return true;
     }
 
-    public static bool ReadBool(this SimpleJSON.JSONNode node, bool defaultValue = false)
+    public static bool ReadBool(this JsonData node, bool defaultValue = false)
     {
-        if (node == null || node.Tag != SimpleJSON.JSONBinaryTag.BoolValue)
+        if (node == null || !node.IsBoolean)
             return defaultValue;
-        return node.AsBool;
+        return (bool)node;
     }
 
-    public static bool ReadBool(this SimpleJSON.JSONNode node, ref bool overwriteValue)
+    public static bool ReadBool(this JsonData node, ref bool overwriteValue)
     {
-        if (node == null || node.Tag != SimpleJSON.JSONBinaryTag.BoolValue)
+        if (node == null || !node.IsBoolean)
             return false;
-        overwriteValue = node.AsBool;
+        overwriteValue = (bool)node;
         return true;        
     }
 }

@@ -152,7 +152,7 @@ public class Avatar : MonoBehaviour
     }
 
     // Parse the input sent from the client and use it to update the controls for the next simulation segment
-    public void HandleNetInput(SimpleJSON.JSONClass msgJsonData)
+    public void HandleNetInput(LitJson.JsonData msgJsonData)
     {
         _myInput.HandleNetInput(msgJsonData, ref _targetVelocity);
 
