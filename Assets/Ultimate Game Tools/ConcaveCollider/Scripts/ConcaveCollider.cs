@@ -592,7 +592,7 @@ public class ConcaveCollider : MonoBehaviour
         }
     }
 
-    public static List<Mesh> ReadVrml(string contents, ProgressDelegate progress)
+    public static List<Mesh> ReadVrml(string contents, ProgressDelegate progress, string debugNameObj = "???")
     {
         if (progress != null)
             progress("Loading Vrml file", 0.0f);
@@ -603,11 +603,11 @@ public class ConcaveCollider : MonoBehaviour
             + "coordIndex\\s*\\[(?<indices>[^\\]]+)"
             + "",
             RegexOptions.Multiline | RegexOptions.Singleline);
-        int counter = 0;
+        int meshCounter = 0;
         foreach(Match m in matches)
         {
             if (progress != null)
-                progress("Converting Vrml file to Unity meshes", 100f * (counter + 0.5f) / matches.Count);
+                progress("Converting Vrml file to Unity meshes", 100f * (meshCounter + 0.5f) / matches.Count);
             Mesh newMesh = new Mesh();
             MatchCollection vertMatches = Regex.Matches(m.Groups["verts"].Value,
                 "^\\s*(?<x>-?\\d*\\.?\\d+)\\s+(?<y>-?\\d*\\.?\\d+)\\s+(?<z>-?\\d*\\.?\\d+),", RegexOptions.Multiline);
@@ -616,21 +616,24 @@ public class ConcaveCollider : MonoBehaviour
 //            Debug.LogFormat("Found match: v:{3}-{0},i:{4}-{1}, all:{2}", m.Groups["verts"].Value, m.Groups["indices"].Value, m.Value, vertMatches.Count, indexMatches.Count * 3);
             Vector3[] verts = new Vector3[vertMatches.Count];
             int[] indices = new int[indexMatches.Count * 3];
-            int secondCounter = 0;
+            int itrCounter = 0;
             // Have to reflect the x value for some reason
             foreach(Match vm in vertMatches)
-                verts[secondCounter++] = new Vector3(-float.Parse(vm.Groups["x"].Value), float.Parse(vm.Groups["y"].Value), float.Parse(vm.Groups["z"].Value));
-            secondCounter = 0;
+                verts[itrCounter++] = new Vector3(-float.Parse(vm.Groups["x"].Value), float.Parse(vm.Groups["y"].Value), float.Parse(vm.Groups["z"].Value));
+            itrCounter = 0;
             foreach(Match im in indexMatches)
             {
-                indices[secondCounter++] = int.Parse(im.Groups["x"].Value);
-                indices[secondCounter++] = int.Parse(im.Groups["y"].Value);
-                indices[secondCounter++] = int.Parse(im.Groups["z"].Value);
+                indices[itrCounter++] = int.Parse(im.Groups["x"].Value);
+                indices[itrCounter++] = int.Parse(im.Groups["y"].Value);
+                indices[itrCounter++] = int.Parse(im.Groups["z"].Value);
             }
             newMesh.vertices  = verts;
             newMesh.triangles = indices;
-            ret.Add(newMesh);
-            counter++;
+            if (newMesh.triangles.Length > 255)
+                Debug.LogWarningFormat("Too many triangles in vrml mesh for {0}! Found {1}", debugNameObj, newMesh.triangles.Length);
+            else
+                ret.Add(newMesh);
+            meshCounter++;
         }
         return ret;
     }
@@ -707,7 +710,7 @@ public class ConcaveCollider : MonoBehaviour
     private static void FH_CreateHullsFromVrml(GameObject obj, string vrml, ProgressDelegate progress)
     {
         Debug.Log("Loading VRML for " + obj.name);
-        List<Mesh> meshes = ReadVrml(vrml, progress);
+        List<Mesh> meshes = ReadVrml(vrml, progress, obj.name);
         for (int i = 0; i < meshes.Count; ++i)
         {
             if (meshes[i] == null)
