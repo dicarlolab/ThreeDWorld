@@ -708,6 +708,14 @@ public class ConcaveCollider : MonoBehaviour
     {
         Debug.Log("Loading VRML for " + obj.name);
         List<Mesh> meshes = ReadVrml(vrml, progress);
+        for (int i = 0; i < meshes.Count; ++i)
+        {
+            if (meshes[i] == null)
+            {
+                Debug.LogWarningFormat("Found null mesh at #{0} in {1}. Aborting early.\n{2}", i, obj.name, vrml);
+                return;
+            }
+        }
         int nMeshCount = 0;
 
         progress("Finding collision mesh asset paths", 0.0f);
@@ -746,7 +754,7 @@ public class ConcaveCollider : MonoBehaviour
         progress("Clearing old colliders", 0.0f);
         int nHullsOut = meshes.Count;
         if(DebugLog)
-            Debug.Log(string.Format("Created {0} hulls from VRML", nHullsOut));
+            Debug.Log(string.Format("Created {0} hulls from VRML for {1}", nHullsOut, obj.name));
 
         Transform hullParent = obj.transform.Find("Generated Colliders");
         if(hullParent != null)
@@ -773,7 +781,9 @@ public class ConcaveCollider : MonoBehaviour
         {
             progress("Transforming VRML vertices and saving out mesh data", 100f * (nHull + 0.5f) / nHullsOut);
             Mesh refMesh = meshes[nHull];
-            if(refMesh.vertexCount > 0)
+            if (refMesh == null)
+                Debug.LogWarningFormat("Found null mesh at #{0} in {1}", nHull, obj.name);
+            if(refMesh != null && refMesh.vertexCount > 0)
             {
                 m_aGoHulls[nHull] = new GameObject("Hull " + nHull);
                 m_aGoHulls[nHull].transform.position = obj.transform.position;
