@@ -236,6 +236,8 @@ public static class UtilExtensionMethods
         HashSet<T> ret = new HashSet<T>();
         string assetPath = AssetDatabase.GetAssetPath(folderAsset);
         string testVal = AssetDatabase.GenerateUniqueAssetPath(assetPath);
+        if (System.Text.RegularExpressions.Regex.IsMatch(assetPath, ".+\\.[^/]"))
+            return ret;
         if (!string.IsNullOrEmpty(testVal))
         {
             // Strip out the Assets folder which is included in both paths
