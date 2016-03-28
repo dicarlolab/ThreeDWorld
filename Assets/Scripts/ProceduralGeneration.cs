@@ -364,12 +364,23 @@ public class ProceduralGeneration : MonoBehaviour
         if (allSelected == null || allSelected.Count == 0)
             return;
 
-        foreach(GameObject obj in allSelected)
-        {
-            // Create a single copy of this model
-            if (PrefabUtility.GetPrefabType(obj) == PrefabType.ModelPrefab)
-                MakeSimplePrefabObj(obj);
-        }
+        allSelected.RemoveWhere((GameObject obj) => {
+            return (obj == null || PrefabUtility.GetPrefabType(obj) != PrefabType.ModelPrefab);
+        });
+        Queue<GameObject> objs = new Queue<GameObject>(allSelected);
+        MakeMultipleSimplePrefabObj(objs);
+    }
+
+    private static void MakeMultipleSimplePrefabObj(Queue<GameObject> allObjs)
+    {
+        if (allObjs.Count == 0)
+            return;
+        GameObject obj = allObjs.Dequeue();
+        Debug.Log("Making prefab for " + obj.name);
+        MakeSimplePrefabObj(obj);
+        Debug.Log("Finished making prefab for " + obj.name);
+        if (allObjs.Count > 0)
+            EditorApplication.delayCall += ()=>{ MakeMultipleSimplePrefabObj(allObjs); };
     }
 
     private static void MakeSimplePrefabObj(GameObject obj)
