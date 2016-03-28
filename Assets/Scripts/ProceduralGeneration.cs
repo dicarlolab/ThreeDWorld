@@ -545,8 +545,8 @@ public class ProceduralGeneration : MonoBehaviour
             newInstance.transform.position = centerPos - (modifiedBounds.center * modScale);
             newInstance.transform.localScale = newInstance.transform.localScale * modScale;
             newInstance.transform.rotation = modifiedRotation * newInstance.transform.rotation;
-            newInstance.name = string.Format("{0} #{1} on {2}", newPrefab.name, (_curRoom != null) ? _curRoom.childCount.ToString() : "?", targetHeightPlane.name);
-
+            //newInstance.name = string.Format("{0} #{1} on {2}", newPrefab.name, (_curRoom != null) ? _curRoom.childCount.ToString() : "?", targetHeightPlane.name);
+			newInstance.name = string.Format("{0}, {1}, {2}", info.fileName, newPrefab.name, (_curRoom != null) ? _curRoom.childCount.ToString() : "?");
 			Renderer[] RendererList = newInstance.GetComponentsInChildren<Renderer>();
 			foreach (Renderer _rend in RendererList)
 			{
