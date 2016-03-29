@@ -356,10 +356,13 @@ public class ProceduralGeneration : MonoBehaviour
         HashSet<GameObject> allSelected = new HashSet<GameObject>(Selection.gameObjects);
         foreach(Object obj in Selection.objects)
         {
-            if (obj is GameObject)
-                allSelected.Add(obj as GameObject);
-            else if (obj is DefaultAsset)
-                allSelected.UnionWith((obj as DefaultAsset).GetAllChildrenAssets<GameObject>());
+            if (obj != null)
+            {
+                if (obj is GameObject)
+                    allSelected.Add(obj as GameObject);
+                else if (obj is DefaultAsset)
+                    allSelected.UnionWith((obj as DefaultAsset).GetAllChildrenAssets<GameObject>());
+            }
         }
         if (allSelected == null || allSelected.Count == 0)
             return;
@@ -376,15 +379,19 @@ public class ProceduralGeneration : MonoBehaviour
         if (allObjs.Count == 0)
             return;
         GameObject obj = allObjs.Dequeue();
-        Debug.Log("Making prefab for " + obj.name);
         MakeSimplePrefabObj(obj);
-        Debug.Log("Finished making prefab for " + obj.name);
         if (allObjs.Count > 0)
-            EditorApplication.delayCall += ()=>{ MakeMultipleSimplePrefabObj(allObjs); };
+        {
+            if (ConcaveCollider.DelayBatchedCalls)
+                EditorApplication.delayCall += ()=>{ MakeMultipleSimplePrefabObj(allObjs); };
+            else
+                MakeMultipleSimplePrefabObj(allObjs);
+        }
     }
 
     private static void MakeSimplePrefabObj(GameObject obj)
     {
+        Debug.LogFormat("MakeSimplePrefabObj {0}", obj.name);
         // Find vrml text if we have it
         string vrmlText = null;
         string vrmlPath = AssetDatabase.GetAssetPath(obj);

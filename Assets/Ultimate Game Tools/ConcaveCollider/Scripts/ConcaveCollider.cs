@@ -49,6 +49,7 @@ public class ConcaveCollider : MonoBehaviour
     [SerializeField]   private int             LargestHullFaces            = 0;
 
                        private static bool     InBatchSaveMode             = true;
+                       public static bool      DelayBatchedCalls           = false;
 
     public delegate void LogDelegate     ([MarshalAs(UnmanagedType.LPStr)]string message);
     public delegate void ProgressDelegate([MarshalAs(UnmanagedType.LPStr)]string message, float fPercent);
