@@ -122,10 +122,32 @@ public class InputModule : AbstractInputModule
         if (!jsonData["relationships"].ReadList(ref relationships))
         {
             string testStr = null;
-            if (jsonData["relationships"].ReadString(ref testStr) && testStr != null && testStr.ToUpper() == "ALL")
-                relationships.Add(testStr);
+			if (jsonData["relationships"].ReadString(ref testStr) && testStr != null && testStr.ToUpper() == "ALL") {
+				relationships.Add(testStr);
+			}
         }
-        _myAvatar.relationshipsToRetrieve = relationships;
+		_myAvatar.relationshipsToRetrieve = relationships;
+		JsonData actionsList = jsonData["actions"];
+		int actionsCount = actionsList.Count;
+		for (int i = 0; i < actionsCount; i++) {
+			JsonData action = actionsList[0];
+			string id = action["id"].ReadString();
+			Vector3 vel = action["vel"].ReadVector3();
+			Vector3 ang_vel = action["ang_vel"].ReadVector3();
+			Rigidbody rb;
+			Renderer rend;
+			foreach (SemanticObject o in _myAvatar.observedObjs) {
+				rend = o.gameObject.GetComponent<Renderer>();
+				if (rend && rend.material) {
+					string idval = rend.material.GetInt("_idval").ToString();
+					if (idval == id) {
+						rb = o.gameObject.GetComponent<Rigidbody>();
+						rb.velocity = vel;
+						rb.angularVelocity = ang_vel;
+					}
+				}
+			}
+		}
     }
 
     public override void OnFixedUpdate()
