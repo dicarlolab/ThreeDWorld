@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using NetMQ;
 using LitJson;
@@ -126,28 +126,30 @@ public class InputModule : AbstractInputModule
 				relationships.Add(testStr);
 			}
         }
-		_myAvatar.relationshipsToRetrieve = relationships;
-		JsonData actionsList = jsonData["actions"];
-		int actionsCount = actionsList.Count;
-		for (int i = 0; i < actionsCount; i++) {
-			JsonData action = actionsList[0];
-			string id = action["id"].ReadString();
-			Vector3 vel = action["vel"].ReadVector3();
-			Vector3 ang_vel = action["ang_vel"].ReadVector3();
-			Rigidbody rb;
-			Renderer rend;
-			foreach (SemanticObject o in _myAvatar.observedObjs) {
-				rend = o.gameObject.GetComponent<Renderer>();
-				if (rend && rend.material) {
-					string idval = rend.material.GetInt("_idval").ToString();
-					if (idval == id) {
-						rb = o.gameObject.GetComponent<Rigidbody>();
-						rb.velocity = vel;
-						rb.angularVelocity = ang_vel;
-					}
+        _myAvatar.relationshipsToRetrieve = relationships;
+	// Apply Magic
+	JsonData actionsList = jsonData["actions"];
+	int actionsCount = actionsList.Count;
+	GameObject[] allObjects = UnityEngine.Object.FindObjectsOfType<GameObject>() ;
+	Rigidbody rb;
+	Renderer rend;
+	for (int i = 0; i < actionsCount; i++) {
+		JsonData action = actionsList [i];
+		string id = action ["id"].ReadString ();
+		Vector3 vel = action ["vel"].ReadVector3 ();
+		Vector3 ang_vel = action ["ang_vel"].ReadVector3 ();
+		foreach (GameObject go in allObjects) {
+			rend = go.GetComponent<Renderer> ();
+			if (rend && rend.material) {
+				string idval = rend.material.GetInt ("_idval").ToString ();
+				if (idval == id) {
+					rb = go.GetComponent<Rigidbody> ();
+					rb.velocity = vel;
+					rb.angularVelocity = ang_vel;
 				}
 			}
 		}
+	}
     }
 
     public override void OnFixedUpdate()
