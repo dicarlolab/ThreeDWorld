@@ -133,14 +133,16 @@ public class InputModule : AbstractInputModule
 		for (int i = 0; i < actionsCount; i++) {
 			JsonData action = actionsList [i];
 			string id = action ["id"].ReadString ();
-			Vector3 vel = action ["vel"].ReadVector3 ();
-			Vector3 ang_vel = action ["ang_vel"].ReadVector3 ();
+			Vector3 force = action ["force"].ReadVector3 ();
+			force = _myAvatar.transform.TransformPoint(force);
+			Vector3 torque = action ["torque"].ReadVector3 ();
+			torque = _myAvatar.transform.TransformPoint(torque);
 			foreach (SemanticObject o in allObjects) {
 				string idval = o.gameObject.GetComponentInChildren<Renderer> ().material.GetInt ("_idval").ToString();
 				if (idval == id) {
 					Rigidbody rb = o.gameObject.GetComponentInChildren<Rigidbody>();
-					rb.velocity = vel;
-					rb.angularVelocity = ang_vel;
+					rb.AddForce(force);
+					rb.AddTorque(torque);
 				}
 			}
 		}
