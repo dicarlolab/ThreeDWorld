@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using System.Collections;
 using NetMQ;
 using LitJson;
@@ -21,7 +21,7 @@ public abstract class AbstractInputModule
 
     // Read controller input and translate it into commands from an agent
     public abstract void SimulateInputFromController(ref JsonData responseMsgData);
-
+    
     // Parse the input sent from the client and use it to update the controls for the next simulation segment
     public abstract void HandleNetInput(JsonData msgJsonData, ref Vector3 targetVel);
 
@@ -82,7 +82,7 @@ public class InputModule : AbstractInputModule
         targetVelocity.y = Input.GetAxis("Vertical");
         targetVelocity.z = Input.GetAxis("VerticalD");
         targetVelocity = curRotation * targetVelocity;
-
+        
         // Read angular velocity
         Vector3 targetRotationVel = Vector3.zero;
         targetRotationVel.x = -Input.GetAxis("Vertical2");
@@ -122,30 +122,28 @@ public class InputModule : AbstractInputModule
         if (!jsonData["relationships"].ReadList(ref relationships))
         {
             string testStr = null;
-            if (jsonData["relationships"].ReadString(ref testStr) && testStr != null && testStr.ToUpper() == "ALL") {
+            if (jsonData["relationships"].ReadString(ref testStr) && testStr != null && testStr.ToUpper() == "ALL")
                 relationships.Add(testStr);
-            }
         }
         _myAvatar.relationshipsToRetrieve = relationships;
-        // Apply Magic
-        JsonData actionsList = jsonData["actions"];
-        int actionsCount = actionsList.Count;
-        SemanticObject[] allObjects = UnityEngine.Object.FindObjectsOfType<SemanticObject>() ;
-        Rigidbody rb;
-        for (int i = 0; i < actionsCount; i++) {
-            JsonData action = actionsList [i];
-            string id = action ["id"].ReadString ();
-            Vector3 vel = action ["vel"].ReadVector3 ();
-            Vector3 ang_vel = action ["ang_vel"].ReadVector3 ();
-            foreach (SemanticObject o in allObjects) {
-                string idval = o.gameObject.GetComponentInChildren<Renderer>().material.GetInt("_idval").ToString();
-                if (idval == id) {
-                    rb = o.gameObject.GetComponentInChildren<Rigidbody>();
-                    rb.velocity = vel;
-                    rb.angularVelocity = ang_vel;
-                }
-            }
-        }
+		// Apply Magic
+		JsonData actionsList = jsonData["actions"];
+		int actionsCount = actionsList.Count;
+		SemanticObject[] allObjects = UnityEngine.Object.FindObjectsOfType<SemanticObject>();
+		for (int i = 0; i < actionsCount; i++) {
+			JsonData action = actionsList [i];
+			string id = action ["id"].ReadString ();
+			Vector3 vel = action ["vel"].ReadVector3 ();
+			Vector3 ang_vel = action ["ang_vel"].ReadVector3 ();
+			foreach (SemanticObject o in allObjects) {
+				string idval = o.gameObject.GetComponentInChildren<Renderer> ().material.GetInt ("_idval").ToString();
+				if (idval == id) {
+					Rigidbody rb = o.gameObject.GetComponentInChildren<Rigidbody>();
+					rb.velocity = vel;
+					rb.angularVelocity = ang_vel;
+				}
+			}
+		}
     }
 
     public override void OnFixedUpdate()
