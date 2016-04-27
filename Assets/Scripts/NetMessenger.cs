@@ -409,15 +409,14 @@ public class NetMessenger : MonoBehaviour
 		//add initial scene info
 		if (a.sendSceneInfo) {
             jsonData["sceneInfo"] = new JsonData(JsonType.Array);
-			GameObject[] allObjects = UnityEngine.Object.FindObjectsOfType<GameObject>() ;
-			foreach(GameObject go in allObjects){
-			   if (go.GetComponent<Renderer>() != null) {
-                    JsonData _info;
-                    _info = new JsonData(JsonType.Array);
-				   _info.Add(go.name);
-				   _info.Add(go.GetComponent<Renderer>().material.GetInt("_idval").ToString());
-				   jsonData["sceneInfo"].Add(_info);
-			   }
+			SemanticObject[] allObjects = UnityEngine.Object.FindObjectsOfType<SemanticObject>();
+			foreach(SemanticObject semObj in allObjects){			   
+				JsonData _info;
+				_info = new JsonData(JsonType.Array);
+			   _info.Add(semObj.gameObject.name);
+			   _info.Add(semObj.gameObject.GetComponentInChildren<Renderer>().material.GetInt("_idval").ToString());
+			   jsonData["sceneInfo"].Add(_info);
+		   
 	    	}
 	    }
 	    
