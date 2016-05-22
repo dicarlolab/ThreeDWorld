@@ -134,9 +134,9 @@ public class InputModule : AbstractInputModule
 			JsonData action = actionsList [i];
 			string id = action ["id"].ReadString ();
 			Vector3 force = action ["force"].ReadVector3 ();
-			force = _myAvatar.transform.TransformPoint(force);
+			force = _myAvatar.transform.TransformDirection(force);
 			Vector3 torque = action ["torque"].ReadVector3 ();
-			torque = _myAvatar.transform.TransformPoint(torque);
+			torque = _myAvatar.transform.TransformDirection(torque);
 			foreach (SemanticObject o in allObjects) {
 				string idval = o.gameObject.GetComponentInChildren<Renderer> ().material.GetInt ("_idval").ToString();
 				if (idval == id) {
