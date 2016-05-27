@@ -127,7 +127,7 @@ Camera:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 186316}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_ClearFlags: 1
   m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0.019607844}
@@ -276,6 +276,7 @@ MonoBehaviour:
   myCam: {fileID: 11481154}
   shaders:
   - {fileID: 4800000, guid: 01c10d508c72efc4c97ac9ea79b07271, type: 3}
+  - {fileID: 4800000, guid: 901e682dceb434687a5ddad2900b85a4, type: 3}
   - {fileID: 0}
   moveSpeed: 5
   rotSpeed: 5

@@ -18,6 +18,9 @@ public class ProceduralGenerationProcessing
         GameObject prefab = UnityEditor.PrefabUtility.GetPrefabParent(instance) as GameObject;        
         GeneratablePrefab gp = prefab.GetComponent<GeneratablePrefab>();
         gp.ProcessPrefab();
+        ProceduralGeneration [] allThings = Resources.LoadAll<ProceduralGeneration>("");
+        if (allThings != null && allThings.Length > 0)
+            allThings[0].SavePrefabInformation(gp, false, true);
     }
 }
 

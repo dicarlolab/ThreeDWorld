@@ -2,12 +2,20 @@
     // General
     "screen_width": 256,
     "screen_height": 256,
+    "target_fps": 300, // The rate the simulation will try to run at(in terms of unity render frames)
+    "time_step": 0.02, // The length of a physics time step.
+    "num_time_steps": 5, // The number of physics time steps to process each time we send a message to the client.
+    "profiler_frames": 524288, // Mess with at your own risk. Fixes sample errors, but may cause editor to freeze crash when profiling
+    "log_timing_info": false,
+    "log_detailed_timing_info": false,
     "port_number": "5556",
     "host_address": "127.0.0.1",
     "create_test_client": false,
     "create_server": true,
     "debug_network_messages": false,
     "debug_procedural_generation_logs": false,
+    "save_out_debug_image_files": false,
+    "image_format": "bmp", // [bmp, png, jpg]
     
     // Logging
     "log_level": "log",         // Can be "log", "warning", "error", or "none" for the various log levels

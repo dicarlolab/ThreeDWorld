@@ -13,3 +13,7 @@ Builds/*
 *.userprefs
 *.csproj
 *.unityproj
+*.prefab
+*.prefab.meta
+Assets/ColliderMeshes/*
+Assets/Models/Props/*

@@ -19,6 +19,8 @@ public class Avatar : MonoBehaviour
     public float rotSpeed = 5.0f;
     // The range for which this avatar can observe SemanticObject's
     public float observedRange = 25.0f;
+    // send scene info?
+	public bool sendSceneInfo = false;
 
     private AbstractInputModule _myInput = null;
     private List<SemanticObject> _observedObjs = new List<SemanticObject>();
@@ -28,6 +30,8 @@ public class Avatar : MonoBehaviour
     private NetMessenger _myMessenger = null;
     private NetMQ.Sockets.ResponseSocket _myServer = null;
     private CameraStreamer.CaptureRequest _request;
+    private bool _shouldCollectObjectInfo = true;
+    private List<string> _relationshipsToRetrieve = new List<string>();
 #endregion
 
 #region Properties
@@ -60,6 +64,16 @@ public class Avatar : MonoBehaviour
     public AbstractInputModule myInput {
         get { return _myInput; }
     }
+
+    public bool shouldCollectObjectInfo {
+        get { return _shouldCollectObjectInfo; }
+        set { _shouldCollectObjectInfo = value; }
+    }
+
+    public List<string> relationshipsToRetrieve {
+        get { return _relationshipsToRetrieve; }
+        set { _relationshipsToRetrieve = value; }
+    }
 #endregion
 
 #region Unity callbacks
@@ -91,7 +105,14 @@ public class Avatar : MonoBehaviour
     public void UpdateObservedObjects()
     {
         _observedObjs.Clear();
+        if (!_shouldCollectObjectInfo)
+            return;
+        if (NetMessenger.logTimingInfo)
+            Debug.LogFormat("Starting Avatar.UpdateObservedObjects() {0}", Utils.GetTimeStamp());
         Collider[] observedObjects = Physics.OverlapSphere(transform.position, observedRange);
+        if (NetMessenger.logTimingInfo)
+            Debug.LogFormat("Finished OverlapSphere() and found {1}, {0}", Utils.GetTimeStamp(), observedObjects.Length);
+
         foreach(Collider col in observedObjects)
         {
             SemanticObjectSimple obj = null;
@@ -113,6 +134,8 @@ public class Avatar : MonoBehaviour
                 }
             }
         }
+        if (NetMessenger.logTimingInfo)
+            Debug.LogFormat("Finished Avatar.UpdateObservedObjects() and found {1} {0}", Utils.GetTimeStamp(), observedObjs.Count);
     }
 
     public void TeleportToValidPosition()
@@ -121,7 +144,7 @@ public class Avatar : MonoBehaviour
         const float radius = 0.5f;
         Vector3 roomDim = ProceduralGeneration.Instance.roomDim;
         int xDim = Mathf.FloorToInt(roomDim.x) - 1, zDim = Mathf.FloorToInt(roomDim.z) - 1;
-        float startHeight = roomDim.y - (1.1f * radius);
+        float startHeight = (1.1f * radius);
         for (int i = 0; i < 1000; ++i)
         {
             Vector3 spawnTest = new Vector3(radius + Random.Range(0, xDim), startHeight, radius + Random.Range(0, zDim));
@@ -130,12 +153,14 @@ public class Avatar : MonoBehaviour
                 RaycastHit hit = new RaycastHit();
                 if (Physics.SphereCast(spawnTest, radius, Vector3.down, out hit, startHeight))
                 {
-                    spawnTest.y -= Random.Range(0, hit.distance);
+                    spawnTest.y += Random.Range(0, hit.distance);
                     transform.position = spawnTest;
+                    transform.rotation = Quaternion.identity;
                     return;
                 }
 
                 transform.position = spawnTest;
+                transform.rotation = Quaternion.identity;
                 return;
             }
         }
@@ -152,7 +177,7 @@ public class Avatar : MonoBehaviour
     }
 
     // Parse the input sent from the client and use it to update the controls for the next simulation segment
-    public void HandleNetInput(SimpleJSON.JSONClass msgJsonData)
+    public void HandleNetInput(LitJson.JsonData msgJsonData)
     {
         _myInput.HandleNetInput(msgJsonData, ref _targetVelocity);
 
