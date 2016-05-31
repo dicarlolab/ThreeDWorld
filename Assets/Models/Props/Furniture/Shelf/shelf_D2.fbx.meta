@@ -3,7 +3,15 @@ guid: 06c5fd0b3bfcd664a8cde1c4675f9fa1
 ModelImporter:
   serializedVersion: 19
   fileIDToRecycleName:
+    100000: Shelf_D2
+    100002: //RootNode
+    400000: Shelf_D2
+    400002: //RootNode
+    2300000: Shelf_D2
+    3300000: Shelf_D2
     4300000: Shelf_D2
+    7400000: Default Take
+    11100000: //RootNode
   materials:
     importMaterials: 1
     materialName: 3
@@ -11,7 +19,7 @@ ModelImporter:
   animations:
     legacyGenerateAnimations: 4
     bakeSimulation: 0
-    resampleRotations: 1
+    resampleCurves: 1
     optimizeGameObjects: 0
     motionNodeName: 
     animationImportErrors: 

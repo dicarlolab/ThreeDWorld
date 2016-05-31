@@ -5,5 +5,11 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
+  - enabled: 0
+    path: Assets/Scenes/FirehoseScenes/MainScene.unity
   - enabled: 1
-    path: Assets/Scenes/MainScene.unity
+    path: Assets/Scenes/BaseScene.unity
+  - enabled: 1
+    path: Assets/Scenes/EnvironmentScenes/ProceduralGeneration.unity
+  - enabled: 1
+    path: Assets/Scenes/EnvironmentScenes/Empty.unity

@@ -4,6 +4,7 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -96,6 +97,7 @@ public class ProceduralGeneration : MonoBehaviour
 
     private void Start()
     {
+		SceneManager.SetActiveScene (SceneManager.GetSceneByName (SimulationManager.argsConfig["environment_scene"].ReadString("xxx") ) );
         Init();
     }
 #endregion

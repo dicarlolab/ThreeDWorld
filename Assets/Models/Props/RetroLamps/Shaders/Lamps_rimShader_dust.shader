@@ -1,3 +1,5 @@
+// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
+
 #warning Upgrade NOTE: unity_Scale shader variable was removed; replaced 'unity_Scale.w' with '1.0'
 
 Shader "Retro Lamps/Rim_dust"
@@ -61,9 +63,9 @@ SubShader
 	//	o.normal_world = normalize(mul(v.normal, (float3x3)_Object2World));
 		
 		TANGENT_SPACE_ROTATION;
-		o.TtoW0 = mul(rotation, ((float3x3)_Object2World)[0].xyz) * 1.0;
-		o.TtoW1 = mul(rotation, ((float3x3)_Object2World)[1].xyz) * 1.0;		
-		o.TtoW2 = mul(rotation, ((float3x3)_Object2World)[2].xyz) * 1.0;	
+		o.TtoW0 = mul(rotation, ((float3x3)unity_ObjectToWorld)[0].xyz) * 1.0;
+		o.TtoW1 = mul(rotation, ((float3x3)unity_ObjectToWorld)[1].xyz) * 1.0;		
+		o.TtoW2 = mul(rotation, ((float3x3)unity_ObjectToWorld)[2].xyz) * 1.0;	
 	}
 	
 	void surf (Input IN, inout SurfaceOutput o)

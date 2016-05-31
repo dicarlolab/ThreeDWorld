@@ -6,6 +6,7 @@ using UnityEngine.UI;
 using System.Collections.Generic;
 using NetMQ.Sockets;
 using LitJson;
+using UnityEngine.SceneManagement;
 
 /// <summary>
 /// Manages connections with all clients
@@ -25,6 +26,7 @@ public class NetMessenger : MonoBehaviour
     public bool saveDebugImageFiles = false;
     public bool usePngFiles = false;
     public RequestSocket clientSimulation = null;
+	public string environmentScene = "ProceduralGeneration";
 
     private DateTime _timeForLastMsg;
     private NetMQContext _ctx;
@@ -74,10 +76,16 @@ public class NetMessenger : MonoBehaviour
         logTimingInfo = SimulationManager.argsConfig["log_detailed_timing_info"].ReadBool(logTimingInfo);
         CameraStreamer.preferredImageFormat = SimulationManager.argsConfig["image_format"].ReadString("bmp");
         saveDebugImageFiles = SimulationManager.argsConfig["save_out_debug_image_files"].ReadBool(false);
+		environmentScene = SimulationManager.argsConfig ["environment_scene"].ReadString ("Empty");
 
-        // Create Procedural generation
-        if (ProceduralGeneration.Instance == null && shouldCreateServer)
-            GameObject.Instantiate(Resources.Load("Prefabs/ProceduralGeneration"));
+		// Load Environment Scene
+		if (ProceduralGeneration.Instance == null && shouldCreateServer) {
+			SceneManager.LoadScene (environmentScene, LoadSceneMode.Additive);
+			if (!SceneManager.GetSceneByName (environmentScene).IsValid()) {
+				Debug.LogWarning ("Scene name \"" + environmentScene + "\" was not found.");
+			}
+		}
+		
 
         // Start up connections
         _ctx = NetMQContext.Create();
