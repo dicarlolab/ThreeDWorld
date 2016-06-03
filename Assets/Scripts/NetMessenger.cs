@@ -17,7 +17,7 @@ public class NetMessenger : MonoBehaviour
     // Template for the avatar to create for each connection
     public Avatar avatarPrefab;
     public string portNumber = "5556";
-    public string hostAddress = "*";
+    public string hostAddress = "127.0.0.1";
     public bool shouldCreateTestClient = false;
     public bool shouldCreateServer = true;
     public bool debugNetworkMessages = false;
@@ -26,7 +26,7 @@ public class NetMessenger : MonoBehaviour
     public bool saveDebugImageFiles = false;
     public bool usePngFiles = false;
     public RequestSocket clientSimulation = null;
-	public string environmentScene = "ProceduralGeneration";
+	public string environmentScene = "Empty";
 
     private DateTime _timeForLastMsg;
     private NetMQContext _ctx;
@@ -36,6 +36,8 @@ public class NetMessenger : MonoBehaviour
     private Dictionary<ResponseSocket, Avatar> _avatars = new Dictionary<ResponseSocket, Avatar>();
     private Dictionary<ResponseSocket, RequestSocket> _avatarClients = new Dictionary<ResponseSocket, RequestSocket>();
     private List<SemanticRelationship> _relationsToTest = new List<SemanticRelationship>();
+
+	public bool waitForConfig = false;
     #endregion
 
     #region Const message values
@@ -46,6 +48,8 @@ public class NetMessenger : MonoBehaviour
     // To Receive From Client
     const string MSG_R_ClientJoin = "CLIENT_JOIN";
     const string MSG_R_FrameInput = "CLIENT_INPUT";
+	const string MSG_R_SceneSwitch = "CLIENT_SCENE_SWITCH";
+	const string MSG_R_SceneEdit = "CLIENT_SCENE_EDIT";
     #endregion
 
     public List<Avatar> GetAllAvatars()
@@ -64,28 +68,28 @@ public class NetMessenger : MonoBehaviour
         SimulationManager.Init();
     }
 
-    public void Init()
+	public void Init(string hostAddress, string portNumber, bool shouldCreateTestClient, bool shouldCreateServer, bool debugNetworkMessages, 
+		bool logSimpleTimeInfo, bool logDetailedTimeInfo, string preferredImageFormat, bool saveDebugImageFiles, string environmentScene)
     {
         // Read port number
-        portNumber = SimulationManager.argsConfig["port_number"].ReadString(portNumber);
-        hostAddress = SimulationManager.argsConfig["host_address"].ReadString(hostAddress);
-        shouldCreateTestClient = SimulationManager.argsConfig["create_test_client"].ReadBool(shouldCreateTestClient);
-        shouldCreateServer = SimulationManager.argsConfig["create_server"].ReadBool(shouldCreateServer);
-        debugNetworkMessages = SimulationManager.argsConfig["debug_network_messages"].ReadBool(debugNetworkMessages);
-        logSimpleTimeInfo = SimulationManager.argsConfig["log_timing_info"].ReadBool(logSimpleTimeInfo);
-        logTimingInfo = SimulationManager.argsConfig["log_detailed_timing_info"].ReadBool(logTimingInfo);
-        CameraStreamer.preferredImageFormat = SimulationManager.argsConfig["image_format"].ReadString("bmp");
-        saveDebugImageFiles = SimulationManager.argsConfig["save_out_debug_image_files"].ReadBool(false);
-		environmentScene = SimulationManager.argsConfig ["environment_scene"].ReadString ("Empty");
+		this.portNumber = portNumber;
+		this.hostAddress = hostAddress;
+		this.shouldCreateTestClient = shouldCreateTestClient;
+		this.shouldCreateServer = shouldCreateServer;
+		this.debugNetworkMessages = debugNetworkMessages;
+		this.logSimpleTimeInfo = logSimpleTimeInfo;
+		this.logTimingInfo = logDetailedTimeInfo;
+		CameraStreamer.preferredImageFormat = preferredImageFormat; // defaults to bmp
+        this.saveDebugImageFiles = saveDebugImageFiles; // defaults to False
+		this.environmentScene = environmentScene; // defaults to "Empty"
 
 		// Load Environment Scene
-		if (ProceduralGeneration.Instance == null && shouldCreateServer) {
+		if (shouldCreateServer) {
 			SceneManager.LoadScene (environmentScene, LoadSceneMode.Additive);
 			if (!SceneManager.GetSceneByName (environmentScene).IsValid()) {
 				Debug.LogWarning ("Scene name \"" + environmentScene + "\" was not found.");
 			}
 		}
-		
 
         // Start up connections
         _ctx = NetMQContext.Create();
@@ -197,7 +201,7 @@ public class NetMessenger : MonoBehaviour
     #endregion
 
     #region Setup
-    private void CreateNewSocketConnection()
+	private void CreateNewSocketConnection(string hostAddress, string portNumber)
     {
         ResponseSocket server = _ctx.CreateResponseSocket();
         if (shouldCreateServer)
@@ -256,11 +260,35 @@ public class NetMessenger : MonoBehaviour
             case MSG_R_FrameInput:
                 RecieveClientInput(server, jsonData);
                 break;
+			case MSG_R_SceneSwitch:
+				ReceiveSceneSwitch(server, jsonData);
+				break;
             default:
                 Debug.LogWarningFormat("Invalid message from client! Unknown msg_type '{0}'\n{1}", msgHeader, jsonData.ToJSON());
                 break;
         }
     }
+
+	public void ReceiveSceneSwitch(ResponseSocket server, JsonData jsonData)
+	{
+		string newEnvironmentScene = jsonData["new_scene"].ReadString ("Empty");
+
+		SimulationManager.setArgsConfig (jsonData);
+
+		// Unload active scene
+		for (int i = 0; i < SceneManager.sceneCount; i++) {
+			Scene sceneAtIndex = SceneManager.GetSceneAt (i);
+			if (sceneAtIndex.path.Contains ("EnvironmentScenes")) {
+				SceneManager.UnloadScene (sceneAtIndex);
+			}
+		}
+
+		// Load new scene
+		SceneManager.LoadScene (newEnvironmentScene, LoadSceneMode.Additive);
+		if (!SceneManager.GetSceneByName (newEnvironmentScene).IsValid()) {
+			Debug.LogWarning ("Scene name \"" + newEnvironmentScene + "\" was not found.");
+		}
+	}
 
     public void RecieveClientInput(ResponseSocket server, JsonData jsonData)
     {
