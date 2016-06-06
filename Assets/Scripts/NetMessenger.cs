@@ -37,7 +37,6 @@ public class NetMessenger : MonoBehaviour
     private Dictionary<ResponseSocket, RequestSocket> _avatarClients = new Dictionary<ResponseSocket, RequestSocket>();
     private List<SemanticRelationship> _relationsToTest = new List<SemanticRelationship>();
 
-	public bool waitForConfig = false;
     #endregion
 
     #region Const message values
@@ -50,6 +49,7 @@ public class NetMessenger : MonoBehaviour
     const string MSG_R_FrameInput = "CLIENT_INPUT";
 	const string MSG_R_SceneSwitch = "CLIENT_SCENE_SWITCH";
 	const string MSG_R_SceneEdit = "CLIENT_SCENE_EDIT";
+	const string MSG_R_Create_Environment = "CREATE_ENVIRONMENT"
     #endregion
 
     public List<Avatar> GetAllAvatars()
@@ -69,7 +69,7 @@ public class NetMessenger : MonoBehaviour
     }
 
 	public void Init(string hostAddress, string portNumber, bool shouldCreateTestClient, bool shouldCreateServer, bool debugNetworkMessages, 
-		bool logSimpleTimeInfo, bool logDetailedTimeInfo, string preferredImageFormat, bool saveDebugImageFiles, string environmentScene)
+		bool logSimpleTimingInfo, bool logDetailedTimeInfo, string preferredImageFormat, bool saveDebugImageFiles, string environmentScene)
     {
         // Read port number
 		this.portNumber = portNumber;
@@ -77,8 +77,8 @@ public class NetMessenger : MonoBehaviour
 		this.shouldCreateTestClient = shouldCreateTestClient;
 		this.shouldCreateServer = shouldCreateServer;
 		this.debugNetworkMessages = debugNetworkMessages;
-		this.logSimpleTimeInfo = logSimpleTimeInfo;
-		this.logTimingInfo = logDetailedTimeInfo;
+		logSimpleTimeInfo = logSimpleTimingInfo;
+		logTimingInfo = logDetailedTimeInfo;
 		CameraStreamer.preferredImageFormat = preferredImageFormat; // defaults to bmp
         this.saveDebugImageFiles = saveDebugImageFiles; // defaults to False
 		this.environmentScene = environmentScene; // defaults to "Empty"
@@ -93,7 +93,7 @@ public class NetMessenger : MonoBehaviour
 
         // Start up connections
         _ctx = NetMQContext.Create();
-        CreateNewSocketConnection();
+        return CreateNewSocketConnection();
     }
 
     public bool AreAllAvatarsReady()
@@ -201,12 +201,12 @@ public class NetMessenger : MonoBehaviour
     #endregion
 
     #region Setup
-	private void CreateNewSocketConnection(string hostAddress, string portNumber)
+	private ResponseSocket CreateNewSocketConnection()
     {
         ResponseSocket server = _ctx.CreateResponseSocket();
         if (shouldCreateServer)
         {
-            server.Bind("tcp://" + hostAddress + ":" + portNumber);
+            server.Bind("tcp://" + this.hostAddress + ":" + this.portNumber);
             _createdSockets.Add(server);
             if (shouldCreateTestClient)
                 CreateTestClient(server);
@@ -214,9 +214,10 @@ public class NetMessenger : MonoBehaviour
         else
         {
             clientSimulation = _ctx.CreateRequestSocket();
-            clientSimulation.Connect("tcp://" + hostAddress + ":" + portNumber);
+            clientSimulation.Connect("tcp://" + this.hostAddress + ":" + this.portNumber);
             clientSimulation.SendFrame(CreateMsgJson(MSG_R_ClientJoin).ToJSON());
         }
+		return server;
     }
 
     private void CreateTestClient(ResponseSocket server)
@@ -226,6 +227,31 @@ public class NetMessenger : MonoBehaviour
         _avatarClients[server] = client;
         client.SendFrame(CreateMsgJson(MSG_R_ClientJoin).ToJSON());
     }
+
+	public JsonData getConfigData(ResponseSocket server) {
+		bool messageReceived = false;
+		JsonData output = new JsonData (JsonType.Object);
+		while (!messageReceived) {
+			if (! server.TryReceiveMultipartMessage(TimeSpan.Zero, ref _lastMessage)) {
+				NetMQMessage msg = _lastMessage;
+				string msgHeader = msg.First.ConvertToString ();
+				output = msg.ReadJson (out msgHeader);
+				if (output == null)
+				{
+					Debug.LogError("Invalid message from client! Cannot parse JSON!\n" + ReadOutMessage(msg));
+					return;
+				}
+				if (msgHeader == null)
+				{
+					Debug.LogError("Invalid message from client! No msg_type!\n" + jsonData.ToJSON());
+					return;
+				}
+				if (!msgHeader.Equals (MSG_R_Create_Environment))
+					Debug.LogError ("Incorrect initial message from client! Message should be of type: \'" + MSG_R_Create_Environment +  "\'");
+			}
+		}
+		return output;
+	}
     #endregion
 
     #region Receive messages from the client

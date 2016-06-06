@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using LitJson;
+using NetMQ.Sockets;
 
 /// <summary>
 /// Component that forces Unity Rigidbodies physics to only update
@@ -211,7 +212,6 @@ public static class SimulationManager
         // Parse arguments
         {
             string output = "Args: ";
-            string curFlag = null;
             foreach (string arg in args)
             {
                 output += "'" + arg + "' ";
@@ -229,31 +229,31 @@ public static class SimulationManager
 					}
 				} else if (arg.StartsWith ("-screenWidth=")) {
 					try {
-						screenWidth = arg.Substring ("-screenWidth=".IndexOf ("=") + 1);
+						screenWidth = int.Parse (arg.Substring ("-screenWidth=".IndexOf ("=") + 1));
 					} catch {
 						Debug.LogWarning ("No screen width!"); 
 					}
 				} else if (arg.StartsWith ("-screenHeight=")) {
 					try {
-						screenHeight = arg.Substring ("-screenHeight=".IndexOf ("=") + 1);
+						screenHeight = int.Parse (arg.Substring ("-screenHeight=".IndexOf ("=") + 1));
 					} catch {
 						Debug.LogWarning ("No screen height!"); 
 					}
 				} else if (arg.StartsWith ("-numTimeSteps=")) {
 					try {
-						numPhysicsFramesPerUpdate = arg.Substring ("-numTimeSteps=".IndexOf ("=") + 1);
+						numPhysicsFramesPerUpdate = int.Parse (arg.Substring ("-numTimeSteps=".IndexOf ("=") + 1));
 					} catch {
 						Debug.LogWarning ("No num time steps!"); 
 					}
 				} else if (arg.StartsWith ("-timeStep=")) {
 					try {
-						Time.fixedDeltaTime = arg.Substring ("-timeStep=".IndexOf ("=") + 1);
+						Time.fixedDeltaTime = int.Parse (arg.Substring ("-timeStep=".IndexOf ("=") + 1));
 					} catch {
 						Debug.LogWarning ("No time step duration!"); 
 					}
 				} else if (arg.StartsWith ("-profilerFrames=")) {
 					try {
-						profilerFrames = arg.Substring ("-profilerFrames=".IndexOf ("=") + 1);
+						profilerFrames = int.Parse (arg.Substring ("-profilerFrames=".IndexOf ("=") + 1));
 					} catch {
 						Debug.LogWarning ("No profiler frames!"); 
 					}
@@ -275,7 +275,7 @@ public static class SimulationManager
 					logDetailedTimeInfo = true;
 				} else if (arg.StartsWith ("-targetFPS")) {
 					try {
-						targetFrameRate = arg.Substring ("-targetFPS=".IndexOf ("=") + 1);
+						targetFrameRate = int.Parse (arg.Substring ("-targetFPS=".IndexOf ("=") + 1));
 					} catch {
 						Debug.LogWarning ("No target FPS!"); 
 					}
@@ -291,9 +291,6 @@ public static class SimulationManager
             }
             Debug.Log(output);
         }
-			
-        if (argsConfig == null)
-            _readJsonArgs = new JsonData(JsonType.Object);
 
         Screen.SetResolution(screenWidth, screenHeight, Screen.fullScreen);
 
@@ -311,12 +308,16 @@ public static class SimulationManager
 
         // Init NetMessenger
         myNetMessenger = GameObject.FindObjectOfType<NetMessenger>();
+		ResponseSocket server = null;
         if (myNetMessenger != null)
-			myNetMessenger.Init(hostAddress, portNumber, shouldCreateTestClient,shouldCreateServer, debugNetworkMessages, 
+			server = myNetMessenger.Init(hostAddress, portNumber, shouldCreateTestClient,shouldCreateServer, debugNetworkMessages, 
 				logSimpleTimeInfo, logDetailedTimeInfo, preferredImageFormat, saveDebugImageFiles, environmentScene);
         else
             Debug.LogWarning("Couldn't find a NetMessenger to Initialize!");
 
         _hasFinishedInit = true;
+
+		if (server != null)
+			_readJsonArgs = myNetMessenger.getConfigData()
     }
 }
