@@ -318,6 +318,7 @@ public static class SimulationManager
         _hasFinishedInit = true;
 
 		if (server != null)
-			_readJsonArgs = myNetMessenger.getConfigData()
+			_readJsonArgs = myNetMessenger.getConfigData (server);
     }
 }
+

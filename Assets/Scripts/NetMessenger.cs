@@ -49,7 +49,7 @@ public class NetMessenger : MonoBehaviour
     const string MSG_R_FrameInput = "CLIENT_INPUT";
 	const string MSG_R_SceneSwitch = "CLIENT_SCENE_SWITCH";
 	const string MSG_R_SceneEdit = "CLIENT_SCENE_EDIT";
-	const string MSG_R_Create_Environment = "CREATE_ENVIRONMENT"
+	const string MSG_R_Create_Environment = "CREATE_ENVIRONMENT";
     #endregion
 
     public List<Avatar> GetAllAvatars()
@@ -68,7 +68,7 @@ public class NetMessenger : MonoBehaviour
         SimulationManager.Init();
     }
 
-	public void Init(string hostAddress, string portNumber, bool shouldCreateTestClient, bool shouldCreateServer, bool debugNetworkMessages, 
+	public ResponseSocket Init(string hostAddress, string portNumber, bool shouldCreateTestClient, bool shouldCreateServer, bool debugNetworkMessages, 
 		bool logSimpleTimingInfo, bool logDetailedTimeInfo, string preferredImageFormat, bool saveDebugImageFiles, string environmentScene)
     {
         // Read port number
@@ -234,20 +234,25 @@ public class NetMessenger : MonoBehaviour
 		while (!messageReceived) {
 			if (! server.TryReceiveMultipartMessage(TimeSpan.Zero, ref _lastMessage)) {
 				NetMQMessage msg = _lastMessage;
-				string msgHeader = msg.First.ConvertToString ();
-				output = msg.ReadJson (out msgHeader);
-				if (output == null)
-				{
+				string msgHeader = null;
+				try {
+					msgHeader = msg.First.ConvertToString ();
+					output = msg.ReadJson (out msgHeader);
+				} catch {
+					Debug.LogError("Either in Editor or there are no contents to this message!\n" + ReadOutMessage(msg));
+				}
+				if (output == null) {
 					Debug.LogError("Invalid message from client! Cannot parse JSON!\n" + ReadOutMessage(msg));
-					return;
+					return new JsonData (JsonType.Object);
 				}
-				if (msgHeader == null)
-				{
-					Debug.LogError("Invalid message from client! No msg_type!\n" + jsonData.ToJSON());
-					return;
+				if (msgHeader == null) {
+					Debug.LogError("Invalid message from client! No msg_type!\n" + output.ToJSON());
+					return new JsonData (JsonType.Object);
 				}
-				if (!msgHeader.Equals (MSG_R_Create_Environment))
-					Debug.LogError ("Incorrect initial message from client! Message should be of type: \'" + MSG_R_Create_Environment +  "\'");
+				if (!msgHeader.Equals (MSG_R_Create_Environment)) {
+					Debug.LogError ("Incorrect initial message from client! Message should be of type: \'" + MSG_R_Create_Environment + "\'");
+					return new JsonData (JsonType.Object);
+				}
 			}
 		}
 		return output;
@@ -265,8 +270,8 @@ public class NetMessenger : MonoBehaviour
         }
         if (debugNetworkMessages)
             Debug.LogFormat("Received Msg on Server: {0}", ReadOutMessage(msg));
-        string msgHeader = msg.First.ConvertToString();
-        JsonData jsonData = msg.ReadJson(out msgHeader);
+        	string msgHeader = msg.First.ConvertToString();
+        	JsonData jsonData = msg.ReadJson(out msgHeader);
         if (jsonData == null)
         {
             Debug.LogError("Invalid message from client! Cannot parse JSON!\n" + ReadOutMessage(msg));
