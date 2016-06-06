@@ -29,10 +29,10 @@ public static class SimulationManager
     private static NetMessenger myNetMessenger = null;
     private static MyLogLevel logLevel = MyLogLevel.LogAll;
     private static MyLogLevel stackLogLevel = MyLogLevel.Warning;
-    private static string logFileLocation = "output_log.txt";
+    private static string logFileLocation = "/home/richard/output_log.txt";
 
-	private static string portNumber = "5556";
-	private static string hostAddress = "127.0.0.1";
+	private static string portNumber = "23502";
+	private static string hostAddress = "18.93.5.202";
 #endregion
 
 #region Properties
