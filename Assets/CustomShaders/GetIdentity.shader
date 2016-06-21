@@ -22,9 +22,9 @@
             {
                 v2f o;
                 o.pos = mul (UNITY_MATRIX_MVP, v.vertex);
-            	float v0 = (_idval / 65356) / 255.;
-            	float v1 = ((_idval % 65356) / 256) / 255.;
-            	float v2 = ((_idval % 65356) % 256) / 255.;
+            	float v0 = (_idval / 65536) / 255.;
+            	float v1 = ((_idval % 65536) / 256) / 255.;
+            	float v2 = ((_idval % 65536) % 256) / 255.;
                 o.color = fixed3(v0, v1, v2);
                 return o;
             }
