@@ -9,16 +9,49 @@ import os
 from tabulate import tabulate
 import datetime
 import signal
+import sys
+import fcntl
+import struct
 
 class Three_D_World_Queue(object):
 
-	def __init__(self, debug=True, host_address="18.93.5.202", port="23402", build_dir="/home/richard/Desktop/3DWorldBuilds/", forward_port_dir="/home/richard/"):
-		self.debug = debug
-		self.host_address = host_address
-		self.queue_port_number = port
-		self.build_dir = build_dir
-		self.forward_port_dir = forward_port_dir
+	def __init__(self):
+		#set defaults
+		self.debug = True
 	
+		#TODO: rather hacky, but works for now	
+		s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+		s.connect(("google.com",80))
+		self.host_address = s.getsockname()[0]
+		s.close()
+
+		print "host: " + self.host_address
+		self.queue_port_number = "23402"
+		self.build_dir = "/home/threed/builds/"
+		self.forward_port_dir = "/home/threed/forwards/"
+
+
+		#get commandline args
+		args = sys.argv
+
+		for i in range(len(args)):
+			if (args[i].startswith("--debug=")):
+				self.debug = int(args[i][8:])
+			if (args[i].startswith("--hostaddress=")):
+				self.host_address = args[i][14:]
+			if (args[i].startswith("--port=")):
+				self.queue_port_number = args[i][7:]
+			if (args[i].startswith("--builddir=")):
+				self.build_dir = args[i][11:]
+			if (args[i].startswith("--forwarddir=")):
+				self.forward_port_dir = args[i][13:]
+	
+		if (not os.path.isdir(self.build_dir)):
+			raise NameError("Build path is not a directory!")
+		if (not os.path.isdir(self.forward_port_dir)):
+			raise NameError("Forward path is not a directory!")
+				
+
 		#get networking info
 		self.ctx = zmq.Context()
 
@@ -171,7 +204,7 @@ class Three_D_World_Queue(object):
 		s.close()	
 
 		#separate j and assign defaults to optional args excluded from message
-		process = ["nohup", self.build_dir + "TestBuild6/TestBuild6.x86_64", "-force-opengl", "-port=" + str(forward_port_num), "-address=" + self.host_address, "-batchmode"]
+		process = ["nohup", self.build_dir + j["selected_build"], "-force-opengl", "-port=" + str(forward_port_num), "-address=" + self.host_address, "-batchmode"]
 
 		if ("screen_width" in j.keys()):
 			process = process + ["-screenWidth=" + str(j["screen_width"])]
@@ -209,9 +242,6 @@ class Three_D_World_Queue(object):
 		if ("target_FPS" in j.keys()):
 			process = process + ["-targetFPS=" + str(j["target_FPS"])]
 
-		if ("environment_scene" in j.keys()):
-			process = process + ["-environmentScene=" + str(j["environment_scene"])]
-
 		if ("save_debug_image_files" in j.keys()):
 			process = process + ["-saveDebugImageFiles"]
 	
@@ -235,7 +265,7 @@ class Three_D_World_Queue(object):
 			print ("\nforward port @" + self.host_address + ":" + str(j["port_num"]) + " -> " + self.host_address + ":" + str(forward_port_num))
 		port_forwarder = subprocess.Popen(["nohup", 
 										   "python", 
-										   "/home/richard/Forward2.py", 
+										   self.forward_port_dir + j["selected_forward"], 
 										   "--port=" + str(j["port_num"]), 
 										   "--hostaddress=" + self.host_address, 
 										   "--forwardport=" + str(forward_port_num), 
