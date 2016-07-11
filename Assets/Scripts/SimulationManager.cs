@@ -3,6 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using LitJson;
 using NetMQ.Sockets;
+using System.Net;
+using System.Net.Sockets;
+
 
 /// <summary>
 /// Component that forces Unity Rigidbodies physics to only update
@@ -29,10 +32,9 @@ public static class SimulationManager
     private static NetMessenger myNetMessenger = null;
     private static MyLogLevel logLevel = MyLogLevel.LogAll;
     private static MyLogLevel stackLogLevel = MyLogLevel.Warning;
-    private static string logFileLocation = "/home/richard/output_log.txt";
-
-	private static string portNumber = "23502";
-	private static string hostAddress = "18.93.5.202";
+    private static string logFileLocation = "output_log.txt";
+	private static string portNumber = "5556";
+	private static string hostAddress = getHostIP();
 #endregion
 
 #region Properties
@@ -69,6 +71,20 @@ public static class SimulationManager
 
 	public static void setArgsConfig(JsonData jsonData) {
 		_readJsonArgs = jsonData;
+	}
+
+	private static string getHostIP() {
+		IPHostEntry host;
+		string localIP = "?";
+		host = Dns.GetHostEntry(Dns.GetHostName());
+		foreach (IPAddress ip in host.AddressList)
+		{
+			if (ip.AddressFamily.ToString() == "InterNetwork")
+			{
+				localIP = ip.ToString();
+			}
+		}
+		return localIP;
 	}
 
     public static bool FinishUpdatingFrames()
@@ -116,7 +132,8 @@ public static class SimulationManager
 
     private static void HandleLog(string logString, string stackTrace, LogType type)
     {
-#if !UNITY_EDITOR
+		Debug.Log ("Right before Handle Log");
+	#if !UNITY_EDITOR
         if (TestLogLevel(logLevel, type))
         {
             string output = string.Format("\n{1}: {0}\n", logString, type);
@@ -127,7 +144,8 @@ public static class SimulationManager
                 System.IO.File.AppendAllText(logFileLocation, "\nSTACK: " + System.Environment.StackTrace + "\n");
             }
         }
-#endif
+	#endif
+		Debug.Log ("Right after Handle Log");
     }
 
     private static void ReadLogLevel(JsonData json, ref MyLogLevel value)
@@ -195,13 +213,19 @@ public static class SimulationManager
         System.IO.File.WriteAllText(logFileLocation, "Starting Initialization:\n");
         Application.logMessageReceived += HandleLog;
         List<string> args = new List<string>(System.Environment.GetCommandLineArgs());
+		Debug.Log ("args: " + args.ToString());
 
 		// default settings
 		int screenWidth = Screen.width;
 		int screenHeight = Screen.height;
 		string preferredImageFormat = "bmp";
 		bool shouldCreateServer = true;
-		bool shouldCreateTestClient = false;
+		bool shouldCreateTestClient;
+		#if UNITY_EDITOR
+			shouldCreateTestClient = true;
+		#else
+			shouldCreateTestClient = false;
+		#endif
 		bool debugNetworkMessages = false;
 		bool logSimpleTimeInfo = false;
 		bool logDetailedTimeInfo = false;
@@ -214,6 +238,7 @@ public static class SimulationManager
             string output = "Args: ";
             foreach (string arg in args)
             {
+				Debug.Log ("Arg: " + arg);
                 output += "'" + arg + "' ";
 				if (arg.StartsWith ("-port=")) {
 					try {
@@ -279,12 +304,6 @@ public static class SimulationManager
 					} catch {
 						Debug.LogWarning ("No target FPS!"); 
 					}
-				} else if (arg.StartsWith ("-environmentScene=")) {
-					try {
-						environmentScene = arg.Substring ("-environmentScene=".IndexOf ("=") + 1);
-					} catch {
-						Debug.LogWarning ("No environment scene!"); 
-					}
 				} else if (arg.StartsWith ("-saveDebugImageFiles=")) {
 					saveDebugImageFiles = true;
 				}
@@ -304,21 +323,17 @@ public static class SimulationManager
         QualitySettings.vSyncCount = 0;
         Profiler.maxNumberOfSamplesPerFrame = profilerFrames;
         Application.targetFrameRate = targetFrameRate;
-//        Debug.LogFormat("Setting target render FPS to {0} with speedup: {1} with phys timestep of {2} and {3} phys frames, maxDT: {4}", targetFrameRate, physicsTimeMultiplier, Time.fixedDeltaTime, numPhysicsFramesPerUpdate, Time.maximumDeltaTime);
+		// Debug.LogFormat("Setting target render FPS to {0} with speedup: {1} with phys timestep of {2} and {3} phys frames, maxDT: {4}", targetFrameRate, physicsTimeMultiplier, Time.fixedDeltaTime, numPhysicsFramesPerUpdate, Time.maximumDeltaTime);
 
         // Init NetMessenger
         myNetMessenger = GameObject.FindObjectOfType<NetMessenger>();
-		ResponseSocket server = null;
+		Debug.Log (portNumber);
         if (myNetMessenger != null)
-			server = myNetMessenger.Init(hostAddress, portNumber, shouldCreateTestClient,shouldCreateServer, debugNetworkMessages, 
+			myNetMessenger.Init(hostAddress, portNumber, shouldCreateTestClient,shouldCreateServer, debugNetworkMessages, 
 				logSimpleTimeInfo, logDetailedTimeInfo, preferredImageFormat, saveDebugImageFiles, environmentScene);
         else
             Debug.LogWarning("Couldn't find a NetMessenger to Initialize!");
 
         _hasFinishedInit = true;
-
-		if (server != null)
-			_readJsonArgs = myNetMessenger.getConfigData (server);
-    }
+	}
 }
-

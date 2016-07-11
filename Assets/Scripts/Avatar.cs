@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using NetMQ;
@@ -32,6 +33,8 @@ public class Avatar : MonoBehaviour
     private CameraStreamer.CaptureRequest _request;
     private bool _shouldCollectObjectInfo = true;
     private List<string> _relationshipsToRetrieve = new List<string>();
+	private System.Random _rand;
+
 #endregion
 
 #region Properties
@@ -79,11 +82,19 @@ public class Avatar : MonoBehaviour
 #region Unity callbacks
     private void Awake()
     {
+		Debug.Log ("I'm awake!");
+		_rand = new System.Random ();
+		Debug.Log ("got random");
         _request = new CameraStreamer.CaptureRequest();
+		Debug.Log ("got streamer");
         _request.shadersList = shaders;
+		Debug.Log ("got shaders");
         _request.capturedImages = new List<CameraStreamer.CapturedImage>();
+		Debug.Log ("got capt images");
         _myInput = new InputModule(this);
+		Debug.Log ("got input");
         TeleportToValidPosition();
+		Debug.Log ("teleported");
     }
 
     private void FixedUpdate()
@@ -95,15 +106,20 @@ public class Avatar : MonoBehaviour
     }
 #endregion
 
-    public void ReadyFramesForRequest()
+	public void ReadyFramesForRequest()
     {
         // Set up rendering
-        myCam.RequestCaptures(_request);
+		if (myCam != null) {
+			myCam.RequestCaptures (_request);
+		} else {
+			Debug.LogWarning ("ReadyFramesForRequest myCam null");
+		}
     }
 
     // Looks for all the SemanticObject's that are within the range
     public void UpdateObservedObjects()
     {
+		Debug.Log ("UpdateObserveredObjects");
         _observedObjs.Clear();
         if (!_shouldCollectObjectInfo)
             return;
@@ -134,26 +150,40 @@ public class Avatar : MonoBehaviour
                 }
             }
         }
-        if (NetMessenger.logTimingInfo)
-            Debug.LogFormat("Finished Avatar.UpdateObservedObjects() and found {1} {0}", Utils.GetTimeStamp(), observedObjs.Count);
+		if (NetMessenger.logTimingInfo) {
+			Debug.LogFormat ("Finished Avatar.UpdateObservedObjects() and found {1} {0}", Utils.GetTimeStamp (), observedObjs.Count);
+		}
+		Debug.Log ("exiting UpdateObserveredObjects");
     }
 
     public void TeleportToValidPosition()
     {
+		Debug.Log ("Teleporting!");
         // TODO: Have this check for more than a simple sphere of radius 0.5f for when we extend the avatar
         const float radius = 0.5f;
-        Vector3 roomDim = ProceduralGeneration.Instance.roomDim;
-        int xDim = Mathf.FloorToInt(roomDim.x) - 1, zDim = Mathf.FloorToInt(roomDim.z) - 1;
+		Debug.Log ("set radius");
         float startHeight = (1.1f * radius);
+		Debug.Log ("spawning...");
+
+		SpawnArea[] spawnAreaCandidates = GameObject.FindObjectsOfType<SpawnArea> ();
+
+		if (spawnAreaCandidates.Length == 0)
+			Debug.LogWarning ("No Spawn Areas found!");
+
         for (int i = 0; i < 1000; ++i)
         {
-            Vector3 spawnTest = new Vector3(radius + Random.Range(0, xDim), startHeight, radius + Random.Range(0, zDim));
+			SpawnArea chosenSpawnArea = spawnAreaCandidates [_rand.Next (0, spawnAreaCandidates.Length)];
+
+			Vector3 spawnTest = chosenSpawnArea.acquireLocation();
+			spawnTest.y = startHeight;
+
+			Debug.Log ("Attempting avatar spawn at: " + spawnTest);
             if (!Physics.CheckSphere(spawnTest, radius))
             {
                 RaycastHit hit = new RaycastHit();
                 if (Physics.SphereCast(spawnTest, radius, Vector3.down, out hit, startHeight))
                 {
-                    spawnTest.y += Random.Range(0, hit.distance);
+					spawnTest.y += UnityEngine.Random.Range(0, hit.distance);
                     transform.position = spawnTest;
                     transform.rotation = Quaternion.identity;
                     return;
@@ -161,6 +191,7 @@ public class Avatar : MonoBehaviour
 
                 transform.position = spawnTest;
                 transform.rotation = Quaternion.identity;
+				Debug.Log ("...spawned");
                 return;
             }
         }

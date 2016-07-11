@@ -82,6 +82,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 479078}
   m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &442286
 Transform:
   m_ObjectHideFlags: 1
@@ -94,6 +95,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 479078}
   m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &474758
 Transform:
   m_ObjectHideFlags: 1
@@ -106,6 +108,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 479078}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &479078
 Transform:
   m_ObjectHideFlags: 1
@@ -121,6 +124,7 @@ Transform:
   - {fileID: 442286}
   m_Father: {fileID: 0}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!20 &2012878
 Camera:
   m_ObjectHideFlags: 1
@@ -198,17 +202,20 @@ MeshRenderer:
   m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
   m_Materials:
   - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
-  m_UseLightProbes: 1
-  m_ReflectionProbeUsage: 1
   m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 1
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
+  m_SelectedWireframeHidden: 0
   m_MinimumChartSize: 4
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
@@ -277,10 +284,10 @@ MonoBehaviour:
   shaders:
   - {fileID: 4800000, guid: 01c10d508c72efc4c97ac9ea79b07271, type: 3}
   - {fileID: 4800000, guid: 901e682dceb434687a5ddad2900b85a4, type: 3}
-  - {fileID: 0}
   moveSpeed: 5
   rotSpeed: 5
   observedRange: 25
+  sendSceneInfo: 0
 --- !u!114 &11481154
 MonoBehaviour:
   m_ObjectHideFlags: 1

@@ -93,8 +93,9 @@ NavMeshSettings:
 --- !u!1 &60969988
 GameObject:
   m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
+  m_PrefabParentObject: {fileID: 1000010233568838, guid: 8544588f337de4acc9fd4b428bf4f101,
+    type: 2}
+  m_PrefabInternal: {fileID: 1077957580}
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 60969990}
@@ -109,8 +110,9 @@ GameObject:
 --- !u!108 &60969989
 Light:
   m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
+  m_PrefabParentObject: {fileID: 108000012608568424, guid: 8544588f337de4acc9fd4b428bf4f101,
+    type: 2}
+  m_PrefabInternal: {fileID: 1077957580}
   m_GameObject: {fileID: 60969988}
   m_Enabled: 1
   serializedVersion: 7
@@ -142,8 +144,9 @@ Light:
 --- !u!4 &60969990
 Transform:
   m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
+  m_PrefabParentObject: {fileID: 4000011795829914, guid: 8544588f337de4acc9fd4b428bf4f101,
+    type: 2}
+  m_PrefabInternal: {fileID: 1077957580}
   m_GameObject: {fileID: 60969988}
   m_LocalRotation: {x: 0.864468, y: -0.28036538, z: -0.13459896, w: 0.39493486}
   m_LocalPosition: {x: 5.380575, y: 19.28, z: -44.56}
@@ -152,6 +155,52 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &1077957580
+Prefab:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4000011795829914, guid: 8544588f337de4acc9fd4b428bf4f101, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 5.380575
+      objectReference: {fileID: 0}
+    - target: {fileID: 4000011795829914, guid: 8544588f337de4acc9fd4b428bf4f101, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 19.28
+      objectReference: {fileID: 0}
+    - target: {fileID: 4000011795829914, guid: 8544588f337de4acc9fd4b428bf4f101, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: -44.56
+      objectReference: {fileID: 0}
+    - target: {fileID: 4000011795829914, guid: 8544588f337de4acc9fd4b428bf4f101, type: 2}
+      propertyPath: m_LocalRotation.x
+      value: 0.864468
+      objectReference: {fileID: 0}
+    - target: {fileID: 4000011795829914, guid: 8544588f337de4acc9fd4b428bf4f101, type: 2}
+      propertyPath: m_LocalRotation.y
+      value: -0.28036538
+      objectReference: {fileID: 0}
+    - target: {fileID: 4000011795829914, guid: 8544588f337de4acc9fd4b428bf4f101, type: 2}
+      propertyPath: m_LocalRotation.z
+      value: -0.13459896
+      objectReference: {fileID: 0}
+    - target: {fileID: 4000011795829914, guid: 8544588f337de4acc9fd4b428bf4f101, type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 0.39493486
+      objectReference: {fileID: 0}
+    - target: {fileID: 4000011795829914, guid: 8544588f337de4acc9fd4b428bf4f101, type: 2}
+      propertyPath: m_RootOrder
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1000010233568838, guid: 8544588f337de4acc9fd4b428bf4f101, type: 2}
+      propertyPath: m_Name
+      value: Sun
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 100100000, guid: 8544588f337de4acc9fd4b428bf4f101, type: 2}
+  m_IsPrefabParent: 0
 --- !u!1 &1531434590
 GameObject:
   m_ObjectHideFlags: 0
@@ -187,11 +236,12 @@ MonoBehaviour:
   avatarPrefab: {fileID: 11477270, guid: 50a7c426a44ef4a42919f58ea9b8763c, type: 2}
   portNumber: 5556
   hostAddress: 127.0.0.1
-  shouldCreateTestClient: 1
+  shouldCreateTestClient: 0
   shouldCreateServer: 1
   debugNetworkMessages: 0
   saveDebugImageFiles: 0
   usePngFiles: 0
+  environmentScene: Empty
 --- !u!114 &1531434592
 MonoBehaviour:
   m_ObjectHideFlags: 0

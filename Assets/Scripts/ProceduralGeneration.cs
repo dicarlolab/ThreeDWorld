@@ -2,6 +2,7 @@
 //       -- assign different identity to different walls
  
 using UnityEngine;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
@@ -44,6 +45,7 @@ public class ProceduralGeneration : MonoBehaviour
     public Vector3 standardizedSize = Vector3.one;
     public bool shouldUseGivenSeed = false;
     public int desiredRndSeed = -1;
+	public System.Random _rand;
 
     public float WALL_WIDTH = 1.0f;
     public float DOOR_WIDTH = 1.5f;
@@ -91,13 +93,12 @@ public class ProceduralGeneration : MonoBehaviour
 
 #region Unity Callbacks
     private void Awake()
-    {
-        _Instance = this;
-    }
+	{
+		_Instance = this;
+	}
 
-    private void Start()
-    {
-		SceneManager.SetActiveScene (SceneManager.GetSceneByName (SimulationManager.argsConfig["environment_scene"].ReadString("xxx") ) );
+	private void Start() {
+		SceneManager.SetActiveScene (SceneManager.GetSceneByName (SimulationManager.argsConfig["environment_scene"].ReadString("NO ENVIRONMENT SCENE SPECIFIED") ) );
         Init();
     }
 #endregion
@@ -136,13 +137,14 @@ public class ProceduralGeneration : MonoBehaviour
             maxPlacementAttempts = json["max_placement_attempts"].ReadInt(maxPlacementAttempts);
             gridDim = json["grid_size"].ReadFloat(gridDim);
         }
-
-        if (shouldUseGivenSeed)
-            Random.seed = desiredRndSeed;
-        else
-            Random.seed = Random.Range(int.MinValue, int.MaxValue);
-        _curRandSeed = Random.seed;
-        Debug.LogWarning("Using random seed: " + _curRandSeed);
+		_curRandSeed = UnityEngine.Random.Range (int.MinValue, int.MaxValue);
+		if (shouldUseGivenSeed) {
+			_rand = new System.Random (desiredRndSeed);
+			_curRandSeed = desiredRndSeed;
+		} else {
+			_rand = new System.Random (_curRandSeed);
+		}
+        Debug.Log("Using random seed: " + _curRandSeed);
 
         List<PrefabInfo> filteredPrefabs = availablePrefabs.FindAll(((PrefabInfo info)=>{
             // Remove items that have been disallowed
@@ -232,7 +234,7 @@ public class ProceduralGeneration : MonoBehaviour
         float boundsHeight = testBounds.extents.y;
 
         List<int> randomPlanesOrder = new List<int>();
-        int randomOrderValue = Random.Range(0, int.MaxValue);
+		int randomOrderValue = _rand.Next(0, int.MaxValue);
         for(int i = 0; i < _allHeightPlanes.Count; ++i)
             randomPlanesOrder.Insert(randomOrderValue % (randomPlanesOrder.Count + 1), i);
         if (_forceStackObject)
@@ -249,7 +251,7 @@ public class ProceduralGeneration : MonoBehaviour
             List<GridInfo> validValues = curHeightPlane.myGridSpots.FindAll((GridInfo info)=>{return info.rightSquares >= (boundsWidth-1) && info.downSquares > (boundsLength-1) && !info.inUse;});
             while(validValues.Count > 0 && !foundValid)
             {
-                int randIndex = Random.Range(0, validValues.Count);
+				int randIndex = _rand.Next(0, validValues.Count);
                 GridInfo testInfo = validValues[randIndex];
                 validValues.RemoveAt(randIndex);
                 if (curHeightPlane.TestGrid(testInfo, boundsWidth, boundsLength))
@@ -356,7 +358,7 @@ public class ProceduralGeneration : MonoBehaviour
     private static void CreatePrefabFromModel()
     {
         HashSet<GameObject> allSelected = new HashSet<GameObject>(Selection.gameObjects);
-        foreach(Object obj in Selection.objects)
+        foreach(UnityEngine.Object obj in Selection.objects)
         {
             if (obj != null)
             {
@@ -420,7 +422,7 @@ public class ProceduralGeneration : MonoBehaviour
         // Remove any old colliders.
         Collider[] foundColliders = instance.transform.GetComponentsInChildren<Collider>();
         foreach(Collider col in foundColliders)
-            Object.DestroyImmediate(col, true);
+            UnityEngine.Object.DestroyImmediate(col, true);
 
         // Create SemanticObject/Rigidbody
         instance.AddComponent<SemanticObjectSimple>().name = instance.name;
@@ -523,7 +525,7 @@ public class ProceduralGeneration : MonoBehaviour
             _failures++;
             return;
         }
-        PrefabInfo info = prefabList[Random.Range(0, prefabList.Count)];
+		PrefabInfo info = prefabList[_rand.Next(0, prefabList.Count)];
 
         // Check for excess complexity
         int maxComplexity = (complexityLevelToCreate - _curComplexity);
@@ -536,7 +538,7 @@ public class ProceduralGeneration : MonoBehaviour
                 Debug.LogFormat("Filtering for complexity {0} > {1} leaving {2} objects ", info.complexity, maxComplexity, prefabList.Count);
             if (prefabList.Count == 0)
                 return;
-            info = prefabList[Random.Range(0, prefabList.Count)];
+			info = prefabList[_rand.Next(0, prefabList.Count)];
         }
 
         // Find a spot to place this object
@@ -545,7 +547,7 @@ public class ProceduralGeneration : MonoBehaviour
         HeightPlane targetHeightPlane;
         Quaternion modifiedRotation = Quaternion.identity;
         if (info.stackableAreas.Count == 0)
-            modifiedRotation = Quaternion.Euler(new Vector3(0,Random.Range(0f,360f),0));
+			modifiedRotation = Quaternion.Euler(new Vector3(0, (float) _rand.NextDouble() * 360f,0));
         Bounds modifiedBounds = info.bounds.Rotate(modifiedRotation);
 
         if (TryPlaceGroundObject(modifiedBounds, info.anchorType, out spawnX, out spawnZ, out modScale, out targetHeightPlane))
@@ -561,7 +563,7 @@ public class ProceduralGeneration : MonoBehaviour
             // TODO: Factor in complexity to the arrangement algorithm?
             _curComplexity += info.complexity;
 
-            GameObject newInstance = Object.Instantiate<GameObject>(newPrefab.gameObject);
+            GameObject newInstance = UnityEngine.Object.Instantiate<GameObject>(newPrefab.gameObject);
             newInstance.transform.position = centerPos - (modifiedBounds.center * modScale);
             newInstance.transform.localScale = newInstance.transform.localScale * modScale;
             newInstance.transform.rotation = modifiedRotation * newInstance.transform.rotation;
@@ -579,7 +581,7 @@ public class ProceduralGeneration : MonoBehaviour
             // Create test cube
             if (DEBUG_testCubePrefab != null)
             {
-                GameObject testCube = Object.Instantiate<GameObject>(DEBUG_testCubePrefab);
+                GameObject testCube = UnityEngine.Object.Instantiate<GameObject>(DEBUG_testCubePrefab);
                 testCube.transform.localScale = modScale * 2f * modifiedBounds.extents;
                 testCube.transform.position = centerPos;
                 testCube.name = string.Format("Cube {0}", newInstance.name);
@@ -653,6 +655,18 @@ public class ProceduralGeneration : MonoBehaviour
 		//	_rend.material.SetInt("_idval", 1);	
 		//}	
         //floor.GetComponent<Renderer>().material.SetInt("_idval", 1);
+
+		// Make a spawn plane
+		SpawnArea floorSpawn = GameObject.Instantiate<SpawnArea>(Resources.Load<SpawnArea>("Prefabs/PlaneSpawn"));
+		floorSpawn.gameObject.transform.position = roomCenter;
+       	
+		//retrieve ratio between spawn plane and floor
+		float xRatio = floorSize.x / floorSpawn.gameObject.GetComponent<Collider>().bounds.size.x;
+		float zRatio = floorSize.z / floorSpawn.gameObject.GetComponent<Collider>().bounds.size.z;
+
+		floorSpawn.gameObject.transform.localScale = new Vector3 (xRatio * floorSpawn.gameObject.transform.localScale.x, 0, zRatio * floorSpawn.gameObject.transform.localScale.z);
+
+		Debug.Log (floorSpawn.name);
 
         GameObject top = WallInfo.CreateBoxMesh(ceilingStart, floorSize, ceilingMaterial, "Ceiling", _curRoom);
         top.AddComponent<SemanticObjectSimple>();
