@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using NetMQ.Sockets;
 using LitJson;
 using UnityEngine.SceneManagement;
+using AsyncIO;
 
 /// <summary>
 /// Manages connections with all clients
@@ -17,7 +18,7 @@ public class NetMessenger : MonoBehaviour
     // Template for the avatar to create for each connection
 	public Avatar avatarPrefab;
     public string portNumber = "5556";
-    public string hostAddress = "127.0.0.1";
+    public string hostAddress = "192.168.1.106";
     public bool shouldCreateTestClient = false;
     public bool shouldCreateServer = true;
     public bool debugNetworkMessages = false;
@@ -39,7 +40,8 @@ public class NetMessenger : MonoBehaviour
 	private List<Scene> scenesToUnload = new List<Scene>();
 
 	// variables for reset scene loading - check out documentation for more details
-	private bool waitingForSceneLoad = false;
+	private bool skipFrame = false;
+	private bool waitForSceneInit = false;
 	private JsonData lastJsonContents = null;
 	private ResponseSocket lastSocket = null;
 
@@ -53,7 +55,7 @@ public class NetMessenger : MonoBehaviour
     // To Receive From Client
     const string MSG_R_ClientJoin = "CLIENT_JOIN";
     const string MSG_R_FrameInput = "CLIENT_INPUT";
-	const string MSG_R_SceneSwitch = "CLIENT_SCENE_SWITCH";
+	const string MSG_R_SceneSwitch = "SCENE_SWITCH";
 	const string MSG_R_SceneEdit = "CLIENT_SCENE_EDIT";
 	const string MSG_R_CreateEnvironment = "CREATE_ENVIRONMENT";
 	const string MSG_R_ClientJoinWithConfig = "CLIENT_JOIN_WITH_CONFIG";
@@ -68,6 +70,7 @@ public class NetMessenger : MonoBehaviour
     #region Unity callbacks
     void Start()
     {
+		AsyncIO.ForceDotNet.Force ();
         _timeForLastMsg = DateTime.Now;
         _relationsToTest.Add(new OnRelation());
         _relationsToTest.Add (new PushRelation ());
@@ -120,46 +123,51 @@ public class NetMessenger : MonoBehaviour
             allReady = allReady && a.readyForSimulation;
         return allReady;
     }
-
+		
     void Update()
     {
-		if (!waitingForSceneLoad) {
-			if (clientSimulation != null) {
-				string output;
-				if (clientSimulation.HasIn && clientSimulation.TryReceiveFrameString (out output))
-					Debug.LogWarning ("Received: " + output);
-				return;
-			}
-			foreach (ResponseSocket server in _createdSockets) {
-				//Debug.LogFormat("Server In: {0}, Out: {1}", server.HasIn, server.HasOut)
-				if (server.HasIn && server.TryReceiveMultipartMessage (TimeSpan.Zero, ref _lastMessage))
-					HandleFrameMessage (server, _lastMessage);
-				RequestSocket client = null;
-				if (_avatarClients.ContainsKey (server))
-					client = _avatarClients [server];
-				if (client != null) {
-					//Debug.LogFormat("Client In: {0}, Out: {1}", client.HasIn, client.HasOut);
-					if (client.HasIn && client.TryReceiveMultipartMessage (TimeSpan.Zero, ref _lastMessage))
-						HandleClientFrameMessage (client, _lastMessage);
+		if (!skipFrame) {
+			if (!this.waitForSceneInit) {
+				if (clientSimulation != null) {
+					string output;
+					if (clientSimulation.HasIn && clientSimulation.TryReceiveFrameString (out output))
+						Debug.LogWarning ("Received: " + output);
+					return;
 				}
-			}
-		} else {
-			foreach (Scene scene in scenesToUnload) {
-				Debug.Log ("Unloading: " + scene.name);
-				SceneManager.UnloadScene (scene);
-			}
+				foreach (ResponseSocket server in _createdSockets) {
+					//Debug.LogFormat ("Server In: {0}, Out: {1}", server.HasIn, server.HasOut);
+					if (server.HasIn && server.TryReceiveMultipartMessage (TimeSpan.Zero, ref _lastMessage))
+						HandleFrameMessage (server, _lastMessage);
+					RequestSocket client = null;
+					if (_avatarClients.ContainsKey (server))
+						client = _avatarClients [server];
+					if (client != null) {
+						Debug.LogFormat("Client In: {0}, Out: {1}", client.HasIn, client.HasOut);
+						if (client.HasIn && client.TryReceiveMultipartMessage (TimeSpan.Zero, ref _lastMessage))
+							HandleClientFrameMessage (client, _lastMessage);
+					}
+				}
+			} else {
+				foreach (Scene scene in scenesToUnload) {
+					Debug.Log ("Unloading: " + scene.name);
+					SceneManager.UnloadScene (scene);
+				}
 
-			scenesToUnload.Clear ();
+				scenesToUnload.Clear ();
 
-			OnClientJoin (lastSocket, lastJsonContents);
-			Debug.Log ("Client Join Handled");
-			waitingForSceneLoad = false;
-		}
+				OnClientJoin (lastSocket, lastJsonContents);
+				Debug.Log ("Client Join Handled");
+
+				this.waitForSceneInit = false;
+			}
+		} else
+			this.skipFrame = false;
     }
+
     private void FixedUpdate()
     {
         // TODO: Handle this for when we have multiple Avatars
-        if (SimulationManager.FinishUpdatingFrames())
+		if (SimulationManager.FinishUpdatingFrames())
         {
             if (logTimingInfo)
                 Debug.LogFormat("Start FinishUpdatingFrames() {0}", Utils.GetTimeStamp());
@@ -236,16 +244,19 @@ public class NetMessenger : MonoBehaviour
 			Debug.Log("connecting...");
             server.Bind("tcp://" + this.hostAddress + ":" + this.portNumber);
             _createdSockets.Add(server);
-			Debug.Log ("...connected");
+			Debug.Log ("...connected@" + this.hostAddress + ":" + this.portNumber);
             if (shouldCreateTestClient)
                 CreateTestClient(server);
         }
+
+		/**
         else
         {
             clientSimulation = _ctx.CreateRequestSocket();
             clientSimulation.Connect("tcp://" + this.hostAddress + ":" + this.portNumber);
             clientSimulation.SendFrame(CreateJoinMsgJson().ToJSON());
         }
+        */
     }
 
     private void CreateTestClient(ResponseSocket server)
@@ -327,12 +338,24 @@ public class NetMessenger : MonoBehaviour
 		// Load new scene
 		SceneManager.LoadScene (newEnvironmentScene, LoadSceneMode.Additive);
 		if (!SceneManager.GetSceneByName (newEnvironmentScene).IsValid()) {
-			Debug.LogWarning ("Scene name \"" + newEnvironmentScene + "\" was not found.");
+			Debug.LogError ("Scene name \"" + newEnvironmentScene + "\" was not found.");
 		}
-			
-		waitingForSceneLoad = true;
-		lastSocket = server;
-		lastJsonContents = jsonData;
+
+		if (!SceneManager.GetSceneByName (newEnvironmentScene).path.StartsWith ("Assets/Scenes/EnvironmentScenes/")) {
+			Debug.LogError ("Scene is not located in Assets/Scenes/EnvironmentScenes/, please relocate scene file to this directory!");
+		} 
+
+		SceneManager.sceneLoaded += sceneWasLoaded;
+
+		this.skipFrame = true;
+		this.waitForSceneInit = true;
+
+		this.lastSocket = server;
+		this.lastJsonContents = jsonData;
+	}
+
+	private void sceneWasLoaded(Scene scene, LoadSceneMode mode) {
+		this.skipFrame = true;
 	}
 
     public void RecieveClientInput(ResponseSocket server, JsonData jsonData)
@@ -352,8 +375,8 @@ public class NetMessenger : MonoBehaviour
             if (oldAvatar != null && oldAvatar.gameObject != null)
                 GameObject.Destroy(_avatars[server].gameObject);
         }
-        _avatars[server] = newAvatar;
-        newAvatar.InitNetData(this, server);
+		_avatars[server] = newAvatar;
+		newAvatar.InitNetData(this, server);
         //
         //        // Send confirmation message
         //        lastMessageSent.Clear();
@@ -434,7 +457,8 @@ public class NetMessenger : MonoBehaviour
         return output;
     }
 
-    public void SimulateClientInput(RequestSocket client, JsonData jsonData, NetMQMessage msg)
+    public void 
+	SimulateClientInput(RequestSocket client, JsonData jsonData, NetMQMessage msg)
     {
         ResponseSocket server = GetServerForClient(client);
         Avatar myAvatar = _avatars[server];
@@ -460,7 +484,7 @@ public class NetMessenger : MonoBehaviour
     #endregion
 
     public void SendFrameUpdate(CameraStreamer.CaptureRequest streamCapture, Avatar a)
-    {
+	{
         if (logTimingInfo)
             Debug.LogFormat("Start SendFrameUpdate() {0} {1}", a.name, Utils.GetTimeStamp());
         _lastMessageSent.Clear();
@@ -519,8 +543,9 @@ public class NetMessenger : MonoBehaviour
         if (logTimingInfo)
             Debug.LogFormat("Finished Encode Image data {0}", Utils.GetTimeStamp());
 
-        a.myServer.SendMultipartMessage(_lastMessageSent);
-//        Debug.LogFormat("Sending frame message with {0} frames for {1} values", lastMessageSent.FrameCount, numValues);
+		a.myServer.SendMultipartMessage(_lastMessageSent);
+		//Debug.Log (_lastMessageSent.ToString());
+        Debug.LogFormat("Sending frame message with {0} frames for {1} values", _lastMessageSent.FrameCount, numValues);
         if (logTimingInfo)
             Debug.LogFormat("Finish SendFrameUpdate() {0} {1}", a.name, Utils.GetTimeStamp());
     }

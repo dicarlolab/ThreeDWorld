@@ -95,12 +95,12 @@ public class ProceduralGeneration : MonoBehaviour
     private void Awake()
 	{
 		_Instance = this;
-	}
+    }
 
 	private void Start() {
-		SceneManager.SetActiveScene (SceneManager.GetSceneByName (SimulationManager.argsConfig["environment_scene"].ReadString("NO ENVIRONMENT SCENE SPECIFIED") ) );
-        Init();
-    }
+		SceneManager.SetActiveScene (this.gameObject.scene);
+		Init ();
+	}
 #endregion
 
     public void Init()

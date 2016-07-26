@@ -221,11 +221,11 @@ public static class SimulationManager
 		string preferredImageFormat = "bmp";
 		bool shouldCreateServer = true;
 		bool shouldCreateTestClient;
-		#if UNITY_EDITOR
-			shouldCreateTestClient = true;
-		#else
+//		#if UNITY_EDITOR
+//			shouldCreateTestClient = true;
+//		#else
 			shouldCreateTestClient = false;
-		#endif
+//		#endif
 		bool debugNetworkMessages = false;
 		bool logSimpleTimeInfo = false;
 		bool logDetailedTimeInfo = false;
