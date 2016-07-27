@@ -93,7 +93,6 @@ class Three_D_World_Queue(object):
 	def handle_message(self, message):
 		reactions = {"CREATE_ENVIRONMENT_1" :    self.create_environment__1,
 					 "CREATE_ENVIRONMENT_2" :    self.create_environment__2,
-					 "CREATE_ENVIRONMENT_3" :    self.create_environment__3,
 					 "GET_ACTIVE_ENVIRONMENTS" : self.get_active_processes,
 					 "JOIN_ENVIRONMENT_1" :      self.join_environment__1,
 					 "JOIN_ENVIRONMENT_2" :      self.join_environment__2,
@@ -172,26 +171,9 @@ class Three_D_World_Queue(object):
 
 		return self.send_options(builds, "Select a build:")
 
-	#send options for forward ports
-	def create_environment__2(self, j):
-		req_keys = ["port_num"]
-		self.scan_for_contents(j, req_keys)
-
-		if (not self.check_port_num(j["port_num"])):
-			return json.dumps({"msg" : {"msg_type" : "PORT_UNAVAILABLE"}})
-
-		#collect available forward ports in forward_port_dir
-		forward_ports = list()
-		for file in os.listdir(self.forward_port_dir):
-			if file.endswith(".py"):
-				forward_ports = forward_ports + [file]
-		
-		#pick a forward port file
-		return self.send_options(forward_ports, "Select a forward port:")
-
 	#receive forward port option then parse command
-	def create_environment__3(self, j):
-		req_keys = ["port_num", "selected_build", "selected_forward", "username", "description"]
+	def create_environment__2(self, j):
+		req_keys = ["port_num", "selected_build", "username", "description"]
 		self.scan_for_contents(j, req_keys)
 
 		if (not self.check_port_num(j["port_num"])):
@@ -257,7 +239,7 @@ class Three_D_World_Queue(object):
 		#start forward port process
 		if (self.debug):
 			print "\n\nRunning Forward Port:"
-			print ("nohup python " + self.forward_port_dir + j["selected_forward"] + 
+			print ("nohup python " + self.forward_port_dir + "forward.py" + 
 				  " --port=" + str(j["port_num"]) + 
 				  " --hostaddress=" + self.host_address + 
 				  " --forwardport=" + str(forward_port_num) + 
@@ -265,7 +247,7 @@ class Three_D_World_Queue(object):
 			print ("\nforward port @" + self.host_address + ":" + str(j["port_num"]) + " -> " + self.host_address + ":" + str(forward_port_num))
 		port_forwarder = subprocess.Popen(["nohup", 
 										   "python", 
-										   self.forward_port_dir + j["selected_forward"], 
+										   self.forward_port_dir + "forward.py", 
 										   "--port=" + str(j["port_num"]), 
 										   "--hostaddress=" + self.host_address, 
 										   "--forwardport=" + str(forward_port_num), 
@@ -461,30 +443,16 @@ class Three_D_World_Queue(object):
 						if (self.debug):
 							print ("forward port pid: " + str(port_forwarder.pid))
 					
-					self.make_mongo_entry(self.make_uuid(), "Undocumented", "Undocumented", pid, proc.create_time(), psutil.Process(port_forwarder.pid).create_time(), forward_port_num, proc.connections(kind="tcp")[0].laddr[1])
+					self.make_mongo_entry(self.make_uuid(),
+										  "Undocumented", 
+										  "Undocumented", 
+										  pid, 
+										  proc.create_time(), 
+										  psutil.Process(port_forwarder.pid).create_time(), 
+										  forward_port_num, 
+										  proc.connections(kind="tcp")[0].laddr[1],
+										  port_forwarder.pid)
 
-			def is_child_of_queue():
-				print proc.name()
-				if (proc.parent()):
-					print "HAS PARENT!!!!!!!!"
-					print proc.parent().name() + " " + str(proc.parent().pid) + " " + str(os.getpid())
-					print str(str(proc.parent().pid) == str(os.getpid())) * 10
-					return False
-				else:
-					return False
-
-			if (is_child_of_queue()):
-				print "found one! HEYYYYYYYYYYYY CHECK ME OUT"
-				cursor = self.process_info.find({"forward_pid" : str(pid)})
-				for entry in cursor:
-					print "entry: " + entry
-					if (self.check_port_num(entry["env_port"])):
-						proc.terminate()
-						try:
-							proc.wait(timeout=1)
-						except psutil.TimeoutExpired:
-							proc.kill()
-			
 			#TODO: make way to ping environment for more information instead of leaving things undocumented
 		
 		#remove processes no longer running from mongod database
