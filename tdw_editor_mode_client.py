@@ -64,9 +64,12 @@ def loop():
 		msg1 = sock.recv()
 		msg2 = sock.recv()
 		msg3 = sock.recv()
-		print "...messages received\ninterpreting input"
-		interpret(msg2)
-		interpret(msg3)
+		print "...messages received\n\nsending input..."
+		img1 = Image.open(StringIO(msg2)).convert('RGB')
+		img2 = Image.open(StringIO(msg3)).convert('RGB')
+		img1.show()
+		img2.show()
+		time.sleep(10)
 		sock.send_json({"msg_type" : "CLIENT_INPUT", "vel": [0.0, 0.0, 0.0], "ang_vel" : [0.0, 0.0, 0.0]})
 		print "...input sent"
 	'''
@@ -76,10 +79,6 @@ def loop():
 		print "messages received\n sending scene switch"
 		sock.send_json({"msg_type" : "SCENE_SWITCH", "config" : config})
 	'''
-
-def interpret(msg):
-	img = Image.open(StringIO(msg)).convert('RGB')
-	
 
 def check_port_num(port_num):
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

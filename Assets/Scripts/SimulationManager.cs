@@ -218,14 +218,9 @@ public static class SimulationManager
 		// default settings
 		int screenWidth = Screen.width;
 		int screenHeight = Screen.height;
-		string preferredImageFormat = "bmp";
+		string preferredImageFormat = "png";
 		bool shouldCreateServer = true;
-		bool shouldCreateTestClient;
-//		#if UNITY_EDITOR
-//			shouldCreateTestClient = true;
-//		#else
-			shouldCreateTestClient = false;
-//		#endif
+		bool shouldCreateTestClient = false;
 		bool debugNetworkMessages = false;
 		bool logSimpleTimeInfo = false;
 		bool logDetailedTimeInfo = false;
