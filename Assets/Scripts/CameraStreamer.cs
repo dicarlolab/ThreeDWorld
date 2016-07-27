@@ -190,6 +190,7 @@ public class CameraStreamer : MonoBehaviour
         // Create a new camera if we need to that we will be manually rendering
         if (_textureCam == null)
         {
+			Debug.Log ("Texture cam is null");
             GameObject newObj = new GameObject("Texture-Writing Camera");
             _textureCam = newObj.AddComponent<Camera>();
             _textureCam.enabled = false;
@@ -210,8 +211,12 @@ public class CameraStreamer : MonoBehaviour
         const bool SHOULD_USE_MIPMAPS = false;
         int pixWidth = _textureCam.targetTexture.width;
         int pixHeight = _textureCam.targetTexture.height;
-        if (_outPhoto == null || _outPhoto.width != pixWidth || _outPhoto.height != pixHeight)
+
+        if (_outPhoto == null || _outPhoto.width != pixWidth || _outPhoto.height != pixHeight) 
             _outPhoto = new Texture2D(pixWidth, pixHeight, TextureFormat.ARGB32, SHOULD_USE_MIPMAPS);
+
+		//Debug.Log ("pW: " + pixWidth + ", pH: " + pixHeight + ", opW: " + _outPhoto.width + ", opH" + _outPhoto.height);
+
         _outPhoto.ReadPixels(new Rect(0, 0, pixWidth, pixHeight), 0, 0);
         _outPhoto.Apply();
 

@@ -110,6 +110,7 @@ public class InputModule : AbstractInputModule
     // Parse the input sent from the client and use it to update the controls for the next simulation segment
     public override void HandleNetInput(JsonData jsonData, ref Vector3 targetVel)
     {
+		Debug.Log (jsonData.ToJSON ());
         // Get movement
         _myAvatar.sendSceneInfo = jsonData["sendSceneInfo"].ReadBool(false);
         cacheVel = _myAvatar.moveSpeed * jsonData["vel"].ReadVector3(Vector3.zero);
@@ -128,21 +129,23 @@ public class InputModule : AbstractInputModule
         _myAvatar.relationshipsToRetrieve = relationships;
 		// Apply Magic
 		JsonData actionsList = jsonData["actions"];
-		int actionsCount = actionsList.Count;
-		SemanticObject[] allObjects = UnityEngine.Object.FindObjectsOfType<SemanticObject>();
-		for (int i = 0; i < actionsCount; i++) {
-			JsonData action = actionsList [i];
-			string id = action ["id"].ReadString ();
-			Vector3 force = action ["force"].ReadVector3 ();
-			force = _myAvatar.transform.TransformDirection(force);
-			Vector3 torque = action ["torque"].ReadVector3 ();
-			torque = _myAvatar.transform.TransformDirection(torque);
-			foreach (SemanticObject o in allObjects) {
-				string idval = o.gameObject.GetComponentInChildren<Renderer> ().material.GetInt ("_idval").ToString();
-				if (idval == id) {
-					Rigidbody rb = o.gameObject.GetComponentInChildren<Rigidbody>();
-					rb.AddForce(force);
-					rb.AddTorque(torque);
+		if (actionsList != null) {
+			int actionsCount = actionsList.Count;
+			SemanticObject[] allObjects = UnityEngine.Object.FindObjectsOfType<SemanticObject>();
+			for (int i = 0; i < actionsCount; i++) {
+				JsonData action = actionsList [i];
+				string id = action ["id"].ReadString ();
+				Vector3 force = action ["force"].ReadVector3 ();
+				force = _myAvatar.transform.TransformDirection (force);
+				Vector3 torque = action ["torque"].ReadVector3 ();
+				torque = _myAvatar.transform.TransformDirection (torque);
+				foreach (SemanticObject o in allObjects) {
+					string idval = o.gameObject.GetComponentInChildren<Renderer> ().material.GetInt ("_idval").ToString ();
+					if (idval == id) {
+						Rigidbody rb = o.gameObject.GetComponentInChildren<Rigidbody> ();
+						rb.AddForce (force);
+						rb.AddTorque (torque);
+					}
 				}
 			}
 		}

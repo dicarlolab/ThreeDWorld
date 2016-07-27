@@ -2,6 +2,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using LitJson;
+using NetMQ.Sockets;
+using System.Net;
+using System.Net.Sockets;
+
 
 /// <summary>
 /// Component that forces Unity Rigidbodies physics to only update
@@ -29,6 +33,8 @@ public static class SimulationManager
     private static MyLogLevel logLevel = MyLogLevel.LogAll;
     private static MyLogLevel stackLogLevel = MyLogLevel.Warning;
     private static string logFileLocation = "output_log.txt";
+	private static string portNumber = "5556";
+	private static string hostAddress = getHostIP();
 #endregion
 
 #region Properties
@@ -49,7 +55,37 @@ public static class SimulationManager
             return _readJsonArgs;
         }
     }
+
+	public static string getPortNumber {
+		get {
+			return portNumber;
+		}
+	}
+
+	public static string getHostAddress {
+		get {
+			return hostAddress;
+		}
+	}
 #endregion
+
+	public static void setArgsConfig(JsonData jsonData) {
+		_readJsonArgs = jsonData;
+	}
+
+	private static string getHostIP() {
+		IPHostEntry host;
+		string localIP = "?";
+		host = Dns.GetHostEntry(Dns.GetHostName());
+		foreach (IPAddress ip in host.AddressList)
+		{
+			if (ip.AddressFamily.ToString() == "InterNetwork")
+			{
+				localIP = ip.ToString();
+			}
+		}
+		return localIP;
+	}
 
     public static bool FinishUpdatingFrames()
     {
@@ -96,7 +132,8 @@ public static class SimulationManager
 
     private static void HandleLog(string logString, string stackTrace, LogType type)
     {
-#if !UNITY_EDITOR
+		Debug.Log ("Right before Handle Log");
+	#if !UNITY_EDITOR
         if (TestLogLevel(logLevel, type))
         {
             string output = string.Format("\n{1}: {0}\n", logString, type);
@@ -107,7 +144,8 @@ public static class SimulationManager
                 System.IO.File.AppendAllText(logFileLocation, "\nSTACK: " + System.Environment.StackTrace + "\n");
             }
         }
-#endif
+	#endif
+		Debug.Log ("Right after Handle Log");
     }
 
     private static void ReadLogLevel(JsonData json, ref MyLogLevel value)
@@ -125,7 +163,7 @@ public static class SimulationManager
                 value = MyLogLevel.None;
         }
     }
-
+		
     public static string ReadConfigFile(string fileName)
     {
         if (string.IsNullOrEmpty(fileName))
@@ -175,37 +213,101 @@ public static class SimulationManager
         System.IO.File.WriteAllText(logFileLocation, "Starting Initialization:\n");
         Application.logMessageReceived += HandleLog;
         List<string> args = new List<string>(System.Environment.GetCommandLineArgs());
-        string configLocation = null;
+		Debug.Log ("args: " + args.ToString());
+
+		// default settings
+		int screenWidth = Screen.width;
+		int screenHeight = Screen.height;
+		string preferredImageFormat = "png";
+		bool shouldCreateServer = true;
+		bool shouldCreateTestClient = false;
+		bool debugNetworkMessages = false;
+		bool logSimpleTimeInfo = false;
+		bool logDetailedTimeInfo = false;
+		bool saveDebugImageFiles = false;
+		string environmentScene = "Empty";
+
+
         // Parse arguments
         {
             string output = "Args: ";
-            string curFlag = null;
             foreach (string arg in args)
             {
+				Debug.Log ("Arg: " + arg);
                 output += "'" + arg + "' ";
-                if (curFlag == "-config")
-                    configLocation = arg;
-                if (arg.StartsWith("-"))
-                    curFlag = arg;
-                else
-                    curFlag = null;
+				if (arg.StartsWith ("-port=")) {
+					try {
+						portNumber = arg.Substring ("-port=".IndexOf ("=") + 1);
+					} catch {
+						Debug.LogWarning ("No port number!");
+					}
+				} else if (arg.StartsWith ("-address=")) {
+					try {
+						hostAddress = arg.Substring ("-address=".IndexOf ("=") + 1);
+					} catch {
+						Debug.LogWarning ("No host address!"); 
+					}
+				} else if (arg.StartsWith ("-screenWidth=")) {
+					try {
+						screenWidth = int.Parse (arg.Substring ("-screenWidth=".IndexOf ("=") + 1));
+					} catch {
+						Debug.LogWarning ("No screen width!"); 
+					}
+				} else if (arg.StartsWith ("-screenHeight=")) {
+					try {
+						screenHeight = int.Parse (arg.Substring ("-screenHeight=".IndexOf ("=") + 1));
+					} catch {
+						Debug.LogWarning ("No screen height!"); 
+					}
+				} else if (arg.StartsWith ("-numTimeSteps=")) {
+					try {
+						numPhysicsFramesPerUpdate = int.Parse (arg.Substring ("-numTimeSteps=".IndexOf ("=") + 1));
+					} catch {
+						Debug.LogWarning ("No num time steps!"); 
+					}
+				} else if (arg.StartsWith ("-timeStep=")) {
+					try {
+						Time.fixedDeltaTime = int.Parse (arg.Substring ("-timeStep=".IndexOf ("=") + 1));
+					} catch {
+						Debug.LogWarning ("No time step duration!"); 
+					}
+				} else if (arg.StartsWith ("-profilerFrames=")) {
+					try {
+						profilerFrames = int.Parse (arg.Substring ("-profilerFrames=".IndexOf ("=") + 1));
+					} catch {
+						Debug.LogWarning ("No profiler frames!"); 
+					}
+				} else if (arg.StartsWith ("-preferredImageFormat=")) {
+					try {
+						preferredImageFormat = arg.Substring ("-preferredImageFormat=".IndexOf ("=") + 1);
+					} catch {
+						Debug.LogWarning ("No targetFPS!"); 
+					}
+				} else if (arg.StartsWith ("-shouldCreateServer")) {
+					shouldCreateServer = true;
+				} else if (arg.StartsWith ("-shouldCreateTestClient")) {
+					shouldCreateTestClient = true;
+				} else if (arg.StartsWith ("-debugNetworkMessages")) {
+					debugNetworkMessages = true;
+				} else if (arg.StartsWith ("-logSimpleTimingInfo")) {
+					logSimpleTimeInfo = true;
+				} else if (arg.StartsWith ("-logDetailedTimingInfo")) {
+					logDetailedTimeInfo = true;
+				} else if (arg.StartsWith ("-targetFPS")) {
+					try {
+						targetFrameRate = int.Parse (arg.Substring ("-targetFPS=".IndexOf ("=") + 1));
+					} catch {
+						Debug.LogWarning ("No target FPS!"); 
+					}
+				} else if (arg.StartsWith ("-saveDebugImageFiles=")) {
+					saveDebugImageFiles = true;
+				}
             }
             Debug.Log(output);
         }
 
-        ParseJsonInfo(configLocation);
-        if (argsConfig == null)
-            _readJsonArgs = new JsonData(JsonType.Object);
-
-        // Set resolution
-        int screenWidth = _readJsonArgs["screen_width"].ReadInt(Screen.width);
-        int screenHeight = _readJsonArgs["screen_height"].ReadInt(Screen.height);
         Screen.SetResolution(screenWidth, screenHeight, Screen.fullScreen);
 
-        numPhysicsFramesPerUpdate = _readJsonArgs["num_time_steps"].ReadInt(numPhysicsFramesPerUpdate);
-        Time.fixedDeltaTime = _readJsonArgs["time_step"].ReadFloat(Time.fixedDeltaTime);
-        profilerFrames = _readJsonArgs["profiler_frames"].ReadInt(profilerFrames);
-        targetFrameRate = _readJsonArgs["target_fps"].ReadInt(targetFrameRate);
         physicsTimeMultiplier = targetFrameRate * (Time.fixedDeltaTime * numPhysicsFramesPerUpdate * 1.05f);
         // Multiplier must be float between 0 and 100.0f
         if (physicsTimeMultiplier > 100)
@@ -216,15 +318,17 @@ public static class SimulationManager
         QualitySettings.vSyncCount = 0;
         Profiler.maxNumberOfSamplesPerFrame = profilerFrames;
         Application.targetFrameRate = targetFrameRate;
-//        Debug.LogFormat("Setting target render FPS to {0} with speedup: {1} with phys timestep of {2} and {3} phys frames, maxDT: {4}", targetFrameRate, physicsTimeMultiplier, Time.fixedDeltaTime, numPhysicsFramesPerUpdate, Time.maximumDeltaTime);
+		// Debug.LogFormat("Setting target render FPS to {0} with speedup: {1} with phys timestep of {2} and {3} phys frames, maxDT: {4}", targetFrameRate, physicsTimeMultiplier, Time.fixedDeltaTime, numPhysicsFramesPerUpdate, Time.maximumDeltaTime);
 
         // Init NetMessenger
         myNetMessenger = GameObject.FindObjectOfType<NetMessenger>();
+		Debug.Log (portNumber);
         if (myNetMessenger != null)
-            myNetMessenger.Init();
+			myNetMessenger.Init(hostAddress, portNumber, shouldCreateTestClient,shouldCreateServer, debugNetworkMessages, 
+				logSimpleTimeInfo, logDetailedTimeInfo, preferredImageFormat, saveDebugImageFiles, environmentScene);
         else
             Debug.LogWarning("Couldn't find a NetMessenger to Initialize!");
 
         _hasFinishedInit = true;
-    }
+	}
 }
