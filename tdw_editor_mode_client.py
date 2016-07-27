@@ -64,13 +64,16 @@ def loop():
 		msg1 = sock.recv()
 		msg2 = sock.recv()
 		msg3 = sock.recv()
+		msg4 = sock.recv()
 		print "...messages received\n\nsending input..."
 		img1 = Image.open(StringIO(msg2)).convert('RGB')
 		img2 = Image.open(StringIO(msg3)).convert('RGB')
+		img3 = Image.open(StringIO(msg4)).convert('RGB')
 		img1.show()
 		img2.show()
+		img3.show()
 		time.sleep(10)
-		sock.send_json({"msg_type" : "CLIENT_INPUT", "vel": [0.0, 0.0, 0.0], "ang_vel" : [0.0, 0.0, 0.0]})
+		sock.send_json({"msg_type" : "CLIENT_INPUT", "vel": [0.0, 0.0, 0.0], "ang_vel" : [0.0, 0.0, 0.0], "teleport_random" : True})
 		print "...input sent"
 	'''
 	for _ in range(2):
