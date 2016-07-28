@@ -1,4 +1,4 @@
-QUEUE SYSTEM:
+#QUEUE SYSTEM:
 So at the beginning of our network training programs, we need a way to connect to the environment server and send and receive our messages back and forth. To do this, we have a particular script which will manage all the instances of the ThreeDWorlds as we make. This script will be bound to port number 23402 on any given machine that we are using to run environments. However, to make things even more straightforward, there is a python library written called tdw_client which will auto-connect you to the queue, and allow you to use a small selection of commands to either examine the current processes running on the node, reconnect to an environment process, or create a new process. All of these commands will be in the class TDW_Client. So the following would be a typical use of tdw_client:
 
 from tdw_client import TDW_Client
@@ -53,13 +53,13 @@ If you want to avoid using the tdw_client UI, you could do something like the fo
 	username = “Joe Smith”
 	description = “Running a non-trivial normals prediction test”
 	config = {“environment_scene” : “ProceduralGeneration”, ...}
-tc = TDW_Client(host_address,
-requested_port_num=port_num,
-selected_build=sel_build,
-intial_command=sel_command,
-username=username,
-description=description,
-environment_config=config)
+	tc = TDW_Client(host_address,
+	requested_port_num=port_num,
+	selected_build=sel_build,
+	intial_command=sel_command,
+	username=username,
+	description=description,
+	environment_config=config)
 	sock = tc.run()
 
 As a note, the above code will take you to the UI if that port number is taken. If that gets incredibly annoying, I will implement an error mode, but not sure how important that is given you will get the feedback in the console anyways, and you can kill the process with a ^C as well.
@@ -76,39 +76,38 @@ going to say this again, when you make a config, it MUST have an “environment_
 I have yet to implement this, but eventually what it will do is just print the environment output_log to console. Will spec this out amongst other related things before confirming this super convenient function.
 
 
-CONFIGS:
+#CONFIGS:
 To start, here is an example of a config in python syntax:
 
-# Procedural generation
-{
-"environment_scene" : "ProceduralGeneration", #THIS MUST BE IN YOUR CONFIG FILE
-"random_seed": 1, # Omit and it will just choose one at random. Chosen seeds are output into the log(under warning or log level).
-"should_use_standardized_size": False,
-"standardized_size": [1.0, 1.0, 1.0],
-"disabled_items": [], #["SQUIRL", "SNAIL", "STEGOSRS"], # A list of item names to not use, e.g. ["lamp", "bed"] would exclude files with the word "lamp" or "bed" in their file path
-"permitted_items": [], #["bed1", "sofa_blue", "lamp"],
-"complexity": 7500,
-"num_ceiling_lights": 4,
-"minimum_stacking_base_objects": 15,
-"minimum_objects_to_stack": 100,
-"room_width": 10.0,
-"room_height": 20.0,
-"room_length": 10.0,
-"wall_width": 1.0,
-"door_width": 1.5,
-"door_height": 3.0,
-"window_size_width": 5.0,
-"window_size_height": 5.0,
-"window_placement_height": 5.0,
-"window_spacing": 10.0,  # Average spacing between windows on walls
-"wall_trim_height": 0.5,
-"wall_trim_thickness": 0.01,
-"min_hallway_width": 5.0,
-"number_rooms": 1,
-"max_wall_twists": 3,
-"max_placement_attempts": 300,   # Maximum number of failed placements before we consider a room fully filled.
-"grid_size": 0.4,    # Determines how fine tuned a grid the objects are placed on during Proc. Gen. Smaller the number, the more disorderly objects can look.
-}
+	{
+	"environment_scene" : "ProceduralGeneration", #THIS MUST BE IN YOUR CONFIG FILE
+	"random_seed": 1, # Omit and it will just choose one at random. Chosen seeds are output into the log(under warning or log level).
+	"should_use_standardized_size": False,
+	"standardized_size": [1.0, 1.0, 1.0],
+	"disabled_items": [], #["SQUIRL", "SNAIL", "STEGOSRS"], # A list of item names to not use, e.g. ["lamp", "bed"] would exclude files with the word "lamp" or "bed" in their file path
+	"permitted_items": [], #["bed1", "sofa_blue", "lamp"],
+	"complexity": 7500,
+	"num_ceiling_lights": 4,
+	"minimum_stacking_base_objects": 15,
+	"minimum_objects_to_stack": 100,
+	"room_width": 10.0,
+	"room_height": 20.0,
+	"room_length": 10.0,
+	"wall_width": 1.0,
+	"door_width": 1.5,
+	"door_height": 3.0,
+	"window_size_width": 5.0,
+	"window_size_height": 5.0,
+	"window_placement_height": 5.0,
+	"window_spacing": 10.0,  # Average spacing between windows on walls
+	"wall_trim_height": 0.5,
+	"wall_trim_thickness": 0.01,
+	"min_hallway_width": 5.0,
+	"number_rooms": 1,
+	"max_wall_twists": 3,
+	"max_placement_attempts": 300,   # Maximum number of failed placements before we consider a room fully filled.
+	"grid_size": 0.4,    # Determines how fine tuned a grid the objects are placed on during Proc. Gen. Smaller the number, the more disorderly objects can look.
+	}
 
 
 Okay, so looking through this, we can see that config files are json files. Of special note, we need to observe that the key “environment_scene” must be inside the config file, or the unity program will default to making an empty environment and make a complaint in its output log.
@@ -134,13 +133,13 @@ SPECIAL ASSETS:
 
 	The config file can be accessed as a JsonData file under SimulationManager.argsConfig. Be sure to import LitJson.JsonData to use.
 
-HOW TO UNITY:
+#HOW TO UNITY:
 
 So tragically, some of making scenes requires the use of the GUI. Luckily it isn’t very complex. Essentially to make a new environment scene, you will run File -> New Scene, save it in “Assets/Scenes/EnvironmentScenes”. Once you have an empty scene, the structure of making a scene is to drag and drop prefabs and meshes into the scene editor, or right click on the heirarchy menu and create new objects. Of particular interest, will be to run Create Empty, and to add components to the empty objects. You can attach scripts to the scene in this manner. Special note, these scripts will not be initialized via a constructor! Instead, unity has callback methods called start, awake, update, fixedUpdate, lateUpdate, etc. Start and Awake are used to initialize attributes to the script. The update methods are used as main loops. To see more as to when these methods get called, see the Unity API. Another important feature to objects, is their transforms. Transforms can be adjusted to change position, rotation, and scale. You can check out the Unity API to investigate other components that can be added to objects.
 
 Prefabs, seemingly confusing subject, but surprisingly simple. Prefabs are hierarchies of objects which can be saved outside a scene. If you want two planes to be positioned to bisect each other, you can position them in the scene editor as so, drag one plane into the other plane in the hierarchy menu, and you will wind up creating a single object with sub parts. If you move the outermost object, the sub parts will move with it. You can run methods in a script to acquire information about children or parents in the hierarchy. This hierarchical object can be fairly powerful. The special thing you can do with said object structures in Unity, is that you can save such hierarchies (which can just be one object with no children by the way) as a file called a prefab. The prefab saves all of the information about the hierarchy and can reproduce it in any scene, any number of times.
 
-MESSAGE SYSTEM:
+#MESSAGE SYSTEM:
 When communicating with the environment over zmq, you will always send a json with an entry n and msg. n contains your frame expectancy, and msg contains your actual message. msg will contain an entry msg_type i.e. {‘n’ : 4, “msg” : {“msg_type” : “CLIENT_INPUT”, ...}}
 
 Here are the available message types and what you can put inside them:
