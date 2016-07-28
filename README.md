@@ -67,13 +67,13 @@ As a note, the above code will take you to the UI if that port number is taken. 
 As for methods, I ask that you make use of the following:
 
 	reconnect()
-Unsure what context to use this in, but it will reconnect you to the port number saved to the client. returns true if succeeds returns false if fails
+_Unsure what context to use this in, but it will reconnect you to the port number saved to the client. returns true if succeeds returns false if fails_
 
 	load_config(<dict>)
-going to say this again, when you make a config, it MUST have an “environment_scene” key in order to work, the code will give you an angry error if you don’t include one. beyond that, check out the configs section for more info on this subject.
+_going to say this again, when you make a config, it MUST have an “environment\\_scene” key in order to work, the code will give you an angry error if you don’t include one. beyond that, check out the configs section for more info on this subject._
 
 	print_environment_output_log()
-I have yet to implement this, but eventually what it will do is just print the environment output_log to console. Will spec this out amongst other related things before confirming this super convenient function.
+_I have yet to implement this, but eventually what it will do is just print the environment output\\_log to console. Will spec this out amongst other related things before confirming this super convenient function._
 
 
 #CONFIGS:
@@ -126,7 +126,7 @@ METHOD 1:
 METHOD 2:
 	You can create a scene that is entirely generated. Procedural Generation is a great example of this. The scene contains just a gameobject called Procedural Generation, which runs a script spawning other game objects randomly using data from the config file. You could also make a scene which generates objects in specified locations given information in the config file.
 
-To make these environment scenes, the only requirement, is that they be saved under the path “Assets/Scenes/EnvironmentScenes/<insert scene name>.unity” in the ThreeDWorld Repo. This way the base scene can locate the scene. When building a new binary to contain your new environment, make sure to check the box labelled with your new scene, or it will not get added to the build. (To build a binary, go to File -> Build Settings, select Standalone, choose Type: Linux, and only check .x86_64 and Headless Mode [Special Note: Linux binaries must be built on a Mac or Windows system and rsync’ed or an equivalent on to the environment node]).
+To make these environment scenes, the only requirement, is that they be saved under the path “Assets/Scenes/EnvironmentScenes/_insert scene name_.unity” in the ThreeDWorld Repo. This way the base scene can locate the scene. When building a new binary to contain your new environment, make sure to check the box labelled with your new scene, or it will not get added to the build. (To build a binary, go to File -> Build Settings, select Standalone, choose Type: Linux, and only check .x86_64 and Headless Mode [Special Note: Linux binaries must be built on a Mac or Windows system and rsync’ed or an equivalent on to the environment node]).
 
 SPECIAL ASSETS:
 	There is a simple abstract script called SpawnArea. SpawnAreas are used to report locations for Avatars to attempt to spawn. Feel free to write your own extensions of SpawnArea, or use premade prefabs containing SpawnArea extension components. Be sure to save any of the prefab SpawnAreas to the resources folder so the environment can locate and spawn them. (use Resources.Load<SpawnArea>(“Prefabs/<insert name of prefab>”) to acquire prefabs, and GameObject.Instantiate<SpawnArea>(prefab) to instantiate them)
@@ -140,11 +140,14 @@ So tragically, some of making scenes requires the use of the GUI. Luckily it isn
 Prefabs, seemingly confusing subject, but surprisingly simple. Prefabs are hierarchies of objects which can be saved outside a scene. If you want two planes to be positioned to bisect each other, you can position them in the scene editor as so, drag one plane into the other plane in the hierarchy menu, and you will wind up creating a single object with sub parts. If you move the outermost object, the sub parts will move with it. You can run methods in a script to acquire information about children or parents in the hierarchy. This hierarchical object can be fairly powerful. The special thing you can do with said object structures in Unity, is that you can save such hierarchies (which can just be one object with no children by the way) as a file called a prefab. The prefab saves all of the information about the hierarchy and can reproduce it in any scene, any number of times.
 
 #MESSAGE SYSTEM:
-When communicating with the environment over zmq, you will always send a json with an entry n and msg. n contains your frame expectancy, and msg contains your actual message. msg will contain an entry msg_type i.e. {‘n’ : 4, “msg” : {“msg_type” : “CLIENT_INPUT”, ...}}
+When communicating with the environment over zmq, you will always send a json with an entry n and msg. n contains your frame expectancy, and msg contains your actual message. msg will contain an entry msg_type i.e.
+	
+	{‘n’ : 4, “msg” : {“msg_type” : “CLIENT_INPUT”, ...}}
 
 Here are the available message types and what you can put inside them:
 
-CLIENT_INPUT - for regular frame to frame client input, can do nothing
+CLIENT_INPUT - _for regular frame to frame client input, can do nothing_
+	
 	vel : [double, double, double] //velocity
 	ang_vel : [double, double, double] //angular velocity
 	teleport_random : bool //teleport next frame to a new randomly chosen location
@@ -158,17 +161,20 @@ CLIENT_INPUT - for regular frame to frame client input, can do nothing
 			torque : [double, double, double]
 		    }
 
-CLIENT_JOIN - joining for an environment already up
+CLIENT_JOIN - _joining for an environment already up_
+	
 	N/A
 
-CLIENT_JOIN_WITH_CONFIG - joining and creating a new environment
+CLIENT_JOIN_WITH_CONFIG - _joining and creating a new environment_
+	
 	config : dict //see config section for what to throw in here
 
-SCENE_SWITCH - creating a new environment, can be of the same kind as before
+SCENE_SWITCH - _creating a new environment, can be of the same kind as before_
+	
 	config : dict //see config section
 
 and coming soon…
-SCENE_EDIT - for moving, duplicating, removing, and other kinds of world editing powers
+SCENE_EDIT - _for moving, duplicating, removing, and other kinds of world editing powers_
 
 Beyond that, this is just a simple zmq REQ REP pattern, that starts with your client having 4 frames on queue. Send a message and then get another 4, and repeat.
 
