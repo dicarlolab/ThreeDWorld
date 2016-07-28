@@ -131,7 +131,7 @@ To make these environment scenes, the only requirement, is that they be saved un
 SPECIAL ASSETS:
 	There is a simple abstract script called SpawnArea. SpawnAreas are used to report locations for Avatars to attempt to spawn. Feel free to write your own extensions of SpawnArea, or use premade prefabs containing SpawnArea extension components. Be sure to save any of the prefab SpawnAreas to the resources folder so the environment can locate and spawn them. (use Resources.Load<SpawnArea>(“Prefabs/<insert name of prefab>”) to acquire prefabs, and GameObject.Instantiate<SpawnArea>(prefab) to instantiate them)
 
-	The config file can be accessed as a JsonData file under SimulationManager.argsConfig. Be sure to import LitJson.JsonData to use.
+The config file can be accessed as a JsonData file under SimulationManager.argsConfig. Be sure to import LitJson.JsonData to use.
 
 #HOW TO UNITY:
 
@@ -144,31 +144,31 @@ When communicating with the environment over zmq, you will always send a json wi
 
 Here are the available message types and what you can put inside them:
 
-	CLIENT_INPUT - for regular frame to frame client input, can do nothing
-		vel : [double, double, double] //velocity
-		ang_vel : [double, double, double] //angular velocity
-		teleport_random : bool //teleport next frame to a new randomly chosen location
-		sendSceneInfo : bool //returns info about the scene
-		get_obj_data : bool //returns a list of objects and info concerning them
-		relationships : list //currently not being used
-		actions : dict //for performing magic actions on objects
-			ex. {
-				id : str //as given from get_obj_data
-				force : [double, double, double]
-				torque : [double, double, double]
-			       }
+CLIENT_INPUT - for regular frame to frame client input, can do nothing
+	vel : [double, double, double] //velocity
+	ang_vel : [double, double, double] //angular velocity
+	teleport_random : bool //teleport next frame to a new randomly chosen location
+	sendSceneInfo : bool //returns info about the scene
+	get_obj_data : bool //returns a list of objects and info concerning them
+	relationships : list //currently not being used
+	actions : dict //for performing magic actions on objects
+		ex. {
+			id : str //as given from get_obj_data
+			force : [double, double, double]
+			torque : [double, double, double]
+		    }
 
-	CLIENT_JOIN - joining for an environment already up
-		N/A
+CLIENT_JOIN - joining for an environment already up
+	N/A
 
-	CLIENT_JOIN_WITH_CONFIG - joining and creating a new environment
-		config : dict //see config section for what to throw in here
+CLIENT_JOIN_WITH_CONFIG - joining and creating a new environment
+	config : dict //see config section for what to throw in here
 
-	SCENE_SWITCH - creating a new environment, can be of the same kind as before
-		config : dict //see config section
+SCENE_SWITCH - creating a new environment, can be of the same kind as before
+	config : dict //see config section
 
-	and coming soon…
-	SCENE_EDIT - for moving, duplicating, removing, and other kinds of world editing powers
+and coming soon…
+SCENE_EDIT - for moving, duplicating, removing, and other kinds of world editing powers
 
 Beyond that, this is just a simple zmq REQ REP pattern, that starts with your client having 4 frames on queue. Send a message and then get another 4, and repeat.
 
