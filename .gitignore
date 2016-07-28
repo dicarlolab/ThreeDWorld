@@ -19,3 +19,4 @@ Assets/ColliderMeshes/*
 Assets/Models/Props/*
 *output_log.txt
 *nohup.out
+obj/Debug/*
