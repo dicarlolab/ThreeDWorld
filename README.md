@@ -11,35 +11,35 @@ sock = tc.run()
 All that takes place here is that you make an instance of a client, load in a config file in the event that we try to make an environment, and then get a zmq socket back when we run the client module. There are various parameters you can set when initializing the client:
 		
 	queue_port_num = <str> 
-this defaults to 23402, which is also the default port number the queue will bind to. unless you know for certain the queue is running on a different port, leave this one alone.
+_this defaults to 23402, which is also the default port number the queue will bind to. unless you know for certain the queue is running on a different port, leave this one alone._
 	
 	environment_config = <dict>
-this is default left as {“environment_scene” : “Empty”}, as an environment cannot be created without a config file at least mentioning what scene. (see the methods section below for changing the client config file post initialization if you say wanted to create a new environment for the client with a different config, or wanted to run a reset scene with a different config).
+_this is default left as {“environment\_scene” : “Empty”}, as an environment cannot be created without a config file at least mentioning what scene. (see the methods section below for changing the client config file post initialization if you say wanted to create a new environment for the client with a different config, or wanted to run a reset scene with a different config)._
 
 	debug = <bool>
-this defaults to False, but when true will give you important network and message info.
+_this defaults to False, but when true will give you important network and message info._
 
 
 	selected_build = <str>
-this doesn’t have a default, when left blank, you will be required to select a build from the available builds on the server using a menu, if you want to skip this UI step, just set this to the name of the binary file ‘<build_name>.x86_64’
+_this doesn’t have a default, when left blank, you will be required to select a build from the available builds on the server using a menu, if you want to skip this UI step, just set this to the name of the binary file ‘\_build\_name\_>.x86_64’_
 
 	initial_command = <str>
-this doesn’t have a default, when left blank or invalid, you will be required to select available commands from a menu. You can type in either “request_create_environment”, “request_join_environment”, or “request_active_environments”. Whichever command you type, the client will start by running this command.
+_this doesn’t have a default, when left blank or invalid, you will be required to select available commands from a menu. You can type in either “request\_create_environment”, “request_join_environment”, or “request_active_environments”. Whichever command you type, the client will start by running this command._
 
 	requested_port_num = <int>
-this doesn’t have a default, when left blank or invalid, you will be required to type in a port number in the UI, or request to randomly select an available port.
+_this doesn’t have a default, when left blank or invalid, you will be required to type in a port number in the UI, or request to randomly select an available port._
 
 	username = <str>, description = <str>
-for sanity’s sake, a username and description will be required of all environments. either leave this blank and type it in the UI, or fill it out in here.
+_for sanity’s sake, a username and description will be required of all environments. either leave this blank and type it in the UI, or fill it out in here._
 
 	num_frames_per_msg = <int>
-a number greater than 1 that equals the number of frames you expect back. defaults to 4
+_a number greater than 1 that equals the number of frames you expect back. defaults to 4_
 
 	get_obj_data = <bool>
-defaults to false. determines whether you want object data or not, it comes in a list
+_defaults to false. determines whether you want object data or not, it comes in a list_
 
-send_scene_info = <bool>
-	defaults to false, determines whether or not to send scene info
+	send_scene_info = <bool>
+_defaults to false, determines whether or not to send scene info_
 
 If you want to avoid using the tdw_client UI, you could do something like the following:
 
@@ -126,10 +126,10 @@ METHOD 1:
 METHOD 2:
 	You can create a scene that is entirely generated. Procedural Generation is a great example of this. The scene contains just a gameobject called Procedural Generation, which runs a script spawning other game objects randomly using data from the config file. You could also make a scene which generates objects in specified locations given information in the config file.
 
-To make these environment scenes, the only requirement, is that they be saved under the path “Assets/Scenes/EnvironmentScenes/_insert scene name_.unity” in the ThreeDWorld Repo. This way the base scene can locate the scene. When building a new binary to contain your new environment, make sure to check the box labelled with your new scene, or it will not get added to the build. (To build a binary, go to File -> Build Settings, select Standalone, choose Type: Linux, and only check .x86_64 and Headless Mode [Special Note: Linux binaries must be built on a Mac or Windows system and rsync’ed or an equivalent on to the environment node]).
+To make these environment scenes, the only requirement, is that they be saved under the path “Assets/Scenes/EnvironmentScenes/\_insert scene name\_.unity” in the ThreeDWorld Repo. This way the base scene can locate the scene. When building a new binary to contain your new environment, make sure to check the box labelled with your new scene, or it will not get added to the build. (To build a binary, go to File -> Build Settings, select Standalone, choose Type: Linux, and only check .x86_64 and Headless Mode [Special Note: Linux binaries must be built on a Mac or Windows system and rsync’ed or an equivalent on to the environment node]).
 
 SPECIAL ASSETS:
-	There is a simple abstract script called SpawnArea. SpawnAreas are used to report locations for Avatars to attempt to spawn. Feel free to write your own extensions of SpawnArea, or use premade prefabs containing SpawnArea extension components. Be sure to save any of the prefab SpawnAreas to the resources folder so the environment can locate and spawn them. (use Resources.Load<SpawnArea>(“Prefabs/<insert name of prefab>”) to acquire prefabs, and GameObject.Instantiate<SpawnArea>(prefab) to instantiate them)
+	There is a simple abstract script called SpawnArea. SpawnAreas are used to report locations for Avatars to attempt to spawn. Feel free to write your own extensions of SpawnArea, or use premade prefabs containing SpawnArea extension components. Be sure to save any of the prefab SpawnAreas to the resources folder so the environment can locate and spawn them. (use Resources.Load\<SpawnArea\>(“Prefabs/\<insert name of prefab\>”) to acquire prefabs, and GameObject.Instantiate\<SpawnArea\>(prefab) to instantiate them)
 
 The config file can be accessed as a JsonData file under SimulationManager.argsConfig. Be sure to import LitJson.JsonData to use.
 
