@@ -1,12 +1,12 @@
 #QUEUE SYSTEM:
 So at the beginning of our network training programs, we need a way to connect to the environment server and send and receive our messages back and forth. To do this, we have a particular script which will manage all the instances of the ThreeDWorlds as we make. This script will be bound to port number 23402 on any given machine that we are using to run environments. However, to make things even more straightforward, there is a python library written called tdw_client which will auto-connect you to the queue, and allow you to use a small selection of commands to either examine the current processes running on the node, reconnect to an environment process, or create a new process. All of these commands will be in the class TDW_Client. So the following would be a typical use of tdw_client:
 
-from tdw_client import TDW_Client
-import zmq
+	from tdw_client import TDW_Client
+	import zmq
 
-tc = TDW_Client(“...some ip...”)
-tc.load_config({...some config file stuff...})
-sock = tc.run()
+	tc = TDW_Client(“...some ip...”)
+	tc.load_config({...some config file stuff...})
+	sock = tc.run()
 
 All that takes place here is that you make an instance of a client, load in a config file in the event that we try to make an environment, and then get a zmq socket back when we run the client module. There are various parameters you can set when initializing the client:
 		
@@ -21,7 +21,7 @@ _this defaults to False, but when true will give you important network and messa
 
 
 	selected_build = <str>
-_this doesn’t have a default, when left blank, you will be required to select a build from the available builds on the server using a menu, if you want to skip this UI step, just set this to the name of the binary file ‘\_build\_name\_>.x86_64’_
+_this doesn’t have a default, when left blank, you will be required to select a build from the available builds on the server using a menu, if you want to skip this UI step, just set this to the name of the binary file ‘\<build\_name\>.x86_64’_
 
 	initial_command = <str>
 _this doesn’t have a default, when left blank or invalid, you will be required to select available commands from a menu. You can type in either “request\_create_environment”, “request_join_environment”, or “request_active_environments”. Whichever command you type, the client will start by running this command._
@@ -70,10 +70,10 @@ As for methods, I ask that you make use of the following:
 _Unsure what context to use this in, but it will reconnect you to the port number saved to the client. returns true if succeeds returns false if fails_
 
 	load_config(<dict>)
-_going to say this again, when you make a config, it MUST have an “environment\\_scene” key in order to work, the code will give you an angry error if you don’t include one. beyond that, check out the configs section for more info on this subject._
+_going to say this again, when you make a config, it MUST have an “environment\_scene” key in order to work, the code will give you an angry error if you don’t include one. beyond that, check out the configs section for more info on this subject._
 
 	print_environment_output_log()
-_I have yet to implement this, but eventually what it will do is just print the environment output\\_log to console. Will spec this out amongst other related things before confirming this super convenient function._
+_I have yet to implement this, but eventually what it will do is just print the environment output\_log to console. Will spec this out amongst other related things before confirming this super convenient function._
 
 
 #CONFIGS:
@@ -126,7 +126,7 @@ METHOD 1:
 METHOD 2:
 	You can create a scene that is entirely generated. Procedural Generation is a great example of this. The scene contains just a gameobject called Procedural Generation, which runs a script spawning other game objects randomly using data from the config file. You could also make a scene which generates objects in specified locations given information in the config file.
 
-To make these environment scenes, the only requirement, is that they be saved under the path “Assets/Scenes/EnvironmentScenes/\_insert scene name\_.unity” in the ThreeDWorld Repo. This way the base scene can locate the scene. When building a new binary to contain your new environment, make sure to check the box labelled with your new scene, or it will not get added to the build. (To build a binary, go to File -> Build Settings, select Standalone, choose Type: Linux, and only check .x86_64 and Headless Mode [Special Note: Linux binaries must be built on a Mac or Windows system and rsync’ed or an equivalent on to the environment node]).
+To make these environment scenes, the only requirement, is that they be saved under the path “Assets/Scenes/EnvironmentScenes/\<insert scene name\>.unity” in the ThreeDWorld Repo. This way the base scene can locate the scene. When building a new binary to contain your new environment, make sure to check the box labelled with your new scene, or it will not get added to the build. (To build a binary, go to File -> Build Settings, select Standalone, choose Type: Linux, and only check .x86_64 and Headless Mode [Special Note: Linux binaries must be built on a Mac or Windows system and rsync’ed or an equivalent on to the environment node]).
 
 SPECIAL ASSETS:
 	There is a simple abstract script called SpawnArea. SpawnAreas are used to report locations for Avatars to attempt to spawn. Feel free to write your own extensions of SpawnArea, or use premade prefabs containing SpawnArea extension components. Be sure to save any of the prefab SpawnAreas to the resources folder so the environment can locate and spawn them. (use Resources.Load\<SpawnArea\>(“Prefabs/\<insert name of prefab\>”) to acquire prefabs, and GameObject.Instantiate\<SpawnArea\>(prefab) to instantiate them)
