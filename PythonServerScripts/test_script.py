@@ -4,7 +4,7 @@ from StringIO import StringIO
 from PIL import Image
 import time
 
-tc = TDW_Client("18.93.5.202", username="tester", description="test script", initial_command="request_create_environment", selected_build="TestBuild22.x86_64", get_obj_data=True)
+tc = TDW_Client("18.93.5.202", username="tester", description="test script", initial_command="request_create_environment", selected_build="TestBuild23.x86_64", get_obj_data=True)
 tc.load_config({
 	"environment_scene" : "ProceduralGeneration",
 	"random_seed": 1, #Omit and it will just choose one at random. Chosen seeds are output into the log(under warning or log level).
