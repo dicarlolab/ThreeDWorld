@@ -127,9 +127,9 @@ class Three_D_World_Queue(object):
 		formatted_available_environments = dict()
 		for env in available_environments:
 			formatted_available_environments[env["env_owner"] + ", " + 
-										     env["port_num"] + ", " + 
+											 env["port_num"] + ", " + 
 											 datetime.datetime.fromtimestamp(float(env["proc_create_time"])).strftime("%Y-%m-%d %H:%M:%S") + ", " + 
-									         env["env_desc"]] = env["port_num"]
+											 env["env_desc"]] = env["port_num"]
 		if (len(formatted_available_environments) > 0):
 			return self.send_options(formatted_available_environments.keys(), "Select an environment to join:")
 		else:
@@ -165,9 +165,10 @@ class Three_D_World_Queue(object):
 
 		#collect available builds in build_dir
 		builds = list()
-		for file in os.listdir(self.build_dir):
-			if file.endswith(".x86_64"):
-				builds = builds + [file]
+		for root, _, files in os.walk(self.build_dir):
+			for f in files:
+				if f.endswith(".x86_64"):
+					builds = builds + [str(root) + '/' + str(f)]
 
 		return self.send_options(builds, "Select a build:")
 
@@ -185,8 +186,10 @@ class Three_D_World_Queue(object):
 		forward_port_num = s.getsockname()[1]
 		s.close()	
 
+		print "nohup " + j["selected_build"] +  " -force-opengl -port=" + str(forward_port_num) + " -address=" + self.host_address + " -batchmode"
+
 		#separate j and assign defaults to optional args excluded from message
-		process = ["nohup", self.build_dir + j["selected_build"], "-force-opengl", "-port=" + str(forward_port_num), "-address=" + self.host_address, "-batchmode"]
+		process = ["nohup", j["selected_build"], "-force-opengl", "-port=" + str(forward_port_num), "-address=" + self.host_address, "-batchmode"]
 
 		if ("screen_width" in j.keys()):
 			process = process + ["-screenWidth=" + str(j["screen_width"])]
