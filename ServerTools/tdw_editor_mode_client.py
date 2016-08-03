@@ -54,7 +54,7 @@ def loop():
 	}
 
 	print "sending join..."
-	sock.send_json({"msg_type" : "CLIENT_JOIN_WITH_CONFIG", "config" : config})
+	sock.send_json({"msg_type" : "CLIENT_JOIN_WITH_CONFIG", "config" : config, "get_obj_data" : True, "sendSceneInfo" : True})
 	print "...join sent"
 
 	#'''
@@ -66,6 +66,7 @@ def loop():
 		msg3 = sock.recv()
 		msg4 = sock.recv()
 		print "...messages received\n\nsending input..."
+		print msg1
 		img1 = Image.open(StringIO(msg2)).convert('RGB')
 		img2 = Image.open(StringIO(msg3)).convert('RGB')
 		img3 = Image.open(StringIO(msg4)).convert('RGB')
@@ -73,7 +74,7 @@ def loop():
 		img2.show()
 		img3.show()
 		time.sleep(10)
-		sock.send_json({"msg_type" : "CLIENT_INPUT", "vel": [0.0, 0.0, 0.0], "ang_vel" : [0.0, 0.0, 0.0], "teleport_random" : True})
+		sock.send_json({"msg_type" : "CLIENT_INPUT", "vel": [0.0, 0.0, 0.0], "ang_vel" : [0.0, 0.0, 0.0], "teleport_random" : True, "get_obj_data" : True, "sendSceneInfo" : True})
 		print "...input sent"
 	'''
 	for _ in range(2):

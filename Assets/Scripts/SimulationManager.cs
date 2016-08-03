@@ -32,11 +32,7 @@ public static class SimulationManager
     private static NetMessenger myNetMessenger = null;
     private static MyLogLevel logLevel = MyLogLevel.LogAll;
     private static MyLogLevel stackLogLevel = MyLogLevel.Warning;
-	#if UNITY_EDITOR
-    private static string logFileLocation = "output_log.txt";
-	#else
 	private static string logFileLocation = "~/output_log.txt";
-	#endif
 	private static string portNumber = "5556";
 	private static string hostAddress = getHostIP();
 #endregion
@@ -212,6 +208,12 @@ public static class SimulationManager
     // Should use argument -executeMethod SimulationManager.Init
     public static void Init()
     {
+		//used for permissions purposes. when binary generates output logs, they do so under root, 
+		//and the editor does not have permissions to overwrite them.
+	#if UNITY_EDITOR
+		SimulationManager.logFileLocation = "output_log.txt";
+	#endif
+
         if (_hasFinishedInit)
             return;
         System.IO.File.WriteAllText(logFileLocation, "Starting Initialization:\n");

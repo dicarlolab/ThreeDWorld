@@ -25,6 +25,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -50,13 +51,557 @@ MonoBehaviour:
   DEBUG_testGridPrefab: {fileID: 0}
   roomDim: {x: 40, y: 20, z: 40}
   availablePrefabs:
+  - fileName: Prefabs/Converted Models/127e202f77eee5725d02cdadf545c773
+    complexity: 31
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0.207504, y: 0.186307, z: 0.415008}
+    stackableAreas: []
+  - fileName: Prefabs/Converted Models/1345ba2c3b27ba786bb9681d4604e123
+    complexity: 57
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0.485307, y: 0.114084, z: 0.0382381}
+    stackableAreas: []
+  - fileName: Prefabs/Converted Models/149adc06e4b1404940232a3c75f1f92a
+    complexity: 77
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0.485777, y: 0.100166, z: 0.0631454}
+    stackableAreas: []
+  - fileName: Prefabs/Converted Models/14fa15f31d713b7153b838b6058a8d95
+    complexity: 55
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0.487559, y: 0.101086, z: 0.045472}
+    stackableAreas: []
+  - fileName: Prefabs/Converted Models/1867c1751ae7bb2829024035009201d2
+    complexity: 13
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0.273896, y: 0.109467, z: 0.40373}
+    stackableAreas: []
+  - fileName: Prefabs/Converted Models/1be1707593a15cf9fa9286f039319ff7
+    complexity: 25
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0.486835, y: 0.109295, z: 0.0323495}
+    stackableAreas: []
+  - fileName: Prefabs/Converted Models/1d9a26feeba782e3f91663a74ccd2338
+    complexity: 97
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0.193979, y: 0.181039, z: 0.423789}
+    stackableAreas: []
+  - fileName: Prefabs/Converted Models/1ef0cabf465bbd2b74813b7165294e91
+    complexity: 19
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0.151904, y: 0.428758, z: 0.207586}
+    stackableAreas: []
+  - fileName: Prefabs/Converted Models/261f4a30328cd40960a676833b21afd4
+    complexity: 151
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0.411506, y: 0.175062, z: 0.223643}
+    stackableAreas: []
+  - fileName: Prefabs/Converted Models/2d6c360e7d8ff4162e603610d34efc63
+    complexity: 255
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: -0.000000029802322, y: 0, z: 0.000000029802322}
+      m_Extent: {x: 0.384796, y: 0.180242, z: 0.26352304}
+    stackableAreas: []
+  - fileName: Prefabs/Converted Models/2f07c59d4099b5762241dba92389a637
+    complexity: 25
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0.293083, y: 0.27965, z: 0.293083}
+    stackableAreas: []
+  - fileName: Prefabs/Converted Models/33384d4600a8bd0ad88a7002dfb37846
+    complexity: 23
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0.216745, y: 0.162079, z: 0.420419}
+    stackableAreas: []
+  - fileName: Prefabs/Converted Models/354274e1c27653a318d9ca1acf6633f6
+    complexity: 17
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: -0.000000029802322, y: 0, z: 0.000000014901161}
+      m_Extent: {x: 0.437063, y: 0.132536, z: 0.20349501}
+    stackableAreas: []
+  - fileName: Prefabs/Converted Models/3683fdc45dc98b8955d054336de5edb5
+    complexity: 9
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0.257597, y: 0.130493, z: 0.408186}
+    stackableAreas: []
+  - fileName: Prefabs/Converted Models/39adf6058de74934ba18ade30e563d37
+    complexity: 15
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0.199528, y: 0.15752, z: 0.430553}
+    stackableAreas: []
+  - fileName: Prefabs/Converted Models/39edba395f3d860c5a96bae7b017a6d9
+    complexity: 65
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0.485112, y: 0.0504113, z: 0.110113}
+    stackableAreas: []
+  - fileName: Prefabs/Converted Models/4dde6d694443a488edb5be732846826
+    complexity: 73
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0.20614, y: 0.406217, z: 0.20614}
+    stackableAreas: []
+  - fileName: Prefabs/Converted Models/4fb69651d04e010554eefcdc602d4520
+    complexity: 43
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0.335556, y: 0.0986148, z: 0.357319}
+    stackableAreas: []
+  - fileName: Prefabs/Converted Models/50978d3850fcf4e371a126804ae24042
+    complexity: 9
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0.282294, y: 0.301032, z: 0.282294}
+    stackableAreas: []
+  - fileName: Prefabs/Converted Models/53ae95290cca57d430c35ecdb9dea035
+    complexity: 5
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0.224781, y: 0.385937, z: 0.224781}
+    stackableAreas: []
+  - fileName: Prefabs/Converted Models/563569e15313d7eb89e13811ad04f53f
+    complexity: 33
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0.446362, y: 0.0574746, z: 0.217847}
+    stackableAreas: []
+  - fileName: Prefabs/Converted Models/5aeb583ee6e0e4ea42d0e83abdfab1fd
+    complexity: 29
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0.327732, y: 0.142027, z: 0.349886}
+    stackableAreas: []
+  - fileName: Prefabs/Converted Models/5b815e2726656685823df672991ed66
+    complexity: 41
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0.404094, y: 0.0841931, z: 0.28217}
+    stackableAreas: []
+  - fileName: Prefabs/Converted Models/61251733434b9b0c15a23f2b45e10de5
+    complexity: 295
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0.441112, y: 0.123776, z: 0.20025}
+    stackableAreas: []
+  - fileName: Prefabs/Converted Models/62bba707a00a2fd0c271edf49b97f472
+    complexity: 39
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0.285068, y: 0.295758, z: 0.285068}
+    stackableAreas: []
+  - fileName: Prefabs/Converted Models/69eaeff55a5a9c5568d1b9a1d97e2846
+    complexity: 31
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0.176257, y: 0.186692, z: 0.429045}
+    stackableAreas: []
+  - fileName: Prefabs/Converted Models/6b00fdf6062389ad738dd0d3509c7e47
+    complexity: 25
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0.269215, y: 0.299044, z: 0.29681}
+    stackableAreas: []
+  - fileName: Prefabs/Converted Models/6bd4036a2ef142fc956e5f06e8cf4db
+    complexity: 23
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0.0673137, y: 0.44036, z: 0.22705}
+    stackableAreas: []
+  - fileName: Prefabs/Converted Models/6de6e56c6f7d43692866658c90231a1a
+    complexity: 17
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0.466449, y: 0.177191, z: 0.0320766}
+    stackableAreas: []
+  - fileName: Prefabs/Converted Models/76b492b77a03882d431e5b4ad135fb8
+    complexity: 47
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0.350813, y: 0.129717, z: 0.331818}
+    stackableAreas: []
+  - fileName: Prefabs/Converted Models/799397068de1ae1c4587d6a85176d7a0
+    complexity: 5
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0.104822, y: 0.477519, z: 0.104822}
+    stackableAreas: []
+  - fileName: Prefabs/Converted Models/7aefbd0f95e0e9653b09cd02500a89ae
+    complexity: 35
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0.217135, y: 0.119424, z: 0.43427}
+    stackableAreas: []
+  - fileName: Prefabs/Converted Models/7fb5dcec8e6745554ddfff13f461e46e
+    complexity: 185
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0.411979, y: 0.181905, z: 0.217219}
+    stackableAreas: []
+  - fileName: Prefabs/Converted Models/813d7c5131f6369cb898f6ca189a940f
+    complexity: 15
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0.137734, y: 0.134012, z: 0.461595}
+    stackableAreas: []
+  - fileName: Prefabs/Converted Models/852e1b84dfa1f7e8e075f0bda7acfbe2
+    complexity: 53
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0.000000007450581, z: 0}
+      m_Extent: {x: 0.36533797, y: 0.11100401, z: 0.32281}
+    stackableAreas: []
+  - fileName: Prefabs/Converted Models/87af702a9a5370aceea6a5a0ebf81e97
+    complexity: 33
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0.346234, y: 0.10121, z: 0.346234}
+    stackableAreas: []
+  - fileName: Prefabs/Converted Models/87cdc53aec65aa0ff51f77a6d7299806
+    complexity: 27
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0.270167, y: 0.337478, z: 0.251233}
+    stackableAreas: []
+  - fileName: Prefabs/Converted Models/90b901d37c751841c93205b4771d5663
+    complexity: 5
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0.249981, y: 0.365827, z: 0.23169}
+    stackableAreas: []
+  - fileName: Prefabs/Converted Models/94371ddd6d62f7b762ec387b772e9e1
+    complexity: 27
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0.182541, y: 0.425494, z: 0.188768}
+    stackableAreas: []
+  - fileName: Prefabs/Converted Models/980ea79e2dab7a595f4027209dc8065d
+    complexity: 157
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0.133448, y: 0.0284015, z: 0.481025}
+    stackableAreas: []
+  - fileName: Prefabs/Converted Models/a23e4375e78df8d0e7ecdbe73ef4323c
+    complexity: 107
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0.116908, y: 0.343637, z: 0.343869}
+    stackableAreas: []
+  - fileName: Prefabs/Converted Models/a35aea08a3cb9391fc1bbbe626c79a7d
+    complexity: 199
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0.491532, y: 0.0790482, z: 0.0463456}
+    stackableAreas: []
+  - fileName: Prefabs/Converted Models/a7b07a2aad642f3f18b731fab8bc3743
+    complexity: 167
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0.442964, y: 0.162404, z: 0.165552}
+    stackableAreas: []
+  - fileName: Prefabs/Converted Models/a97e7bc8291f73d521788cb501e76904
+    complexity: 3
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0.269963, y: 0.144696, z: 0.3952}
+    stackableAreas: []
+  - fileName: Prefabs/Converted Models/aec393b8c73d3a8ae4bee94a37836d67
+    complexity: 3
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0.000000014901161, z: 0}
+      m_Extent: {x: 0.420653, y: 0.16765401, z: 0.21199802}
+    stackableAreas: []
+  - fileName: Prefabs/Converted Models/afb7cc3bbc3595a4e9b3dff83c7ff715
+    complexity: 47
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0.0770497, y: 0.487982, z: 0.0770497}
+    stackableAreas: []
+  - fileName: Prefabs/Converted Models/b2dc781aae692b2555182f299fe41fdc
+    complexity: 55
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0.279951, y: 0.362437, z: 0.200666}
+    stackableAreas: []
+  - fileName: Prefabs/Converted Models/be0890a6a0f3fcf841f91bc9e1dece3b
+    complexity: 49
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0.276424, y: 0.35769, z: 0.213652}
+    stackableAreas: []
+  - fileName: Prefabs/Converted Models/bf259988d2e8728c391790b8b8084f0a
+    complexity: 5
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0.0366815, y: 0.447093, z: 0.220821}
+    stackableAreas: []
+  - fileName: Prefabs/Converted Models/cab7f319f0b3cf8e57e59e0ad2d11e74
+    complexity: 67
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0.48143, y: 0.118971, z: 0.0638053}
+    stackableAreas: []
+  - fileName: Prefabs/Converted Models/ce23daa630833de7d9fad8aba2c312b7
+    complexity: 53
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0.28997, y: 0.342504, z: 0.220472}
+    stackableAreas: []
+  - fileName: Prefabs/Converted Models/d19c003cf7dbf111543941eaaf04581f
+    complexity: 75
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0.475805, y: 0.109378, z: 0.107918}
+    stackableAreas: []
+  - fileName: Prefabs/Converted Models/d40acf58d3ab13763321831d2245cf06
+    complexity: 201
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0.300115, y: 0.386335, z: 0.103324}
+    stackableAreas: []
+  - fileName: Prefabs/Converted Models/d736c45c5b2397219092826e64279378
+    complexity: 21
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0.282874, y: 0.326381, z: 0.251907}
+    stackableAreas: []
+  - fileName: Prefabs/Converted Models/db5b6dc38fd82fa7cdfa73f789b383fe
+    complexity: 55
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0.0793362, y: 0.447167, z: 0.209159}
+    stackableAreas: []
+  - fileName: Prefabs/Converted Models/dbee200cebd464779b0ed23034a67f7f
+    complexity: 41
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0.339581, y: 0.0927409, z: 0.355083}
+    stackableAreas: []
+  - fileName: Prefabs/Converted Models/e0845c8579c5d4acc3e7754d5a998758
+    complexity: 159
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0.475704, y: 0.0984154, z: 0.118408}
+    stackableAreas: []
+  - fileName: Prefabs/Converted Models/e6a89aaa226b116a60885f79b3a5579a
+    complexity: 31
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0.24, y: 0.18, z: 0.4}
+    stackableAreas: []
+  - fileName: Prefabs/Converted Models/e6fb0c7f8a5f944363e66191800dfc8a
+    complexity: 35
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0.485304, y: 0.116377, z: 0.0306054}
+    stackableAreas: []
+  - fileName: Prefabs/Converted Models/e76108274392bff53d91ae2b92426394
+    complexity: 5
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0.175244, y: 0.389517, z: 0.259935}
+    stackableAreas: []
+  - fileName: Prefabs/Converted Models/e93d2ab44861bbd32a4947824596dce3
+    complexity: 19
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0.487949, y: 0.101966, z: 0.0388377}
+    stackableAreas: []
+  - fileName: Prefabs/Converted Models/ec836d156e8157fec862eec8232fff1e
+    complexity: 23
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0.205274, y: 0.157714, z: 0.427772}
+    stackableAreas: []
+  - fileName: Prefabs/Converted Models/effb1b260f100f5919fb4103277a6b93
+    complexity: 39
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0.230688, y: 0.370106, z: 0.24455}
+    stackableAreas: []
+  - fileName: Prefabs/Converted Models/f21333a7141e7fbdad5067eac75a07f7
+    complexity: 53
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0.13415, y: 0.196719, z: 0.439665}
+    stackableAreas: []
+  - fileName: Prefabs/Converted Models/f55beebe7409e84c873aec32fa476d61
+    complexity: 13
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0.292322, y: 0.0890441, z: 0.395751}
+    stackableAreas: []
+  - fileName: Prefabs/Converted Models/fb7402f91e300ead8ac033353d37592a
+    complexity: 31
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0.345993, y: 0.223496, z: 0.28344}
+    stackableAreas: []
+  - fileName: Prefabs/Converted Models/fd6ae258090bf95b693e50e46681af47
+    complexity: 37
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0.247121, y: 0.272676, z: 0.338495}
+    stackableAreas: []
+  - fileName: Prefabs/Converted Models/fd9b63c23342e57045b799df37b9f05
+    complexity: 19
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0.223927, y: 0.400842, z: 0.197946}
+    stackableAreas: []
   - fileName: Prefabs/Props/Furniture/bed1
     complexity: 221
     isLight: 0
     anchorType: 0
     bounds:
       m_Center: {x: 0, y: -0.00000011920929, z: 0}
-      m_Extent: {x: 4.368828, y: 1.9541403, z: 4.732837}
+      m_Extent: {x: 4.368828, y: 1.9541403, z: 4.732836}
     stackableAreas: []
   - fileName: Prefabs/Props/Furniture/bed_frame
     complexity: 175
@@ -95,9 +640,27 @@ MonoBehaviour:
     isLight: 0
     anchorType: 0
     bounds:
-      m_Center: {x: 0.021257877, y: 2.740556, z: 0.07196766}
-      m_Extent: {x: 3.6054826, y: 2.7405562, z: 0.7969005}
-    stackableAreas: []
+      m_Center: {x: 0.021257877, y: 2.7405555, z: 0.0719676}
+      m_Extent: {x: 3.6054826, y: 2.7405558, z: 0.7969003}
+    stackableAreas:
+    - rotationAngle: 0
+      bottomCenter: {x: -0.03, y: -2.7, z: 0}
+      dimensions: {x: 6.7, y: 1.27, z: 1.23}
+    - rotationAngle: 0
+      bottomCenter: {x: -0.03, y: -1.25, z: 0}
+      dimensions: {x: 6.7, y: 0.85, z: 1.23}
+    - rotationAngle: 0
+      bottomCenter: {x: -0.03, y: -0.22, z: 0}
+      dimensions: {x: 6.7, y: 0.86, z: 1.23}
+    - rotationAngle: 0
+      bottomCenter: {x: -0.03, y: 0.81, z: 0}
+      dimensions: {x: 6.7, y: 0.79, z: 1.23}
+    - rotationAngle: 0
+      bottomCenter: {x: -0.03, y: 1.77, z: 0}
+      dimensions: {x: 6.7, y: 0.55, z: 1.23}
+    - rotationAngle: 0
+      bottomCenter: {x: -0.03, y: 2.48, z: 0}
+      dimensions: {x: 6.7, y: 0, z: 1.23}
   - fileName: Prefabs/Props/Furniture/sofa_blue
     complexity: 237
     isLight: 0
@@ -119,8 +682,8 @@ MonoBehaviour:
     isLight: 0
     anchorType: 0
     bounds:
-      m_Center: {x: -0.00060904026, y: 0.39497495, z: 0.00000047683716}
-      m_Extent: {x: 0.9375837, y: 0.39500034, z: 0.51000035}
+      m_Center: {x: -0.00060904026, y: 0.39497492, z: 0.00000047683716}
+      m_Extent: {x: 0.9375837, y: 0.3950003, z: 0.5100002}
     stackableAreas:
     - rotationAngle: 0
       bottomCenter: {x: 0, y: 0.42, z: 0.04}
@@ -130,8 +693,8 @@ MonoBehaviour:
     isLight: 0
     anchorType: 0
     bounds:
-      m_Center: {x: 0.00000020861626, y: 0, z: 0.00000047683716}
-      m_Extent: {x: 2.47364, y: 0.9606552, z: 4.8412066}
+      m_Center: {x: 0.00000020861626, y: 0, z: -0.00000047683716}
+      m_Extent: {x: 2.47364, y: 0.9606552, z: 4.8412046}
     stackableAreas:
     - rotationAngle: 0
       bottomCenter: {x: 0, y: 1, z: 0}

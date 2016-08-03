@@ -57,7 +57,6 @@ public class NetMessenger : MonoBehaviour
     const string MSG_R_FrameInput = "CLIENT_INPUT";
 	const string MSG_R_SceneSwitch = "SCENE_SWITCH";
 	const string MSG_R_SceneEdit = "CLIENT_SCENE_EDIT";
-	const string MSG_R_CreateEnvironment = "CREATE_ENVIRONMENT";
 	const string MSG_R_ClientJoinWithConfig = "CLIENT_JOIN_WITH_CONFIG";
     #endregion
 
@@ -157,6 +156,9 @@ public class NetMessenger : MonoBehaviour
 
 				OnClientJoin (lastSocket, lastJsonContents);
 				Debug.Log ("Client Join Handled");
+
+				foreach (Avatar a in _avatars.Values)
+					a.UpdateObservedObjects();
 
 				this.waitForSceneInit = false;
 			}
@@ -296,6 +298,7 @@ public class NetMessenger : MonoBehaviour
         {
             case MSG_R_ClientJoin:
                 OnClientJoin(server, jsonData);
+				RecieveClientInput(server, jsonData);
                 break;
             case MSG_R_FrameInput:
                 RecieveClientInput(server, jsonData);
@@ -377,6 +380,9 @@ public class NetMessenger : MonoBehaviour
         }
 		_avatars[server] = newAvatar;
 		newAvatar.InitNetData(this, server);
+
+		newAvatar.sendSceneInfo = data["sendSceneInfo"].ReadBool(false);
+		newAvatar.shouldCollectObjectInfo = data["get_obj_data"].ReadBool(false);
         //
         //        // Send confirmation message
         //        lastMessageSent.Clear();
