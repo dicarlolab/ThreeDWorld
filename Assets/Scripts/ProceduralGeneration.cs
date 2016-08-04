@@ -82,6 +82,7 @@ public class ProceduralGeneration : MonoBehaviour
     private List<PrefabInfo> stackingPrefabs = new List<PrefabInfo>();
     public List<HeightPlane> _allHeightPlanes = new List<HeightPlane>();
     private static ProceduralGeneration _Instance = null;
+	private static int UID_BY_INDEX = 0x3;
 #endregion
 
 #region Properties
@@ -357,27 +358,74 @@ public class ProceduralGeneration : MonoBehaviour
     [MenuItem ("Procedural Generation/Create prefab model folders")]
     private static void CreatePrefabFromModel()
     {
-        HashSet<GameObject> allSelected = new HashSet<GameObject>(Selection.gameObjects);
-        foreach(UnityEngine.Object obj in Selection.objects)
-        {
-            if (obj != null)
-            {
-                if (obj is GameObject)
-                    allSelected.Add(obj as GameObject);
-                else if (obj is DefaultAsset)
-                    allSelected.UnionWith((obj as DefaultAsset).GetAllChildrenAssets<GameObject>());
-            }
-        }
-        if (allSelected == null || allSelected.Count == 0)
-            return;
+		Dictionary<GameObject, string> allSelected = new Dictionary<GameObject, string>();
 
-        allSelected.RemoveWhere((GameObject obj) => {
-            return (obj == null || PrefabUtility.GetPrefabType(obj) != PrefabType.ModelPrefab);
-        });
-        Queue<GameObject> objs = new Queue<GameObject>(allSelected);
-        MakeMultipleSimplePrefabObj(objs);
+		foreach (GameObject obj in Selection.gameObjects) {
+			allSelected.Add (obj, AssetDatabase.GetAssetPath (obj));
+		}
+
+		foreach(UnityEngine.Object obj in Selection.objects)
+		{
+			if (obj != null)
+			{
+				if (obj is GameObject) {
+					allSelected.Add (obj as GameObject, AssetDatabase.GetAssetPath (obj));
+				} else if (obj is DefaultAsset) {
+					HashSet<GameObject> children = (obj as DefaultAsset).GetAllChildrenAssets<GameObject> ();
+					foreach (GameObject child in children) {
+						allSelected.Add (child, AssetDatabase.GetAssetPath (child));
+					}
+				}
+			}
+		}
+		if (allSelected == null || allSelected.Count == 0)
+			return;
+
+		List<GameObject> toRemove = new List<GameObject>();
+		foreach (KeyValuePair<GameObject, string> entry in allSelected) {
+			if (entry.Key == null || PrefabUtility.GetPrefabType (entry.Key) != PrefabType.ModelPrefab) {
+				toRemove.Add (entry.Key);
+			}
+		}
+
+		foreach (GameObject entry in toRemove) {
+			allSelected.Remove (entry);
+		}
+
+		foreach (KeyValuePair<GameObject, string> entry in allSelected) {
+			string loadingDirectory = "Assets/Models/";
+
+			if (!entry.Value.StartsWith (loadingDirectory)) {
+				Debug.LogError ("Selected Assets are not contained within " + loadingDirectory + " directory. Please move or copy assets to this directory, select them from there and try again.");
+			} else {
+				//get rid of location in hierarchy
+				string subPathWithFileType = entry.Value.Remove (0, loadingDirectory.Length);
+				//get rid of file type
+				string subPathWithoutFileType = subPathWithFileType.Remove (subPathWithFileType.LastIndexOf ('.'));
+				//get rid of file name
+				string subPathWithoutFilename = subPathWithoutFileType.Remove (subPathWithoutFileType.LastIndexOf ('/'));
+	
+				//if directory does not already exist, make one
+				System.IO.Directory.CreateDirectory(Application.dataPath + "/Resources/Prefabs/Converted Models/" + subPathWithoutFilename);
+
+				Debug.Log (Application.dataPath + "/Resources/Prefabs/Converted Models/" + subPathWithoutFilename);
+
+				//make meta file
+				EditorApplication.Step ();
+	
+				//make prefab
+				MakeSimplePrefabObj (entry.Key, subPathWithoutFileType);
+	
+				//force GC
+				EditorApplication.SaveAssets ();
+				EditorUtility.UnloadUnusedAssetsImmediate ();
+				GC.Collect ();
+				EditorApplication.Step ();
+			}
+		}
     }
 
+	/*
     private static void MakeMultipleSimplePrefabObj(Queue<GameObject> allObjs)
     {
         if (allObjs.Count == 0)
@@ -392,8 +440,9 @@ public class ProceduralGeneration : MonoBehaviour
                 MakeMultipleSimplePrefabObj(allObjs);
         }
     }
+    */
 
-    private static void MakeSimplePrefabObj(GameObject obj)
+	private static void MakeSimplePrefabObj(GameObject obj, string subPath)
     {
         Debug.LogFormat("MakeSimplePrefabObj {0}", obj.name);
         // Find vrml text if we have it
@@ -431,8 +480,8 @@ public class ProceduralGeneration : MonoBehaviour
         instance.AddComponent<GeneratablePrefab>();
 
         // Save as a prefab
-        string prefabAssetPath = string.Format("Assets/Resources/Prefabs/Converted Models/{0}.prefab", obj.name);
-        GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(prefabAssetPath);
+		string prefabAssetPath = string.Format("Assets/Resources/Prefabs/Converted Models/{0}.prefab", subPath);
+		GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(prefabAssetPath);
         if (prefab == null)
             prefab = PrefabUtility.CreatePrefab(prefabAssetPath, instance);
         else
@@ -447,6 +496,13 @@ public class ProceduralGeneration : MonoBehaviour
         GeneratablePrefab metaData = prefab.GetComponent<GeneratablePrefab>();
         metaData.ProcessPrefab();
         SetupPrefabs(false);
+
+		EditorUtility.SetDirty (prefab);
+		try {
+			EditorUtility.SetDirty (instance);
+		} catch {
+			//do nothing
+		}
     }
 
     // Finds all prefabs that we can use and create a lookup table with relevant information
@@ -518,6 +574,16 @@ public class ProceduralGeneration : MonoBehaviour
     }
 #endif
 
+	private Color getNewUIDColor() {
+		if (UID_BY_INDEX >= 0x1000000)
+			Debug.LogError ("UID's has exceeded 256^3, the current max limit of objects which can be formed!");
+		float r = (float) (UID_BY_INDEX / 0x10000) / 256f;
+		float g = (float) ((UID_BY_INDEX / 0x100) % 0x100) / 256f;
+		float b = (float) (UID_BY_INDEX % 0x100) / 256f;
+		UID_BY_INDEX += 0x1;
+		return new Color (r, g, b);
+	}
+
     private void AddObjects(List<PrefabInfo> prefabList)
     {
         if (prefabList.Count == 0)
@@ -570,11 +636,12 @@ public class ProceduralGeneration : MonoBehaviour
             //newInstance.name = string.Format("{0} #{1} on {2}", newPrefab.name, (_curRoom != null) ? _curRoom.childCount.ToString() : "?", targetHeightPlane.name);
 			newInstance.name = string.Format("{0}, {1}, {2}", info.fileName, newPrefab.name, (_curRoom != null) ? _curRoom.childCount.ToString() : "?");
 			Renderer[] RendererList = newInstance.GetComponentsInChildren<Renderer>();
+			Color colorID = getNewUIDColor ();
 			foreach (Renderer _rend in RendererList)
 			{
 				foreach (Material _mat in _rend.materials)
 				{
-				    _mat.SetInt("_idval", _curRoom.childCount + 2);	
+					_mat.SetColor("_idval", colorID);	
 				}
 			}	
 	
@@ -648,7 +715,7 @@ public class ProceduralGeneration : MonoBehaviour
 		{
 			foreach (Material _mat in _rend.materials)
 			{
-				_mat.SetInt("_idval", 1);	
+				_mat.SetColor("_idval", new Color(0f,0f,1f/256f));	
 			}
 		}
 		//{
@@ -676,7 +743,7 @@ public class ProceduralGeneration : MonoBehaviour
 		{
 			foreach (Material _mat in _rend.materials)
 			{
-				_mat.SetInt("_idval", 2);	
+				_mat.SetColor("_idval", new Color(0f,0f,2f/256f));	
 			}
 		}
 		//{

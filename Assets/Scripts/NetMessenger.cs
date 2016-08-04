@@ -528,7 +528,8 @@ public class NetMessenger : MonoBehaviour
 				JsonData _info;
 				_info = new JsonData(JsonType.Array);
 			   _info.Add(semObj.gameObject.name);
-			   _info.Add(semObj.gameObject.GetComponentInChildren<Renderer>().material.GetInt("_idval").ToString());
+				Color colorID = semObj.gameObject.GetComponentInChildren<Renderer> ().material.GetColor ("_idval");
+				_info.Add(new int[3] {(int) (colorID.r * 0x100), (int) (colorID.g * 0x100), (int) (colorID.b * 0x100)});
 			   jsonData["sceneInfo"].Add(_info);
 		   
 	    	}

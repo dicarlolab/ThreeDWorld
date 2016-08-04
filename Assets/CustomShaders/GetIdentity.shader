@@ -1,6 +1,6 @@
 ﻿Shader "Get Identity" {
 	Properties {
-		_idval ("Object Identity", Float) = 1.
+		_idval ("Object Identity", Color) = (0, 0, 0, 0)
 	}
     SubShader {
         Pass {
@@ -11,27 +11,24 @@
             #pragma fragment frag
             #include "UnityCG.cginc"
 
-			float _idval;
+			float4 _idval;
 
             struct v2f {
                 float4 pos : SV_POSITION;
-                fixed3 color : COLOR0;
+                fixed4 color : COLOR;
             };
 
             v2f vert (appdata_base v)
             {
                 v2f o;
                 o.pos = mul (UNITY_MATRIX_MVP, v.vertex);
-            	float v0 = (_idval / 65536) / 255.;
-            	float v1 = ((_idval % 65536) / 256) / 255.;
-            	float v2 = ((_idval % 65536) % 256) / 255.;
-                o.color = fixed3(v0, v1, v2);
+            	o.color = _idval;
                 return o;
             }
 
             fixed4 frag (v2f i) : SV_Target
             {
-                return fixed4 (i.color, 1);
+                return i.color;
             }
             ENDCG
 

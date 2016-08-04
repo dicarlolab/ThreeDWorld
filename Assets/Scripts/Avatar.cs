@@ -131,14 +131,18 @@ public class Avatar : MonoBehaviour
 
         foreach(Collider col in observedObjects)
         {
+			//Spawn areas are not observable objects!
+			if (col.gameObject.GetComponent<SpawnArea> () != null)
+				continue;
+			
             SemanticObjectSimple obj = null;
             if (col.attachedRigidbody == null)
                 Debug.LogWarningFormat("{0} Collider doesn't have an attached rigidbody!", col.name);
             else
             {
                 obj = col.attachedRigidbody.GetComponent<SemanticObjectSimple>();
-                if (obj == null)
-                    Debug.LogWarningFormat("{0} Rigidbody doesn't have an associated SemanticObject!", col.attachedRigidbody.name);
+				if (obj == null)
+					Debug.LogWarningFormat ("{0} Rigidbody doesn't have an associated SemanticObject!", col.attachedRigidbody.name);
             }
             if (obj != null && !_observedObjs.Contains(obj))
             {

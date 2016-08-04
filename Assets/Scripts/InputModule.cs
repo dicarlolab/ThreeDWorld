@@ -140,7 +140,7 @@ public class InputModule : AbstractInputModule
 				Vector3 torque = action ["torque"].ReadVector3 ();
 				torque = _myAvatar.transform.TransformDirection (torque);
 				foreach (SemanticObject o in allObjects) {
-					string idval = o.gameObject.GetComponentInChildren<Renderer> ().material.GetInt ("_idval").ToString ();
+					string idval = o.gameObject.GetComponentInChildren<Renderer> ().material.GetColor ("_idval").ToString ();
 					if (idval == id) {
 						Rigidbody rb = o.gameObject.GetComponentInChildren<Rigidbody> ();
 						rb.AddForce (force);
