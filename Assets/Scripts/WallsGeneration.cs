@@ -43,6 +43,10 @@ public class WallInfo
         length = newLength;
         placementSpots.Clear();
         placementSpots.Add(new Vector2(MIN_SPACING_FOR_HOLES, length - MIN_SPACING_FOR_HOLES));
+
+		wallMat.SetColor ("_idval", ProceduralGeneration.getNewUIDColor ());
+		trimMat.SetColor ("_idval", ProceduralGeneration.getNewUIDColor ());
+
     }
 
     private static int CompareSpots(Vector2 v1, Vector2 v2)
@@ -220,6 +224,7 @@ public class WallInfo
                 newStartPos.y = startPos.y + holeInfo.bottomCorner.y;
                 newSize.y = holeInfo.size.y;
                 GameObject windowMesh = CreateBoxMesh(newStartPos, newSize, WallArray.WINDOW_MATERIAL, string.Format("Created Window @{0} with size{1}", newStartPos, newSize), parentObj);
+				windowMesh.GetComponent<MeshRenderer> ().material.SetColor ("_idval", ProceduralGeneration.getNewUIDColor ());
                 windowMesh.AddComponent<SemanticObjectSimple>();
                 Rigidbody windowRB = windowMesh.GetComponent<Rigidbody>();
                 windowRB.isKinematic = true;

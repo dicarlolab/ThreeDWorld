@@ -489,6 +489,14 @@ public class NetMessenger : MonoBehaviour
     }
     #endregion
 
+	//converts color UID to string for sending to client via message
+	public static string colorUIDToString(Color colorUID) {
+		int r = (int)(colorUID.r * 256f);
+		int g = (int)(colorUID.g * 256f);
+		int b = (int)(colorUID.b * 256f);
+		return r.ToString ("x2") + g.ToString ("x2") + b.ToString ("x2");
+	}
+
     public void SendFrameUpdate(CameraStreamer.CaptureRequest streamCapture, Avatar a)
 	{
         if (logTimingInfo)
@@ -527,10 +535,10 @@ public class NetMessenger : MonoBehaviour
 			foreach(SemanticObject semObj in allObjects){			   
 				JsonData _info;
 				_info = new JsonData(JsonType.Array);
-			   _info.Add(semObj.gameObject.name);
+				_info.Add(semObj.gameObject.name);
 				Color colorID = semObj.gameObject.GetComponentInChildren<Renderer> ().material.GetColor ("_idval");
-				_info.Add(new int[3] {(int) (colorID.r * 0x100), (int) (colorID.g * 0x100), (int) (colorID.b * 0x100)});
-			   jsonData["sceneInfo"].Add(_info);
+				_info.Add(colorUIDToString(colorID));
+				jsonData["sceneInfo"].Add(_info);
 		   
 	    	}
 	    }
