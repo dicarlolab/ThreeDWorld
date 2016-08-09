@@ -479,6 +479,8 @@ public class ProceduralGeneration : MonoBehaviour
         // Add generatable prefab tags
         instance.AddComponent<GeneratablePrefab>();
 
+		//NormalSolver.RecalculateNormals (instance.GetComponentInChildren<MeshFilter> ().sharedMesh, 60);
+
         // Save as a prefab
 		string prefabAssetPath = string.Format("Assets/Resources/Prefabs/Converted Models/{0}.prefab", subPath);
 		GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(prefabAssetPath);

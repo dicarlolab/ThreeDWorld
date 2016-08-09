@@ -36,8 +36,8 @@ RenderSettings:
   m_ReflectionBounces: 1
   m_ReflectionIntensity: 0.307
   m_CustomReflection: {fileID: 0}
-  m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 0.307}
+  m_Sun: {fileID: 60969989}
+  m_IndirectSpecularColor: {r: 0.2502121, g: 0.2928877, b: 0.3039674, a: 0.307}
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
@@ -71,7 +71,8 @@ LightmapSettings:
     m_FinalGatherFiltering: 1
     m_FinalGatherRayCount: 256
     m_ReflectionCompression: 2
-  m_LightingDataAsset: {fileID: 0}
+  m_LightingDataAsset: {fileID: 112000001, guid: 136c9d096e37c417d85dc3f1b63539e4,
+    type: 2}
   m_RuntimeCPUUsage: 25
 --- !u!196 &4
 NavMeshSettings:
@@ -125,6 +126,7 @@ Light:
   m_Shadows:
     m_Type: 1
     m_Resolution: 3
+    m_CustomResolution: -1
     m_Strength: 0.684
     m_Bias: 0.05
     m_NormalBias: 0.4
@@ -151,10 +153,10 @@ Transform:
   m_LocalRotation: {x: 0.864468, y: -0.28036538, z: -0.13459896, w: 0.39493486}
   m_LocalPosition: {x: 5.380575, y: 19.28, z: -44.56}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1077957580
 Prefab:
   m_ObjectHideFlags: 0
@@ -319,7 +321,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 1, z: -30}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

@@ -199,6 +199,7 @@ public class WallInfo
         Rigidbody rb = wallBase.GetComponent<Rigidbody>();
         rb.isKinematic = true;
 
+
         // Fill in segments for holes
         Vector3 newSize, newStartPos;
         // TODO: If we have vertically overlapping windows/doors we'll need to adjust this logic!
@@ -265,86 +266,61 @@ public class WallInfo
         }
         return ret;
     }
+		
+	public static GameObject CreateBoxMesh(Vector3 start, Vector3 size, Material mat, string name, Transform parentObj = null) 
+	{
+		GameObject box = GameObject.CreatePrimitive (PrimitiveType.Cube);
+		box.transform.localScale = size;
+		box.transform.position = start + (size / 2f);
+		box.GetComponent<MeshRenderer>().material = mat;
+		var newUVs = new Vector2[box.GetComponent<MeshFilter> ().mesh.vertices.Length];
 
-    public static GameObject CreateBoxMesh(Vector3 start, Vector3 size, Material mat, string name, Transform parentObj = null)
-    {
-        int[] indexArray = {
-            // Left/Right faces
-            2, 1, 3,
-            2, 0, 1,
-            6, 7, 5,
-            6, 5, 4,
+		var width = size.x;
+		var depth = size.z;
+		var height = size.y;
 
-            // Top/Bottom faces
-            12, 13, 9,
-            12, 9, 8,
-            14, 11, 15,
-            14, 10, 11,
+		//Front
+		newUVs[2] = new Vector2(0, height);
+		newUVs[3] = new Vector2(width, height);
+		newUVs[0] = new Vector2(0, 0);
+		newUVs[1] = new Vector2(width, 0);
 
-            // Front/Back faces
-            5, 7, 3,
-            5, 3, 1,
-            4, 2, 6,
-            4, 0, 2
-        };
+		//Back
+		newUVs[7] = new Vector2(0, 0);
+		newUVs[6] = new Vector2(width, 0);
+		newUVs[11] = new Vector2(0, height);
+		newUVs[10] = new Vector2(width, height);
 
-        const int vertCount = 16;
-        const int indexCount = 3 * 2 * 6;
-        Vector3[] newVerts = new Vector3[vertCount];
-        int[] newIndices = new int[indexCount];
-        List<Vector2> newUVs = new List<Vector2>();
-        Vector2 startUV = new Vector2(start.x + start.z, start.y);
+		//Left
+		newUVs[19] = new Vector2(depth, 0);
+		newUVs[17] = new Vector2(0, height);
+		newUVs[16] = new Vector2(0, 0);
+		newUVs[18] = new Vector2(depth, height);
 
+		//Right
+		newUVs[23] = new Vector2(depth, 0);
+		newUVs[21] = new Vector2(0, height);
+		newUVs[20] = new Vector2(0, 0);
+		newUVs[22] = new Vector2(depth, height);
 
-        // Create vertices
-        for (int isTopBottom = 0; isTopBottom < 2; isTopBottom++)
-        {
-            for (int i = 0; i < 2; ++i)
-            {
-                for (int j = 0; j < 2; ++j)
-                {
-                    for (int k = 0; k < 2; ++k)
-                    {
-                        newVerts[8 * isTopBottom + 4 * i + 2 * j + k] = start + new Vector3((i == 1) ? size.x : 0, (j == 1) ? size.y : 0, (k == 1) ? size.z : 0);
-                        Vector2 newUV = Vector2.zero;
-                        if (isTopBottom == 0)
-                        {
-                            newUV.y = startUV.y + (j * size.y);
-                            newUV.x = startUV.x + (i * size.x) + (k * size.z);
-                        } else
-                        {
-                            newUV.y = start.x + start.y + (i * size.x) + (j * size.y);
-                            newUV.x = start.z + 4f + (k * size.z);
-                        }
-                        newUVs.Add(newUV);
-                    }
-                }
-            }
-        }
+		//Top
+		newUVs[4] = new Vector2(width, 0);
+		newUVs[5] = new Vector2(0, 0);
+		newUVs[8] = new Vector2(width, depth);
+		newUVs[9] = new Vector2(0, depth);
 
-        // Create faces
-        for (int i = 0; i < indexArray.Length; ++i)
-        {
-            int index = indexArray[i];
-            newIndices[i] = index;
-        }
+		//Bottom
+		newUVs[13] = new Vector2(width, 0);
+		newUVs[14] = new Vector2(0, 0);
+		newUVs[12] = new Vector2(width, depth);
+		newUVs[15] = new Vector2(0, depth);
 
-        Mesh newMesh = new Mesh();
-        newMesh.vertices = newVerts;
-        newMesh.triangles = newIndices;
-        newMesh.SetUVs(0, newUVs);
-
-        GameObject newObj = new GameObject(name);
-        if (parentObj != null)
-            newObj.transform.SetParent(parentObj, false);
-        MeshFilter meshFilter = newObj.AddComponent<MeshFilter>();
-        meshFilter.mesh = newMesh;
-        newObj.AddComponent<MeshRenderer>().material = mat;
-        BoxCollider col = newObj.AddComponent<BoxCollider>();
-        col.size = size;
-        col.center = start + (0.5f * size);
-        return newObj;
-    }
+		box.GetComponent <MeshFilter>().mesh.SetUVs (0, new List<Vector2>(newUVs));
+		box.name = name;
+		if (parentObj != null)
+			box.transform.SetParent(parentObj);
+		return box;
+	}
 };
 
 

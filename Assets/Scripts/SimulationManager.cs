@@ -32,7 +32,7 @@ public static class SimulationManager
     private static NetMessenger myNetMessenger = null;
     private static MyLogLevel logLevel = MyLogLevel.LogAll;
     private static MyLogLevel stackLogLevel = MyLogLevel.Warning;
-	private static string logFileLocation = "~/output_log.txt";
+	private static string logFileLocation = "output_log.txt";
 	private static string portNumber = "5556";
 	private static string hostAddress = getHostIP();
 #endregion

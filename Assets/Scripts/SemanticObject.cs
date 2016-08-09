@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor;
 
 /// <summary>
 /// Representation for a collection of rigidbodies that together 
