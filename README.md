@@ -1,3 +1,19 @@
+# Using the repo
+
+## Client tools requirements
+
+- `zmq`
+- `tabulate`
+- `pick`
+
+## Download
+
+`git clone --recursive  https://github.com/dicarlolab/ThreeDWorld.git`
+
+## Update
+
+`git pull && git submodule update`
+
 #QUEUE SYSTEM:
 So at the beginning of our network training programs, we need a way to connect to the environment server and send and receive our messages back and forth. To do this, we have a particular script which will manage all the instances of the ThreeDWorlds as we make. This script will be bound to port number 23402 on any given machine that we are using to run environments. However, to make things even more straightforward, there is a python library written called tdw_client which will auto-connect you to the queue, and allow you to use a small selection of commands to either examine the current processes running on the node, reconnect to an environment process, or create a new process. All of these commands will be in the class TDW_Client. So the following would be a typical use of tdw_client:
 
