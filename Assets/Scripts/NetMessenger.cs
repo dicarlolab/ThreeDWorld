@@ -53,6 +53,7 @@ public class NetMessenger : MonoBehaviour
     const string MSG_S_FrameData = "FRAME_UPDATE";
 
     // To Receive From Client
+	const string MSG_R_Terminate = "TERMINATE";
     const string MSG_R_ClientJoin = "CLIENT_JOIN";
     const string MSG_R_FrameInput = "CLIENT_INPUT";
 	const string MSG_R_SceneSwitch = "SCENE_SWITCH";
@@ -296,6 +297,9 @@ public class NetMessenger : MonoBehaviour
         }
         switch(msgHeader.ToString())
         {
+			case MSG_R_Terminate:
+				Application.Quit ();
+				break;
             case MSG_R_ClientJoin:
                 OnClientJoin(server, jsonData);
 				RecieveClientInput(server, jsonData);
