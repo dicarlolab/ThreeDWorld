@@ -609,9 +609,6 @@ public class ProceduralGeneration : MonoBehaviour
 			info = prefabList[_rand.Next(0, prefabList.Count)];
         }
 
-		if (info.fileName.Equals ("Prefabs/Props/Lights/lamp_18"))
-			Debug.Log("Investigate bug");
-
         // Find a spot to place this object
         int spawnX, spawnZ;
         float modScale;
