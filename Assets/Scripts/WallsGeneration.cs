@@ -251,7 +251,7 @@ public class WallInfo
 
     public GameObject CreateWallMesh(Vector3 start, Vector3 size, Transform parentObj = null, string namePrefix = "")
     {
-        GameObject ret = CreateBoxMesh(start, size, wallMat, string.Format("{0}Created Mesh @{1} with size{2}", namePrefix, start, size), parentObj);
+        GameObject ret = CreateBoxMesh(start, size, wallMat, string.Format("{0}Created Box @{1} with size{2}", namePrefix, start, size), parentObj);
         // Create trim if necessary
         if (start.y < TRIM_HEIGHT && start.y + size.y >= TRIM_HEIGHT)
         {
@@ -262,13 +262,14 @@ public class WallInfo
             trimStart.x = start.x - TRIM_THICKNESS;
             trimStart.y = start.y;
             trimStart.z = start.z - TRIM_THICKNESS;
-            CreateBoxMesh(trimStart, trimSize, trimMat, string.Format("{0}Trim Mesh @{1} with size{2}", namePrefix, trimStart, trimSize), parentObj);
+            CreateBoxMesh(trimStart, trimSize, trimMat, string.Format("{0}Trim Box @{1} with size{2}", namePrefix, trimStart, trimSize), parentObj);
         }
         return ret;
     }
 		
 	public static GameObject CreateBoxMesh(Vector3 start, Vector3 size, Material mat, string name, Transform parentObj = null) 
 	{
+		//Code for this method is adapted from a script found here: https://github.com/Dsphar/Cube_Texture_Auto_Repeat_Unity/blob/master/ReCalcCubeTexture.cs
 		GameObject box = GameObject.CreatePrimitive (PrimitiveType.Cube);
 		box.transform.localScale = size;
 		box.transform.position = start + (size / 2f);

@@ -884,7 +884,7 @@ MonoBehaviour:
       m_Extent: {x: 0.6724688, y: 1.3947864, z: 0.8027916}
     stackableAreas: []
   - fileName: Prefabs/Props/Furniture/Lounge_chair
-    complexity: 817
+    complexity: 820
     isLight: 0
     anchorType: 0
     bounds:
@@ -922,8 +922,8 @@ MonoBehaviour:
     isLight: 0
     anchorType: 0
     bounds:
-      m_Center: {x: 0, y: 1.720496, z: 0}
-      m_Extent: {x: 4.242313, y: 1.7204962, z: 2.0811396}
+      m_Center: {x: -0.027999997, y: 1.326, z: -0.2939999}
+      m_Extent: {x: 1.664, y: 1.326, z: 0.706}
     stackableAreas: []
   - fileName: Prefabs/Props/Furniture/sofa_modern_01_starter
     complexity: 259
@@ -1124,12 +1124,12 @@ MonoBehaviour:
       m_Extent: {x: 0.3257861, y: 0.067358494, z: 0.26027635}
     stackableAreas: []
   - fileName: Prefabs/Props/Misc/Rack
-    complexity: 60
+    complexity: 0
     isLight: 0
     anchorType: 0
     bounds:
-      m_Center: {x: -0.0989867, y: 0.028575, z: 0}
-      m_Extent: {x: 0.1275617, y: 0.028575, z: 0.142875}
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
     stackableAreas: []
   disabledItems: []
   permittedItems: []
