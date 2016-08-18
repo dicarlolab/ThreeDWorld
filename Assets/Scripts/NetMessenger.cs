@@ -78,7 +78,7 @@ public class NetMessenger : MonoBehaviour
         SimulationManager.Init();
     }
 
-	public void Init(string hostAddress, string portNumber, bool shouldCreateTestClient, bool shouldCreateServer, bool debugNetworkMessages, 
+	public void Init(string hostAddress, string portNumber, bool shouldCreateTestClient, bool shouldCreateServer, bool debugNetworkMessages,
 		bool logSimpleTimingInfo, bool logDetailedTimeInfo, string preferredImageFormat, bool saveDebugImageFiles, string environmentScene)
     {
 		this.avatarPrefab = Resources.Load<Avatar>("Prefabs/Avatar");
@@ -108,7 +108,7 @@ public class NetMessenger : MonoBehaviour
 				Debug.LogWarning ("Scene name \"" + environmentScene + "\" was not found.");
 			}
 		}
-			
+
         // Start up connections
         _ctx = NetMQContext.Create();
         CreateNewSocketConnection();
@@ -123,7 +123,7 @@ public class NetMessenger : MonoBehaviour
             allReady = allReady && a.readyForSimulation;
         return allReady;
     }
-		
+
     void Update()
     {
 		if (!skipFrame) {
@@ -350,7 +350,7 @@ public class NetMessenger : MonoBehaviour
 
 		if (!SceneManager.GetSceneByName (newEnvironmentScene).path.StartsWith ("Assets/Scenes/EnvironmentScenes/")) {
 			Debug.LogError ("Scene is not located in Assets/Scenes/EnvironmentScenes/, please relocate scene file to this directory!");
-		} 
+		}
 
 		SceneManager.sceneLoaded += sceneWasLoaded;
 
@@ -385,7 +385,7 @@ public class NetMessenger : MonoBehaviour
 		_avatars[server] = newAvatar;
 		newAvatar.InitNetData(this, server);
 
-		newAvatar.sendSceneInfo = data["sendSceneInfo"].ReadBool(false);
+		newAvatar.sendSceneInfo = data["send_scene_info"].ReadBool(false);
 		newAvatar.shouldCollectObjectInfo = data["get_obj_data"].ReadBool(false);
         //
         //        // Send confirmation message
@@ -467,7 +467,7 @@ public class NetMessenger : MonoBehaviour
         return output;
     }
 
-    public void 
+    public void
 	SimulateClientInput(RequestSocket client, JsonData jsonData, NetMQMessage msg)
     {
         ResponseSocket server = GetServerForClient(client);
@@ -536,17 +536,17 @@ public class NetMessenger : MonoBehaviour
 		if (a.sendSceneInfo) {
             jsonData["sceneInfo"] = new JsonData(JsonType.Array);
 			SemanticObject[] allObjects = UnityEngine.Object.FindObjectsOfType<SemanticObject>();
-			foreach(SemanticObject semObj in allObjects){			   
+			foreach(SemanticObject semObj in allObjects){
 				JsonData _info;
 				_info = new JsonData(JsonType.Array);
 				_info.Add(semObj.gameObject.name);
 				Color colorID = semObj.gameObject.GetComponentInChildren<Renderer> ().material.GetColor ("_idval");
 				_info.Add(colorUIDToString(colorID));
 				jsonData["sceneInfo"].Add(_info);
-		   
+
 	    	}
 	    }
-	    
+
         if (logTimingInfo)
             Debug.LogFormat("Finished collect Json data {0}", Utils.GetTimeStamp());
         // Send out the real message

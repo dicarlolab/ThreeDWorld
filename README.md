@@ -45,13 +45,13 @@ sock = tc.run()  # get a zmq socket for sending and receiving messages
 
 ### Useful client methods:
 
-	- `load_config`: Loads configuration to the environment. See [Scene configuration options](#scene-configuration-options)
+- `load_config`: Loads configuration to the environment. See [Scene configuration options](#scene-configuration-options)
 
-	- `load_profile`
+- `load_profile`
 
-	- `reconnect`: Reconnects you to the port number saved to the client. Returns True if succeeds, returns False if fails.
+- `reconnect`: Reconnects you to the port number saved to the client. Returns True if succeeds, returns False if fails.
 
-	- `print_environment_output_log`: Prints the environment's output log to console. NOTE: Not implemented yet.
+- `print_environment_output_log`: Prints the environment's output log to console. NOTE: Not implemented yet.
 
 
 ## Scene configuration options
