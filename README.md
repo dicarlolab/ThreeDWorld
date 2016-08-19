@@ -172,6 +172,58 @@ So tragically, some of making scenes requires the use of the GUI. Luckily it isn
 
 Prefabs, seemingly confusing subject, but surprisingly simple. Prefabs are hierarchies of objects which can be saved outside a scene. If you want two planes to be positioned to bisect each other, you can position them in the scene editor as so, drag one plane into the other plane in the hierarchy menu, and you will wind up creating a single object with sub parts. If you move the outermost object, the sub parts will move with it. You can run methods in a script to acquire information about children or parents in the hierarchy. This hierarchical object can be fairly powerful. The special thing you can do with said object structures in Unity, is that you can save such hierarchies (which can just be one object with no children by the way) as a file called a prefab. The prefab saves all of the information about the hierarchy and can reproduce it in any scene, any number of times.
 
+## Importing objects to Unity
+
+### Downsampling objects
+
+The first step is creating downsampled near-convex decompositions of objects. It turns out that when objects are colliding, usually some very crude approximation of them is used (like a cylinder) to compute when they collide. This is done to speed up computations but is not accurate enough for our purposes. We need physics to work properly in the 3D world. Using the precise object mesh would be too time-consuming so a compromise is to produce a downsampled mesh of the object which would still be sufficiently accurate to compute collisions but also small enough to do this fast.
+
+1. Download V-HACD to produce these meshes: `https://github.com/kmammou/v-hacd`
+2. A compiled version is available here: `sebastian-sandbox.mit.edu:/home/yamins/v-hacd/build/linux2/test/testVHACD`
+3. An example script that shows the parameters and which parallelizes the conversion process:
+
+    ```python
+    import os
+    import multiprocessing
+    
+    from yamutils import basic
+    
+    
+    VHACD = '/home/yamins/v-hacd/build/linux2/test/testVHACD'
+    
+    def do_it(ind):
+    
+        cmdtmpl1 = '%s --input "%s" --output "%s" --log log.txt --resolution 500000 --maxNumVerticesPerCH 255'
+        cmdtmpl2 = '%s --input "%s" --output "%s" --log log.txt --resolution 16000000 --concavity 0.001 --maxNumVerticesPerCH 255 --minVolumePerCH 0.0001'
+    
+        L = filter(lambda x: x.endswith('.obj'), basic.recursive_file_list('.'))
+        L.sort()
+    
+        objfiles = L[ind * 100: (ind+1)*100]
+    
+        for of in objfiles:
+            print('FILE: %s' % of)
+            wf = of[:-3] + 'wrl'
+            cmd = cmdtmpl1 % (VHACD, of, wf)
+            os.system(cmd)
+            osize = os.path.getsize(of)
+            wsize = os.path.getsize(wf)
+            if osize > 100 * wsize:
+                cmd = cmdtmpl2 % (VHACD, of, wf)
+                os.system(cmd)
+    ```
+
+Running this will produce .wrl files for each input obj. The wrl file format is the for VRML ("virtual reality markup language"), which is different from the Wavefront OBJ format that is the input to the algorithm. 
+
+### Importing objects to Unity
+
+Drag and drop the folder with you objects to *Assets/Models*. **NOTE:** This is a slow process on the order of ~5 sec / object.
+
+### Generating prefabs
+
+First, click the *Play* button in Unity. Why? It starts memory management processes which are necessary for generating complicated scenes but also help when you are working with thousands of objects. Normally generating prefabs for a couple of objects does not require memory management so it is not started when you ask for prefabs. So next click *Procedural Generation / Create prefab model folders*. **NOTE:** This is a very slow process.
+
+**IMPORTANT ISSUES:** It is likely that with each update to Unity all models need to be reimported again...
 
 # License
 
