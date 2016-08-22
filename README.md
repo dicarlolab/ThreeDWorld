@@ -158,6 +158,12 @@ Here are the available message types and what you can put inside them:
 - `SCENE_SWITCH` - creating a new environment, can be of the same kind as before
 
 	config : dict //see config section
+	
+		
+		sock.send_json({'n': 4, 'msg' : {"msg_type" : "SCENE_SWITCH", 
+	        'config': {"environment_scene" : "ProceduralGeneration"}  # need at leastthis one!
+	                  }})
+	        
 
 - `SCENE_EDIT` - for moving, duplicating, removing, and other kinds of world editing powers (NOTE: not implemented yet)
 
