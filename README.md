@@ -121,6 +121,12 @@ Special assets: There is a simple abstract script called SpawnArea. SpawnAreas a
 
 The config file can be accessed as a JsonData file under `SimulationManager.argsConfig`. Be sure to import `LitJson.JsonData` to use.
 
+## Starting server side
+
+1. Start mongo: `mongod -port 23502`
+2. Start queue: `cd ServerTools && sudo python tdw_queue.py`
+
+Output log is then generated in `ServerTools/output_log.txt`.
 
 ## Sending and receiving messages
 
