@@ -181,7 +181,9 @@ public class ProceduralGeneration : MonoBehaviour
         // Create rooms
         roomDim.x = Mathf.Round(roomDim.x / gridDim) * gridDim;
         roomDim.z = Mathf.Round(roomDim.z / gridDim) * gridDim;
+		Debug.Log ("Starting to create rooms...");
         CreateRoom(roomDim, new Vector3((roomDim.x-1) * 0.5f,0,(roomDim.z-1) * 0.5f));
+		Debug.Log ("...created!");
 
         _failures = 0;
         // Keep creating objects until we are supposed to stop
@@ -735,7 +737,7 @@ public class ProceduralGeneration : MonoBehaviour
 
 		floorSpawn.gameObject.transform.localScale = new Vector3 (xRatio * floorSpawn.gameObject.transform.localScale.x, 0, zRatio * floorSpawn.gameObject.transform.localScale.z);
 
-		Debug.Log (floorSpawn.name);
+		Debug.LogFormat ("Created floor: {0}", floorSpawn.name);
 
         GameObject top = WallInfo.CreateBoxMesh(ceilingStart, floorSize, ceilingMaterial, "Ceiling", _curRoom);
         top.AddComponent<SemanticObjectSimple>();
