@@ -635,6 +635,8 @@ public class ConcaveCollider : MonoBehaviour
 			// newMesh.triangles.Length actually spits out three time the number of triangles!
             if (newMesh.triangles.Length > 765)
                 Debug.LogWarningFormat("Too many triangles in vrml mesh for {0}! Found {1}", debugNameObj, newMesh.triangles.Length);
+			else if (newMesh.triangles.Length < 3)
+				Debug.LogWarningFormat ("Insufficient vertices to form a triangle in vrml mesh for {0}! Found {1}", debugNameObj, newMesh.triangles.Length);
             else
                 ret.Add(newMesh);
             meshCounter++;
