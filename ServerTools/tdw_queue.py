@@ -18,8 +18,8 @@ class Three_D_World_Queue(object):
 	def __init__(self):
 		#set defaults
 		self.debug = True
-	
-		#TODO: rather hacky, but works for now	
+
+		#TODO: rather hacky, but works for now
 		s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 		s.connect(("google.com",80))
 		self.host_address = s.getsockname()[0]
@@ -45,12 +45,12 @@ class Three_D_World_Queue(object):
 				self.build_dir = args[i][11:]
 			if (args[i].startswith("--forwarddir=")):
 				self.forward_port_dir = args[i][13:]
-	
+
 		if (not os.path.isdir(self.build_dir)):
 			raise NameError("Build path is not a directory!")
 		if (not os.path.isdir(self.forward_port_dir)):
 			raise NameError("Forward path is not a directory!")
-				
+
 
 		#get networking info
 		self.ctx = zmq.Context()
@@ -67,7 +67,7 @@ class Three_D_World_Queue(object):
 		self.sock1.bind("tcp://" + self.host_address + ":" + self.queue_port_number)
 		if (self.debug):
 			print "...connected @", self.host_address, ":", self.queue_port_number, "\n\n"
-		
+
 		#get mongod collection info
 		if (self.debug):
 			print ("connecting to MongoD Database...")
@@ -84,7 +84,7 @@ class Three_D_World_Queue(object):
 
 
 	#main loop
-	def run(self):	
+	def run(self):
 		while True:
 			msg = self.recv_json(self.sock1)
 			self.handle_message(msg)
@@ -126,9 +126,9 @@ class Three_D_World_Queue(object):
 
 		formatted_available_environments = dict()
 		for env in available_environments:
-			formatted_available_environments[env["env_owner"] + ", " + 
-											 env["port_num"] + ", " + 
-											 datetime.datetime.fromtimestamp(float(env["proc_create_time"])).strftime("%Y-%m-%d %H:%M:%S") + ", " + 
+			formatted_available_environments[env["env_owner"] + ", " +
+											 env["port_num"] + ", " +
+											 datetime.datetime.fromtimestamp(float(env["proc_create_time"])).strftime("%Y-%m-%d %H:%M:%S") + ", " +
 											 env["env_desc"]] = env["port_num"]
 		if (len(formatted_available_environments) > 0):
 			return self.send_options(formatted_available_environments.keys(), "Select an environment to join:")
@@ -144,9 +144,9 @@ class Three_D_World_Queue(object):
 
 		formatted_available_environments = dict()
 		for env in available_environments:
-			formatted_available_environments[env["env_owner"] + ", " + 
-										     env["port_num"] + ", " + 
-											 datetime.datetime.fromtimestamp(float(env["proc_create_time"])).strftime("%Y-%m-%d %H:%M:%S") + ", " + 
+			formatted_available_environments[env["env_owner"] + ", " +
+										     env["port_num"] + ", " +
+											 datetime.datetime.fromtimestamp(float(env["proc_create_time"])).strftime("%Y-%m-%d %H:%M:%S") + ", " +
 									         env["env_desc"]] = env["port_num"]
 
 		if (j["selected"] in formatted_available_environments.keys()):
@@ -159,7 +159,7 @@ class Three_D_World_Queue(object):
 	def create_environment__1(self, j):
 		req_keys = ["port_num"]
 		self.scan_for_contents(j, req_keys)
-	
+
 		if (not self.check_port_num(j["port_num"])):
 			return json.dumps({"msg" : {"msg_type" : "PORT_UNAVAILABLE"}})
 
@@ -184,7 +184,7 @@ class Three_D_World_Queue(object):
 		s = socket.socket()
 		s.bind(('', 0))
 		forward_port_num = s.getsockname()[1]
-		s.close()	
+		s.close()
 
 		print "nohup " + j["selected_build"] +  " -force-opengl -port=" + str(forward_port_num) + " -address=" + self.host_address + " -batchmode"
 
@@ -229,32 +229,34 @@ class Three_D_World_Queue(object):
 
 		if ("save_debug_image_files" in j.keys()):
 			process = process + ["-saveDebugImageFiles"]
-	
+
 		#start environment process
 		if (self.debug):
 			print "Running Environment:"
 			print (" ".join(process))
 			print ("\nenvironment @" + self.host_address + ":" + str(forward_port_num))
-		environment = subprocess.Popen(process, preexec_fn=self.preexec_function)
+                my_env = os.environ.copy()
+                my_env['DISPLAY'] = ':0'
+		environment = subprocess.Popen(process, preexec_fn=self.preexec_function, env=my_env)
 		if (self.debug):
 			print ("environment pid: " + str(environment.pid))
 
 		#start forward port process
 		if (self.debug):
 			print "\n\nRunning Forward Port:"
-			print ("nohup python " + self.forward_port_dir + "forward.py" + 
-				  " --port=" + str(j["port_num"]) + 
-				  " --hostaddress=" + self.host_address + 
-				  " --forwardport=" + str(forward_port_num) + 
+			print ("nohup python " + self.forward_port_dir + "forward.py" +
+				  " --port=" + str(j["port_num"]) +
+				  " --hostaddress=" + self.host_address +
+				  " --forwardport=" + str(forward_port_num) +
 				  " --forwardhostaddress=" + self.host_address)
 			print ("\nforward port @" + self.host_address + ":" + str(j["port_num"]) + " -> " + self.host_address + ":" + str(forward_port_num))
-		port_forwarder = subprocess.Popen(["nohup", 
-										   "python", 
-										   self.forward_port_dir + "forward.py", 
-										   "--port=" + str(j["port_num"]), 
-										   "--hostaddress=" + self.host_address, 
-										   "--forwardport=" + str(forward_port_num), 
-										   "--forwardhostaddress=" + self.host_address], 
+		port_forwarder = subprocess.Popen(["nohup",
+										   "python",
+										   self.forward_port_dir + "forward.py",
+										   "--port=" + str(j["port_num"]),
+										   "--hostaddress=" + self.host_address,
+										   "--forwardport=" + str(forward_port_num),
+										   "--forwardhostaddress=" + self.host_address],
 										   preexec_fn=self.preexec_function)
 
 		if (self.debug):
@@ -263,14 +265,14 @@ class Three_D_World_Queue(object):
 		#add to mongod collection
 		if (self.debug):
 			print ("\nAdded environment to database.\n\n")
-		self.make_mongo_entry(self.make_uuid(), 
-							  j["username"], 
-							  j["description"], 
-							  environment.pid, 
-							  psutil.Process(environment.pid).create_time(), 
-							  psutil.Process(port_forwarder.pid).create_time(), 
-							  j["port_num"], 
-							  forward_port_num, 
+		self.make_mongo_entry(self.make_uuid(),
+							  j["username"],
+							  j["description"],
+							  environment.pid,
+							  psutil.Process(environment.pid).create_time(),
+							  psutil.Process(port_forwarder.pid).create_time(),
+							  j["port_num"],
+							  forward_port_num,
 							  port_forwarder.pid)
 
 		return self.send_join_offer(j["port_num"])
@@ -305,7 +307,7 @@ class Three_D_World_Queue(object):
 		if (self.debug):
 			print "...sent message:\n\n", msg
 			print ">" * 20, "\n\n"
-	
+
 	def recv_json(self, sock):
 		if (self.debug):
 			print "<" * 20
@@ -344,11 +346,11 @@ class Three_D_World_Queue(object):
 
 	def get_active_environments(self):
 		self.scan_process_status()
-	
+
 		print '_' * 60
 		print " " * 18, "Find Active Environments"
 		print '_' * 60, "\n"
-	
+
 		i = 0
 
 		if (self.debug):
@@ -367,10 +369,10 @@ class Three_D_World_Queue(object):
 	#makes a mongoD entry with an environment uuid, owner, description, environment pid, environment create time, forward port number (client connects to), environment port number (server binds to), and forward pid
 	def make_mongo_entry(self, env_uuid, env_owner, env_desc, proc_pid, proc_create_time, forward_create_time, forward_port, env_port, forward_pid):
 		entry = {
-			"env_uuid" : str(env_uuid), 
-			"env_owner" : str(env_owner), 
-			"env_desc" : str(env_desc), 
-			"proc_pid" : str(proc_pid), 
+			"env_uuid" : str(env_uuid),
+			"env_owner" : str(env_owner),
+			"env_desc" : str(env_desc),
+			"proc_pid" : str(proc_pid),
 			"proc_create_time" : str(proc_create_time),
 			"forward_create_time" : str(forward_create_time),
 			"port_num" : str(forward_port), #confusing to look at, but this the port number of the forward address which the client connects to
@@ -385,10 +387,10 @@ class Three_D_World_Queue(object):
 	def print_processes(self, entries):
 		table = list()
 		for entry in entries:
-			table = table + [[entry["env_owner"], entry["proc_pid"], entry["port_num"], 
-						     datetime.datetime.fromtimestamp(float(entry["proc_create_time"])).strftime("%Y-%m-%d %H:%M:%S"), 
+			table = table + [[entry["env_owner"], entry["proc_pid"], entry["port_num"],
+						     datetime.datetime.fromtimestamp(float(entry["proc_create_time"])).strftime("%Y-%m-%d %H:%M:%S"),
 							 entry["env_desc"]]]
-		
+
 		print tabulate(table, headers=["Owner", "PID", "Port", "Create Time", "Description"], tablefmt="fancy_grid")
 
 	def preexec_function(self):
@@ -427,37 +429,37 @@ class Three_D_World_Queue(object):
 					s = socket.socket()
 					s.bind(('', 0))
 					forward_port_num = s.getsockname()[1]
-					s.close()	
-				
+					s.close()
+
 					#start new forward port process
 					if (len(proc.connections(kind="tcp")) > 0):
 						if (self.debug):
 							print ("\nNEW PORT:")
-							print ("\nforward port @" + self.host_address + ":" + str(forward_port_num) + " -> " + 
+							print ("\nforward port @" + self.host_address + ":" + str(forward_port_num) + " -> " +
 								   str(proc.connections(kind="tcp")[0].laddr[0]) + ":" + str(proc.connections(kind="tcp")[0].laddr[1]))
-						port_forwarder = subprocess.Popen(["nohup", 
-														   "python", 
-														   self.forward_port_dir + "forward.py", #please dont delete that forward.py file! 
-														   "--port=" + str(forward_port_num), 
-														   "--hostaddress=" + self.host_address, 
-														   "--forwardport=" + str(proc.connections(kind="tcp")[0].laddr[1]), 
-														   "--forwardhostaddress=" + str(proc.connections(kind="tcp")[0].laddr[0])], 
+						port_forwarder = subprocess.Popen(["nohup",
+														   "python",
+														   self.forward_port_dir + "forward.py", #please dont delete that forward.py file!
+														   "--port=" + str(forward_port_num),
+														   "--hostaddress=" + self.host_address,
+														   "--forwardport=" + str(proc.connections(kind="tcp")[0].laddr[1]),
+														   "--forwardhostaddress=" + str(proc.connections(kind="tcp")[0].laddr[0])],
 														   preexec_fn=self.preexec_function)
 						if (self.debug):
 							print ("forward port pid: " + str(port_forwarder.pid))
-					
+
 					self.make_mongo_entry(self.make_uuid(),
-										  "Undocumented", 
-										  "Undocumented", 
-										  pid, 
-										  proc.create_time(), 
-										  psutil.Process(port_forwarder.pid).create_time(), 
-										  forward_port_num, 
+										  "Undocumented",
+										  "Undocumented",
+										  pid,
+										  proc.create_time(),
+										  psutil.Process(port_forwarder.pid).create_time(),
+										  forward_port_num,
 										  proc.connections(kind="tcp")[0].laddr[1],
 										  port_forwarder.pid)
 
 			#TODO: make way to ping environment for more information instead of leaving things undocumented
-		
+
 		#remove processes no longer running from mongod database
 		for entry in records:
 			self.process_info.delete_many(entry)
@@ -470,7 +472,7 @@ class Three_D_World_Queue(object):
 			self.print_processes(entries)
 			print '=' * 60
 			print "\n"
-				
+
 	#################################################################################################
 
 #script segment

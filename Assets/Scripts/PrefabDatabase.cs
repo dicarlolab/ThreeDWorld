@@ -249,7 +249,7 @@ public class PrefabDatabase : MonoBehaviour
 
 	public void SavePrefabInformation(GeneratablePrefab prefab, bool shouldRecomputePrefabInformation, bool replaceOld = true)
 	{
-		const string resPrefix = "PrefabDatabase/";
+		const string resPrefix = "Resources/";
 		string assetPath = AssetDatabase.GetAssetPath(prefab);
 		if (string.IsNullOrEmpty(assetPath))
 			return;

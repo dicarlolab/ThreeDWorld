@@ -21,7 +21,7 @@ public abstract class AbstractInputModule
 
     // Read controller input and translate it into commands from an agent
     public abstract void SimulateInputFromController(ref JsonData responseMsgData);
-    
+
     // Parse the input sent from the client and use it to update the controls for the next simulation segment
     public abstract void HandleNetInput(JsonData msgJsonData, ref Vector3 targetVel);
 
@@ -82,7 +82,7 @@ public class InputModule : AbstractInputModule
         targetVelocity.y = Input.GetAxis("Vertical");
         targetVelocity.z = Input.GetAxis("VerticalD");
         targetVelocity = curRotation * targetVelocity;
-        
+
         // Read angular velocity
         Vector3 targetRotationVel = Vector3.zero;
         targetRotationVel.x = -Input.GetAxis("Vertical2");

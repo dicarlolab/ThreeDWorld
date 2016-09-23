@@ -304,7 +304,7 @@ public class NetMessenger : MonoBehaviour
 
 		if (!SceneManager.GetSceneByName (newEnvironmentScene).path.StartsWith ("Assets/Scenes/EnvironmentScenes/")) {
 			Debug.LogError ("Scene is not located in Assets/Scenes/EnvironmentScenes/, please relocate scene file to this directory!");
-		} 
+		}
 
 		SceneManager.sceneLoaded += sceneWasLoaded;	
 
@@ -359,7 +359,7 @@ public class NetMessenger : MonoBehaviour
 		newAvatar.sendSceneInfo = data["send_scene_info"].ReadBool(false);
 		newAvatar.shouldCollectObjectInfo = data["get_obj_data"].ReadBool(false);
     }
-
+			
 	/// <summary>
 	/// Reads the frame to a string.
 	/// </summary>
@@ -446,16 +446,17 @@ public class NetMessenger : MonoBehaviour
 		if (a.sendSceneInfo) {
             jsonData["scene_info"] = new JsonData(JsonType.Array);
 			SemanticObject[] allObjects = UnityEngine.Object.FindObjectsOfType<SemanticObject>();
-			foreach(SemanticObject semObj in allObjects){			   
+			foreach(SemanticObject semObj in allObjects){
 				JsonData _info;
 				_info = new JsonData(JsonType.Array);
 				_info.Add(semObj.gameObject.name);
 				Color colorID = semObj.gameObject.GetComponentInChildren<Renderer> ().material.GetColor ("_idval");
 				_info.Add(colorUIDToString(colorID));
-				jsonData["scene_info"].Add(_info);
+				jsonData["sceneInfo"].Add(_info);
+
 	    	}
 	    }
-	    
+
         if (logTimeInfo)
             Debug.LogFormat("Finished collect Json data {0}", Utils.GetTimeStamp());
         // Send out the real message
