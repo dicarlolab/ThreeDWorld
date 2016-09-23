@@ -123,10 +123,10 @@ public class Avatar : MonoBehaviour
         _observedObjs.Clear();
         if (!_shouldCollectObjectInfo)
             return;
-        if (NetMessenger.logTimingInfo)
+        if (_myMessenger.logTimeInfo)
             Debug.LogFormat("Starting Avatar.UpdateObservedObjects() {0}", Utils.GetTimeStamp());
         Collider[] observedObjects = Physics.OverlapSphere(transform.position, observedRange);
-        if (NetMessenger.logTimingInfo)
+        if (_myMessenger.logTimeInfo)
             Debug.LogFormat("Finished OverlapSphere() and found {1}, {0}", Utils.GetTimeStamp(), observedObjects.Length);
 
         foreach(Collider col in observedObjects)
@@ -154,7 +154,7 @@ public class Avatar : MonoBehaviour
                 }
             }
         }
-		if (NetMessenger.logTimingInfo) {
+		if (_myMessenger.logTimeInfo) {
 			Debug.LogFormat ("Finished Avatar.UpdateObservedObjects() and found {1} {0}", Utils.GetTimeStamp (), observedObjs.Count);
 		}
 		Debug.Log ("exiting UpdateObserveredObjects");

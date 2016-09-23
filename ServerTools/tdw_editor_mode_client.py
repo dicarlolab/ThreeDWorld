@@ -6,7 +6,6 @@ import multiprocessing
 import sys
 from PIL import Image
 from StringIO import StringIO
-import numpy as np
 
 #TODO: rather hacky, but works for now  
 s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -57,10 +56,9 @@ def loop():
 	sock.send_json({"msg_type" : "CLIENT_JOIN_WITH_CONFIG", "config" : config, "get_obj_data" : True, "sendSceneInfo" : True})
 	print "...join sent"
 
-	#'''
+	'''
 	while True:
 		print "waiting on messages..."
-		#msg1 = [sock.recv() for _ in range(3)]
 		msg1 = sock.recv()
 		msg2 = sock.recv()
 		msg3 = sock.recv()
@@ -77,12 +75,19 @@ def loop():
 		sock.send_json({"msg_type" : "CLIENT_INPUT", "vel": [0.0, 0.0, 0.0], "ang_vel" : [0.0, 0.0, 0.0], "teleport_random" : True, "get_obj_data" : True, "sendSceneInfo" : True})
 		print "...input sent"
 	'''
-	for _ in range(2):
+	teleport=0
+	while True:
 		print "waiting on messages"
-		msg = [sock.recv() for _ in range(3)]
-		print "messages received\n sending scene switch"
-		sock.send_json({"msg_type" : "SCENE_SWITCH", "config" : config})
-	'''
+		msg = [sock.recv() for _ in range(4)]
+		print "messages received"
+		if teleport < 40:
+			teleport += 1
+			sock.send_json({"msg_type" : "CLIENT_INPUT", "vel": [0.0, 0.0, 0.0], "ang_vel" : [0.0, 0.0, 0.0], "teleport_random" : True, "get_obj_data" : True, "sendSceneInfo" : True})
+			#time.sleep(3)
+		else:
+			sock.send_json({"msg_type" : "SCENE_SWITCH", "config" : config})
+			time.sleep(6)
+			teleport = 0
 
 def check_port_num(port_num):
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

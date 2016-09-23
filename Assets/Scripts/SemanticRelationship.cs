@@ -14,9 +14,17 @@ public abstract class SemanticRelationship
 #region Fields
     // Name used when describing the relationship in JSON
     public string name = "";
+    public NetMessenger _myMessenger = null;
 #endregion
 
 #region Properties
+#endregion
+
+#region Unity callbacks
+    void Start()
+    {
+        _myMessenger = GameObject.FindObjectOfType<NetMessenger>();
+    }
 #endregion
 
 #region Functions
@@ -30,12 +38,12 @@ public abstract class SemanticRelationship
     // having a relationship with the given object and outputs as a JSON object
     public virtual JsonData GetJsonString(List<SemanticObject> affectedNodes)
     {
-        if (NetMessenger.logTimingInfo)
+        if (_myMessenger.logTimeInfo)
             Debug.LogFormat("Get Json for relationship {1}, {0}", Utils.GetTimeStamp(), name);
         JsonData retClass = new JsonData(JsonType.Object);
         Dictionary<SemanticObject, List<SemanticObject>> relationMap;
         Evaluate(affectedNodes, out relationMap);
-        if (NetMessenger.logTimingInfo)
+        if (_myMessenger.logTimeInfo)
             Debug.LogFormat("  Finished evaluate relationships {0}", Utils.GetTimeStamp());
         foreach(SemanticObject obj in relationMap.Keys)
         {
@@ -44,7 +52,7 @@ public abstract class SemanticRelationship
                 lst.Add(entry.identifier);
             retClass[obj.identifier] = lst;
         }
-        if (NetMessenger.logTimingInfo)
+        if (_myMessenger.logTimeInfo)
             Debug.LogFormat("  Finished creating relationships json map {0} with {1} keys", Utils.GetTimeStamp(), relationMap.Keys.Count);
         return retClass;
     }

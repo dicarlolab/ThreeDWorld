@@ -7,24 +7,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
-
+/// <summary>
+/// An implementation procedural generation, makes a room and spawns objects inside randomly with stacking.
+/// </summary>
 public class ProceduralGeneration : MonoBehaviour
 {
-    [System.Serializable]
-    public class PrefabInfo
-    {
-        public string fileName;
-        public int complexity;
-        public bool isLight;
-        public GeneratablePrefab.AttachAnchor anchorType;
-        public Bounds bounds;
-        public List<GeneratablePrefab.StackableInfo> stackableAreas = new List<GeneratablePrefab.StackableInfo>();
-    }
-
-
 #region Fields
     // The number of physics collisions to create
     public int complexityLevelToCreate = 100;
@@ -37,7 +24,6 @@ public class ProceduralGeneration : MonoBehaviour
     public GameObject DEBUG_testCubePrefab = null;
     public TextMesh DEBUG_testGridPrefab = null;
     public Vector3 roomDim = new Vector3(10f, 10f, 10f);
-    public List<PrefabInfo> availablePrefabs = new List<PrefabInfo>();
     public List<string> disabledItems = new List<string>();
     public List<string> permittedItems = new List<string>();
     public float gridDim = 0.4f;
@@ -77,15 +63,20 @@ public class ProceduralGeneration : MonoBehaviour
     private Transform _curRoom = null;
     private int _failures = 0; // Counter to avoid infinite loops if we can't place anything
     private List<WallArray> wallSegmentList = new List<WallArray>();
-    private List<PrefabInfo> ceilingLightPrefabs = new List<PrefabInfo>();
-    private List<PrefabInfo> groundPrefabs = new List<PrefabInfo>();
-    private List<PrefabInfo> stackingPrefabs = new List<PrefabInfo>();
+    private List<PrefabDatabase.PrefabInfo> ceilingLightPrefabs = new List<PrefabDatabase.PrefabInfo>();
+    private List<PrefabDatabase.PrefabInfo> groundPrefabs = new List<PrefabDatabase.PrefabInfo>();
+    private List<PrefabDatabase.PrefabInfo> stackingPrefabs = new List<PrefabDatabase.PrefabInfo>();
     public List<HeightPlane> _allHeightPlanes = new List<HeightPlane>();
     private static ProceduralGeneration _Instance = null;
-	private static int UID_BY_INDEX = 0x3;
+	private PrefabDatabase prefabDatabase = null;
+	private static int UID_BY_INDEX = 0x3; //starts at 3 to assign avatar, walls, and floor 0,1,2
 #endregion
 
 #region Properties
+	/// <summary>
+	/// Gets the instance.
+	/// </summary>
+	/// <value>The instance.</value>
     public static ProceduralGeneration Instance
     {
         get { return _Instance; }
@@ -104,6 +95,9 @@ public class ProceduralGeneration : MonoBehaviour
 	}
 #endregion
 
+	/// <summary>
+	/// Init this instance.
+	/// </summary>
     public void Init()
     {
         LitJson.JsonData json = SimulationManager.argsConfig;
@@ -147,7 +141,10 @@ public class ProceduralGeneration : MonoBehaviour
 		}
         Debug.Log("Using random seed: " + _curRandSeed);
 
-        List<PrefabInfo> filteredPrefabs = availablePrefabs.FindAll(((PrefabInfo info)=>{
+		// load prefab database from Base Scene
+		prefabDatabase = GameObject.FindObjectOfType<PrefabDatabase>();
+
+        List<PrefabDatabase.PrefabInfo> filteredPrefabs = prefabDatabase.prefabs.FindAll(((PrefabDatabase.PrefabInfo info)=>{
             // Remove items that have been disallowed
             foreach(string itemName in disabledItems)
             {
@@ -168,10 +165,12 @@ public class ProceduralGeneration : MonoBehaviour
             return true;
         }));
         // TODO: We're not filtering the ceiling lights, since we currently only have 1 prefab that works
-        ceilingLightPrefabs = availablePrefabs.FindAll(((PrefabInfo info)=>{return info.anchorType == GeneratablePrefab.AttachAnchor.Ceiling && info.isLight;}));
-        groundPrefabs = filteredPrefabs.FindAll(((PrefabInfo info)=>{return info.anchorType == GeneratablePrefab.AttachAnchor.Ground;}));
-        stackingPrefabs = groundPrefabs.FindAll(((PrefabInfo info)=>{return info.stackableAreas.Count > 0;}));
-        List<PrefabInfo> itemsForStacking = groundPrefabs.FindAll(((PrefabInfo info)=>{return true;}));
+
+		// THE COMBINATION OF THESE IS WHAT YOU CAN USE TO LEARN WHAT TO LOAD. ANOTHER OPTION IS TO REQUEST THE PREFAB DATABASE TO LOAD THESE AT LINE 
+        ceilingLightPrefabs = prefabDatabase.prefabs.FindAll(((PrefabDatabase.PrefabInfo info)=>{return info.anchorType == GeneratablePrefab.AttachAnchor.Ceiling && info.isLight;}));
+        groundPrefabs = filteredPrefabs.FindAll(((PrefabDatabase.PrefabInfo info)=>{return info.anchorType == GeneratablePrefab.AttachAnchor.Ground;}));
+        stackingPrefabs = groundPrefabs.FindAll(((PrefabDatabase.PrefabInfo info)=>{return info.stackableAreas.Count > 0;}));
+        List<PrefabDatabase.PrefabInfo> itemsForStacking = groundPrefabs.FindAll(((PrefabDatabase.PrefabInfo info)=>{return true;}));
 
         // Create grid to populate objects
         _curComplexity = 0;
@@ -216,19 +215,25 @@ public class ProceduralGeneration : MonoBehaviour
         Debug.Log("Final complexity: " + _curComplexity);
     }
 
-    private bool TryPlaceGroundObject(Bounds bounds, GeneratablePrefab.AttachAnchor anchorType, out int finalX, out int finalY, out float modScale, out HeightPlane whichPlane)
+	//TODO: why is this called try place ground if you can specify the anchor type?
+
+	/// <summary>
+	/// Tries to place object on the ground.
+	/// </summary>
+	/// <returns><c>true</c>, if location to spawn object is found, <c>false</c> otherwise.</returns>
+	/// <param name="bounds">Bounds.</param>
+	/// <param name="anchorType">Anchor type, can be Ground, Ceiling, or Wall.</param>
+	/// <param name="finalX">x coord where object should spawn.</param>
+	/// <param name="finalY">y coord where object should spawn.</param>
+	/// <param name="modScale">Modified scale.</param>
+	/// <seealso cref="PrefabDatabase.GetSceneScale">modScale is retrieved via this method.</seealso>
+	/// <param name="whichPlane">Which height plane the object should spawn on.</param>
+	private bool TryPlaceGroundObject(Bounds bounds, float modScale, GeneratablePrefab.AttachAnchor anchorType, out int finalX, out int finalY, out HeightPlane whichPlane)
     {
         finalX = 0;
         finalY = 0;
         whichPlane = null;
-        modScale = 1.0f;
-        if (shouldUseStandardizedSize)
-        {
-            modScale = Mathf.Min(
-                standardizedSize.x / bounds.extents.x,
-                standardizedSize.y / bounds.extents.y,
-                standardizedSize.z / bounds.extents.z);
-        }
+
         Bounds testBounds = new Bounds(bounds.center, modScale * 2f * bounds.extents);
         int boundsWidth = Mathf.CeilToInt(2 * testBounds.extents.x / gridDim);
         int boundsLength = Mathf.CeilToInt(2 * testBounds.extents.z / gridDim);
@@ -295,6 +300,9 @@ public class ProceduralGeneration : MonoBehaviour
         return foundValid;
     }
 
+	/// <summary>
+	/// Subdivides the room via interior walls using a randomized pathing algorithm.
+	/// </summary>
     public void SubdivideRoom()
     {
         wallSegmentList.Clear();
@@ -352,230 +360,10 @@ public class ProceduralGeneration : MonoBehaviour
         }
     }
 
-
-#if UNITY_EDITOR
-    // Setup a new prefab object from a model
-    [MenuItem ("Procedural Generation/Create prefab model folders")]
-    private static void CreatePrefabFromModel()
-    {
-		Dictionary<GameObject, string> allSelected = new Dictionary<GameObject, string>();
-
-		foreach (GameObject obj in Selection.gameObjects) {
-			allSelected.Add (obj, AssetDatabase.GetAssetPath (obj));
-		}
-
-		foreach(UnityEngine.Object obj in Selection.objects)
-		{
-			if (obj != null)
-			{
-				if (obj is GameObject) {
-					allSelected.Add (obj as GameObject, AssetDatabase.GetAssetPath (obj));
-				} else if (obj is DefaultAsset) {
-					HashSet<GameObject> children = (obj as DefaultAsset).GetAllChildrenAssets<GameObject> ();
-					foreach (GameObject child in children) {
-						allSelected.Add (child, AssetDatabase.GetAssetPath (child));
-					}
-				}
-			}
-		}
-		if (allSelected == null || allSelected.Count == 0)
-			return;
-
-		List<GameObject> toRemove = new List<GameObject>();
-		foreach (KeyValuePair<GameObject, string> entry in allSelected) {
-			if (entry.Key == null || PrefabUtility.GetPrefabType (entry.Key) != PrefabType.ModelPrefab) {
-				toRemove.Add (entry.Key);
-			}
-		}
-
-		foreach (GameObject entry in toRemove) {
-			allSelected.Remove (entry);
-		}
-
-		foreach (KeyValuePair<GameObject, string> entry in allSelected) {
-			string loadingDirectory = "Assets/Models/";
-
-			if (!entry.Value.StartsWith (loadingDirectory)) {
-				Debug.LogError ("Selected Assets are not contained within " + loadingDirectory + " directory. Please move or copy assets to this directory, select them from there and try again.");
-			} else {
-				//get rid of location in hierarchy
-				string subPathWithFileType = entry.Value.Remove (0, loadingDirectory.Length);
-				//get rid of file type
-				string subPathWithoutFileType = subPathWithFileType.Remove (subPathWithFileType.LastIndexOf ('.'));
-				//get rid of file name
-				string subPathWithoutFilename = subPathWithoutFileType.Remove (subPathWithoutFileType.LastIndexOf ('/'));
-	
-				//if directory does not already exist, make one
-				System.IO.Directory.CreateDirectory(Application.dataPath + "/Resources/Prefabs/Converted Models/" + subPathWithoutFilename);
-
-				Debug.Log (Application.dataPath + "/Resources/Prefabs/Converted Models/" + subPathWithoutFilename);
-
-				//make meta file
-				EditorApplication.Step ();
-	
-				//make prefab
-				MakeSimplePrefabObj (entry.Key, subPathWithoutFileType);
-	
-				//force GC
-				EditorApplication.SaveAssets ();
-				EditorUtility.UnloadUnusedAssetsImmediate ();
-				GC.Collect ();
-				EditorApplication.Step ();
-			}
-		}
-    }
-
-	/*
-    private static void MakeMultipleSimplePrefabObj(Queue<GameObject> allObjs)
-    {
-        if (allObjs.Count == 0)
-            return;
-        GameObject obj = allObjs.Dequeue();
-        MakeSimplePrefabObj(obj);
-        if (allObjs.Count > 0)
-        {
-            if (ConcaveCollider.DelayBatchedCalls)
-                EditorApplication.delayCall += ()=>{ MakeMultipleSimplePrefabObj(allObjs); };
-            else
-                MakeMultipleSimplePrefabObj(allObjs);
-        }
-    }
-    */
-
-	private static void MakeSimplePrefabObj(GameObject obj, string subPath)
-    {
-        Debug.LogFormat("MakeSimplePrefabObj {0}", obj.name);
-        // Find vrml text if we have it
-        string vrmlText = null;
-        string vrmlPath = AssetDatabase.GetAssetPath(obj);
-        if (vrmlPath != null)
-        {
-            vrmlPath = vrmlPath.Replace(".obj", ".wrl");
-            string fullPath = System.IO.Path.Combine(Application.dataPath, vrmlPath.Substring(7));
-            if (!System.IO.File.Exists(fullPath))
-                fullPath = fullPath.Replace(".wrl", "_vhacd.wrl");
-            if (System.IO.File.Exists(fullPath))
-            {
-                using (System.IO.StreamReader reader = new System.IO.StreamReader(fullPath))
-                {
-                    vrmlText = reader.ReadToEnd();
-                }
-            }
-            else
-                Debug.LogFormat("Cannot find {0}\n{1}", vrmlPath, fullPath);
-        }
-
-        GameObject instance = GameObject.Instantiate(obj) as GameObject;
-        instance.name = obj.name;
-
-        // Remove any old colliders.
-        Collider[] foundColliders = instance.transform.GetComponentsInChildren<Collider>();
-        foreach(Collider col in foundColliders)
-            UnityEngine.Object.DestroyImmediate(col, true);
-
-        // Create SemanticObject/Rigidbody
-        instance.AddComponent<SemanticObjectSimple>().name = instance.name;
-
-        // Add generatable prefab tags
-        instance.AddComponent<GeneratablePrefab>();
-
-		//NormalSolver.RecalculateNormals (instance.GetComponentInChildren<MeshFilter> ().sharedMesh, 60);
-
-        // Save as a prefab
-		string prefabAssetPath = string.Format("Assets/Resources/Prefabs/Converted Models/{0}.prefab", subPath);
-		GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(prefabAssetPath);
-        if (prefab == null)
-            prefab = PrefabUtility.CreatePrefab(prefabAssetPath, instance);
-        else
-            prefab = PrefabUtility.ReplacePrefab(instance, prefab);
-        GameObject.DestroyImmediate(instance);
-
-
-        // Create colliders for the prefab
-        ConcaveCollider.FH_CreateColliders(prefab, vrmlText, true);
-
-        // Save out updated metadata settings
-        GeneratablePrefab metaData = prefab.GetComponent<GeneratablePrefab>();
-        metaData.ProcessPrefab();
-        SetupPrefabs(false);
-
-		EditorUtility.SetDirty (prefab);
-		try {
-			EditorUtility.SetDirty (instance);
-		} catch {
-			//do nothing
-		}
-    }
-
-    // Finds all prefabs that we can use and create a lookup table with relevant information
-    [MenuItem ("Procedural Generation/SetupPrefabs Quick")]
-    private static void SetupPrefabsQuick()
-    {
-        SetupPrefabs(false);
-    }
-
-    [MenuItem ("Procedural Generation/SetupPrefabs Full")]
-    private static void SetupPrefabsFull()
-    {
-        SetupPrefabs(true);
-    }
-
-    public static void SetupPrefabs(bool shouldRecompute)
-    {
-        ProceduralGeneration [] allThings = Resources.LoadAll<ProceduralGeneration>("");
-        if (allThings != null && allThings.Length > 0)
-            allThings[0].CompileListOfProceduralComponents(shouldRecompute);
-    }
-
-    public void SavePrefabInformation(GeneratablePrefab prefab, bool shouldRecomputePrefabInformation, bool replaceOld = true)
-    {
-        const string resPrefix = "Resources/";
-        string assetPath = AssetDatabase.GetAssetPath(prefab);
-        if (string.IsNullOrEmpty(assetPath))
-            return;
-        string newFileName = assetPath.Substring(assetPath.LastIndexOf(resPrefix) + resPrefix.Length);
-        newFileName = newFileName.Substring(0, newFileName.LastIndexOf("."));
-        int replaceIndex = -1;
-        if (replaceOld)
-        {
-            replaceIndex = availablePrefabs.FindIndex( (PrefabInfo testInfo)=>{
-                return testInfo.fileName == newFileName;
-            });
-            if (replaceIndex >= 0)
-                availablePrefabs.RemoveAt(replaceIndex);
-        }
-
-        if (prefab.shouldUse)
-        {
-            if (shouldRecomputePrefabInformation)
-                prefab.ProcessPrefab();
-            PrefabInfo newInfo = new PrefabInfo();
-            newInfo.fileName = newFileName;
-            newInfo.complexity = prefab.myComplexity;
-            newInfo.bounds = prefab.myBounds;
-            newInfo.isLight = prefab.isLight;
-            newInfo.anchorType = prefab.attachMethod;
-            foreach(GeneratablePrefab.StackableInfo stackRegion in prefab.stackableAreas)
-                newInfo.stackableAreas.Add(stackRegion);
-            if (replaceIndex < 0)
-                availablePrefabs.Add(newInfo);
-            else
-                availablePrefabs.Insert(replaceIndex, newInfo);
-        }        
-        EditorUtility.SetDirty(this);
-    }
-
-    // Save out core information so we can decide whether to place the objects dynamically even if they aren't loaded yet
-    private void CompileListOfProceduralComponents(bool shouldRecomputePrefabInformation)
-    {
-        GeneratablePrefab [] allThings = Resources.LoadAll<GeneratablePrefab>("");
-        availablePrefabs.Clear();
-        foreach(GeneratablePrefab prefab in allThings)
-            SavePrefabInformation(prefab, shouldRecomputePrefabInformation, false);
-        EditorUtility.SetDirty(this);
-    }
-#endif
-
+	/// <summary>
+	/// Makes a new color UID.
+	/// </summary>
+	/// <returns>The new UID color.</returns>
 	public static Color getNewUIDColor() {
 		if (UID_BY_INDEX >= 0x1000000)
 			Debug.LogError ("UID's has exceeded 256^3, the current max limit of objects which can be formed!");
@@ -586,20 +374,24 @@ public class ProceduralGeneration : MonoBehaviour
 		return new Color (r, g, b);
 	}
 
-    private void AddObjects(List<PrefabInfo> prefabList)
+	/// <summary>
+	/// Adds objects to the scene until no more spaces can be found or prefab list is empty.
+	/// </summary>
+	/// <param name="prefabList">List of prefabs which can be spawned in environment, will remove elements from list which can no longer be added.</param>
+    private void AddObjects(List<PrefabDatabase.PrefabInfo> prefabList)
     {
         if (prefabList.Count == 0)
         {
             _failures++;
             return;
         }
-		PrefabInfo info = prefabList[_rand.Next(0, prefabList.Count)];
+		PrefabDatabase.PrefabInfo info = prefabList[_rand.Next(0, prefabList.Count)];
 
         // Check for excess complexity
         int maxComplexity = (complexityLevelToCreate - _curComplexity);
         if (info.complexity > maxComplexity)
         {
-            prefabList.RemoveAll((PrefabInfo testInfo)=>{
+            prefabList.RemoveAll((PrefabDatabase.PrefabInfo testInfo)=>{
                 return testInfo.complexity > maxComplexity;
             });
             if (showProcGenDebug)
@@ -611,24 +403,25 @@ public class ProceduralGeneration : MonoBehaviour
 
         // Find a spot to place this object
         int spawnX, spawnZ;
-        float modScale;
+		float modScale = prefabDatabase.GetSceneScale (info);
         HeightPlane targetHeightPlane;
         Quaternion modifiedRotation = Quaternion.identity;
         if (info.stackableAreas.Count == 0)
 			modifiedRotation = Quaternion.Euler(new Vector3(0, (float) _rand.NextDouble() * 360f,0));
         Bounds modifiedBounds = info.bounds.Rotate(modifiedRotation);
 
-        if (TryPlaceGroundObject(modifiedBounds, info.anchorType, out spawnX, out spawnZ, out modScale, out targetHeightPlane))
-        {
-            int boundsWidth = Mathf.CeilToInt(modScale* 2f * modifiedBounds.extents.x / gridDim) - 1;
-            int boundsLength = Mathf.CeilToInt(modScale* 2f * modifiedBounds.extents.z / gridDim) - 1;
-            float modHeight = 0.1f+(modifiedBounds.extents.y * modScale);
-            Vector3 centerPos = targetHeightPlane.cornerPos + new Vector3(gridDim * (spawnX + (0.5f * boundsWidth)), modHeight, gridDim * (spawnZ + (0.5f * boundsLength)));
-            if (info.anchorType == GeneratablePrefab.AttachAnchor.Ceiling)
-                centerPos.y = _roomCornerPos.y + _curRoomHeight - modHeight;
-
+		if (TryPlaceGroundObject (modifiedBounds, modScale, info.anchorType, out spawnX, out spawnZ, out targetHeightPlane)) {
+			int boundsWidth = Mathf.CeilToInt (modScale * 2f * modifiedBounds.extents.x / gridDim) - 1;
+			int boundsLength = Mathf.CeilToInt (modScale * 2f * modifiedBounds.extents.z / gridDim) - 1;
+			float modHeight = 0.1f + (modifiedBounds.extents.y * modScale);
+			Vector3 centerPos = targetHeightPlane.cornerPos + new Vector3 (gridDim * (spawnX + (0.5f * boundsWidth)), modHeight, gridDim * (spawnZ + (0.5f * boundsLength)));
+			if (info.anchorType == GeneratablePrefab.AttachAnchor.Ceiling)
+				centerPos.y = _roomCornerPos.y + _curRoomHeight - modHeight;
+			
+			//THIS IS THE LINE THAT NEEDS TO REQUEST THAT PREFAB DATABASE LOAD THESE OBJECTS AND RETURN REFERENCES TO THEM; LINE SHOULD BE LIKE:
+			// GameObject newPrefab = prefabDatabase.Load(info.fileName);
             GameObject newPrefab = Resources.Load<GameObject>(info.fileName);
-            // TODO: Factor in complexity to the arrangement algorithm?
+            // TODO: Factor in complex		ity to the arrangement algorithm?
             _curComplexity += info.complexity;
 
             GameObject newInstance = UnityEngine.Object.Instantiate<GameObject>(newPrefab.gameObject);
@@ -697,6 +490,11 @@ public class ProceduralGeneration : MonoBehaviour
         }
     }
 
+	/// <summary>
+	/// Creates  room.
+	/// </summary>
+	/// <param name="roomDimensions">Room dimensions.</param>
+	/// <param name="roomCenter">Room center.</param>
     public void CreateRoom(Vector3 roomDimensions, Vector3 roomCenter)
     {
         _curRoom = new GameObject("New Room").transform;
@@ -712,6 +510,7 @@ public class ProceduralGeneration : MonoBehaviour
         floor.AddComponent<SemanticObjectSimple>();
         floor.GetComponent<Rigidbody>().isKinematic = true;
         
+		//set UID for floor as 000001
         Renderer[] RendererList = floor.GetComponentsInChildren<Renderer>();
 		foreach (Renderer _rend in RendererList)
 		{
@@ -720,12 +519,8 @@ public class ProceduralGeneration : MonoBehaviour
 				_mat.SetColor("_idval", new Color(0f,0f,1f/256f));	
 			}
 		}
-		//{
-		//	_rend.material.SetInt("_idval", 1);	
-		//}	
-        //floor.GetComponent<Renderer>().material.SetInt("_idval", 1);
 
-		// Make a spawn plane
+		// Make a spawn plane on the floor for the avatar
 		SpawnArea floorSpawn = GameObject.Instantiate<SpawnArea>(Resources.Load<SpawnArea>("Prefabs/PlaneSpawn"));
 		floorSpawn.gameObject.transform.position = roomCenter;
        	
@@ -741,6 +536,8 @@ public class ProceduralGeneration : MonoBehaviour
         top.AddComponent<SemanticObjectSimple>();
         top.GetComponent<Rigidbody>().isKinematic = true;
         RendererList = top.GetComponentsInChildren<Renderer>();
+
+		//set UID for ceiling as 000002
 		foreach (Renderer _rend in RendererList)
 		{
 			foreach (Material _mat in _rend.materials)
@@ -748,11 +545,6 @@ public class ProceduralGeneration : MonoBehaviour
 				_mat.SetColor("_idval", new Color(0f,0f,2f/256f));	
 			}
 		}
-		//{
-		//	_rend.material.SetInt("_idval", 2);	
-		//}
-        
-        //top.GetComponent<Renderer>().material.SetInt("_idval", 2);
 
         // Setup floor plane
         _allHeightPlanes.Clear();
@@ -771,6 +563,10 @@ public class ProceduralGeneration : MonoBehaviour
         SubdivideRoom();
     }
 
+	/// <summary>
+	/// Draws the test grid for a height plane.
+	/// </summary>
+	/// <param name="plane">Height plane.</param>
     private void DrawTestGrid(HeightPlane plane)
     {
         // Create debug test grid on the floor
@@ -792,6 +588,10 @@ public class ProceduralGeneration : MonoBehaviour
         }        
     }
 
+	/// <summary>
+	/// Determines whether this instance is done generating room.
+	/// </summary>
+	/// <returns><c>true</c> if this instance is done; otherwise, <c>false</c>.</returns>
     public bool IsDone()
     {
         // TODO: Find a better metric for completion

@@ -541,6 +541,7 @@ MonoBehaviour:
   - rotationAngle: 0
     bottomCenter: {x: -0.03, y: 2.48, z: 0}
     dimensions: {x: 6.7, y: 0, z: 1.23}
+  canonicalScale: 1
 --- !u!114 &11449262
 MonoBehaviour:
   m_ObjectHideFlags: 1

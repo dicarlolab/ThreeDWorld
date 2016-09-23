@@ -1898,6 +1898,7 @@ MonoBehaviour:
   attachMethod: 0
   generationTags: []
   stackableAreas: []
+  canonicalScale: 1
 --- !u!114 &11491828
 MonoBehaviour:
   m_ObjectHideFlags: 1

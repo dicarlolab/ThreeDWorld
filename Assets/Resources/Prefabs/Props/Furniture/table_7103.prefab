@@ -964,6 +964,7 @@ MonoBehaviour:
   - rotationAngle: 0
     bottomCenter: {x: 0, y: 0.42, z: 0.04}
     dimensions: {x: 1.73, y: 0, z: 0.89}
+  canonicalScale: 1
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

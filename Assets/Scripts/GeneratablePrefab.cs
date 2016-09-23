@@ -29,6 +29,7 @@ public class GeneratablePrefab : MonoBehaviour
     public AttachAnchor attachMethod = AttachAnchor.Ground;
     public List<string> generationTags = new List<string>();
     public List<StackableInfo> stackableAreas = new List<StackableInfo>();
+	public float canonicalScale = 1f;
     #endregion
 
 #if UNITY_EDITOR
