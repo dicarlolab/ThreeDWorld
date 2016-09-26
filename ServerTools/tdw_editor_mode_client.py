@@ -53,7 +53,7 @@ def loop():
 	}
 
 	print "sending join..."
-	sock.send_json({"msg_type" : "CLIENT_JOIN_WITH_CONFIG", "config" : config, "get_obj_data" : True, "sendSceneInfo" : True})
+	sock.send_json({"msg_type" : "CLIENT_JOIN_WITH_CONFIG", "config" : config, "get_obj_data" : True, "send_scene_info" : True})
 	print "...join sent"
 
 	'''
@@ -72,7 +72,7 @@ def loop():
 		img2.show()
 		img3.show()
 		time.sleep(10)
-		sock.send_json({"msg_type" : "CLIENT_INPUT", "vel": [0.0, 0.0, 0.0], "ang_vel" : [0.0, 0.0, 0.0], "teleport_random" : True, "get_obj_data" : True, "sendSceneInfo" : True})
+		sock.send_json({"msg_type" : "CLIENT_INPUT", "vel": [0.0, 0.0, 0.0], "ang_vel" : [0.0, 0.0, 0.0], "teleport_random" : True, "get_obj_data" : True, "send_scene_info" : True})
 		print "...input sent"
 	'''
 	teleport=0
@@ -82,7 +82,7 @@ def loop():
 		print "messages received"
 		if teleport < 40:
 			teleport += 1
-			sock.send_json({"msg_type" : "CLIENT_INPUT", "vel": [0.0, 0.0, 0.0], "ang_vel" : [0.0, 0.0, 0.0], "teleport_random" : True, "get_obj_data" : True, "sendSceneInfo" : True})
+			sock.send_json({"msg_type" : "CLIENT_INPUT", "vel": [0.0, 0.0, 0.0], "ang_vel" : [0.0, 0.0, 0.0], "teleport_random" : True, "get_obj_data" : True, "send_scene_info" : True})
 			#time.sleep(3)
 		else:
 			sock.send_json({"msg_type" : "SCENE_SWITCH", "config" : config})

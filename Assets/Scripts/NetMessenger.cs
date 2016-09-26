@@ -452,7 +452,7 @@ public class NetMessenger : MonoBehaviour
 				_info.Add(semObj.gameObject.name);
 				Color colorID = semObj.gameObject.GetComponentInChildren<Renderer> ().material.GetColor ("_idval");
 				_info.Add(colorUIDToString(colorID));
-				jsonData["sceneInfo"].Add(_info);
+				jsonData["scene_info"].Add(_info);
 
 	    	}
 	    }
