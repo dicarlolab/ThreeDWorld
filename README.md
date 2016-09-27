@@ -240,3 +240,11 @@ First, click the *Play* button in Unity. Why? It starts memory management proces
 # License
 
 Apache 2.0
+
+
+To go from monitor to headless:
+    (a) stop lightdm service ("sudo service lightdm stop") 
+    (b) run:  
+         sudo nvidia-xconfig -a --use-display-device=None --virtual=1280x1024 
+         sudo /usr/bin/X :0 
+To go the opposite way, kill the X server and restart lightdm -- you might have to reboot(?) 
