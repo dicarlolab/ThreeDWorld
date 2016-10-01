@@ -190,6 +190,16 @@ So tragically, some of making scenes requires the use of the GUI. Luckily it isn
 
 Prefabs, seemingly confusing subject, but surprisingly simple. Prefabs are hierarchies of objects which can be saved outside a scene. If you want two planes to be positioned to bisect each other, you can position them in the scene editor as so, drag one plane into the other plane in the hierarchy menu, and you will wind up creating a single object with sub parts. If you move the outermost object, the sub parts will move with it. You can run methods in a script to acquire information about children or parents in the hierarchy. This hierarchical object can be fairly powerful. The special thing you can do with said object structures in Unity, is that you can save such hierarchies (which can just be one object with no children by the way) as a file called a prefab. The prefab saves all of the information about the hierarchy and can reproduce it in any scene, any number of times.
 
+## Debugging
+
+- With the Unity GUI open, you need to first open the BaseScene (by default, an untitled scene is up). To get the BaseScene loaded, you need to go to scenes in the project explorer tab and double click the scene.
+- Once its loaded, it will show at the top of the hierarchy tab that you have BaseScene instead of Untitled.
+- From there you will want to go to a terminal instance and go to `ThreeDWorld/ServerTools`.
+- Now you hit play on the Monodevelop app, followed by play in Unity, followed by running `python tdw_editor_mode_client.py`
+- The Python script essentially just connects to port 5556 where the GUI process is set to bind, makes a procedural generation scene and loops 40 calls to teleport, followed by a scene switch until you quit either the unity process or the Python process.
+- In a proper outcome, when you hit play a scene called Empty will be loaded along with BaseScene. When you run the Python script, the Unity app will pause for a while and then have switched out Empty with ProceduralGeneration. At which point you would watch it cycle through a bunch of generated images.
+- If there's an error, you can go to the console tab to see what went wrong.
+
 ## Importing objects to Unity
 
 ### Downsampling objects
