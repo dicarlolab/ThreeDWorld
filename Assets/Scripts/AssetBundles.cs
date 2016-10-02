@@ -8,6 +8,8 @@ using UnityEngine.SceneManagement;
 using UnityEditor;
 #endif
 
+
+#if UNITY_EDITOR
 public class CreateAssetBundles
 {
 	public Dictionary<GameObject, string> ListSelectedPrefabs()
@@ -126,6 +128,8 @@ public class GetAssetBundleNames
 		}
 	}
 }
+
+#endif
 
 //public class SetAssetBundleLabel
 //{
