@@ -1,11 +1,12 @@
 ﻿using UnityEngine;
-using UnityEditor;
 using System.Collections;
 using System;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 
-
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 public class CreateAssetBundles
 {
