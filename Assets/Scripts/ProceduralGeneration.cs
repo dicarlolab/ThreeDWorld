@@ -143,7 +143,8 @@ public class ProceduralGeneration : MonoBehaviour
         } else {
             _rand = new System.Random (_curRandSeed);
         }
-Debug.Log("Using random seed: " + _curRandSeed);
+
+        Debug.Log("Using random seed: " + _curRandSeed);
 
         // load prefab database from Base Scene
         prefabDatabase = GameObject.FindObjectOfType<PrefabDatabase>();
@@ -430,6 +431,14 @@ Debug.Log("Using random seed: " + _curRandSeed);
         if (info.option_scale=="Multi_size")
         {
             modScale    = modScale*info.dynamic_scale;
+        }
+
+        // For option "Absol_size"
+        if (info.option_scale=="Absol_size")
+        {
+            float longest_axis      = info.bounds.size.magnitude;
+            Debug.Log("Longest axis: " + longest_axis.ToString());
+            modScale                = info.dynamic_scale/longest_axis;
         }
 
         HeightPlane targetHeightPlane;

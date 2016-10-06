@@ -29,7 +29,7 @@ def loop():
 		"standardized_size": [1.0, 1.0, 1.0],
 		"disabled_items": [], #["SQUIRL", "SNAIL", "STEGOSRS"], // A list of item names to not use, e.g. ["lamp", "bed"] would exclude files with the word "lamp" or "bed" in their file path
 		"permitted_items": ["bed1"] , #[],["bed1", "sofa_blue", "lamp"]
-                "scale_relat_dict": {"bed1": {"option": "Multi_size", "scale": 10.5}},  # TODO: implement "Absol_size", and "Fract_room"
+                "scale_relat_dict": {"bed1": {"option": "Absol_size", "scale": 10}},  # option: "Absol_size", "Fract_room", "Multi_size"; TODO: implement "Fract_room"
 		"complexity": 20000,
 		"num_ceiling_lights": 4,
 		"minimum_stacking_base_objects": 5,

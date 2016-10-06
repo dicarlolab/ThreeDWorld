@@ -64,7 +64,8 @@ sock = tc.run()  # get a zmq socket for sending and receiving messages
 	"should_use_standardized_size": False,
 	"standardized_size": [1.0, 1.0, 1.0],
 	"disabled_items": [],  # ["SQUIRL", "SNAIL", "STEGOSRS"], # A list of item names to not use, e.g. ["lamp", "bed"] would exclude files with the word "lamp" or "bed" in their file path
-	"permitted_items": [],  # ["bed1", "sofa_blue", "lamp"],
+        "permitted_items": ["bed1"] , #[],["bed1", "sofa_blue", "lamp"]
+        "scale_relat_dict": {"bed1": {"option": "Absol_size", "scale": 10}},  # option: "Absol_size", "Fract_room", "Multi_size"; TODO: implement "Fract_room"
 	"complexity": 7500,
 	"num_ceiling_lights": 4,
 	"minimum_stacking_base_objects": 15,
@@ -94,6 +95,17 @@ Okay, so looking through this, we can see that config files are json files. Of s
 The next thing to check out is the random seed which can be used to control the seed deciding random actions in the environment, i.e. where objects get placed and how they get placed.
 
 All the seeds excluding `'environment_scene'`, are all customizable. If you were to write a different environment, you could create a totally different set of keys to expect from the avatar. The base unity code will not care what kind of things you throw into the json config file, so long as you can retrieve them in C# (as a note, make sure this is actually possible as for some special or custom classes, it may actually not be).
+
+### About scaling options
+
+In the example config message, there is one dictionary called "scale\_relat\_dict". This dictionary is used to tell the ProceduralGeneration how to scale every object. Three options are provided: 
+
+- "Absol\_size": 
+        The object in the scene would be resized to make the longest axis of that to be the "scale" sent in; 
+- "Fract\_room" (__NOT Implemented!!!__): 
+        The object in the scene would be resized to make the longest axis of that to be the "scale"\*"longest axis of the room"
+- "Multi\_size":
+        Just multiple the native size by "scale"
 
 ## Creating new `enviroment_scene`
 
