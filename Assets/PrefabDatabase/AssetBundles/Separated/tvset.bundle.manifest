@@ -1,0 +1,36 @@
+ManifestFileVersion: 0
+CRC: 2655057188
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: 4691ff62c78657792e3e9d707ababbc0
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 8187c4884887b007dbf40c0e203d8b03
+HashAppended: 0
+ClassTypes:
+- Class: 1
+  Script: {instanceID: 0}
+- Class: 4
+  Script: {instanceID: 0}
+- Class: 21
+  Script: {instanceID: 0}
+- Class: 23
+  Script: {instanceID: 0}
+- Class: 33
+  Script: {instanceID: 0}
+- Class: 43
+  Script: {instanceID: 0}
+- Class: 48
+  Script: {instanceID: 0}
+- Class: 54
+  Script: {instanceID: 0}
+- Class: 114
+  Script: {fileID: 11500000, guid: fa8bdad9898d94340ab9980d8e4cdb15, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: ec657f7dbf5ce404898eb31282b67953, type: 3}
+- Class: 115
+  Script: {instanceID: 0}
+Assets:
+- Assets/PrefabDatabase/GeneratedPrefabs/Props/TV/model/TVset.prefab
+Dependencies: []

@@ -46,7 +46,7 @@ public class AssetBundle_test : MonoBehaviour
 
 		// List all files in AssetBundles directory
 		string currentPath = Directory.GetCurrentDirectory ();
-		string AssetBundlesPath = Path.Combine (currentPath, "Assets/AssetBundles/");
+		string AssetBundlesPath = Path.Combine (currentPath, "Assets/PrefabDatabase/AssetBundles/");
 		if (script_mode == "merged") {
 			assetBundleList = Directory.GetFiles (Path.Combine(AssetBundlesPath, "Merged"), "*.bundle");
 		} else if (script_mode == "separated") {
