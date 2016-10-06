@@ -283,6 +283,8 @@ public class NetMessenger : MonoBehaviour
 
 		Debug.Log ("Scene config: " + jsonData ["config"].ToJSON ());
 
+                //Debug.Log("Scale Related Dict: " + SimulationManager.argsConfig["scale_relat_dict"]["bed1"]["option"].ToJSON());
+
 		this.scenesToUnload = new List<Scene> ();
 
 		// Unload old scene(s)

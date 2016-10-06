@@ -52,6 +52,7 @@ public class ProceduralGeneration : MonoBehaviour
     public Material windowMaterial = null;
     public Material windowTrimMaterial = null;
     public bool showProcGenDebug = false;
+    public LitJson.JsonData scaleRelatDict = new LitJson.JsonData();
 
     private int _curRandSeed = 0;
     private int _curComplexity = 0;
@@ -131,18 +132,21 @@ public class ProceduralGeneration : MonoBehaviour
             MAX_NUM_TWISTS = json["max_wall_twists"].ReadInt(MAX_NUM_TWISTS);
             maxPlacementAttempts = json["max_placement_attempts"].ReadInt(maxPlacementAttempts);
             gridDim = json["grid_size"].ReadFloat(gridDim);
+            // scaleRelatDict = new LitJson.JsonData(json["scale_relat_dict"]);
+            //scaleRelatDict = json["scale_relat_dict"];
         }
-		_curRandSeed = UnityEngine.Random.Range (int.MinValue, int.MaxValue);
-		if (shouldUseGivenSeed) {
-			_rand = new System.Random (desiredRndSeed);
-			_curRandSeed = desiredRndSeed;
-		} else {
-			_rand = new System.Random (_curRandSeed);
-		}
-        Debug.Log("Using random seed: " + _curRandSeed);
 
-		// load prefab database from Base Scene
-		prefabDatabase = GameObject.FindObjectOfType<PrefabDatabase>();
+        _curRandSeed = UnityEngine.Random.Range (int.MinValue, int.MaxValue);
+        if (shouldUseGivenSeed) {
+            _rand = new System.Random (desiredRndSeed);
+            _curRandSeed = desiredRndSeed;
+        } else {
+            _rand = new System.Random (_curRandSeed);
+        }
+Debug.Log("Using random seed: " + _curRandSeed);
+
+        // load prefab database from Base Scene
+        prefabDatabase = GameObject.FindObjectOfType<PrefabDatabase>();
 
         List<PrefabDatabase.PrefabInfo> filteredPrefabs = prefabDatabase.prefabs.FindAll(((PrefabDatabase.PrefabInfo info)=>{
             // Remove items that have been disallowed
@@ -158,7 +162,19 @@ public class ProceduralGeneration : MonoBehaviour
                 foreach(string itemName in permittedItems)
                 {
                     if (info.fileName.ToLowerInvariant().Contains(itemName.ToLowerInvariant()))
+                    {
+                        //info.option_scale   = "";
+                        //info.dynamic_scale  = 1f;
+
+                        // Get the option and scale from json message
+
+                        info.option_scale   = json["scale_relat_dict"][itemName]["option"].ReadString(info.option_scale);
+                        info.dynamic_scale  = json["scale_relat_dict"][itemName]["scale"].ReadFloat(info.dynamic_scale);
+
+                        //Debug.Log("Test output of option: " + info.option_scale);
+
                         return true;
+                    }
                 }
                 return false;
             }
@@ -228,7 +244,9 @@ public class ProceduralGeneration : MonoBehaviour
 	/// <param name="modScale">Modified scale.</param>
 	/// <seealso cref="PrefabDatabase.GetSceneScale">modScale is retrieved via this method.</seealso>
 	/// <param name="whichPlane">Which height plane the object should spawn on.</param>
-	private bool TryPlaceGroundObject(Bounds bounds, float modScale, GeneratablePrefab.AttachAnchor anchorType, out int finalX, out int finalY, out HeightPlane whichPlane)
+        ///
+
+    private bool TryPlaceGroundObject(Bounds bounds, float modScale, GeneratablePrefab.AttachAnchor anchorType, out int finalX, out int finalY, out HeightPlane whichPlane)
     {
         finalX = 0;
         finalY = 0;
@@ -240,7 +258,8 @@ public class ProceduralGeneration : MonoBehaviour
         float boundsHeight = testBounds.extents.y;
 
         List<int> randomPlanesOrder = new List<int>();
-		int randomOrderValue = _rand.Next(0, int.MaxValue);
+        int randomOrderValue = _rand.Next(0, int.MaxValue);
+
         for(int i = 0; i < _allHeightPlanes.Count; ++i)
             randomPlanesOrder.Insert(randomOrderValue % (randomPlanesOrder.Count + 1), i);
         if (_forceStackObject)
@@ -385,7 +404,9 @@ public class ProceduralGeneration : MonoBehaviour
             _failures++;
             return;
         }
-		PrefabDatabase.PrefabInfo info = prefabList[_rand.Next(0, prefabList.Count)];
+
+        // Randomly add next one?
+        PrefabDatabase.PrefabInfo info = prefabList[_rand.Next(0, prefabList.Count)];
 
         // Check for excess complexity
         int maxComplexity = (complexityLevelToCreate - _curComplexity);
@@ -403,23 +424,31 @@ public class ProceduralGeneration : MonoBehaviour
 
         // Find a spot to place this object
         int spawnX, spawnZ;
-		float modScale = prefabDatabase.GetSceneScale (info);
+        float modScale = prefabDatabase.GetSceneScale (info);
+
+        // For option "Multi_size"
+        if (info.option_scale=="Multi_size")
+        {
+            modScale    = modScale*info.dynamic_scale;
+        }
+
         HeightPlane targetHeightPlane;
         Quaternion modifiedRotation = Quaternion.identity;
+
         if (info.stackableAreas.Count == 0)
-			modifiedRotation = Quaternion.Euler(new Vector3(0, (float) _rand.NextDouble() * 360f,0));
+            modifiedRotation = Quaternion.Euler(new Vector3(0, (float) _rand.NextDouble() * 360f,0));
         Bounds modifiedBounds = info.bounds.Rotate(modifiedRotation);
 
-		if (TryPlaceGroundObject (modifiedBounds, modScale, info.anchorType, out spawnX, out spawnZ, out targetHeightPlane)) {
-			int boundsWidth = Mathf.CeilToInt (modScale * 2f * modifiedBounds.extents.x / gridDim) - 1;
-			int boundsLength = Mathf.CeilToInt (modScale * 2f * modifiedBounds.extents.z / gridDim) - 1;
-			float modHeight = 0.1f + (modifiedBounds.extents.y * modScale);
-			Vector3 centerPos = targetHeightPlane.cornerPos + new Vector3 (gridDim * (spawnX + (0.5f * boundsWidth)), modHeight, gridDim * (spawnZ + (0.5f * boundsLength)));
-			if (info.anchorType == GeneratablePrefab.AttachAnchor.Ceiling)
-				centerPos.y = _roomCornerPos.y + _curRoomHeight - modHeight;
-			
-			//THIS IS THE LINE THAT NEEDS TO REQUEST THAT PREFAB DATABASE LOAD THESE OBJECTS AND RETURN REFERENCES TO THEM; LINE SHOULD BE LIKE:
-			// GameObject newPrefab = prefabDatabase.Load(info.fileName);
+        if (TryPlaceGroundObject (modifiedBounds, modScale, info.anchorType, out spawnX, out spawnZ, out targetHeightPlane)) {
+            int boundsWidth = Mathf.CeilToInt (modScale * 2f * modifiedBounds.extents.x / gridDim) - 1;
+            int boundsLength = Mathf.CeilToInt (modScale * 2f * modifiedBounds.extents.z / gridDim) - 1;
+            float modHeight = 0.1f + (modifiedBounds.extents.y * modScale);
+            Vector3 centerPos = targetHeightPlane.cornerPos + new Vector3 (gridDim * (spawnX + (0.5f * boundsWidth)), modHeight, gridDim * (spawnZ + (0.5f * boundsLength)));
+            if (info.anchorType == GeneratablePrefab.AttachAnchor.Ceiling)
+                    centerPos.y = _roomCornerPos.y + _curRoomHeight - modHeight;
+            
+            //THIS IS THE LINE THAT NEEDS TO REQUEST THAT PREFAB DATABASE LOAD THESE OBJECTS AND RETURN REFERENCES TO THEM; LINE SHOULD BE LIKE:
+            // GameObject newPrefab = prefabDatabase.Load(info.fileName);
             GameObject newPrefab = Resources.Load<GameObject>(info.fileName);
             // TODO: Factor in complex		ity to the arrangement algorithm?
             _curComplexity += info.complexity;
@@ -429,16 +458,17 @@ public class ProceduralGeneration : MonoBehaviour
             newInstance.transform.localScale = newInstance.transform.localScale * modScale;
             newInstance.transform.rotation = modifiedRotation * newInstance.transform.rotation;
             //newInstance.name = string.Format("{0} #{1} on {2}", newPrefab.name, (_curRoom != null) ? _curRoom.childCount.ToString() : "?", targetHeightPlane.name);
-			newInstance.name = string.Format("{0}, {1}, {2}", info.fileName, newPrefab.name, (_curRoom != null) ? _curRoom.childCount.ToString() : "?");
-			Renderer[] RendererList = newInstance.GetComponentsInChildren<Renderer>();
-			Color colorID = getNewUIDColor ();
-			foreach (Renderer _rend in RendererList)
-			{
-				foreach (Material _mat in _rend.materials)
-				{
-					_mat.SetColor("_idval", colorID);	
-				}
-			}	
+            
+            newInstance.name = string.Format("{0}, {1}, {2}", info.fileName, newPrefab.name, (_curRoom != null) ? _curRoom.childCount.ToString() : "?");
+            Renderer[] RendererList = newInstance.GetComponentsInChildren<Renderer>();
+            Color colorID = getNewUIDColor ();
+            foreach (Renderer _rend in RendererList)
+            {
+                    foreach (Material _mat in _rend.materials)
+                    {
+                            _mat.SetColor("_idval", colorID);	
+                    }
+            }	
 	
             // Create test cube
             if (DEBUG_testCubePrefab != null)

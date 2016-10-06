@@ -20,6 +20,8 @@ public class PrefabDatabase : MonoBehaviour
 		public GeneratablePrefab.AttachAnchor anchorType;
 		public Bounds bounds;
 		public List<GeneratablePrefab.StackableInfo> stackableAreas = new List<GeneratablePrefab.StackableInfo>();
+                public string option_scale="NULL"; // for option of how scale should happen
+                public float dynamic_scale=1f; // for the dynamic scale come with option
 	}
 
 	#region Fields
