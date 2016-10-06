@@ -36,8 +36,6 @@ public class CameraStreamer : MonoBehaviour
     // Debug UI image that shows what this camera is rendering out
     public RawImage testImage = null;
 
-    public NetMessenger _myMessenger = null;
-
     private Camera _textureCam = null;
     private Texture2D _outPhoto = null;
     // If not empty, this queue will have the camera will capture a render and send a callback
@@ -50,6 +48,17 @@ public class CameraStreamer : MonoBehaviour
     private static byte[] _bmpHeader = null;
     private static UInt32 _lastBmpDimX = 0;
     private static UInt32 _lastBmpDimY = 0;
+#endregion
+
+#region Unity callbacks
+    // Use this for initialization
+    void Start()
+    {
+    }
+
+    void Update()
+    {
+    }
 #endregion
 
 #region Public functions
@@ -73,10 +82,10 @@ public class CameraStreamer : MonoBehaviour
     // at the end of the frame(to avoid conflicts with the main rendering logic)
     public IEnumerator CaptureCoroutine()
     {
-        if (_myMessenger.logTimeInfo)
+        if (NetMessenger.logTimingInfo)
             Debug.LogFormat("Start CaptureCoroutine() {0}", Utils.GetTimeStamp());
         yield return new WaitForEndOfFrame();
-        if (_myMessenger.logTimeInfo)
+        if (NetMessenger.logTimingInfo)
             Debug.LogFormat("Reached end of frame {0}", Utils.GetTimeStamp());
         while(_captureRequests.Count > 0)
             ProcessCaptureRequest(_captureRequests.Dequeue());
@@ -176,7 +185,7 @@ public class CameraStreamer : MonoBehaviour
 
     private CapturedImage TakeSnapshotNow(Shader targetShader)
     {
-        if (_myMessenger.logTimeInfo)
+        if (NetMessenger.logTimingInfo)
             Debug.LogFormat("Start TakeShapshotNow() {0} {1}", (targetShader == null) ? "(null)" : targetShader.name, Utils.GetTimeStamp());
         // Create a new camera if we need to that we will be manually rendering
         if (_textureCam == null)
@@ -195,7 +204,7 @@ public class CameraStreamer : MonoBehaviour
             targetCam.RenderWithShader(targetShader, null);
         else
             targetCam.Render();
-        if (_myMessenger.logTimeInfo)
+        if (NetMessenger.logTimingInfo)
             Debug.LogFormat("  Finished Rendering {0}", Utils.GetTimeStamp());
 
         // Copy and convert rendered image to PNG format as a byte array
@@ -211,7 +220,7 @@ public class CameraStreamer : MonoBehaviour
         _outPhoto.ReadPixels(new Rect(0, 0, pixWidth, pixHeight), 0, 0);
         _outPhoto.Apply();
 
-        if (_myMessenger.logTimeInfo)
+        if (NetMessenger.logTimingInfo)
             Debug.LogFormat("  Created texture(internal format) {0}", Utils.GetTimeStamp());
 
         CapturedImage retImage = new CapturedImage();
@@ -221,7 +230,7 @@ public class CameraStreamer : MonoBehaviour
             retImage.pictureBuffer = _outPhoto.EncodeToJPG();
         else
             EncodeBMP(ref retImage, _outPhoto, pixWidth, pixHeight);
-        if (_myMessenger.logTimeInfo)
+        if (NetMessenger.logTimingInfo)
             Debug.LogFormat("  Encoded image {0}", Utils.GetTimeStamp());
         return retImage;
     }

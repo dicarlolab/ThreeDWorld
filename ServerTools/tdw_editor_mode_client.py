@@ -29,10 +29,10 @@ def loop():
 		"standardized_size": [1.0, 1.0, 1.0],
 		"disabled_items": [], #["SQUIRL", "SNAIL", "STEGOSRS"], // A list of item names to not use, e.g. ["lamp", "bed"] would exclude files with the word "lamp" or "bed" in their file path
 		"permitted_items": [], #["bed1", "sofa_blue", "lamp"],
-		"complexity": 20000,
+		"complexity": 10000,
 		"num_ceiling_lights": 4,
 		"minimum_stacking_base_objects": 5,
-		"minimum_objects_to_stack": 100,
+		"minimum_objects_to_stack": 5,
 		"room_width": 45.0,
 		"room_height": 20.0,
 		"room_length": 45.0,

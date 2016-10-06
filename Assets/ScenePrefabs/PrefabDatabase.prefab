@@ -52,1087 +52,499 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   prefabs:
-  - fileName: Prefabs/Converted Models/rand_objs2/0/1be1707593a15cf9fa9286f039319ff7
-    complexity: 25
-    isLight: 0
-    anchorType: 0
-    bounds:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.486835, y: 0.109295, z: 0.0323495}
-    stackableAreas: []
-  - fileName: Prefabs/Converted Models/rand_objs2/1/d19c003cf7dbf111543941eaaf04581f
-    complexity: 75
-    isLight: 0
-    anchorType: 0
-    bounds:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.475805, y: 0.109378, z: 0.107918}
-    stackableAreas: []
-  - fileName: Prefabs/Converted Models/rand_objs2/10/62bba707a00a2fd0c271edf49b97f472
-    complexity: 39
-    isLight: 0
-    anchorType: 0
-    bounds:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.963199, y: 0.9993196, z: 0.9631998}
-    stackableAreas:
-    - rotationAngle: 0
-      bottomCenter: {x: 0, y: 1.04, z: 0}
-      dimensions: {x: 1.462, y: 0, z: 1.462}
-  - fileName: Prefabs/Converted Models/rand_objs2/11/980ea79e2dab7a595f4027209dc8065d
-    complexity: 157
-    isLight: 0
-    anchorType: 0
-    bounds:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.133448, y: 0.0284015, z: 0.481025}
-    stackableAreas: []
-  - fileName: Prefabs/Converted Models/rand_objs2/12/4dde6d694443a488edb5be732846826
-    complexity: 73
-    isLight: 0
-    anchorType: 0
-    bounds:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.20614, y: 0.406217, z: 0.20614}
-    stackableAreas: []
-  - fileName: Prefabs/Converted Models/rand_objs2/13/effb1b260f100f5919fb4103277a6b93
-    complexity: 39
-    isLight: 0
-    anchorType: 0
-    bounds:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.230688, y: 0.370106, z: 0.24455}
-    stackableAreas: []
-  - fileName: Prefabs/Converted Models/rand_objs2/14/799397068de1ae1c4587d6a85176d7a0
-    complexity: 5
-    isLight: 0
-    anchorType: 0
-    bounds:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.104822, y: 0.477519, z: 0.104822}
-    stackableAreas: []
-  - fileName: Prefabs/Converted Models/rand_objs2/15/39adf6058de74934ba18ade30e563d37
+  - fileName: /Users/pouyabashivan/Dropbox (MIT)/Codes/Downloads/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/1b84dededd445058e44a5473032f38f.bundle
     complexity: 15
     isLight: 0
     anchorType: 0
     bounds:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 1.2075704, y: 0.95333177, z: 2.6057634}
-    stackableAreas:
-    - rotationAngle: 0
-      bottomCenter: {x: 0, y: 1, z: 0}
-      dimensions: {x: 2.2, y: 0, z: 4.5}
-  - fileName: Prefabs/Converted Models/rand_objs2/16/6b00fdf6062389ad738dd0d3509c7e47
-    complexity: 25
-    isLight: 0
-    anchorType: 0
-    bounds:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.269215, y: 0.299044, z: 0.29681}
+      m_Center: {x: 0, y: -0.22794998, z: 0.00001899898}
+      m_Extent: {x: 0.252765, y: 0.417036, z: 0.110413}
     stackableAreas: []
-  - fileName: Prefabs/Converted Models/rand_objs2/17/7fb5dcec8e6745554ddfff13f461e46e
-    complexity: 185
-    isLight: 0
-    anchorType: 0
-    bounds:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.411979, y: 0.181905, z: 0.217219}
-    stackableAreas: []
-  - fileName: Prefabs/Converted Models/rand_objs2/18/94371ddd6d62f7b762ec387b772e9e1
-    complexity: 27
-    isLight: 0
-    anchorType: 0
-    bounds:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.182541, y: 0.425494, z: 0.188768}
-    stackableAreas: []
-  - fileName: Prefabs/Converted Models/rand_objs2/19/261f4a30328cd40960a676833b21afd4
-    complexity: 257
-    isLight: 0
-    anchorType: 0
-    bounds:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.411506, y: 0.175062, z: 0.223643}
-    stackableAreas: []
-  - fileName: Prefabs/Converted Models/rand_objs2/2/2f07c59d4099b5762241dba92389a637
-    complexity: 25
-    isLight: 0
-    anchorType: 0
-    bounds:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 1.0978675, y: 1.0475472, z: 1.0978662}
-    stackableAreas:
-    - rotationAngle: 0
-      bottomCenter: {x: 0, y: 1.09, z: 0}
-      dimensions: {x: 1.85, y: 3, z: 1.85}
-  - fileName: Prefabs/Converted Models/rand_objs2/20/e0845c8579c5d4acc3e7754d5a998758
-    complexity: 165
-    isLight: 0
-    anchorType: 0
-    bounds:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.475704, y: 0.0984154, z: 0.118408}
-    stackableAreas: []
-  - fileName: Prefabs/Converted Models/rand_objs2/21/53ae95290cca57d430c35ecdb9dea035
-    complexity: 5
-    isLight: 0
-    anchorType: 0
-    bounds:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.224781, y: 0.385937, z: 0.224781}
-    stackableAreas: []
-  - fileName: Prefabs/Converted Models/rand_objs2/22/127e202f77eee5725d02cdadf545c773
-    complexity: 31
-    isLight: 0
-    anchorType: 0
-    bounds:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 1.4415789, y: 1.2943164, z: 2.8831534}
-    stackableAreas:
-    - rotationAngle: 0
-      bottomCenter: {x: 0, y: 1.35, z: 0}
-      dimensions: {x: 2.8, y: 0, z: 5.6}
-  - fileName: Prefabs/Converted Models/rand_objs2/23/1345ba2c3b27ba786bb9681d4604e123
-    complexity: 57
-    isLight: 0
-    anchorType: 0
-    bounds:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.485307, y: 0.114084, z: 0.0382381}
-    stackableAreas: []
-  - fileName: Prefabs/Converted Models/rand_objs2/24/4fb69651d04e010554eefcdc602d4520
-    complexity: 43
-    isLight: 0
-    anchorType: 0
-    bounds:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.335556, y: 0.0986148, z: 0.357319}
-    stackableAreas: []
-  - fileName: Prefabs/Converted Models/rand_objs2/25/5b815e2726656685823df672991ed66
-    complexity: 41
-    isLight: 0
-    anchorType: 0
-    bounds:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.404094, y: 0.0841931, z: 0.28217}
-    stackableAreas: []
-  - fileName: Prefabs/Converted Models/rand_objs2/26/dbee200cebd464779b0ed23034a67f7f
-    complexity: 41
-    isLight: 0
-    anchorType: 0
-    bounds:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.339581, y: 0.0927409, z: 0.355083}
-    stackableAreas: []
-  - fileName: Prefabs/Converted Models/rand_objs2/27/90b901d37c751841c93205b4771d5663
-    complexity: 5
-    isLight: 0
-    anchorType: 0
-    bounds:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.249981, y: 0.365827, z: 0.23169}
-    stackableAreas: []
-  - fileName: Prefabs/Converted Models/rand_objs2/28/5aeb583ee6e0e4ea42d0e83abdfab1fd
-    complexity: 29
-    isLight: 0
-    anchorType: 0
-    bounds:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.327732, y: 0.142027, z: 0.349886}
-    stackableAreas: []
-  - fileName: Prefabs/Converted Models/rand_objs2/29/39edba395f3d860c5a96bae7b017a6d9
-    complexity: 65
-    isLight: 0
-    anchorType: 0
-    bounds:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.485112, y: 0.0504113, z: 0.110113}
-    stackableAreas: []
-  - fileName: Prefabs/Converted Models/rand_objs2/3/a23e4375e78df8d0e7ecdbe73ef4323c
-    complexity: 107
-    isLight: 0
-    anchorType: 0
-    bounds:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.116908, y: 0.343637, z: 0.343869}
-    stackableAreas: []
-  - fileName: Prefabs/Converted Models/rand_objs2/30/ec836d156e8157fec862eec8232fff1e
-    complexity: 23
-    isLight: 0
-    anchorType: 0
-    bounds:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.205274, y: 0.157714, z: 0.427772}
-    stackableAreas: []
-  - fileName: Prefabs/Converted Models/rand_objs2/31/852e1b84dfa1f7e8e075f0bda7acfbe2
-    complexity: 53
-    isLight: 0
-    anchorType: 0
-    bounds:
-      m_Center: {x: 0, y: 0.000000007450581, z: 0}
-      m_Extent: {x: 0.36533797, y: 0.11100401, z: 0.32281}
-    stackableAreas: []
-  - fileName: Prefabs/Converted Models/rand_objs2/32/1d9a26feeba782e3f91663a74ccd2338
-    complexity: 97
-    isLight: 0
-    anchorType: 0
-    bounds:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.193979, y: 0.181039, z: 0.423789}
-    stackableAreas: []
-  - fileName: Prefabs/Converted Models/rand_objs2/33/f55beebe7409e84c873aec32fa476d61
-    complexity: 13
-    isLight: 0
-    anchorType: 0
-    bounds:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.292322, y: 0.0890441, z: 0.395751}
-    stackableAreas: []
-  - fileName: Prefabs/Converted Models/rand_objs2/34/87af702a9a5370aceea6a5a0ebf81e97
+  - fileName: /Users/pouyabashivan/Dropbox (MIT)/Codes/Downloads/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/1b9ef45fefefa35ed13f430b2941481.bundle
     complexity: 33
     isLight: 0
     anchorType: 0
     bounds:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.346234, y: 0.10121, z: 0.346234}
+      m_Center: {x: -0.017535001, y: -0.06861001, z: -0.00008650124}
+      m_Extent: {x: 0.3404, y: 0.351218, z: 0.103797495}
     stackableAreas: []
-  - fileName: Prefabs/Converted Models/rand_objs2/35/d736c45c5b2397219092826e64279378
-    complexity: 111
+  - fileName: /Users/pouyabashivan/Dropbox (MIT)/Codes/Downloads/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/2ca6df7a5377825cfee773c7de26c274.bundle
+    complexity: 27
     isLight: 0
     anchorType: 0
     bounds:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.282874, y: 0.326381, z: 0.251907}
+      m_Center: {x: 0.00023600459, y: 0.03238949, z: -0.00030249357}
+      m_Extent: {x: 0.313927, y: 0.3556875, z: 0.15791151}
     stackableAreas: []
-  - fileName: Prefabs/Converted Models/rand_objs2/36/e76108274392bff53d91ae2b92426394
+  - fileName: /Users/pouyabashivan/Dropbox (MIT)/Codes/Downloads/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/2f97f841aff238b74245c6fcbfdfe98a.bundle
     complexity: 5
     isLight: 0
     anchorType: 0
     bounds:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.175244, y: 0.389517, z: 0.259935}
+      m_Center: {x: 0.017312005, y: -0.0197545, z: -0.0013814978}
+      m_Extent: {x: 0.460185, y: 0.1691095, z: 0.098142505}
     stackableAreas: []
-  - fileName: Prefabs/Converted Models/rand_objs2/37/fb7402f91e300ead8ac033353d37592a
-    complexity: 31
+  - fileName: /Users/pouyabashivan/Dropbox (MIT)/Codes/Downloads/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/36d4caf867e0afcd56f6fc4b4ce1db04.bundle
+    complexity: 125
     isLight: 0
     anchorType: 0
     bounds:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.345993, y: 0.223496, z: 0.28344}
+      m_Center: {x: 0.00016349554, y: -0.12973401, z: -0.00009351969}
+      m_Extent: {x: 0.2629005, y: 0.334319, z: 0.26289648}
     stackableAreas: []
-  - fileName: Prefabs/Converted Models/rand_objs2/38/813d7c5131f6369cb898f6ca189a940f
+  - fileName: /Users/pouyabashivan/Dropbox (MIT)/Codes/Downloads/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/37c9fe32ad87beccad5067eac75a07f7.bundle
+    complexity: 91
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0.0042274892, y: -0.032736003, z: 0.0012454987}
+      m_Extent: {x: 0.2517705, y: 0.38022, z: 0.2050475}
+    stackableAreas: []
+  - fileName: /Users/pouyabashivan/Dropbox (MIT)/Codes/Downloads/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/37f1daa11b023fdf81faebbdea6bd9be.bundle
+    complexity: 135
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: -0.0005684942, y: -0.096048504, z: 0.15284951}
+      m_Extent: {x: 0.2003825, y: 0.4123595, z: 0.1995165}
+    stackableAreas: []
+  - fileName: /Users/pouyabashivan/Dropbox (MIT)/Codes/Downloads/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/3edc3bc2ecf58aae40090e51144242ea.bundle
+    complexity: 5
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: -0.0124849975, y: 0.0035645068, z: -0.0105475}
+      m_Extent: {x: 0.406935, y: 0.2872915, z: 0.0418805}
+    stackableAreas: []
+  - fileName: /Users/pouyabashivan/Dropbox (MIT)/Codes/Downloads/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/41b946cebf6b76cb25d3c528e036a532.bundle
+    complexity: 109
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: -0.001587987, y: 0.022022992, z: -0.0009140074}
+      m_Extent: {x: 0.242621, y: 0.363689, z: 0.242621}
+    stackableAreas: []
+  - fileName: /Users/pouyabashivan/Dropbox (MIT)/Codes/Downloads/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/44a64fa7c3378f16de27b9aa1df630c0.bundle
+    complexity: 5
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0.024214, y: -0.029282987, z: -0.0121310055}
+      m_Extent: {x: 0.223051, y: 0.387937, z: 0.22305399}
+    stackableAreas: []
+  - fileName: /Users/pouyabashivan/Dropbox (MIT)/Codes/Downloads/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/44ed0531eedc723dfaaa4370fa1ccec.bundle
+    complexity: 81
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0.005934, y: 0.007986993, z: 0.0033404827}
+      m_Extent: {x: 0.273628, y: 0.316632, z: 0.27362752}
+    stackableAreas: []
+  - fileName: /Users/pouyabashivan/Dropbox (MIT)/Codes/Downloads/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/45d71fc0e59af8bf155d75bbf62b80.bundle
+    complexity: 173
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0.005097002, y: -0.030002981, z: -0.0002219975}
+      m_Extent: {x: 0.236986, y: 0.371046, z: 0.236986}
+    stackableAreas: []
+  - fileName: /Users/pouyabashivan/Dropbox (MIT)/Codes/Downloads/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/45d8951ac1dbf2cbf51f77a6d7299806.bundle
+    complexity: 33
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: -0.052650996, z: -0.00014849752}
+      m_Extent: {x: 0.353752, y: 0.294009, z: 0.1960065}
+    stackableAreas: []
+  - fileName: /Users/pouyabashivan/Dropbox (MIT)/Codes/Downloads/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/46bd9fb29f0ad74151f881addeefe983.bundle
+    complexity: 177
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: -0.022920504, y: -0.075486995, z: 0.0016250014}
+      m_Extent: {x: 0.2969755, y: 0.271315, z: 0.296975}
+    stackableAreas: []
+  - fileName: /Users/pouyabashivan/Dropbox (MIT)/Codes/Downloads/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/46e777a46aa76681f4fb4dee5181bee.bundle
+    complexity: 229
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: -0.00037401915, y: -0.164426, z: -0.00006902218}
+      m_Extent: {x: 0.28257298, y: 0.300514, z: 0.282566}
+    stackableAreas: []
+  - fileName: /Users/pouyabashivan/Dropbox (MIT)/Codes/Downloads/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/4a175db3a8cad99b5dd5ceb34f6e33d9.bundle
+    complexity: 13
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: -0.0025904924, y: 0.13505098, z: -0.016957492}
+      m_Extent: {x: 0.18950951, y: 0.43979198, z: 0.1437675}
+    stackableAreas: []
+  - fileName: /Users/pouyabashivan/Dropbox (MIT)/Codes/Downloads/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/4a1f62dbe8b091eabc49cae1a831a9e.bundle
+    complexity: 21
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0.008783504, y: -0.100806996, z: 0.0005244985}
+      m_Extent: {x: 0.3551665, y: 0.281505, z: 0.21121451}
+    stackableAreas: []
+  - fileName: /Users/pouyabashivan/Dropbox (MIT)/Codes/Downloads/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/4e4fcfffec161ecaed13f430b2941481.bundle
+    complexity: 115
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0.051955998, y: 0.07264349, z: 0.039094005}
+      m_Extent: {x: 0.334778, y: 0.3595805, z: 0.092874005}
+    stackableAreas: []
+  - fileName: /Users/pouyabashivan/Dropbox (MIT)/Codes/Downloads/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/5afca35479b347786f0abe366609662.bundle
+    complexity: 7
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: -0.00465551, y: -0.0776635, z: 0.0000004991889}
+      m_Extent: {x: 0.3622005, y: 0.2956085, z: 0.1772745}
+    stackableAreas: []
+  - fileName: /Users/pouyabashivan/Dropbox (MIT)/Codes/Downloads/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/5afe31025e8574ea8d6e12c39b2d5023.bundle
+    complexity: 7
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: -0.11344248, y: 0.038663, z: 0.012526989}
+      m_Extent: {x: 0.4135695, y: 0.179716, z: 0.21601501}
+    stackableAreas: []
+  - fileName: /Users/pouyabashivan/Dropbox (MIT)/Codes/Downloads/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/5d4f774fdda6fa1dcd99ccc7ff441abf.bundle
+    complexity: 23
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0.0008915067, y: 0.027673006, z: 0.0071009994}
+      m_Extent: {x: 0.32933152, y: 0.35873002, z: 0.113373995}
+    stackableAreas: []
+  - fileName: /Users/pouyabashivan/Dropbox (MIT)/Codes/Downloads/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/5f3af8ff93de34c9e7922afdefd88b6e.bundle
+    complexity: 5
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0.00040650368, y: -0.12305248, z: 0.0007435009}
+      m_Extent: {x: 0.3654525, y: 0.3187555, z: 0.1218175}
+    stackableAreas: []
+  - fileName: /Users/pouyabashivan/Dropbox (MIT)/Codes/Downloads/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/7103.bundle
+    complexity: 3
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: -0.00060896575, y: -0.0000005364418, z: 0.39497486}
+      m_Extent: {x: 0.9375837, y: 0.5100001, z: 0.3950002}
+    stackableAreas: []
+  - fileName: /Users/pouyabashivan/Dropbox (MIT)/Codes/Downloads/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/7106.bundle
+    complexity: 3
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: -0.000028066104, y: 0.041514784, z: 0.46492878}
+      m_Extent: {x: 0.22415626, y: 0.26759717, z: 0.46492878}
+    stackableAreas: []
+  - fileName: /Users/pouyabashivan/Dropbox (MIT)/Codes/Downloads/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/8bc53bae41a8105f5c7506815f553527.bundle
     complexity: 15
     isLight: 0
     anchorType: 0
     bounds:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.137734, y: 0.134012, z: 0.461595}
+      m_Center: {x: -0.0044289976, y: -0.1386635, z: -0.006102003}
+      m_Extent: {x: 0.32488, y: 0.3589345, z: 0.124976}
     stackableAreas: []
-  - fileName: Prefabs/Converted Models/rand_objs2/39/33384d4600a8bd0ad88a7002dfb37846
-    complexity: 23
+  - fileName: /Users/pouyabashivan/Dropbox (MIT)/Codes/Downloads/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/arrow.bundle
+    complexity: 3
     isLight: 0
     anchorType: 0
     bounds:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.216745, y: 0.162079, z: 0.420419}
+      m_Center: {x: 0.000056284945, y: 0.02574015, z: 0.0022838542}
+      m_Extent: {x: 0.0030002107, y: 0.055050537, z: 0.0046667387}
     stackableAreas: []
-  - fileName: Prefabs/Converted Models/rand_objs2/4/be0890a6a0f3fcf841f91bc9e1dece3b
-    complexity: 49
-    isLight: 0
-    anchorType: 0
-    bounds:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.276424, y: 0.35769, z: 0.213652}
-    stackableAreas: []
-  - fileName: Prefabs/Converted Models/rand_objs2/40/a7b07a2aad642f3f18b731fab8bc3743
-    complexity: 167
-    isLight: 0
-    anchorType: 0
-    bounds:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.442964, y: 0.162404, z: 0.165552}
-    stackableAreas: []
-  - fileName: Prefabs/Converted Models/rand_objs2/41/149adc06e4b1404940232a3c75f1f92a
-    complexity: 77
-    isLight: 0
-    anchorType: 0
-    bounds:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.485777, y: 0.100166, z: 0.0631454}
-    stackableAreas: []
-  - fileName: Prefabs/Converted Models/rand_objs2/42/563569e15313d7eb89e13811ad04f53f
-    complexity: 33
-    isLight: 0
-    anchorType: 0
-    bounds:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.446362, y: 0.0574746, z: 0.217847}
-    stackableAreas: []
-  - fileName: Prefabs/Converted Models/rand_objs2/43/afb7cc3bbc3595a4e9b3dff83c7ff715
-    complexity: 47
-    isLight: 0
-    anchorType: 0
-    bounds:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.0770497, y: 0.487982, z: 0.0770497}
-    stackableAreas: []
-  - fileName: Prefabs/Converted Models/rand_objs2/44/db5b6dc38fd82fa7cdfa73f789b383fe
-    complexity: 55
-    isLight: 0
-    anchorType: 0
-    bounds:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.0793362, y: 0.447167, z: 0.209159}
-    stackableAreas: []
-  - fileName: Prefabs/Converted Models/rand_objs2/45/14fa15f31d713b7153b838b6058a8d95
-    complexity: 55
-    isLight: 0
-    anchorType: 0
-    bounds:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.487559, y: 0.101086, z: 0.045472}
-    stackableAreas: []
-  - fileName: Prefabs/Converted Models/rand_objs2/46/1ef0cabf465bbd2b74813b7165294e91
-    complexity: 19
-    isLight: 0
-    anchorType: 0
-    bounds:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.151904, y: 0.428758, z: 0.207586}
-    stackableAreas: []
-  - fileName: Prefabs/Converted Models/rand_objs2/47/d40acf58d3ab13763321831d2245cf06
-    complexity: 201
-    isLight: 0
-    anchorType: 0
-    bounds:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.300115, y: 0.386335, z: 0.103324}
-    stackableAreas: []
-  - fileName: Prefabs/Converted Models/rand_objs2/48/a35aea08a3cb9391fc1bbbe626c79a7d
-    complexity: 199
-    isLight: 0
-    anchorType: 0
-    bounds:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.491532, y: 0.0790482, z: 0.0463456}
-    stackableAreas: []
-  - fileName: Prefabs/Converted Models/rand_objs2/49/fd9b63c23342e57045b799df37b9f05
-    complexity: 19
-    isLight: 0
-    anchorType: 0
-    bounds:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.223927, y: 0.400842, z: 0.197946}
-    stackableAreas: []
-  - fileName: Prefabs/Converted Models/rand_objs2/5/6de6e56c6f7d43692866658c90231a1a
-    complexity: 17
-    isLight: 0
-    anchorType: 0
-    bounds:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.466449, y: 0.177191, z: 0.0320766}
-    stackableAreas: []
-  - fileName: Prefabs/Converted Models/rand_objs2/50/69eaeff55a5a9c5568d1b9a1d97e2846
-    complexity: 31
-    isLight: 0
-    anchorType: 0
-    bounds:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.176257, y: 0.186692, z: 0.429045}
-    stackableAreas: []
-  - fileName: Prefabs/Converted Models/rand_objs2/51/2d6c360e7d8ff4162e603610d34efc63
-    complexity: 255
-    isLight: 0
-    anchorType: 0
-    bounds:
-      m_Center: {x: -0.000000029802322, y: 0, z: 0.000000029802322}
-      m_Extent: {x: 0.384796, y: 0.180242, z: 0.26352304}
-    stackableAreas: []
-  - fileName: Prefabs/Converted Models/rand_objs2/52/76b492b77a03882d431e5b4ad135fb8
-    complexity: 47
-    isLight: 0
-    anchorType: 0
-    bounds:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.350813, y: 0.129717, z: 0.331818}
-    stackableAreas: []
-  - fileName: Prefabs/Converted Models/rand_objs2/53/b2dc781aae692b2555182f299fe41fdc
-    complexity: 55
-    isLight: 0
-    anchorType: 0
-    bounds:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.279951, y: 0.362437, z: 0.200666}
-    stackableAreas: []
-  - fileName: Prefabs/Converted Models/rand_objs2/54/ce23daa630833de7d9fad8aba2c312b7
-    complexity: 53
-    isLight: 0
-    anchorType: 0
-    bounds:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.28997, y: 0.342504, z: 0.220472}
-    stackableAreas:
-    - rotationAngle: 0
-      bottomCenter: {x: 0, y: 0, z: 0}
-      dimensions: {x: 0, y: 0, z: 0}
-  - fileName: Prefabs/Converted Models/rand_objs2/55/bf259988d2e8728c391790b8b8084f0a
-    complexity: 5
-    isLight: 0
-    anchorType: 0
-    bounds:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.0366815, y: 0.447093, z: 0.220821}
-    stackableAreas: []
-  - fileName: Prefabs/Converted Models/rand_objs2/56/1867c1751ae7bb2829024035009201d2
-    complexity: 13
-    isLight: 0
-    anchorType: 0
-    bounds:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.273896, y: 0.109467, z: 0.40373}
-    stackableAreas: []
-  - fileName: Prefabs/Converted Models/rand_objs2/57/e6fb0c7f8a5f944363e66191800dfc8a
-    complexity: 35
-    isLight: 0
-    anchorType: 0
-    bounds:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.485304, y: 0.116377, z: 0.0306054}
-    stackableAreas: []
-  - fileName: Prefabs/Converted Models/rand_objs2/58/e6a89aaa226b116a60885f79b3a5579a
-    complexity: 31
-    isLight: 0
-    anchorType: 0
-    bounds:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.24, y: 0.18, z: 0.4}
-    stackableAreas: []
-  - fileName: Prefabs/Converted Models/rand_objs2/59/f21333a7141e7fbdad5067eac75a07f7
-    complexity: 53
-    isLight: 0
-    anchorType: 0
-    bounds:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.13415, y: 0.196719, z: 0.439665}
-    stackableAreas: []
-  - fileName: Prefabs/Converted Models/rand_objs2/6/cab7f319f0b3cf8e57e59e0ad2d11e74
-    complexity: 67
-    isLight: 0
-    anchorType: 0
-    bounds:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.48143, y: 0.118971, z: 0.0638053}
-    stackableAreas: []
-  - fileName: Prefabs/Converted Models/rand_objs2/60/87cdc53aec65aa0ff51f77a6d7299806
-    complexity: 27
-    isLight: 0
-    anchorType: 0
-    bounds:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.270167, y: 0.337478, z: 0.251233}
-    stackableAreas: []
-  - fileName: Prefabs/Converted Models/rand_objs2/61/e93d2ab44861bbd32a4947824596dce3
-    complexity: 19
-    isLight: 0
-    anchorType: 0
-    bounds:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.487949, y: 0.101966, z: 0.0388377}
-    stackableAreas: []
-  - fileName: Prefabs/Converted Models/rand_objs2/62/a97e7bc8291f73d521788cb501e76904
+  - fileName: /Users/pouyabashivan/Dropbox (MIT)/Codes/Downloads/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/ball.bundle
     complexity: 3
     isLight: 0
     anchorType: 0
     bounds:
       m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.269963, y: 0.144696, z: 0.3952}
+      m_Extent: {x: 0.028575, y: 0.028575, z: 0.028575}
     stackableAreas: []
-  - fileName: Prefabs/Converted Models/rand_objs2/63/50978d3850fcf4e371a126804ae24042
-    complexity: 9
+  - fileName: /Users/pouyabashivan/Dropbox (MIT)/Codes/Downloads/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/beds.bundle
+    complexity: 3
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: -0.31785852, y: 0.19514671, z: 0.46911168}
+      m_Extent: {x: 0.92131215, y: 0.19578937, z: 0.858075}
+    stackableAreas: []
+  - fileName: /Users/pouyabashivan/Dropbox (MIT)/Codes/Downloads/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/board_big.bundle
+    complexity: 3
     isLight: 0
     anchorType: 0
     bounds:
       m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.282294, y: 0.301032, z: 0.282294}
+      m_Extent: {x: 0.3466558, y: 0.004959047, z: 0.18121696}
     stackableAreas: []
-  - fileName: Prefabs/Converted Models/rand_objs2/64/7aefbd0f95e0e9653b09cd02500a89ae
-    complexity: 35
+  - fileName: /Users/pouyabashivan/Dropbox (MIT)/Codes/Downloads/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/book.bundle
+    complexity: 3
     isLight: 0
     anchorType: 0
     bounds:
       m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.217135, y: 0.119424, z: 0.43427}
+      m_Extent: {x: 0.039271683, y: 0.03137487, z: 0.005615279}
     stackableAreas: []
-  - fileName: Prefabs/Converted Models/rand_objs2/65/fd6ae258090bf95b693e50e46681af47
-    complexity: 37
+  - fileName: /Users/pouyabashivan/Dropbox (MIT)/Codes/Downloads/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/book_shelfs.bundle
+    complexity: 3
     isLight: 0
     anchorType: 0
     bounds:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.247121, y: 0.272676, z: 0.338495}
+      m_Center: {x: 0.7494838, y: 0.52414674, z: -0.9404075}
+      m_Extent: {x: 0.05231881, y: 0.23095006, z: 0.44119585}
     stackableAreas: []
-  - fileName: Prefabs/Converted Models/rand_objs2/66/6bd4036a2ef142fc956e5f06e8cf4db
-    complexity: 23
+  - fileName: /Users/pouyabashivan/Dropbox (MIT)/Codes/Downloads/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/chair.bundle
+    complexity: 3
     isLight: 0
     anchorType: 0
     bounds:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.0673137, y: 0.44036, z: 0.22705}
+      m_Center: {x: 0.0037311912, y: 0.0011861622, z: 0.00034576654}
+      m_Extent: {x: 0.05856347, y: 0.1149538, z: 0.060328245}
     stackableAreas: []
-  - fileName: Prefabs/Converted Models/rand_objs2/67/3683fdc45dc98b8955d054336de5edb5
-    complexity: 9
+  - fileName: /Users/pouyabashivan/Dropbox (MIT)/Codes/Downloads/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/clock.bundle
+    complexity: 3
     isLight: 0
     anchorType: 0
     bounds:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.257597, y: 0.130493, z: 0.408186}
+      m_Center: {x: 0, y: -0.0000000064373005, z: 0.014999971}
+      m_Extent: {x: 0.17999999, y: 0.17999999, z: 0.014999999}
     stackableAreas: []
-  - fileName: Prefabs/Converted Models/rand_objs2/68/61251733434b9b0c15a23f2b45e10de5
-    complexity: 359
+  - fileName: /Users/pouyabashivan/Dropbox (MIT)/Codes/Downloads/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/door.bundle
+    complexity: 3
     isLight: 0
     anchorType: 0
     bounds:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.441112, y: 0.123776, z: 0.20025}
+      m_Center: {x: 0.80833954, y: 0.40148062, z: 1.2992213}
+      m_Extent: {x: 0.014915049, y: 0.35259485, z: 0.22098958}
     stackableAreas: []
-  - fileName: Prefabs/Converted Models/rand_objs2/69/354274e1c27653a318d9ca1acf6633f6
-    complexity: 17
+  - fileName: /Users/pouyabashivan/Dropbox (MIT)/Codes/Downloads/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/electricity_box.bundle
+    complexity: 3
     isLight: 0
     anchorType: 0
     bounds:
-      m_Center: {x: -0.000000029802322, y: 0, z: 0.000000014901161}
-      m_Extent: {x: 0.437063, y: 0.132536, z: 0.20349501}
+      m_Center: {x: 0, y: -0.000000007450581, z: 0.43159217}
+      m_Extent: {x: 0.19978654, y: 0.09390026, z: 0.43159217}
     stackableAreas: []
-  - fileName: Prefabs/Converted Models/rand_objs2/7/aec393b8c73d3a8ae4bee94a37836d67
-    complexity: 357
+  - fileName: /Users/pouyabashivan/Dropbox (MIT)/Codes/Downloads/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/fan.bundle
+    complexity: 3
     isLight: 0
     anchorType: 0
     bounds:
-      m_Center: {x: 0, y: 0.000000014901161, z: 0}
-      m_Extent: {x: 0.420653, y: 0.16765401, z: 0.21199802}
+      m_Center: {x: 0.025557509, y: 0.03585148, z: -0.10142267}
+      m_Extent: {x: 0.23465067, y: 0.22943091, z: 0.113773525}
     stackableAreas: []
-  - fileName: Prefabs/Converted Models/rand_objs2/70/3c0467f96e26b8c6a93445a1757adf6
-    complexity: 53
+  - fileName: /Users/pouyabashivan/Dropbox (MIT)/Codes/Downloads/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/lamp.bundle
+    complexity: 3
     isLight: 0
     anchorType: 0
     bounds:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.362217, y: 0.212582, z: 0.271307}
+      m_Center: {x: 0, y: 0, z: 0.021852754}
+      m_Extent: {x: 0.27843803, y: 0.035164595, z: 0.021852762}
     stackableAreas: []
-  - fileName: Prefabs/Converted Models/rand_objs2/71/5fefcb474b6dca4b23b380c931ece1e8
-    complexity: 5
+  - fileName: /Users/pouyabashivan/Dropbox (MIT)/Codes/Downloads/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/lamps_all_export.bundle
+    complexity: 3
     isLight: 0
     anchorType: 0
     bounds:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.0218048, y: 0.458425, z: 0.198421}
+      m_Center: {x: 1.2358356, y: 0.6749923, z: -1.7644596}
+      m_Extent: {x: 5.0430775, y: 2.1080656, z: 2.5165033}
     stackableAreas: []
-  - fileName: Prefabs/Converted Models/rand_objs2/72/bcceb065b8c433b99a87002a4eeaf610
-    complexity: 23
+  - fileName: /Users/pouyabashivan/Dropbox (MIT)/Codes/Downloads/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/loungechairone_connectors_fbx.bundle
+    complexity: 3
     isLight: 0
     anchorType: 0
     bounds:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.270406, y: 0.265207, z: 0.326414}
+      m_Center: {x: 0.0055444837, y: 0.035746455, z: -0.14793228}
+      m_Extent: {x: 0.04180479, y: 0.15921003, z: 0.16864012}
     stackableAreas: []
-  - fileName: Prefabs/Converted Models/rand_objs2/73/8eee3b5fd2f3abd4bcde6f92ef1f7ee7
-    complexity: 123
+  - fileName: /Users/pouyabashivan/Dropbox (MIT)/Codes/Downloads/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/loungechairone_cushions_fbx.bundle
+    complexity: 3
     isLight: 0
     anchorType: 0
     bounds:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.245717, y: 0.422374, z: 0.10594}
+      m_Center: {x: 0.01794234, y: 0.5420075, z: 0}
+      m_Extent: {x: 0.3964293, y: 0.3450275, z: 0.44138384}
     stackableAreas: []
-  - fileName: Prefabs/Converted Models/rand_objs2/74/b5c1dcf4ccc0b8aca74fb613494614a8
-    complexity: 29
+  - fileName: /Users/pouyabashivan/Dropbox (MIT)/Codes/Downloads/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/loungechairone_feetstand_fbx.bundle
+    complexity: 3
     isLight: 0
     anchorType: 0
     bounds:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.492608, y: 0.0789783, z: 0.0331598}
+      m_Center: {x: -0.032442093, y: 0.13772666, z: 0.0011727214}
+      m_Extent: {x: 0.3399064, y: 0.14038733, z: 0.35412443}
     stackableAreas: []
-  - fileName: Prefabs/Converted Models/rand_objs2/75/f6d2550b82c208b012de5317fe5b354f
-    complexity: 91
+  - fileName: /Users/pouyabashivan/Dropbox (MIT)/Codes/Downloads/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/loungechairone_shells_fbx.bundle
+    complexity: 3
     isLight: 0
     anchorType: 0
     bounds:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.131567, y: 0.457625, z: 0.152542}
+      m_Center: {x: 0.021650553, y: 0.53103715, z: 0}
+      m_Extent: {x: 0.39995414, y: 0.34396762, z: 0.3618573}
     stackableAreas: []
-  - fileName: Prefabs/Converted Models/rand_objs2/76/3af91fd634a5ba759c0ca344f487323e
-    complexity: 51
+  - fileName: /Users/pouyabashivan/Dropbox (MIT)/Codes/Downloads/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/loungeottoman_cushion_fbx.bundle
+    complexity: 3
     isLight: 0
     anchorType: 0
     bounds:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.303507, y: 0.265555, z: 0.295574}
+      m_Center: {x: -0.000016868114, y: 0.1052962, z: -0.00000014901161}
+      m_Extent: {x: 0.3111514, y: 0.08386152, z: 0.29678836}
     stackableAreas: []
-  - fileName: Prefabs/Converted Models/rand_objs2/77/27d846b100a1be0535836c728d324152
-    complexity: 19
+  - fileName: /Users/pouyabashivan/Dropbox (MIT)/Codes/Downloads/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/loungeottoman_feetstand_fbx.bundle
+    complexity: 3
     isLight: 0
     anchorType: 0
     bounds:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.288675, y: 0.288675, z: 0.288675}
+      m_Center: {x: -0.000000029802322, y: 0.14861205, z: 0.000000074505806}
+      m_Extent: {x: 0.24555075, y: 0.1476652, z: 0.2455507}
     stackableAreas: []
-  - fileName: Prefabs/Converted Models/rand_objs2/78/414d4397dddc0134fcb8d8c6d4df8143
-    complexity: 75
+  - fileName: /Users/pouyabashivan/Dropbox (MIT)/Codes/Downloads/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/loungeottoman_shell_fbx.bundle
+    complexity: 3
     isLight: 0
     anchorType: 0
     bounds:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.12128, y: 0.339267, z: 0.346682}
+      m_Center: {x: 0.0022544742, y: 0.07572786, z: 0}
+      m_Extent: {x: 0.30220455, y: 0.07771503, z: 0.31087014}
     stackableAreas: []
-  - fileName: Prefabs/Converted Models/rand_objs2/79/b8e0513adede8586820018801b237b3d
-    complexity: 5
+  - fileName: /Users/pouyabashivan/Dropbox (MIT)/Codes/Downloads/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/pc.bundle
+    complexity: 3
     isLight: 0
     anchorType: 0
     bounds:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.260327, y: 0.167127, z: 0.392808}
+      m_Center: {x: -1.035029, y: 0.32379678, z: -0.18300392}
+      m_Extent: {x: 0.09815431, y: 0.07781029, z: 0.08005531}
     stackableAreas: []
-  - fileName: Prefabs/Converted Models/rand_objs2/8/167a44b60adc37319ba010ddb4974fe
-    complexity: 53
+  - fileName: /Users/pouyabashivan/Dropbox (MIT)/Codes/Downloads/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/posters.bundle
+    complexity: 3
     isLight: 0
     anchorType: 0
     bounds:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.38033, y: 0.107104, z: 0.306395}
+      m_Center: {x: 0.0059229434, y: 0.000043570995, z: 0.0058397055}
+      m_Extent: {x: 0.31615594, y: 0.00080505013, z: 0.15591073}
     stackableAreas: []
-  - fileName: Prefabs/Converted Models/rand_objs2/80/8c2748ffe88d346ab9915b62040615dd
-    complexity: 135
+  - fileName: /Users/pouyabashivan/Dropbox (MIT)/Codes/Downloads/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/printer.bundle
+    complexity: 3
     isLight: 0
     anchorType: 0
     bounds:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.430758, y: 0.228731, z: 0.110135}
+      m_Center: {x: 0, y: 0, z: 0.17241688}
+      m_Extent: {x: 0.15363377, y: 0.20065023, z: 0.17241688}
     stackableAreas: []
-  - fileName: Prefabs/Converted Models/rand_objs2/81/9b3c9023e8c570d5b307b2a73ae3e74b
-    complexity: 13
+  - fileName: /Users/pouyabashivan/Dropbox (MIT)/Codes/Downloads/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/projector.bundle
+    complexity: 3
     isLight: 0
     anchorType: 0
     bounds:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.213507, y: 0.242622, z: 0.381509}
+      m_Center: {x: 0, y: -0.0008789897, z: 0.15163517}
+      m_Extent: {x: 0.062503874, y: 0.076729596, z: 0.15805686}
     stackableAreas: []
-  - fileName: Prefabs/Converted Models/rand_objs2/82/d8ee3cc88f58ef06a39450bfd028c5f0
-    complexity: 161
+  - fileName: /Users/pouyabashivan/Dropbox (MIT)/Codes/Downloads/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/projector_screen.bundle
+    complexity: 3
     isLight: 0
     anchorType: 0
     bounds:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.186299, y: 0.139724, z: 0.442459}
+      m_Center: {x: -0.13258559, y: 0.51962525, z: 1.5429287}
+      m_Extent: {x: 0.6277474, y: 0.22392178, z: 0.0103235245}
     stackableAreas: []
-  - fileName: Prefabs/Converted Models/rand_objs2/83/a03e627e5d18d9eebecf71e2e014ff6f
-    complexity: 163
+  - fileName: /Users/pouyabashivan/Dropbox (MIT)/Codes/Downloads/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/round_carpet_geo.bundle
+    complexity: 3
     isLight: 0
     anchorType: 0
     bounds:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.445022, y: 0.131796, z: 0.185972}
+      m_Center: {x: 0.00000023841858, y: 0.0094067, z: -0.00000035762787}
+      m_Extent: {x: 1.3228574, y: 0.0094067, z: 1.315611}
     stackableAreas: []
-  - fileName: Prefabs/Converted Models/rand_objs2/84/34bc619e8ab3c0d2a93db6e4c0c75191
-    complexity: 165
+  - fileName: /Users/pouyabashivan/Dropbox (MIT)/Codes/Downloads/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/shelf.bundle
+    complexity: 3
     isLight: 0
     anchorType: 0
     bounds:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.106901, y: 0.399188, z: 0.281462}
+      m_Center: {x: -1.9378021, y: 0.54811114, z: 0.014393661}
+      m_Extent: {x: 0.7210965, y: 0.54811114, z: 0.15937991}
     stackableAreas: []
-  - fileName: Prefabs/Converted Models/rand_objs2/85/d6e5a8e9e0d5dfedb0957d845ac33749
-    complexity: 13
+  - fileName: /Users/pouyabashivan/Dropbox (MIT)/Codes/Downloads/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/shelf_d1.bundle
+    complexity: 3
     isLight: 0
     anchorType: 0
     bounds:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.263647, y: 0.238572, z: 0.35153}
+      m_Center: {x: 0.27991712, y: 0.54700744, z: -0.12653361}
+      m_Extent: {x: 0.91644883, y: 0.5492149, z: 0.37218195}
     stackableAreas: []
-  - fileName: Prefabs/Converted Models/rand_objs2/86/98f42a66467c264377fe1aa9b41a89c5
-    complexity: 31
+  - fileName: /Users/pouyabashivan/Dropbox (MIT)/Codes/Downloads/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/shelf_d2.bundle
+    complexity: 3
     isLight: 0
     anchorType: 0
     bounds:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.223028, y: 0.403884, z: 0.192707}
+      m_Center: {x: 2.1651878, y: 0.5481111, z: -0.45977557}
+      m_Extent: {x: 0.80840623, y: 0.5481112, z: 0.6335491}
     stackableAreas: []
-  - fileName: Prefabs/Converted Models/rand_objs2/87/6d03ff05596201e6d8df13fb69e08d76
-    complexity: 297
+  - fileName: /Users/pouyabashivan/Dropbox (MIT)/Codes/Downloads/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/sofa.bundle
+    complexity: 3
     isLight: 0
     anchorType: 0
     bounds:
-      m_Center: {x: 0, y: 0.000000014901161, z: 0}
-      m_Extent: {x: 0.433833, y: 0.14583302, z: 0.201299}
+      m_Center: {x: 0, y: 0.40466598, z: 0}
+      m_Extent: {x: 1.0605782, y: 0.40466598, z: 0.5202849}
     stackableAreas: []
-  - fileName: Prefabs/Converted Models/rand_objs2/88/78c992bac95191673321831d2245cf06
-    complexity: 167
+  - fileName: /Users/pouyabashivan/Dropbox (MIT)/Codes/Downloads/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/sofa_modern_01_starter.bundle
+    complexity: 3
     isLight: 0
     anchorType: 0
     bounds:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.216946, y: 0.121219, z: 0.433867}
+      m_Center: {x: 0, y: 40.019398, z: -0.8771744}
+      m_Extent: {x: 92.126465, y: 40.00488, z: 42.744957}
     stackableAreas: []
-  - fileName: Prefabs/Converted Models/rand_objs2/89/ffa6c49aa8f7ec19971e7f8dbfabf375
-    complexity: 119
+  - fileName: /Users/pouyabashivan/Dropbox (MIT)/Codes/Downloads/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/table_big.bundle
+    complexity: 3
     isLight: 0
     anchorType: 0
     bounds:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.12141, y: 0.469595, z: 0.12141}
+      m_Center: {x: 0.000000029802322, y: -0.000000029802322, z: -0.000000007450581}
+      m_Extent: {x: 0.24736398, y: 0.48412043, z: 0.09606509}
     stackableAreas: []
-  - fileName: Prefabs/Converted Models/rand_objs2/9/5314b350d816db25fa3fe405f2a25e27
-    complexity: 11
+  - fileName: /Users/pouyabashivan/Dropbox (MIT)/Codes/Downloads/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/table_small.bundle
+    complexity: 3
     isLight: 0
     anchorType: 0
     bounds:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.114372, y: 0.485076, z: 0.0402572}
+      m_Center: {x: 0.000000059604645, y: 0, z: -0.089441955}
+      m_Extent: {x: 0.10499811, y: 0.4233309, z: 0.096065104}
     stackableAreas: []
-  - fileName: Prefabs/Converted Models/rand_objs2/90/63f06aff0721b648f322c3e7acea58f1
-    complexity: 5
+  - fileName: /Users/pouyabashivan/Dropbox (MIT)/Codes/Downloads/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/tables_few.bundle
+    complexity: 3
     isLight: 0
     anchorType: 0
     bounds:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.302568, y: 0.130536, z: 0.376049}
+      m_Center: {x: 0.000000014901161, y: -0.000000059604645, z: -0.000000007450581}
+      m_Extent: {x: 0.9214595, y: 1.454046, z: 0.09606509}
     stackableAreas: []
-  - fileName: Prefabs/Converted Models/rand_objs2/91/5494ca610eb9fad59bd53ddfa65bb6b1
-    complexity: 181
+  - fileName: /Users/pouyabashivan/Dropbox (MIT)/Codes/Downloads/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/teachers_board.bundle
+    complexity: 3
     isLight: 0
     anchorType: 0
     bounds:
-      m_Center: {x: 0, y: 0, z: -0.000000014901161}
-      m_Extent: {x: 0.432384, y: 0.139869, z: 0.20852098}
+      m_Center: {x: 0.000000029802322, y: 0, z: 0}
+      m_Extent: {x: 0.00537315, y: 0.13917726, z: 0.27081394}
     stackableAreas: []
-  - fileName: Prefabs/Converted Models/rand_objs2/92/725f69c0f29b712e8c6540fe6bc16d6f
-    complexity: 23
+  - fileName: /Users/pouyabashivan/Dropbox (MIT)/Codes/Downloads/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/tvset.bundle
+    complexity: 3
     isLight: 0
     anchorType: 0
     bounds:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.250549, y: 0.162857, z: 0.400878}
+      m_Center: {x: -0.00000011920929, y: 0, z: -0.000000022351742}
+      m_Extent: {x: 0.8618514, y: 0.08357352, z: 0.526924}
     stackableAreas: []
-  - fileName: Prefabs/Converted Models/rand_objs2/93/2c44213112c85413f0c1015881a0926c
-    complexity: 5
+  - fileName: /Users/pouyabashivan/Dropbox (MIT)/Codes/Downloads/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/window.bundle
+    complexity: 3
     isLight: 0
     anchorType: 0
     bounds:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.17947, y: 0.450984, z: 0.120016}
-    stackableAreas: []
-  - fileName: Prefabs/Converted Models/rand_objs2/94/79e6df3c7e4cdd027ed10ef1927ebd15
-    complexity: 7
-    isLight: 0
-    anchorType: 0
-    bounds:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.197463, y: 0.163287, z: 0.429355}
-    stackableAreas: []
-  - fileName: Prefabs/Converted Models/rand_objs2/95/91b636d0c4729cda1d9cc9d194c8533
-    complexity: 15
-    isLight: 0
-    anchorType: 0
-    bounds:
-      m_Center: {x: -0.000000029802322, y: 0.000000014901161, z: 0}
-      m_Extent: {x: 0.42553, y: 0.17428002, z: 0.19634399}
-    stackableAreas: []
-  - fileName: Prefabs/Converted Models/rand_objs2/96/a1be21c9a71d133dc5beea20858a99d5
-    complexity: 125
-    isLight: 0
-    anchorType: 0
-    bounds:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.344569, y: 0.112002, z: 0.344569}
-    stackableAreas: []
-  - fileName: Prefabs/Converted Models/rand_objs2/97/2356e0b210f85371f8fa66012789e652
-    complexity: 21
-    isLight: 0
-    anchorType: 0
-    bounds:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.136198, y: 0.159182, z: 0.453995}
-    stackableAreas: []
-  - fileName: Prefabs/Converted Models/rand_objs2/98/87783e267a4db70044a8a9dc66c6c095
-    complexity: 67
-    isLight: 0
-    anchorType: 0
-    bounds:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.0890722, y: 0.0935901, z: 0.483019}
-    stackableAreas: []
-  - fileName: Prefabs/Converted Models/rand_objs2/99/c4f73b23f4fa46364785ea41f043d735
-    complexity: 49
-    isLight: 0
-    anchorType: 0
-    bounds:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.452509, y: 0.210906, z: 0.0274662}
-    stackableAreas: []
-  - fileName: Prefabs/Props/Furniture/bed1
-    complexity: 221
-    isLight: 0
-    anchorType: 0
-    bounds:
-      m_Center: {x: 0, y: -0.00000011920929, z: 0}
-      m_Extent: {x: 4.368828, y: 1.9541403, z: 4.732836}
-    stackableAreas: []
-  - fileName: Prefabs/Props/Furniture/bed_frame
-    complexity: 175
-    isLight: 0
-    anchorType: 0
-    bounds:
-      m_Center: {x: -0.083091736, y: -0.00020718575, z: 2.7239926}
-      m_Extent: {x: 4.9828224, y: 2.003886, z: 2.7630851}
-    stackableAreas: []
-  - fileName: Prefabs/Props/Furniture/chair_02
-    complexity: 41
-    isLight: 0
-    anchorType: 0
-    bounds:
-      m_Center: {x: 0.03731209, y: 0.011861682, z: 0.003457427}
-      m_Extent: {x: 0.5856348, y: 1.1495382, z: 0.6032827}
-    stackableAreas: []
-  - fileName: Prefabs/Props/Furniture/chair_7106
-    complexity: 130
-    isLight: 0
-    anchorType: 0
-    bounds:
-      m_Center: {x: -0.00008416176, y: 1.3947862, z: -0.1245445}
-      m_Extent: {x: 0.6724688, y: 1.3947864, z: 0.8027916}
-    stackableAreas: []
-  - fileName: Prefabs/Props/Furniture/Lounge_chair
-    complexity: 817
-    isLight: 0
-    anchorType: 0
-    bounds:
-      m_Center: {x: -1.3284845, y: 1.3330661, z: 0}
-      m_Extent: {x: 2.593299, y: 1.328039, z: 1.3241515}
-    stackableAreas: []
-  - fileName: Prefabs/Props/Furniture/Shelf
-    complexity: 21
-    isLight: 0
-    anchorType: 0
-    bounds:
-      m_Center: {x: 0.021257877, y: 2.7405555, z: 0.0719676}
-      m_Extent: {x: 3.6054826, y: 2.7405558, z: 0.7969003}
-    stackableAreas:
-    - rotationAngle: 0
-      bottomCenter: {x: -0.03, y: -2.7, z: 0}
-      dimensions: {x: 6.7, y: 1.27, z: 1.23}
-    - rotationAngle: 0
-      bottomCenter: {x: -0.03, y: -1.25, z: 0}
-      dimensions: {x: 6.7, y: 0.85, z: 1.23}
-    - rotationAngle: 0
-      bottomCenter: {x: -0.03, y: -0.22, z: 0}
-      dimensions: {x: 6.7, y: 0.86, z: 1.23}
-    - rotationAngle: 0
-      bottomCenter: {x: -0.03, y: 0.81, z: 0}
-      dimensions: {x: 6.7, y: 0.79, z: 1.23}
-    - rotationAngle: 0
-      bottomCenter: {x: -0.03, y: 1.77, z: 0}
-      dimensions: {x: 6.7, y: 0.55, z: 1.23}
-    - rotationAngle: 0
-      bottomCenter: {x: -0.03, y: 2.48, z: 0}
-      dimensions: {x: 6.7, y: 0, z: 1.23}
-  - fileName: Prefabs/Props/Furniture/sofa_blue
-    complexity: 237
-    isLight: 0
-    anchorType: 0
-    bounds:
-      m_Center: {x: 0, y: 1.720496, z: 0}
-      m_Extent: {x: 4.242313, y: 1.7204962, z: 2.0811396}
-    stackableAreas: []
-  - fileName: Prefabs/Props/Furniture/sofa_modern_01_starter
-    complexity: 259
-    isLight: 0
-    anchorType: 0
-    bounds:
-      m_Center: {x: -0.03508711, y: 1.6007758, z: 0}
-      m_Extent: {x: 1.7097986, y: 1.6001952, z: 3.6850584}
-    stackableAreas: []
-  - fileName: Prefabs/Props/Furniture/table_7103
-    complexity: 34
-    isLight: 0
-    anchorType: 0
-    bounds:
-      m_Center: {x: -0.00060904026, y: 0.39497492, z: 0.00000047683716}
-      m_Extent: {x: 0.9375837, y: 0.3950003, z: 0.5100002}
-    stackableAreas:
-    - rotationAngle: 0
-      bottomCenter: {x: 0, y: 0.42, z: 0.04}
-      dimensions: {x: 1.73, y: 0, z: 0.89}
-  - fileName: Prefabs/Props/Lights/lamp_1
-    complexity: 102
-    isLight: 1
-    anchorType: 0
-    bounds:
-      m_Center: {x: 0.006156504, y: 0.41074637, z: -0.003376931}
-      m_Extent: {x: 0.14964864, y: 0.41074637, z: 0.14686906}
-    stackableAreas: []
-  - fileName: Prefabs/Props/Lights/lamp_10
-    complexity: 246
-    isLight: 1
-    anchorType: 0
-    bounds:
-      m_Center: {x: 0, y: 0.87156105, z: 0}
-      m_Extent: {x: 0.51352906, y: 0.87238336, z: 0.51352906}
-    stackableAreas: []
-  - fileName: Prefabs/Props/Lights/lamp_11
-    complexity: 226
-    isLight: 1
-    anchorType: 0
-    bounds:
-      m_Center: {x: 0, y: 2.7734442, z: 0.00000029802322}
-      m_Extent: {x: 0.7376655, y: 2.7815661, z: 0.7490451}
-    stackableAreas: []
-  - fileName: Prefabs/Props/Lights/lamp_12
-    complexity: 218
-    isLight: 1
-    anchorType: 0
-    bounds:
-      m_Center: {x: 0, y: 1.2813708, z: 0.000000029802322}
-      m_Extent: {x: 0.25936562, y: 1.2811838, z: 0.2593656}
-    stackableAreas: []
-  - fileName: Prefabs/Props/Lights/lamp_13
-    complexity: 232
-    isLight: 1
-    anchorType: 0
-    bounds:
-      m_Center: {x: 0, y: 1.378599, z: 0}
-      m_Extent: {x: 0.4908548, y: 1.3786079, z: 0.4908548}
-    stackableAreas: []
-  - fileName: Prefabs/Props/Lights/lamp_16
-    complexity: 106
-    isLight: 1
-    anchorType: 0
-    bounds:
-      m_Center: {x: 0, y: 1.3490326, z: 0.000000029802322}
-      m_Extent: {x: 0.36124378, y: 1.3580408, z: 0.36124378}
-    stackableAreas: []
-  - fileName: Prefabs/Props/Lights/lamp_17
-    complexity: 243
-    isLight: 1
-    anchorType: 0
-    bounds:
-      m_Center: {x: -0.00000023841858, y: 1.3182883, z: 0}
-      m_Extent: {x: 0.38146704, y: 1.3182883, z: 0.38146704}
-    stackableAreas: []
-  - fileName: Prefabs/Props/Lights/lamp_18
-    complexity: 258
-    isLight: 1
-    anchorType: 0
-    bounds:
-      m_Center: {x: 0.03540805, y: 1.3898654, z: 0.094044864}
-      m_Extent: {x: 0.44325104, y: 1.393193, z: 0.405397}
-    stackableAreas: []
-  - fileName: Prefabs/Props/Lights/lamp_18_hanging
-    complexity: 259
-    isLight: 1
-    anchorType: 2
-    bounds:
-      m_Center: {x: 0.06861806, y: -1.363082, z: 0.19551772}
-      m_Extent: {x: 1.1684761, y: 1.4525725, z: 1.0960374}
-    stackableAreas: []
-  - fileName: Prefabs/Props/Lights/lamp_19
-    complexity: 71
-    isLight: 1
-    anchorType: 0
-    bounds:
-      m_Center: {x: 0, y: 1.341772, z: 0}
-      m_Extent: {x: 0.38201034, y: 1.34121, z: 0.38201034}
-    stackableAreas: []
-  - fileName: Prefabs/Props/Lights/lamp_2
-    complexity: 169
-    isLight: 1
-    anchorType: 0
-    bounds:
-      m_Center: {x: 0, y: 0.37638497, z: 0}
-      m_Extent: {x: 0.16222884, y: 0.37638497, z: 0.16222884}
-    stackableAreas: []
-  - fileName: Prefabs/Props/Lights/lamp_20
-    complexity: 226
-    isLight: 1
-    anchorType: 0
-    bounds:
-      m_Center: {x: 0, y: 1.3738471, z: 0}
-      m_Extent: {x: 0.4125377, y: 1.3738159, z: 0.46976948}
-    stackableAreas: []
-  - fileName: Prefabs/Props/Lights/lamp_3
-    complexity: 59
-    isLight: 1
-    anchorType: 0
-    bounds:
-      m_Center: {x: -0.051602185, y: 0.26524732, z: 0}
-      m_Extent: {x: 0.19112387, y: 0.26524732, z: 0.13490611}
-    stackableAreas: []
-  - fileName: Prefabs/Props/Lights/lamp_4
-    complexity: 49
-    isLight: 1
-    anchorType: 0
-    bounds:
-      m_Center: {x: -0.00023241341, y: 0.33669218, z: 0.000069104135}
-      m_Extent: {x: 0.0769206, y: 0.33910063, z: 0.0769206}
-    stackableAreas: []
-  - fileName: Prefabs/Props/Lights/lamp_5
-    complexity: 69
-    isLight: 1
-    anchorType: 0
-    bounds:
-      m_Center: {x: 0, y: 0.46439657, z: 0.000000029802322}
-      m_Extent: {x: 0.2960141, y: 0.46439657, z: 0.2960141}
-    stackableAreas: []
-  - fileName: Prefabs/Props/Lights/lamp_6
-    complexity: 198
-    isLight: 1
-    anchorType: 0
-    bounds:
-      m_Center: {x: 0, y: 0.6599121, z: 0}
-      m_Extent: {x: 0.32804668, y: 0.6599121, z: 0.32804668}
-    stackableAreas: []
-  - fileName: Prefabs/Props/Lights/lamp_7
-    complexity: 199
-    isLight: 1
-    anchorType: 0
-    bounds:
-      m_Center: {x: 0, y: 0.63753015, z: 0.000000059604645}
-      m_Extent: {x: 0.3561896, y: 0.63753015, z: 0.35618958}
-    stackableAreas: []
-  - fileName: Prefabs/Props/Lights/lamp_8
-    complexity: 216
-    isLight: 1
-    anchorType: 0
-    bounds:
-      m_Center: {x: 0, y: 0.67043227, z: 0}
-      m_Extent: {x: 0.51161104, y: 0.67050546, z: 0.51161104}
-    stackableAreas: []
-  - fileName: Prefabs/Props/Lights/lamp_9
-    complexity: 124
-    isLight: 1
-    anchorType: 0
-    bounds:
-      m_Center: {x: 0, y: 0.5113381, z: -0.000000014901161}
-      m_Extent: {x: 0.24064241, y: 0.5113381, z: 0.2406424}
-    stackableAreas: []
-  - fileName: Prefabs/Props/Misc/Board_Big
-    complexity: 13
-    isLight: 0
-    anchorType: 1
-    bounds:
-      m_Center: {x: 0, y: 0.00000011920929, z: 0}
-      m_Extent: {x: 3.5113275, y: 1.8355731, z: 0.050230928}
-    stackableAreas: []
-  - fileName: Prefabs/Props/Misc/Book
-    complexity: 19
-    isLight: 0
-    anchorType: 0
-    bounds:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.3257861, y: 0.067358494, z: 0.26027635}
-    stackableAreas: []
-  - fileName: Prefabs/Props/Misc/Rack
-    complexity: 60
-    isLight: 0
-    anchorType: 0
-    bounds:
-      m_Center: {x: -0.0989867, y: 0.028575, z: 0}
-      m_Extent: {x: 0.1275617, y: 0.028575, z: 0.142875}
+      m_Center: {x: -1.1745641, y: 0.5600221, z: 0.21887867}
+      m_Extent: {x: 0.014527798, y: 0.26594722, z: 0.2177671}
     stackableAreas: []

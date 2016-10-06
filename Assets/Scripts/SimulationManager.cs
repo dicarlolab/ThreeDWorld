@@ -225,8 +225,12 @@ public static class SimulationManager
 		int screenWidth = Screen.width;
 		int screenHeight = Screen.height;
 		string preferredImageFormat = "png";
+		bool shouldCreateServer = true;
+		bool shouldCreateTestClient = false;
 		bool debugNetworkMessages = false;
-		bool logTimeInfo = false;
+		bool logSimpleTimeInfo = false;
+		bool logDetailedTimeInfo = false;
+		bool saveDebugImageFiles = false;
 		string environmentScene = "Empty";
 
 
@@ -285,17 +289,25 @@ public static class SimulationManager
 					} catch {
 						Debug.LogWarning ("No targetFPS!"); 
 					}
+				} else if (arg.StartsWith ("-shouldCreateServer")) {
+					shouldCreateServer = true;
+				} else if (arg.StartsWith ("-shouldCreateTestClient")) {
+					shouldCreateTestClient = true;
 				} else if (arg.StartsWith ("-debugNetworkMessages")) {
 					debugNetworkMessages = true;
-				} else if (arg.StartsWith ("-logTimingInfo")) {
-					logTimeInfo = true;
+				} else if (arg.StartsWith ("-logSimpleTimingInfo")) {
+					logSimpleTimeInfo = true;
+				} else if (arg.StartsWith ("-logDetailedTimingInfo")) {
+					logDetailedTimeInfo = true;
 				} else if (arg.StartsWith ("-targetFPS")) {
 					try {
 						targetFrameRate = int.Parse (arg.Substring ("-targetFPS=".IndexOf ("=") + 1));
 					} catch {
 						Debug.LogWarning ("No target FPS!"); 
 					}
-                }
+				} else if (arg.StartsWith ("-saveDebugImageFiles=")) {
+					saveDebugImageFiles = true;
+				}
             }
             Debug.Log(output);
         }
@@ -318,7 +330,8 @@ public static class SimulationManager
         myNetMessenger = GameObject.FindObjectOfType<NetMessenger>();
 		Debug.Log (portNumber);
         if (myNetMessenger != null)
-			myNetMessenger.Init(hostAddress, portNumber, debugNetworkMessages, logTimeInfo, preferredImageFormat, environmentScene);
+			myNetMessenger.Init(hostAddress, portNumber, shouldCreateTestClient,shouldCreateServer, debugNetworkMessages, 
+				logSimpleTimeInfo, logDetailedTimeInfo, preferredImageFormat, saveDebugImageFiles, environmentScene);
         else
             Debug.LogWarning("Couldn't find a NetMessenger to Initialize!");
 

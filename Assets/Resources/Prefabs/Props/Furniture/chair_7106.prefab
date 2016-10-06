@@ -14,6 +14,7 @@ GameObject:
   - 114: {fileID: 11466132}
   - 54: {fileID: 5401138}
   - 114: {fileID: 11448380}
+  - 65: {fileID: 65000012235884670}
   m_Layer: 0
   m_Name: chair_7106
   m_TagString: Untagged
@@ -3642,7 +3643,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   shouldUse: 1
-  myComplexity: 130
+  myComplexity: 131
   myBounds:
     m_Center: {x: -0.00008416176, y: 1.3947862, z: -0.1245445}
     m_Extent: {x: 0.6724688, y: 1.3947864, z: 0.8027916}
@@ -3650,7 +3651,6 @@ MonoBehaviour:
   attachMethod: 0
   generationTags: []
   stackableAreas: []
-  canonicalScale: 1
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
@@ -3682,3 +3682,15 @@ Prefab:
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 100000}
   m_IsPrefabParent: 1
+--- !u!65 &65000012235884670
+BoxCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100000}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.44831252, y: 0.5351943, z: 0.9298575}
+  m_Center: {x: -0.000028058887, y: 0.04151478, z: 0.46492875}
