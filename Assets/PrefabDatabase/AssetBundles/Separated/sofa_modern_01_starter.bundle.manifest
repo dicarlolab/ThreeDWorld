@@ -1,0 +1,38 @@
+ManifestFileVersion: 0
+CRC: 3685556851
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: 3f4192f6b6e960cbfb545e96c1a347a9
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: f489477321cbf7f8c272bef5c62d4394
+HashAppended: 0
+ClassTypes:
+- Class: 1
+  Script: {instanceID: 0}
+- Class: 4
+  Script: {instanceID: 0}
+- Class: 21
+  Script: {instanceID: 0}
+- Class: 23
+  Script: {instanceID: 0}
+- Class: 28
+  Script: {instanceID: 0}
+- Class: 33
+  Script: {instanceID: 0}
+- Class: 43
+  Script: {instanceID: 0}
+- Class: 48
+  Script: {instanceID: 0}
+- Class: 54
+  Script: {instanceID: 0}
+- Class: 114
+  Script: {fileID: 11500000, guid: fa8bdad9898d94340ab9980d8e4cdb15, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: ec657f7dbf5ce404898eb31282b67953, type: 3}
+- Class: 115
+  Script: {instanceID: 0}
+Assets:
+- Assets/PrefabDatabase/GeneratedPrefabs/Props/Furniture/Seating/Sofa_Modern_01_Starter/sofa_modern_01_starter.prefab
+Dependencies: []

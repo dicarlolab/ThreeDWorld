@@ -33,7 +33,7 @@ def loop():
 		"complexity": 20000,
 		"num_ceiling_lights": 4,
 		"minimum_stacking_base_objects": 5,
-		"minimum_objects_to_stack": 100,
+		"minimum_objects_to_stack": 5,
 		"room_width": 45.0,
 		"room_height": 20.0,
 		"room_length": 45.0,

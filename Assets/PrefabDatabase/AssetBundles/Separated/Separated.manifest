@@ -1,0 +1,190 @@
+ManifestFileVersion: 0
+CRC: 2385231592
+AssetBundleManifest:
+  AssetBundleInfos:
+    Info_0:
+      Name: 1b84dededd445058e44a5473032f38f.bundle
+      Dependencies: {}
+    Info_1:
+      Name: 1b9ef45fefefa35ed13f430b2941481.bundle
+      Dependencies: {}
+    Info_2:
+      Name: board_big.bundle
+      Dependencies: {}
+    Info_3:
+      Name: book.bundle
+      Dependencies: {}
+    Info_4:
+      Name: book_shelfs.bundle
+      Dependencies: {}
+    Info_5:
+      Name: chair.bundle
+      Dependencies: {}
+    Info_6:
+      Name: door.bundle
+      Dependencies: {}
+    Info_7:
+      Name: electricity_box.bundle
+      Dependencies: {}
+    Info_8:
+      Name: fan.bundle
+      Dependencies: {}
+    Info_9:
+      Name: lamp.bundle
+      Dependencies: {}
+    Info_10:
+      Name: pc.bundle
+      Dependencies: {}
+    Info_11:
+      Name: posters.bundle
+      Dependencies: {}
+    Info_12:
+      Name: printer.bundle
+      Dependencies: {}
+    Info_13:
+      Name: projector.bundle
+      Dependencies: {}
+    Info_14:
+      Name: projector_screen.bundle
+      Dependencies: {}
+    Info_15:
+      Name: table_big.bundle
+      Dependencies: {}
+    Info_16:
+      Name: table_small.bundle
+      Dependencies: {}
+    Info_17:
+      Name: tables_few.bundle
+      Dependencies: {}
+    Info_18:
+      Name: teachers_board.bundle
+      Dependencies: {}
+    Info_19:
+      Name: window.bundle
+      Dependencies: {}
+    Info_20:
+      Name: ball.bundle
+      Dependencies: {}
+    Info_21:
+      Name: beds.bundle
+      Dependencies: {}
+    Info_22:
+      Name: 7103.bundle
+      Dependencies: {}
+    Info_23:
+      Name: 7106.bundle
+      Dependencies: {}
+    Info_24:
+      Name: loungechairone_connectors_fbx.bundle
+      Dependencies: {}
+    Info_25:
+      Name: loungechairone_cushions_fbx.bundle
+      Dependencies: {}
+    Info_26:
+      Name: loungechairone_feetstand_fbx.bundle
+      Dependencies: {}
+    Info_27:
+      Name: loungechairone_shells_fbx.bundle
+      Dependencies: {}
+    Info_28:
+      Name: loungeottoman_cushion_fbx.bundle
+      Dependencies: {}
+    Info_29:
+      Name: loungeottoman_feetstand_fbx.bundle
+      Dependencies: {}
+    Info_30:
+      Name: loungeottoman_shell_fbx.bundle
+      Dependencies: {}
+    Info_31:
+      Name: sofa.bundle
+      Dependencies: {}
+    Info_32:
+      Name: round_carpet_geo.bundle
+      Dependencies: {}
+    Info_33:
+      Name: sofa_modern_01_starter.bundle
+      Dependencies: {}
+    Info_34:
+      Name: shelf.bundle
+      Dependencies: {}
+    Info_35:
+      Name: shelf_d1.bundle
+      Dependencies: {}
+    Info_36:
+      Name: shelf_d2.bundle
+      Dependencies: {}
+    Info_37:
+      Name: lamps_all_export.bundle
+      Dependencies: {}
+    Info_38:
+      Name: tvset.bundle
+      Dependencies: {}
+    Info_39:
+      Name: arrow.bundle
+      Dependencies: {}
+    Info_40:
+      Name: clock.bundle
+      Dependencies: {}
+    Info_41:
+      Name: 36d4caf867e0afcd56f6fc4b4ce1db04.bundle
+      Dependencies: {}
+    Info_42:
+      Name: 37c9fe32ad87beccad5067eac75a07f7.bundle
+      Dependencies: {}
+    Info_43:
+      Name: 37f1daa11b023fdf81faebbdea6bd9be.bundle
+      Dependencies: {}
+    Info_44:
+      Name: 41b946cebf6b76cb25d3c528e036a532.bundle
+      Dependencies: {}
+    Info_45:
+      Name: 44a64fa7c3378f16de27b9aa1df630c0.bundle
+      Dependencies: {}
+    Info_46:
+      Name: 44ed0531eedc723dfaaa4370fa1ccec.bundle
+      Dependencies: {}
+    Info_47:
+      Name: 45d71fc0e59af8bf155d75bbf62b80.bundle
+      Dependencies: {}
+    Info_48:
+      Name: 45d8951ac1dbf2cbf51f77a6d7299806.bundle
+      Dependencies: {}
+    Info_49:
+      Name: 46bd9fb29f0ad74151f881addeefe983.bundle
+      Dependencies: {}
+    Info_50:
+      Name: 46e777a46aa76681f4fb4dee5181bee.bundle
+      Dependencies: {}
+    Info_51:
+      Name: 2ca6df7a5377825cfee773c7de26c274.bundle
+      Dependencies: {}
+    Info_52:
+      Name: 2f97f841aff238b74245c6fcbfdfe98a.bundle
+      Dependencies: {}
+    Info_53:
+      Name: 3edc3bc2ecf58aae40090e51144242ea.bundle
+      Dependencies: {}
+    Info_54:
+      Name: 4a175db3a8cad99b5dd5ceb34f6e33d9.bundle
+      Dependencies: {}
+    Info_55:
+      Name: 4a1f62dbe8b091eabc49cae1a831a9e.bundle
+      Dependencies: {}
+    Info_56:
+      Name: 4e4fcfffec161ecaed13f430b2941481.bundle
+      Dependencies: {}
+    Info_57:
+      Name: 5afca35479b347786f0abe366609662.bundle
+      Dependencies: {}
+    Info_58:
+      Name: 5afe31025e8574ea8d6e12c39b2d5023.bundle
+      Dependencies: {}
+    Info_59:
+      Name: 5d4f774fdda6fa1dcd99ccc7ff441abf.bundle
+      Dependencies: {}
+    Info_60:
+      Name: 5f3af8ff93de34c9e7922afdefd88b6e.bundle
+      Dependencies: {}
+    Info_61:
+      Name: 8bc53bae41a8105f5c7506815f553527.bundle
+      Dependencies: {}

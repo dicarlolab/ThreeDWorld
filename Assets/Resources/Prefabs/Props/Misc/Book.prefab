@@ -14,6 +14,7 @@ GameObject:
   - 54: {fileID: 5428016}
   - 114: {fileID: 11400418}
   - 114: {fileID: 11404724}
+  - 65: {fileID: 65000013730239490}
   m_Layer: 0
   m_Name: Book
   m_TagString: Untagged
@@ -743,7 +744,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   shouldUse: 1
-  myComplexity: 19
+  myComplexity: 20
   myBounds:
     m_Center: {x: 0, y: 0, z: 0}
     m_Extent: {x: 0.3257861, y: 0.067358494, z: 0.26027635}
@@ -751,7 +752,6 @@ MonoBehaviour:
   attachMethod: 0
   generationTags: []
   stackableAreas: []
-  canonicalScale: 1
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
@@ -763,3 +763,15 @@ Prefab:
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 102746}
   m_IsPrefabParent: 1
+--- !u!65 &65000013730239490
+BoxCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 102746}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.16289306, y: 0.13013819, z: 0.033679236}
+  m_Center: {x: 0, y: 0, z: 0}

@@ -13,6 +13,7 @@ GameObject:
   - 54: {fileID: 5460454}
   - 114: {fileID: 11414108}
   - 114: {fileID: 11430848}
+  - 65: {fileID: 65000012463397784}
   m_Layer: 0
   m_Name: lamp_18
   m_TagString: Untagged
@@ -5513,7 +5514,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   shouldUse: 1
-  myComplexity: 258
+  myComplexity: 259
   myBounds:
     m_Center: {x: 0.03540805, y: 1.3898654, z: 0.094044864}
     m_Extent: {x: 0.44325104, y: 1.393193, z: 0.405397}
@@ -5521,7 +5522,6 @@ MonoBehaviour:
   attachMethod: 0
   generationTags: []
   stackableAreas: []
-  canonicalScale: 1
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
@@ -5541,3 +5541,15 @@ Prefab:
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 100000}
   m_IsPrefabParent: 1
+--- !u!65 &65000012463397784
+BoxCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100000}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.8865021, y: 2.786386, z: 0.810794}
+  m_Center: {x: 0.03540805, y: 1.3898654, z: 0.09404485}

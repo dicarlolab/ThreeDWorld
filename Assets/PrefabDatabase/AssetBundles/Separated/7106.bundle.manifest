@@ -1,0 +1,40 @@
+ManifestFileVersion: 0
+CRC: 2845994930
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: 73fc36f3100d139acdb7ba1012f5ae83
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 21ca9237f7ed7443b01429dd0466d88e
+HashAppended: 0
+ClassTypes:
+- Class: 1
+  Script: {instanceID: 0}
+- Class: 4
+  Script: {instanceID: 0}
+- Class: 21
+  Script: {instanceID: 0}
+- Class: 23
+  Script: {instanceID: 0}
+- Class: 33
+  Script: {instanceID: 0}
+- Class: 43
+  Script: {instanceID: 0}
+- Class: 48
+  Script: {instanceID: 0}
+- Class: 54
+  Script: {instanceID: 0}
+- Class: 90
+  Script: {instanceID: 0}
+- Class: 95
+  Script: {instanceID: 0}
+- Class: 114
+  Script: {fileID: 11500000, guid: fa8bdad9898d94340ab9980d8e4cdb15, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: ec657f7dbf5ce404898eb31282b67953, type: 3}
+- Class: 115
+  Script: {instanceID: 0}
+Assets:
+- Assets/PrefabDatabase/GeneratedPrefabs/Props/Furniture/Dining Table/Graphics/Models/7106.prefab
+Dependencies: []

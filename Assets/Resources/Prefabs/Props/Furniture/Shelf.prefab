@@ -13,6 +13,7 @@ GameObject:
   - 54: {fileID: 5494820}
   - 114: {fileID: 11449262}
   - 114: {fileID: 11443266}
+  - 65: {fileID: 65000013956977414}
   m_Layer: 0
   m_Name: Shelf
   m_TagString: Untagged
@@ -515,7 +516,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   shouldUse: 1
-  myComplexity: 21
+  myComplexity: 22
   myBounds:
     m_Center: {x: 0.021257877, y: 2.7405555, z: 0.0719676}
     m_Extent: {x: 3.6054826, y: 2.7405558, z: 0.7969003}
@@ -541,7 +542,6 @@ MonoBehaviour:
   - rotationAngle: 0
     bottomCenter: {x: -0.03, y: 2.48, z: 0}
     dimensions: {x: 6.7, y: 0, z: 1.23}
-  canonicalScale: 1
 --- !u!114 &11449262
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -568,3 +568,15 @@ Prefab:
 --- !u!1002 &100100001
 EditorExtensionImpl:
   serializedVersion: 6
+--- !u!65 &65000013956977414
+BoxCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100000}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1.442193, y: 0.31875965, z: 1.096222}
+  m_Center: {x: 0.0042515993, y: -0.014393724, z: 0.548111}

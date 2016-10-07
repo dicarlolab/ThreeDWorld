@@ -26,10 +26,12 @@ class Three_D_World_Queue(object):
 		s.close()
 
 		print "host: " + self.host_address
-		self.queue_port_number = "23402"
-		self.build_dir = "/home/threed/builds/"
-		self.forward_port_dir = "/home/threed/forwards/"
-
+		# self.queue_port_number = "23402"
+		self.queue_port_number = "5556"
+		# self.build_dir = "/home/threed/builds/"
+		# self.forward_port_dir = "/home/threed/forwards/"
+		self.build_dir = "/Users/pouyabashivan/Dropbox (MIT)/Codes/Downloads/ThreeDWorld_dirs/builds"
+		self.forward_port_dir = "/Users/pouyabashivan/Dropbox (MIT)/Codes/Downloads/ThreeDWorld_dirs/forwards"
 
 		#get commandline args
 		args = sys.argv

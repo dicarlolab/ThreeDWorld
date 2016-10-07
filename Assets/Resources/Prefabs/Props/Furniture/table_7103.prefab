@@ -14,6 +14,7 @@ GameObject:
   - 54: {fileID: 5472462}
   - 114: {fileID: 11403286}
   - 114: {fileID: 11434500}
+  - 65: {fileID: 65000013140967538}
   m_Layer: 0
   m_Name: table_7103
   m_TagString: Untagged
@@ -953,7 +954,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   shouldUse: 1
-  myComplexity: 34
+  myComplexity: 35
   myBounds:
     m_Center: {x: -0.00060904026, y: 0.39497492, z: 0.00000047683716}
     m_Extent: {x: 0.9375837, y: 0.3950003, z: 0.5100002}
@@ -964,7 +965,6 @@ MonoBehaviour:
   - rotationAngle: 0
     bottomCenter: {x: 0, y: 0.42, z: 0.04}
     dimensions: {x: 1.73, y: 0, z: 0.89}
-  canonicalScale: 1
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
@@ -976,3 +976,15 @@ Prefab:
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 100000}
   m_IsPrefabParent: 1
+--- !u!65 &65000013140967538
+BoxCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100000}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1.8751674, y: 1.0200002, z: 0.7900004}
+  m_Center: {x: -0.00060901046, y: -0.0000005364418, z: 0.39497486}

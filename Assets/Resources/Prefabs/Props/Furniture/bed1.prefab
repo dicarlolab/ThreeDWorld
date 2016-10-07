@@ -13,6 +13,7 @@ GameObject:
   - 54: {fileID: 5403192}
   - 114: {fileID: 11463756}
   - 114: {fileID: 11449244}
+  - 65: {fileID: 65000013441832444}
   m_Layer: 0
   m_Name: bed1
   m_TagString: Untagged
@@ -5501,7 +5502,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   shouldUse: 1
-  myComplexity: 221
+  myComplexity: 222
   myBounds:
     m_Center: {x: 0, y: -0.00000011920929, z: 0}
     m_Extent: {x: 4.368828, y: 1.9541403, z: 4.732836}
@@ -5509,7 +5510,6 @@ MonoBehaviour:
   attachMethod: 0
   generationTags: []
   stackableAreas: []
-  canonicalScale: 1
 --- !u!114 &11463756
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -5533,3 +5533,15 @@ Prefab:
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 100000}
   m_IsPrefabParent: 1
+--- !u!65 &65000013441832444
+BoxCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100000}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.8737655, y: 0.946567, z: 0.39082786}
+  m_Center: {x: 0, y: 0, z: -0.00000000745058}

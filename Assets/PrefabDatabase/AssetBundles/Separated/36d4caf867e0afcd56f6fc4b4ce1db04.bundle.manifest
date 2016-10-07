@@ -1,0 +1,38 @@
+ManifestFileVersion: 0
+CRC: 4111535214
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: 292e9b217d44c7e1538d1f74fd30ebe9
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 9e00686385a319d64098085a7da24d62
+HashAppended: 0
+ClassTypes:
+- Class: 1
+  Script: {instanceID: 0}
+- Class: 4
+  Script: {instanceID: 0}
+- Class: 21
+  Script: {instanceID: 0}
+- Class: 23
+  Script: {instanceID: 0}
+- Class: 33
+  Script: {instanceID: 0}
+- Class: 43
+  Script: {instanceID: 0}
+- Class: 48
+  Script: {instanceID: 0}
+- Class: 54
+  Script: {instanceID: 0}
+- Class: 64
+  Script: {instanceID: 0}
+- Class: 114
+  Script: {fileID: 11500000, guid: fa8bdad9898d94340ab9980d8e4cdb15, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: ec657f7dbf5ce404898eb31282b67953, type: 3}
+- Class: 115
+  Script: {instanceID: 0}
+Assets:
+- Assets/PrefabDatabase/GeneratedPrefabs/sel_objs/02747177/36d4caf867e0afcd56f6fc4b4ce1db04/36d4caf867e0afcd56f6fc4b4ce1db04.prefab
+Dependencies: []

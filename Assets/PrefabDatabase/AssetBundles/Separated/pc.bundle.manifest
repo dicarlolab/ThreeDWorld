@@ -1,0 +1,42 @@
+ManifestFileVersion: 0
+CRC: 3180785708
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: 0a4831fb60f16584b36e92e728549678
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 200f603374fff7029f28d69a5aefb7ea
+HashAppended: 0
+ClassTypes:
+- Class: 1
+  Script: {instanceID: 0}
+- Class: 4
+  Script: {instanceID: 0}
+- Class: 21
+  Script: {instanceID: 0}
+- Class: 23
+  Script: {instanceID: 0}
+- Class: 28
+  Script: {instanceID: 0}
+- Class: 33
+  Script: {instanceID: 0}
+- Class: 43
+  Script: {instanceID: 0}
+- Class: 48
+  Script: {instanceID: 0}
+- Class: 54
+  Script: {instanceID: 0}
+- Class: 90
+  Script: {instanceID: 0}
+- Class: 95
+  Script: {instanceID: 0}
+- Class: 114
+  Script: {fileID: 11500000, guid: fa8bdad9898d94340ab9980d8e4cdb15, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: ec657f7dbf5ce404898eb31282b67953, type: 3}
+- Class: 115
+  Script: {instanceID: 0}
+Assets:
+- Assets/PrefabDatabase/GeneratedPrefabs/Props/ClassRoom Stuff/Meshes/PC.prefab
+Dependencies: []
