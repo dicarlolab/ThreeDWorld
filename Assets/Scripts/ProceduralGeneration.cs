@@ -175,8 +175,11 @@ public class ProceduralGeneration : MonoBehaviour
 
                         // Get the option and scale from json message
 
-                        info.option_scale   = json["scale_relat_dict"][itemName]["option"].ReadString(info.option_scale);
-                        info.dynamic_scale  = json["scale_relat_dict"][itemName]["scale"].ReadFloat(info.dynamic_scale);
+                        try {
+                            info.option_scale   = json["scale_relat_dict"][itemName]["option"].ReadString(info.option_scale);
+                            info.dynamic_scale  = json["scale_relat_dict"][itemName]["scale"].ReadFloat(info.dynamic_scale);
+                        } catch {
+                        }
 
                         //Debug.Log("Test output of option: " + info.option_scale);
 
@@ -557,7 +560,8 @@ public class ProceduralGeneration : MonoBehaviour
 
         // Find a spot to place this object
         int spawnX, spawnZ;
-        float modScale = prefabDatabase.GetSceneScale (info);
+        //float modScale = prefabDatabase.GetSceneScale (info);
+        float modScale = 1.0f;
 
         // For option "Multi_size"
         if (info.option_scale=="Multi_size")
