@@ -152,8 +152,21 @@ public class ProceduralGeneration : MonoBehaviour
 
         Debug.Log("Using random seed: " + _curRandSeed);
 
-        PrefabDatabase database =  AssetDatabase.LoadAssetAtPath<PrefabDatabase> 
-                ("Assets/ScenePrefabs/PrefabDatabase.prefab");
+        //var database_bundle = AssetBundle.LoadFromFile("Assets/ScenePrefabs/PrefabDatabase.prefab");
+        //PrefabDatabase database =  Resources.Load("Assets/ScenePrefabs/PrefabDatabase.prefab") as PrefabDatabase;
+        //PrefabDatabase database =  AssetDatabase.LoadAssetAtPath<PrefabDatabase> 
+        //        ("Assets/ScenePrefabs/PrefabDatabase.prefab");
+
+        /*
+        var database_list = database_bundle.LoadAllAssets<PrefabDatabase>();
+        Debug.Log("Test output: " + database_list);
+        var database = database_list[0];
+        if (database==null)
+        {
+            Debug.Log("Null database!" + database_list);
+        }
+        */
+        PrefabDatabase database = GameObject.FindObjectOfType<PrefabDatabase>();
         availablePrefabs = database.prefabs;
         List<PrefabDatabase.PrefabInfo> filteredPrefabs = availablePrefabs.FindAll(((PrefabDatabase.PrefabInfo info)=>{
             // Remove items that have been disallowed
