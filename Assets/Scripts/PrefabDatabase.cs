@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 using System.IO;
+using System.Text;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -101,6 +102,22 @@ public class PrefabDatabase : MonoBehaviour
 		GameObject prefab = loadedAssetBundle.LoadAsset<GameObject> (loadedAssetBundle.GetAllAssetNames () [0]);
 		loadedAssetBundle.Unload (false);
 		return prefab;
+	}
+
+	public static GameObject LoadAssetFromBundleWWW (string fileName)
+	{
+                var www = WWW.LoadFromCacheOrDownload (fileName, 0);
+
+                if (!String.IsNullOrEmpty(www.error))
+                {
+                        Debug.Log (www.error);
+                        return null;
+                }                 
+                var loadedAssetBundle = www.assetBundle;
+                GameObject prefab = loadedAssetBundle.LoadAsset<GameObject> (loadedAssetBundle.GetAllAssetNames () [0]);
+                loadedAssetBundle.Unload (false);
+
+                return prefab;
 	}
 
 	#if UNITY_EDITOR
@@ -328,9 +345,15 @@ public class PrefabDatabase : MonoBehaviour
 		/* 
 		 * Loads the PrefabDatabase prefab and stores the bundles information 
 		 */
-		PrefabDatabase database = AssetDatabase.LoadAssetAtPath<PrefabDatabase> ("Assets/ScenePrefabs/PrefabDatabase.prefab");
+                string path_database = "Assets/ScenePrefabs/PrefabDatabase.prefab";
+		PrefabDatabase database = AssetDatabase.LoadAssetAtPath<PrefabDatabase> (path_database);
 		if (database != null)
 			database.CompileAssetBundles ();
+                //database = PrefabUtility.ReplacePrefab (database, database);
+                
+		//PrefabDatabase database_ = AssetDatabase.LoadAssetAtPath<PrefabDatabase> (path_database);
+		//PrefabUtility.ReplacePrefab(database, database_);
+                EditorApplication.SaveAssets ();
 	}
 
 	public static void SetupPrefabs (bool shouldRecompute)
@@ -358,9 +381,13 @@ public class PrefabDatabase : MonoBehaviour
 			newFileName = newFileName.Substring(0, newFileName.LastIndexOf("."));
 		}
 		else {
+                    if (!(assetPath.ToLowerInvariant().Contains("http://"))) {
 			const string resPrefix = BUNDLES_SUBPATH;
 			string currentPath = Directory.GetCurrentDirectory ();
 			newFileName = Path.Combine (currentPath, assetPath);
+                    } else {
+                        newFileName = assetPath;
+                    }
 		}
 		int replaceIndex = -1;
 		if (replaceOld) {
@@ -372,6 +399,7 @@ public class PrefabDatabase : MonoBehaviour
 		}
 
 		if (prefab.shouldUse) {
+
 			if (shouldRecomputePrefabInformation)
 				prefab.ProcessPrefab ();
 			PrefabInfo newInfo = new PrefabInfo ();
@@ -435,6 +463,53 @@ public class PrefabDatabase : MonoBehaviour
 			loadedAssetBundle.Unload (false);
 		}
 
+                // Test code for Loadfromcacheordownload
+
+
+                string list_aws_filename = "Assets/PrefabDatabase/list_aws.txt";
+                StreamReader theReader = new StreamReader(list_aws_filename, Encoding.Default);
+                string line;
+                using (theReader)
+                {
+                    // While there's lines left in the text file, do this:
+                    do
+                    {
+                        line = theReader.ReadLine();
+                            
+                        if (line != null)
+                        {
+                            Debug.Log (line);
+
+                            var www = WWW.LoadFromCacheOrDownload (line, 0);
+
+                            if (!String.IsNullOrEmpty(www.error))
+                            {
+                                    Debug.Log (www.error);
+                                    return;
+                            } else {
+                                var loadedAssetBundle = www.assetBundle;
+
+                                string[] assetList = loadedAssetBundle.GetAllAssetNames ();
+                                foreach (string asset in assetList) { 
+
+                                        GameObject gObj = loadedAssetBundle.LoadAsset<GameObject> (asset);
+                                        GeneratablePrefab[] prefab = gObj.GetComponents<GeneratablePrefab> ();
+                                        if (prefab.GetLength (0) == 0) {
+                                                Debug.LogFormat ("Cannot load GeneratablePrefab component on {0}", gObj);
+                                                continue;
+                                        }
+                                        SavePrefabInformation (prefab [0], line, false, false);
+                                }
+                                loadedAssetBundle.Unload (false);
+                            }
+
+                        }
+                    }
+                    while (line != null);
+                    // Done reading, close the reader and return true to broadcast success    
+                    theReader.Close();
+                }
+                Debug.Log (prefabs.Count);
 		EditorUtility.SetDirty (this);
 	}
 

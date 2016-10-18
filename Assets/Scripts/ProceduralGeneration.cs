@@ -168,6 +168,9 @@ public class ProceduralGeneration : MonoBehaviour
         */
         PrefabDatabase database = GameObject.FindObjectOfType<PrefabDatabase>();
         availablePrefabs = database.prefabs;
+
+        Debug.Log (availablePrefabs.Count);
+
         List<PrefabDatabase.PrefabInfo> filteredPrefabs = availablePrefabs.FindAll(((PrefabDatabase.PrefabInfo info)=>{
             // Remove items that have been disallowed
             foreach(string itemName in disabledItems)
@@ -607,7 +610,13 @@ public class ProceduralGeneration : MonoBehaviour
                 centerPos.y = _roomCornerPos.y + _curRoomHeight - modHeight;
 
 //            GameObject newPrefab = Resources.Load<GameObject>(info.
-			GameObject newPrefab = PrefabDatabase.LoadAssetFromBundle(info.fileName);
+            GameObject newPrefab;
+            if (info.fileName.ToLowerInvariant().Contains("http://")) {
+                Debug.Log("From http");
+                newPrefab = PrefabDatabase.LoadAssetFromBundleWWW(info.fileName);
+            } else {
+                newPrefab = PrefabDatabase.LoadAssetFromBundle(info.fileName);
+            }
 			// TODO: Factor in complexity to the arrangement algorithm?
             _curComplexity += info.complexity;
 

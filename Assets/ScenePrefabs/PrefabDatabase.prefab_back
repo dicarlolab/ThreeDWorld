@@ -242,6 +242,16 @@ MonoBehaviour:
     stackableAreas: []
     option_scale: NULL
     dynamic_scale: 1
+  - fileName: /Users/chengxuz/3Dworld/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/46bd9fb29f0ad74151f881addeefe983.bundle
+    complexity: 177
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: -0.022920504, y: -0.075486995, z: 0.0016250014}
+      m_Extent: {x: 0.2969755, y: 0.271315, z: 0.296975}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
   - fileName: /Users/chengxuz/3Dworld/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/4a175db3a8cad99b5dd5ceb34f6e33d9.bundle
     complexity: 13
     isLight: 0
@@ -712,23 +722,13 @@ MonoBehaviour:
     stackableAreas: []
     option_scale: NULL
     dynamic_scale: 1
-  - fileName: http://threedworld.s3.amazonaws.com/46e777a46aa76681f4fb4dee5181bee.bundle
+  - fileName: /Users/chengxuz/3Dworld/ThreeDWorld/http://threedworld.s3.amazonaws.com/46e777a46aa76681f4fb4dee5181bee.bundle
     complexity: 229
     isLight: 0
     anchorType: 0
     bounds:
       m_Center: {x: -0.00037401915, y: -0.164426, z: -0.00006902218}
       m_Extent: {x: 0.28257298, y: 0.300514, z: 0.282566}
-    stackableAreas: []
-    option_scale: NULL
-    dynamic_scale: 1
-  - fileName: http://threedworld.s3.amazonaws.com/46bd9fb29f0ad74151f881addeefe983.bundle
-    complexity: 177
-    isLight: 0
-    anchorType: 0
-    bounds:
-      m_Center: {x: -0.022920504, y: -0.075486995, z: 0.0016250014}
-      m_Extent: {x: 0.2969755, y: 0.271315, z: 0.296975}
     stackableAreas: []
     option_scale: NULL
     dynamic_scale: 1
