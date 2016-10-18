@@ -98,7 +98,7 @@ All the seeds excluding `'environment_scene'`, are all customizable. If you were
 
 ### About scaling options
 
-In the example config message, there is one dictionary called "scale\_relat\_dict". This dictionary is used to tell the ProceduralGeneration how to scale every object. Three options are provided: 
+In the example config message, there is one dictionary called "scale\_relat\_dict". This dictionary is used to tell the ProceduralGeneration how to scale every object. The key values could be the same as names in permitted\_items or the original filename of that object. Three options are provided:
 
 - "Absol\_size": 
         The object in the scene would be resized to make the longest axis of that to be the "scale" sent in; 
@@ -259,11 +259,37 @@ Running this will produce .wrl files for each input obj. The wrl file format is 
 
 Drag and drop the folder with you objects to *Assets/Models*. **NOTE:** This is a slow process on the order of ~5 sec / object.
 
-### Generating prefabs
+### Generating prefabs [_Not in use?_]
 
 First, click the *Play* button in Unity. Why? It starts memory management processes which are necessary for generating complicated scenes but also help when you are working with thousands of objects. Normally generating prefabs for a couple of objects does not require memory management so it is not started when you ask for prefabs. So next click *Procedural Generation / Create prefab model folders*. **NOTE:** This is a very slow process.
 
 **IMPORTANT ISSUES:** It is likely that with each update to Unity all models need to be reimported again...
+
+### For assetbundle
+
+Three steps needed to generate assetbundles from raw .obj files. 
+
+#### Generating prefabs
+
+Similarly, enter the _Play_ mode if speed is desired. Before clicking *Prefab Database/Create Prefabs*, selet those objects folders (the selected folder should contain .obj files directly, e.g. not in its subfolders) (usually the .obj files would be put under _Assets/Models/_). **NOTE:** The generating process is quite slow currently (less than 200/hr) and it seems that selecting lots of objects to create prefabs would make it even slower (it takes 10 hours to generate 500 objects after selecting nearly 2000 objects).
+
+#### Generating assetbundles
+
+The generated prefabs would be put under _Assets/PrefabDatabase/GeneratedPrefabs/_. After selecting those folders needed (similarly, the selected folder should contain the prefabs directly), click *Prefab Database/Build Assetbundles/Separate* to generate assetbundles for those prefabs. The generated assetbundle files could be found under _Assets/PrefabDatabase/AssetBundles/Separated/_.
+
+#### Uploading assetbundles to AWS S3 for Loadfromcacheordownload
+
+All the uploaded assetbundles are stored under bucket _threedworld_. Currently, the access permission is readonly for everyone. To upload it and make it readonly for everyone, one could use the following commands (s3cmd required, and of course, credentials for aws needed):
+
+```
+s3cmd put --acl-public --guess-mime-type yourbundlename.bundle s3://threedworld/
+```
+
+After uploading, one could append the http url to "Assets/PrefabDatabase/list\_aws.txt".
+
+#### Setting up assetbundles
+
+Just clicking *Prefab Database/Setup Bundles*. Unity would examine all available bundle files under _Assets/PrefabDatabase/AssetBundles/Separated/_ and remote bundle files from "Assets/PrefabDatabase/list\_aws.txt". **NOTE:** All the assetbundles would be loaded for checking and taking needed information. So this process could be slow depending on how many bundle files there (especially the remote bundle files!). The list of files would be stored in "prefabs" of _Assets/ScenePrefabs/PrefabDatabase_.
 
 # License
 
