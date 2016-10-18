@@ -186,9 +186,6 @@ public class ProceduralGeneration : MonoBehaviour
                 {
                     if (info.fileName.ToLowerInvariant().Contains(itemName.ToLowerInvariant()))
                     {
-                        //info.option_scale   = "";
-                        //info.dynamic_scale  = 1f;
-
                         // Get the option and scale from json message
 
                         try {
@@ -197,13 +194,27 @@ public class ProceduralGeneration : MonoBehaviour
                         } catch {
                         }
 
-                        //Debug.Log("Test output of option: " + info.option_scale);
+                        // Get the option and scale via the Filename (recommend for http files)
+                        try {
+                            info.option_scale   = json["scale_relat_dict"][info.fileName]["option"].ReadString(info.option_scale);
+                            info.dynamic_scale  = json["scale_relat_dict"][info.fileName]["scale"].ReadFloat(info.dynamic_scale);
+                        } catch {
+                        }
 
                         return true;
                     }
                 }
                 return false;
             }
+
+            // Get the option and scale via the Filename (recommend for http files)
+
+            try {
+                info.option_scale   = json["scale_relat_dict"][info.fileName]["option"].ReadString(info.option_scale);
+                info.dynamic_scale  = json["scale_relat_dict"][info.fileName]["scale"].ReadFloat(info.dynamic_scale);
+            } catch {
+            }
+
             return true;
         }));
         // TODO: We're not filtering the ceiling lights, since we currently only have 1 prefab that works
