@@ -289,7 +289,7 @@ After uploading, one could append the http url to "Assets/PrefabDatabase/list\_a
 
 #### Setting up assetbundles
 
-Just clicking *Prefab Database/Setup Bundles*. Unity would examine all available bundle files under _Assets/PrefabDatabase/AssetBundles/Separated/_ and remote bundle files from "Assets/PrefabDatabase/list\_aws.txt". **NOTE:** All the assetbundles would be loaded for checking and taking needed information. So this process could be slow depending on how many bundle files there (especially the remote bundle files!). The list of files would be stored in "prefabs" of _Assets/ScenePrefabs/PrefabDatabase_.
+Just clicking *Prefab Database/Setup Bundles* (if you also want to load the remote assetbundles, please click "Play" before setting up, as Loadfromcacheordownload only works in Play mode). Unity would examine all available bundle files under _Assets/PrefabDatabase/AssetBundles/Separated/_ and remote bundle files from "Assets/PrefabDatabase/list\_aws.txt". **NOTE:** All the assetbundles would be loaded for checking and taking needed information. So this process could be slow depending on how many bundle files there (especially the remote bundle files!). The list of files would be stored in "prefabs" of _Assets/ScenePrefabs/PrefabDatabase_.
 
 # License
 
