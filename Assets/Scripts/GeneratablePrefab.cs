@@ -82,10 +82,11 @@ public class GeneratablePrefab : MonoBehaviour
         Debug.LogFormat("Real final bounds for {0} is {1}", name, myBounds);
         if (c != null)
         {
-            if(Application.isEditor && Application.isPlaying == false)
-                DestroyImmediate(c, true);
-            else
-                Destroy(c);
+//            if(Application.isEditor && Application.isPlaying == false)
+//                DestroyImmediate(c, true);
+//            else
+//                Destroy(c);
+			DestroyImmediate (c, true);
         }
     }
 
