@@ -214,6 +214,45 @@ Prefabs, seemingly confusing subject, but surprisingly simple. Prefabs are hiera
 
 ## Importing objects to Unity
 
+### Metadata
+
+Currently, we mostly use ShapeNet v2 objects. Their metadata has been extracted from the metadata distributed with ShapeNet and is available on our MongoDB:
+
+```python
+import pymongo
+conn = pymongo.MongoClient(port=22334)
+coll = conn['synthetic_generative']['3d_models']
+coll.find({'type': 'shapenet', 'version': 2})[0]
+```
+
+```
+{u'_id': ObjectId('57b31b77f8b11f6bc2b94a7b'),
+ u'front': [0.0, -1.0, 0.0],
+ u'has_texture': False,
+ u'id': u'63c80a4444ba375bc0fa984d9a08f147',
+ u'keywords': [u'laser_printer'],
+ u'name': u'Desktop laser printer',
+ u'shapenet_synset': u'n04004475',
+ u'source': u'3dw',
+ u'synset': [u'n03643737'],
+ u'synset_tree': [u'n03575240',
+  u'n04004475',
+  u'n00001740',
+  u'n03183080',
+  u'n03280644',
+  u'n00021939',
+  u'n03699975',
+  u'n00003553',
+  u'n00001930',
+  u'n03643737',
+  u'n00002684'],
+ u'type': u'shapenet',
+ u'upright': [0.0, 0.0, 1.0],
+ u'version': 2}
+```
+
+NOTE: ShapeNet v1 entries are available by filtering for `{'info.version': 1}`.
+
 ### Downsampling objects
 
 The first step is creating downsampled near-convex decompositions of objects. It turns out that when objects are colliding, usually some very crude approximation of them is used (like a cylinder) to compute when they collide. This is done to speed up computations but is not accurate enough for our purposes. We need physics to work properly in the 3D world. Using the precise object mesh would be too time-consuming so a compromise is to produce a downsampled mesh of the object which would still be sufficiently accurate to compute collisions but also small enough to do this fast.
