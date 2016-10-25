@@ -1,3 +1,4 @@
 #/Applications/Unity/Unity.app/Contents/MacOS/Unity -batchmode -quit -projectPath /Users/chengxuz/3Dworld/ThreeDWorld/ -executeMethod CreatePrefabCMD.CreatePrefabFromModel -logFile
 #/Applications/Unity/Unity.app/Contents/MacOS/Unity -batchmode -quit -projectPath /Users/chengxuz/3Dworld/ThreeDWorld/ -executeMethod CreatePrefabCMD.CreatePrefabFromModel -nographics -logFile
-/Applications/Unity/Unity.app/Contents/MacOS/Unity -batchmode -quit -projectPath /Users/chengxuz/3Dworld/test_empty_project/test_empty_project/ -executeMethod CreatePrefabCMD.CreatePrefabFromModel -nographics -logFile -outputDir "Assets/Models/sel_objs/test_mine/"
+#/Applications/Unity/Unity.app/Contents/MacOS/Unity -batchmode -quit -projectPath /Users/chengxuz/3Dworld/test_empty_project/test_empty_project/ -executeMethod CreatePrefabCMD.CreatePrefabFromModel -nographics -logFile -outputDir "Assets/Models/sel_objs/test_mine/"
+/opt/Unity/Editor/Unity -batchmode -quit -projectPath /home/chengxuz/test_empty_project/ -executeMethod CreatePrefabCMD.CreatePrefabFromModel -nographics -logFile -outputDir "Assets/Models/sel_objs/test_mine/"
