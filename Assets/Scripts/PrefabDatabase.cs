@@ -128,18 +128,38 @@ public class PrefabDatabase : MonoBehaviour
 	{
 		Dictionary<GameObject, string> allSelected = new Dictionary<GameObject, string> ();
 
+                string tmp_asset_path = "Assets/Models/sel_objs/test_mine/";
+                string[] dir = Directory.GetDirectories(tmp_asset_path);
+                foreach (string d_tmp in dir) {
+                    Debug.Log(d_tmp);
+                    Debug.Log(d_tmp + d_tmp.Remove(0, d_tmp.LastIndexOf ('/')) + ".obj");
+                }
+
+                //string tmp_asset_path;
 		foreach (GameObject obj in Selection.gameObjects) {
+
 			allSelected.Add (obj, AssetDatabase.GetAssetPath (obj));
+
+                        tmp_asset_path   = AssetDatabase.GetAssetPath (obj);
+                        Debug.Log(tmp_asset_path);
 		}
 
 		foreach (UnityEngine.Object obj in Selection.objects) {
 			if (obj != null) {
 				if (obj is GameObject) {
 					allSelected.Add (obj as GameObject, AssetDatabase.GetAssetPath (obj));
+
+                                        tmp_asset_path   = AssetDatabase.GetAssetPath (obj);
+                                        Debug.Log(tmp_asset_path);
+
 				} else if (obj is DefaultAsset) {
 					HashSet<GameObject> children = (obj as DefaultAsset).GetAllChildrenAssets<GameObject> ();
 					foreach (GameObject child in children) {
 						allSelected.Add (child, AssetDatabase.GetAssetPath (child));
+
+                                                tmp_asset_path   = AssetDatabase.GetAssetPath (child);
+                                                Debug.Log(tmp_asset_path);
+                                                //Debug.Log(AssetDatabase.LoadMainAssetAtPath(tmp_asset_path)==child);
 					}
 				}
 			}
