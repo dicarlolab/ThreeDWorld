@@ -15,7 +15,7 @@ if __name__ == "__main__":
 
     (options, args) = parser.parse_args()
     #print(options.indexn)
-    #print(options.startn)
+    print(options.startn)
     #print(options.lengthn)
 
     conn = pymongo.MongoClient(port=22334)
@@ -46,10 +46,12 @@ if __name__ == "__main__":
     for index_tmp in range(options.startn, max_lengthn):
         shapenet_info_tmp = test_coll[index_tmp]
         new_path    = os.path.join(shapenet_prefix, shapenet_info_tmp['shapenet_synset'][1:], shapenet_info_tmp['id'])
-        print(new_path)
+        #print(new_path)
         os.system('cp -r ' + new_path + ' ' + target_prefix)
     
-    cmd_str         = unity_path + ' -batchmode -quit -projectPath ' + project_path + ' -executeMethod CreatePrefabCMD.CreatePrefabFromModel -nographics -logFile -outputDir Assets/Models/sel_objs/temp_for_cmdRun/'
+    #cmd_str         = unity_path + ' -batchmode -quit -projectPath ' + project_path + ' -executeMethod CreatePrefabCMD.CreatePrefabFromModel -nographics -logFile -outputDir Assets/Models/sel_objs/temp_for_cmdRun/'
+    cmd_str         = unity_path + ' -batchmode -quit -projectPath ' + project_path + ' -executeMethod CreatePrefabCMD.CreatePrefabFromModel -nographics -outputDir Assets/Models/sel_objs/temp_for_cmdRun/'
     print(cmd_str)
     os.system(cmd_str)
     os.system('mv ' + target_bund_pre + '*.bundle ' + bundle_path)
+    os.system('rm -r ' + project_path)
