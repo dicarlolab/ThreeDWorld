@@ -28,7 +28,7 @@ def loop():
 		"should_use_standardized_size": False,
 		"standardized_size": [1.0, 1.0, 1.0],
 		"disabled_items": [], #["SQUIRL", "SNAIL", "STEGOSRS"], // A list of item names to not use, e.g. ["lamp", "bed"] would exclude files with the word "lamp" or "bed" in their file path
-		"permitted_items": ["10160"] , #[],["bed1", "sofa_blue", "lamp"]
+		"permitted_items": [""] , #[],["bed1", "sofa_blue", "lamp"]
                 "scale_relat_dict": {"http://threedworld.s3.amazonaws.com/46e777a46aa76681f4fb4dee5181bee.bundle": {"option": "Multi_size", "scale": 4}},  # option: "Absol_size", "Fract_room", "Multi_size"; TODO: implement "Fract_room"
 		"complexity": 1000,
 		"num_ceiling_lights": 4,

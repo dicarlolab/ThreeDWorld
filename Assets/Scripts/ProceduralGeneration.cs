@@ -605,6 +605,8 @@ public class ProceduralGeneration : MonoBehaviour
         int maxComplexity = (complexityLevelToCreate - _curComplexity);
         if (info.complexity > maxComplexity)
         {
+            // Change for lazy loading
+            /*
             prefabList.RemoveAll((PrefabDatabase.PrefabInfo testInfo)=>{
 				return (testInfo.complexity > maxComplexity) | (testInfo.complexity == 0);
             });
@@ -612,7 +614,11 @@ public class ProceduralGeneration : MonoBehaviour
                 Debug.LogFormat("Filtering for complexity {0} > {1} leaving {2} objects ", info.complexity, maxComplexity, prefabList.Count);
             if (prefabList.Count == 0)
                 return false;
-			info = prefabList[_rand.Next(0, prefabList.Count)];
+            */
+
+            prefabList.Remove(info);
+            return true;
+            //info = prefabList[_rand.Next(0, prefabList.Count)];
         }
 
         // Find a spot to place this object
