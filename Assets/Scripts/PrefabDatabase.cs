@@ -17,7 +17,7 @@ public class PrefabDatabase : MonoBehaviour
 	public class PrefabInfo
 	{
 		public string fileName;
-		public int complexity = 0;
+		public int complexity = -1;
 		public bool isLight = false;
 		public GeneratablePrefab.AttachAnchor anchorType = GeneratablePrefab.AttachAnchor.Ground;
 		public Bounds bounds;
