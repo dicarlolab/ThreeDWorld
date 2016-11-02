@@ -133,6 +133,8 @@ Special assets: There is a simple abstract script called SpawnArea. SpawnAreas a
 
 The config file can be accessed as a JsonData file under `SimulationManager.argsConfig`. Be sure to import `LitJson.JsonData` to use.
 
+On `dicarlo-3d0world-editor.mit.edu`, the builds are placed under `/home/threed/builds/v1.0.0beta/v1.0.0b06`.
+
 ## Starting server side
 
 1. Start mongo: `mongod -port 23502`
