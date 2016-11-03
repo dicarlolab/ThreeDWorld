@@ -138,7 +138,7 @@ On `dicarlo-3d0world-editor.mit.edu`, the builds are placed under `/home/threed/
 ## Starting server side
 
 1. Start mongo: `mongod -port 23502`
-(Add a ´&´to run it as a background process)
+(Add a `&` to run it as a background process)
 2. If done remotely and Ubuntu display manager server is running (e.g., a monitor is connected to that machine):
 
     - `sudo service lightdm stop`
