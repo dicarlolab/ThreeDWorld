@@ -145,7 +145,7 @@ On `dicarlo-3d0world-editor.mit.edu`, the builds are placed under `/home/threed/
     - `sudo nvidia-xconfig -a --use-display-device=None --virtual=1280x1024`
     - `sudo /usr/bin/X :0`
     - (To go the opposite way, kill the X server and restart lightdm -- you might have to reboot(?))
-3. Start queue: `cd ServerTools && sudo python tdw_queue.py`
+3. Start queue: `cd ServerTools && sudo python tdw_queue.py` (on `dicarlo-3d0world-editor.mit.edu`, the project is at `/home/richard/Documents/ThreeDWorld_Server/ThreeDWorld`)
 
 Output log is then generated in `ServerTools/output_log.txt`.
 
