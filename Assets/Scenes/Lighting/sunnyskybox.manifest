@@ -1,0 +1,20 @@
+ManifestFileVersion: 0
+CRC: 2838773866
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: 7b577865d06ab7ca38654c91fd33a6cc
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 6e91bf4d7bfc7c90eaa9aea5318d52d8
+HashAppended: 0
+ClassTypes:
+- Class: 21
+  Script: {instanceID: 0}
+- Class: 28
+  Script: {instanceID: 0}
+- Class: 48
+  Script: {instanceID: 0}
+Assets:
+- Assets/Scenes/Sunny1Skybox.mat
+Dependencies: []

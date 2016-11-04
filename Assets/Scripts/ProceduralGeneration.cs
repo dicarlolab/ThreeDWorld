@@ -235,12 +235,18 @@ public class ProceduralGeneration : MonoBehaviour
         CreateRoom(roomDim, new Vector3((roomDim.x-1) * 0.5f,0,(roomDim.z-1) * 0.5f));
 		Debug.Log ("...created!");
 
+		// Create lighting setup
+		Debug.Log("Creating lights...");
+		CreateLightingSetup(roomDim, new Vector3((roomDim.x-1) * 0.5f,0,(roomDim.z-1) * 0.5f));
+		Debug.Log("...created!");
+
         _failures = 0;
         // Keep creating objects until we are supposed to stop
         // TODO: Create a separate plane to map ceiling placement
-        for(int i = 0; (i - _failures) < numCeilingLights && _failures < maxPlacementAttempts; ++i)
+        // TODO: Replace ceilingLightPrefabs with Lighting setup
+        /*for(int i = 0; (i - _failures) < numCeilingLights && _failures < maxPlacementAttempts; ++i)
             AddObjects(ceilingLightPrefabs);
-        _failures = 0;
+        _failures = 0;*/
 
         if (showProcGenDebug && minStackingBases > 0)
             Debug.LogFormat("Stacking {0} objects bases: {1} types", minStackingBases, stackingPrefabs.Count);
@@ -733,6 +739,83 @@ public class ProceduralGeneration : MonoBehaviour
             ++_failures;
         }
 		return true;
+    }
+
+	public void CreateLightingSetup(Vector3 roomDimensions, Vector3 roomCenter)
+    {
+    	// roomDimensions are the dimensions of the room, with the y coordinate describing the height of the room
+    	// roomCenter describes the center of the room
+		Vector3 ceilingSize = new Vector3(roomDimensions.x, 0, roomDimensions.z);
+		Vector3 ceilingStart = roomCenter + new Vector3(-0.5f * roomDimensions.x, roomDimensions.y, -0.5f * roomDimensions.z);
+
+        Debug.Log("SETTING SKYBOX!");
+		var bundle = AssetBundle.LoadFromFile("Assets/Scenes/Lighting/" + "sunnyskybox");
+		Material levelMat = bundle.LoadAsset(bundle.GetAllAssetNames()[0]) as Material;
+        RenderSettings.skybox = levelMat;
+
+        /* 
+         *  We want to keep the total light energy constant in a given volume. 
+         *  Therefore, we base the number of lights and their intensities on the volume of each room.
+         *  At first the intensity of each light is assumed to be constant.
+         */
+		double scalingFactor = 0.0106;
+		int totalNumberOfLights = Convert.ToInt32(scalingFactor * roomDimensions.x * roomDimensions.z);
+		int widthNumberOfLights = Convert.ToInt32(Math.Sqrt(totalNumberOfLights * roomDimensions.x / roomDimensions.z));
+		int lengthNumberOfLights = Convert.ToInt32(Math.Sqrt(totalNumberOfLights * roomDimensions.z / roomDimensions.x));
+
+		float widthLightDistance = ceilingSize.x / widthNumberOfLights;
+		float lengthLightDistance = ceilingSize.z / lengthNumberOfLights;
+
+		float intensity = 1.0f;
+		int iter_light = 0;
+		for(float i = ceilingStart.x + widthLightDistance / 2.0f; i <= ceilingStart.x + ceilingSize.x; i = i + widthLightDistance)
+        {
+			for(float j = ceilingStart.z + lengthLightDistance / 2.0f; j <= ceilingStart.x + ceilingSize.z; j = j + lengthLightDistance)
+        	{
+        		/*GameObject lightGameObject = new GameObject("Point Light " + iter_light.ToString());
+        		Light lightComp = lightGameObject.AddComponent<Light>();
+        		lightComp.color = Color.white;
+				lightComp.range = 1.7f * roomDimensions.y;;
+        		lightComp.intensity = intensity;
+				lightComp.renderMode = LightRenderMode.ForcePixel;
+				lightComp.shadows = LightShadows.Soft;
+        		lightGameObject.transform.position = new Vector3(i, ceilingStart.y * 0.7f, j);*/
+
+				GameObject spotLightGameObject = new GameObject("Spot Light " + iter_light.ToString());
+        		Light spotLight = spotLightGameObject.AddComponent<Light>();
+        		spotLight.type = LightType.Spot;
+				spotLight.color = Color.white;
+				spotLight.range = 30;
+				spotLight.intensity = intensity;
+				spotLight.spotAngle = 145.0f;
+				spotLight.renderMode = LightRenderMode.ForcePixel;
+				spotLight.shadows = LightShadows.Soft;
+				spotLightGameObject.transform.position = new Vector3(i, ceilingStart.y * 0.7f, j);
+				Quaternion rot = Quaternion.identity;
+				rot.eulerAngles = new Vector3(90, 0, 0);
+				spotLightGameObject.transform.rotation = rot;
+
+        		iter_light++; 
+        	}
+        }
+
+		GameObject directLightGameObject = new GameObject("Directional Light");
+        Light directLightComp = directLightGameObject.AddComponent<Light>();
+        directLightComp.color = Color.white;
+        directLightComp.type = LightType.Directional;
+        directLightComp.intensity = 0.85f;
+        Quaternion target = Quaternion.identity;
+		target.eulerAngles = new Vector3(30, 0, 0);
+		directLightComp.transform.rotation = target;
+		directLightComp.transform.position = new Vector3(100, 100, 100);
+		directLightComp.shadows = LightShadows.Soft;
+
+		GameObject reflectionProbeObject = new GameObject("Reflection Probe");
+		ReflectionProbe reflectionProbe = reflectionProbeObject.AddComponent<ReflectionProbe>();
+		reflectionProbe.transform.position = new Vector3(roomCenter.x, roomDimensions.y / 2.0f, roomCenter.z);
+		reflectionProbe.mode = UnityEngine.Rendering.ReflectionProbeMode.Realtime;
+		reflectionProbe.hdr = true;
+		reflectionProbe.size = new Vector3(roomDimensions.x, roomDimensions.y, roomDimensions.z);
     }
 
     public void CreateRoom(Vector3 roomDimensions, Vector3 roomCenter)
