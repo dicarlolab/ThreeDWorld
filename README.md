@@ -136,15 +136,15 @@ The config file can be accessed as a JsonData file under `SimulationManager.args
 On `dicarlo-3d0world-editor.mit.edu`, the builds are placed under `/home/threed/builds/v1.0.0beta/v1.0.0b06`.
 
 ## Starting server side
-
-1. Start mongo: `mongod -port 23502`
-(Add a `&` at the end to run it as a background process)
-2. If done remotely and Ubuntu display manager server is running (e.g., a monitor is connected to that machine):
+First make sure that no mongod and /usr/bin/X processes are running (kill'em all!). 
+1. If done remotely and Ubuntu display manager server is running (e.g., a monitor is connected to that machine):
 
     - `sudo service lightdm stop`
     - `sudo nvidia-xconfig -a --use-display-device=None --virtual=1280x1024`
     - `sudo /usr/bin/X :0`
     - (To go the opposite way, kill the X server and restart lightdm -- you might have to reboot(?))
+2. Start mongo: `sudo mongod -port 23502`
+(Add a `&` at the end to run it as a background process)
 3. Start queue: `cd ServerTools && sudo python tdw_queue.py` (on `dicarlo-3d0world-editor.mit.edu`, the project is at `/home/richard/Documents/ThreeDWorld_Server/ThreeDWorld`)
 
 Output log is then generated in `ServerTools/output_log.txt`.
