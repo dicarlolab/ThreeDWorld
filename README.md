@@ -137,6 +137,7 @@ On `dicarlo-3d0world-editor.mit.edu`, the builds are placed under `/home/threed/
 
 ## Starting server side
 First make sure that no mongod and /usr/bin/X processes are running (kill'em all!). 
+
 1. If done remotely and Ubuntu display manager server is running (e.g., a monitor is connected to that machine):
 
     - `sudo service lightdm stop`
@@ -145,6 +146,7 @@ First make sure that no mongod and /usr/bin/X processes are running (kill'em all
     - (To go the opposite way, kill the X server and restart lightdm -- you might have to reboot(?))
 2. Start mongo: `sudo mongod -port 23502`
 (Add a `&` at the end to run it as a background process)
+
 3. Start queue: `cd ServerTools && sudo python tdw_queue.py` (on `dicarlo-3d0world-editor.mit.edu`, the project is at `/home/richard/Documents/ThreeDWorld_Server/ThreeDWorld`)
 
 Output log is then generated in `ServerTools/output_log.txt`.
