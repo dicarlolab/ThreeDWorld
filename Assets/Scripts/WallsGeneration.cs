@@ -271,6 +271,8 @@ public class WallInfo
 	{
 		//Code for this method is adapted from a script found here: https://github.com/Dsphar/Cube_Texture_Auto_Repeat_Unity/blob/master/ReCalcCubeTexture.cs
 		GameObject box = GameObject.CreatePrimitive (PrimitiveType.Cube);
+		//set all wall objects static
+		box.isStatic = true;
 		box.transform.localScale = size;
 		box.transform.position = start + (size / 2f);
 		box.GetComponent<MeshRenderer>().material = mat;
