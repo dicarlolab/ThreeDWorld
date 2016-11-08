@@ -20,3 +20,5 @@ Assets/Models/Props/*
 obj/Debug/*
 *.meta
 *.prefab
+*.bundle
+*.manifest

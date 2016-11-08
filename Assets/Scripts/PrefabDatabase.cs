@@ -17,14 +17,15 @@ public class PrefabDatabase : MonoBehaviour
 	public class PrefabInfo
 	{
 		public string fileName;
-		public int complexity;
-		public bool isLight;
-		public GeneratablePrefab.AttachAnchor anchorType;
+		public int complexity = -1;
+		public bool isLight = false;
+		public GeneratablePrefab.AttachAnchor anchorType = GeneratablePrefab.AttachAnchor.Ground;
 		public Bounds bounds;
 		public List<GeneratablePrefab.StackableInfo> stackableAreas = new List<GeneratablePrefab.StackableInfo> ();
 		public string option_scale = "NULL";
 		// for option of how scale should happen
 		public float dynamic_scale = 1f;
+                public int loaded = 1; // 1 means already loaded, otherwise would load it again (just for remote assetbundles)
 		// for the dynamic scale come with option
 	}
 
@@ -128,18 +129,38 @@ public class PrefabDatabase : MonoBehaviour
 	{
 		Dictionary<GameObject, string> allSelected = new Dictionary<GameObject, string> ();
 
+                string tmp_asset_path = "Assets/Models/sel_objs/test_mine/";
+                string[] dir = Directory.GetDirectories(tmp_asset_path);
+                foreach (string d_tmp in dir) {
+                    Debug.Log(d_tmp);
+                    Debug.Log(d_tmp + d_tmp.Remove(0, d_tmp.LastIndexOf ('/')) + ".obj");
+                }
+
+                //string tmp_asset_path;
 		foreach (GameObject obj in Selection.gameObjects) {
+
 			allSelected.Add (obj, AssetDatabase.GetAssetPath (obj));
+
+                        tmp_asset_path   = AssetDatabase.GetAssetPath (obj);
+                        Debug.Log(tmp_asset_path);
 		}
 
 		foreach (UnityEngine.Object obj in Selection.objects) {
 			if (obj != null) {
 				if (obj is GameObject) {
 					allSelected.Add (obj as GameObject, AssetDatabase.GetAssetPath (obj));
+
+                                        tmp_asset_path   = AssetDatabase.GetAssetPath (obj);
+                                        Debug.Log(tmp_asset_path);
+
 				} else if (obj is DefaultAsset) {
 					HashSet<GameObject> children = (obj as DefaultAsset).GetAllChildrenAssets<GameObject> ();
 					foreach (GameObject child in children) {
 						allSelected.Add (child, AssetDatabase.GetAssetPath (child));
+
+                                                tmp_asset_path   = AssetDatabase.GetAssetPath (child);
+                                                Debug.Log(tmp_asset_path);
+                                                //Debug.Log(AssetDatabase.LoadMainAssetAtPath(tmp_asset_path)==child);
 					}
 				}
 			}
@@ -326,14 +347,20 @@ public class PrefabDatabase : MonoBehaviour
 		SetupBundles ();
 	}
 
+	[MenuItem ("Prefab Database/4. Setup Bundles Lazily", false, 110)]
+	private static void SetupBundlesMenu_lazily ()
+	{
+		SetupBundles_lazily ();
+	}
+
 	// Finds all prefabs that we can use and create a lookup table with relevant information
-	[MenuItem ("Prefab Database/Setup Prefabs Quick", false, 113)]
+	[MenuItem ("Prefab Database/Setup Prefabs Quick", false, 123)]
 	private static void SetupPrefabsQuick ()
 	{
 		SetupPrefabs (false);
 	}
 
-	[MenuItem ("Prefab Database/Setup Prefabs Full", false, 113)]
+	[MenuItem ("Prefab Database/Setup Prefabs Full", false, 123)]
 	private static void SetupPrefabsFull ()
 	{
 		SetupPrefabs (true);
@@ -350,6 +377,22 @@ public class PrefabDatabase : MonoBehaviour
 		PrefabDatabase database = AssetDatabase.LoadAssetAtPath<PrefabDatabase> (path_database);
 		if (database != null)
 			database.CompileAssetBundles ();
+		//database = PrefabUtility.ReplacePrefab (database, database);
+                
+		//PrefabDatabase database_ = AssetDatabase.LoadAssetAtPath<PrefabDatabase> (path_database);
+		//PrefabUtility.ReplacePrefab(database, database_);
+		EditorApplication.SaveAssets ();
+	}
+
+	public static void SetupBundles_lazily ()
+	{
+		/* 
+		 * Loads the PrefabDatabase prefab and stores the bundles information 
+		 */
+		string path_database = "Assets/ScenePrefabs/PrefabDatabase.prefab";
+		PrefabDatabase database = AssetDatabase.LoadAssetAtPath<PrefabDatabase> (path_database);
+		if (database != null)
+			database.CompileAssetBundles_lazily ();
 		//database = PrefabUtility.ReplacePrefab (database, database);
                 
 		//PrefabDatabase database_ = AssetDatabase.LoadAssetAtPath<PrefabDatabase> (path_database);
@@ -415,6 +458,20 @@ public class PrefabDatabase : MonoBehaviour
 			else
 				prefabs.Insert (replaceIndex, newInfo);
 		}        
+		EditorUtility.SetDirty (this);
+	}
+
+	public void SavePrefabInformation_lazily (string assetPath)
+	{
+		/*
+		 * Saves the prefab information in "prefabs" property of PrefabDatabase prefab. 
+                 * lazily means only load the remote thing when needed
+		 */
+                PrefabInfo newInfo = new PrefabInfo ();
+                newInfo.fileName = assetPath;
+                newInfo.loaded = 0;
+                prefabs.Add (newInfo);
+
 		EditorUtility.SetDirty (this);
 	}
 
@@ -498,6 +555,33 @@ public class PrefabDatabase : MonoBehaviour
 						}
 						loadedAssetBundle.Unload (false);
 					}
+
+				}
+			} while (line != null);
+			// Done reading, close the reader and return true to broadcast success    
+			theReader.Close ();
+		}
+		Debug.Log (prefabs.Count);
+		EditorUtility.SetDirty (this);
+	}
+        
+	private void CompileAssetBundles_lazily ()
+	{ 
+		// code for loading the remote assetbundles lazily
+
+		prefabs.Clear ();
+		string list_aws_filename = "Assets/PrefabDatabase/list_aws.txt";
+		StreamReader theReader = new StreamReader (list_aws_filename, Encoding.Default);
+		string line;
+		using (theReader) {
+			// While there's lines left in the text file, do this:
+			do {
+				line = theReader.ReadLine ();
+                            
+				if (line != null) {
+
+                                        SavePrefabInformation_lazily (line);
+					Debug.Log (line);
 
 				}
 			} while (line != null);

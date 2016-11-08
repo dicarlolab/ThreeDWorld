@@ -52,683 +52,5503 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   prefabs:
-  - fileName: /Users/chengxuz/3Dworld/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/1a04e3eab45ca15dd86060f189eb133.bundle
-    complexity: 51
-    isLight: 0
-    anchorType: 0
-    bounds:
-      m_Center: {x: -0.0009135008, y: -0.07349749, z: 0.114587486}
-      m_Extent: {x: 0.3603265, y: 0.1697535, z: 0.30223948}
-    stackableAreas: []
-    option_scale: NULL
-    dynamic_scale: 1
-  - fileName: /Users/chengxuz/3Dworld/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/1a32f10b20170883663e90eaf6b4ca52.bundle
-    complexity: 53
-    isLight: 0
-    anchorType: 0
-    bounds:
-      m_Center: {x: -0.0007289946, y: 0.037117504, z: 0.029346496}
-      m_Extent: {x: 0.316582, y: 0.1072515, z: 0.3718505}
-    stackableAreas: []
-    option_scale: NULL
-    dynamic_scale: 1
-  - fileName: /Users/chengxuz/3Dworld/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/1a54a2319e87bd4071d03b466c72ce41.bundle
-    complexity: 55
-    isLight: 0
-    anchorType: 0
-    bounds:
-      m_Center: {x: 0.00004798174, y: 0.0344025, z: 0.10027}
-      m_Extent: {x: 0.37233198, y: 0.0918855, z: 0.320821}
-    stackableAreas: []
-    option_scale: NULL
-    dynamic_scale: 1
-  - fileName: /Users/chengxuz/3Dworld/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/1a6ad7a24bb89733f412783097373bdc.bundle
-    complexity: 69
-    isLight: 0
-    anchorType: 0
-    bounds:
-      m_Center: {x: -0.00037002563, y: 0.0269185, z: -0.100747466}
-      m_Extent: {x: 0.281995, y: 0.0949225, z: 0.4018315}
-    stackableAreas: []
-    option_scale: NULL
-    dynamic_scale: 1
-  - fileName: /Users/chengxuz/3Dworld/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/1a74b169a76e651ebc0909d98a1ff2b4.bundle
-    complexity: 67
-    isLight: 0
-    anchorType: 0
-    bounds:
-      m_Center: {x: 0.000100553036, y: 0.034368, z: 0.123601496}
-      m_Extent: {x: 0.38067454, y: 0.093944, z: 0.3102605}
-    stackableAreas: []
-    option_scale: NULL
-    dynamic_scale: 1
-  - fileName: /Users/chengxuz/3Dworld/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/1a9b552befd6306cc8f2d5fe7449af61.bundle
-    complexity: 35
-    isLight: 0
-    anchorType: 0
-    bounds:
-      m_Center: {x: 0.000028014183, y: 0.063944, z: -0.027208507}
-      m_Extent: {x: 0.387237, y: 0.088541, z: 0.3036575}
-    stackableAreas: []
-    option_scale: NULL
-    dynamic_scale: 1
-  - fileName: /Users/chengxuz/3Dworld/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/1b84dededd445058e44a5473032f38f.bundle
-    complexity: 17
+  - fileName: http://threedworld.s3.amazonaws.com/1004ae81238886674d44f5db04bf14b8.bundle
+    complexity: -1
     isLight: 0
     anchorType: 0
     bounds:
       m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.110413, y: 0.417036, z: 0.252765}
+      m_Extent: {x: 0, y: 0, z: 0}
     stackableAreas: []
     option_scale: NULL
     dynamic_scale: 1
-  - fileName: /Users/chengxuz/3Dworld/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/1b9ef45fefefa35ed13f430b2941481.bundle
-    complexity: 31
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/107b8c870eade2481735ea0e092a805a.bundle
+    complexity: -1
     isLight: 0
     anchorType: 0
     bounds:
       m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.103797, y: 0.351218, z: 0.3404}
+      m_Extent: {x: 0, y: 0, z: 0}
     stackableAreas: []
     option_scale: NULL
     dynamic_scale: 1
-  - fileName: /Users/chengxuz/3Dworld/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/2ca6df7a5377825cfee773c7de26c274.bundle
-    complexity: 31
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/10e2e8385b5322144708f4c6142673f0.bundle
+    complexity: -1
     isLight: 0
     anchorType: 0
     bounds:
       m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.157912, y: 0.355688, z: 0.313927}
+      m_Extent: {x: 0, y: 0, z: 0}
     stackableAreas: []
     option_scale: NULL
     dynamic_scale: 1
-  - fileName: /Users/chengxuz/3Dworld/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/2f97f841aff238b74245c6fcbfdfe98a.bundle
-    complexity: 5
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/115115104976edfdc066b9622c005c53.bundle
+    complexity: -1
     isLight: 0
     anchorType: 0
     bounds:
       m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.0981419, y: 0.169109, z: 0.460185}
+      m_Extent: {x: 0, y: 0, z: 0}
     stackableAreas: []
     option_scale: NULL
     dynamic_scale: 1
-  - fileName: /Users/chengxuz/3Dworld/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/36d4caf867e0afcd56f6fc4b4ce1db04.bundle
-    complexity: 125
-    isLight: 0
-    anchorType: 0
-    bounds:
-      m_Center: {x: 0.00016349554, y: -0.12973401, z: -0.00009351969}
-      m_Extent: {x: 0.2629005, y: 0.334319, z: 0.26289648}
-    stackableAreas: []
-    option_scale: NULL
-    dynamic_scale: 1
-  - fileName: /Users/chengxuz/3Dworld/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/37c9fe32ad87beccad5067eac75a07f7.bundle
-    complexity: 91
-    isLight: 0
-    anchorType: 0
-    bounds:
-      m_Center: {x: 0.0042274892, y: -0.032736003, z: 0.0012454987}
-      m_Extent: {x: 0.2517705, y: 0.38022, z: 0.2050475}
-    stackableAreas: []
-    option_scale: NULL
-    dynamic_scale: 1
-  - fileName: /Users/chengxuz/3Dworld/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/37f1daa11b023fdf81faebbdea6bd9be.bundle
-    complexity: 135
-    isLight: 0
-    anchorType: 0
-    bounds:
-      m_Center: {x: -0.0005684942, y: -0.096048504, z: 0.15284951}
-      m_Extent: {x: 0.2003825, y: 0.4123595, z: 0.1995165}
-    stackableAreas: []
-    option_scale: NULL
-    dynamic_scale: 1
-  - fileName: /Users/chengxuz/3Dworld/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/3edc3bc2ecf58aae40090e51144242ea.bundle
-    complexity: 5
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/11d3fc4092e616a7a6fee8e2140acec9.bundle
+    complexity: -1
     isLight: 0
     anchorType: 0
     bounds:
       m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.0418902, y: 0.287357, z: 0.407027}
+      m_Extent: {x: 0, y: 0, z: 0}
     stackableAreas: []
     option_scale: NULL
     dynamic_scale: 1
-  - fileName: /Users/chengxuz/3Dworld/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/41b946cebf6b76cb25d3c528e036a532.bundle
-    complexity: 109
-    isLight: 0
-    anchorType: 0
-    bounds:
-      m_Center: {x: -0.001587987, y: 0.022022992, z: -0.0009140074}
-      m_Extent: {x: 0.242621, y: 0.363689, z: 0.242621}
-    stackableAreas: []
-    option_scale: NULL
-    dynamic_scale: 1
-  - fileName: /Users/chengxuz/3Dworld/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/44a64fa7c3378f16de27b9aa1df630c0.bundle
-    complexity: 5
-    isLight: 0
-    anchorType: 0
-    bounds:
-      m_Center: {x: 0.024214, y: -0.029282987, z: -0.0121310055}
-      m_Extent: {x: 0.223051, y: 0.387937, z: 0.22305399}
-    stackableAreas: []
-    option_scale: NULL
-    dynamic_scale: 1
-  - fileName: /Users/chengxuz/3Dworld/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/44ed0531eedc723dfaaa4370fa1ccec.bundle
-    complexity: 81
-    isLight: 0
-    anchorType: 0
-    bounds:
-      m_Center: {x: 0.005934, y: 0.007986993, z: 0.0033404827}
-      m_Extent: {x: 0.273628, y: 0.316632, z: 0.27362752}
-    stackableAreas: []
-    option_scale: NULL
-    dynamic_scale: 1
-  - fileName: /Users/chengxuz/3Dworld/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/45d71fc0e59af8bf155d75bbf62b80.bundle
-    complexity: 173
-    isLight: 0
-    anchorType: 0
-    bounds:
-      m_Center: {x: 0.005097002, y: -0.030002981, z: -0.0002219975}
-      m_Extent: {x: 0.236986, y: 0.371046, z: 0.236986}
-    stackableAreas: []
-    option_scale: NULL
-    dynamic_scale: 1
-  - fileName: /Users/chengxuz/3Dworld/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/45d8951ac1dbf2cbf51f77a6d7299806.bundle
-    complexity: 33
-    isLight: 0
-    anchorType: 0
-    bounds:
-      m_Center: {x: 0, y: -0.052650996, z: -0.00014849752}
-      m_Extent: {x: 0.353752, y: 0.294009, z: 0.1960065}
-    stackableAreas: []
-    option_scale: NULL
-    dynamic_scale: 1
-  - fileName: /Users/chengxuz/3Dworld/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/4a175db3a8cad99b5dd5ceb34f6e33d9.bundle
-    complexity: 13
-    isLight: 0
-    anchorType: 0
-    bounds:
-      m_Center: {x: -0.0025904924, y: 0.13505098, z: -0.016957492}
-      m_Extent: {x: 0.18950951, y: 0.43979198, z: 0.1437675}
-    stackableAreas: []
-    option_scale: NULL
-    dynamic_scale: 1
-  - fileName: /Users/chengxuz/3Dworld/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/4a1f62dbe8b091eabc49cae1a831a9e.bundle
-    complexity: 19
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/125ace480d9f2fd5369e32fb818f337.bundle
+    complexity: -1
     isLight: 0
     anchorType: 0
     bounds:
       m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.211215, y: 0.281504, z: 0.355167}
+      m_Extent: {x: 0, y: 0, z: 0}
     stackableAreas: []
     option_scale: NULL
     dynamic_scale: 1
-  - fileName: /Users/chengxuz/3Dworld/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/4e4fcfffec161ecaed13f430b2941481.bundle
-    complexity: 115
-    isLight: 0
-    anchorType: 0
-    bounds:
-      m_Center: {x: 0.051955998, y: 0.07264349, z: 0.039094005}
-      m_Extent: {x: 0.334778, y: 0.3595805, z: 0.092874005}
-    stackableAreas: []
-    option_scale: NULL
-    dynamic_scale: 1
-  - fileName: /Users/chengxuz/3Dworld/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/5afca35479b347786f0abe366609662.bundle
-    complexity: 7
-    isLight: 0
-    anchorType: 0
-    bounds:
-      m_Center: {x: -0.00465551, y: -0.0776635, z: 0.0000004991889}
-      m_Extent: {x: 0.3622005, y: 0.2956085, z: 0.1772745}
-    stackableAreas: []
-    option_scale: NULL
-    dynamic_scale: 1
-  - fileName: /Users/chengxuz/3Dworld/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/5afe31025e8574ea8d6e12c39b2d5023.bundle
-    complexity: 7
-    isLight: 0
-    anchorType: 0
-    bounds:
-      m_Center: {x: -0.11344248, y: 0.038663, z: 0.012526989}
-      m_Extent: {x: 0.4135695, y: 0.179716, z: 0.21601501}
-    stackableAreas: []
-    option_scale: NULL
-    dynamic_scale: 1
-  - fileName: /Users/chengxuz/3Dworld/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/5d4f774fdda6fa1dcd99ccc7ff441abf.bundle
-    complexity: 23
-    isLight: 0
-    anchorType: 0
-    bounds:
-      m_Center: {x: 0.0008915067, y: 0.027673006, z: 0.0071009994}
-      m_Extent: {x: 0.32933152, y: 0.35873002, z: 0.113373995}
-    stackableAreas: []
-    option_scale: NULL
-    dynamic_scale: 1
-  - fileName: /Users/chengxuz/3Dworld/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/5f3af8ff93de34c9e7922afdefd88b6e.bundle
-    complexity: 5
-    isLight: 0
-    anchorType: 0
-    bounds:
-      m_Center: {x: 0.00040650368, y: -0.12305248, z: 0.0007435009}
-      m_Extent: {x: 0.3654525, y: 0.3187555, z: 0.1218175}
-    stackableAreas: []
-    option_scale: NULL
-    dynamic_scale: 1
-  - fileName: /Users/chengxuz/3Dworld/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/7103.bundle
-    complexity: 3
-    isLight: 0
-    anchorType: 0
-    bounds:
-      m_Center: {x: -0.00060896575, y: -0.0000005364418, z: 0.39497486}
-      m_Extent: {x: 0.9375837, y: 0.5100001, z: 0.3950002}
-    stackableAreas: []
-    option_scale: NULL
-    dynamic_scale: 1
-  - fileName: /Users/chengxuz/3Dworld/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/7106.bundle
-    complexity: 3
-    isLight: 0
-    anchorType: 0
-    bounds:
-      m_Center: {x: -0.000028066104, y: 0.041514784, z: 0.46492878}
-      m_Extent: {x: 0.22415626, y: 0.26759717, z: 0.46492878}
-    stackableAreas: []
-    option_scale: NULL
-    dynamic_scale: 1
-  - fileName: /Users/chengxuz/3Dworld/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/8bc53bae41a8105f5c7506815f553527.bundle
-    complexity: 15
-    isLight: 0
-    anchorType: 0
-    bounds:
-      m_Center: {x: -0.0044289976, y: -0.1386635, z: -0.006102003}
-      m_Extent: {x: 0.32488, y: 0.3589345, z: 0.124976}
-    stackableAreas: []
-    option_scale: NULL
-    dynamic_scale: 1
-  - fileName: /Users/chengxuz/3Dworld/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/arrow.bundle
-    complexity: 3
-    isLight: 0
-    anchorType: 0
-    bounds:
-      m_Center: {x: 0.000056284945, y: 0.02574015, z: 0.0022838542}
-      m_Extent: {x: 0.0030002107, y: 0.055050537, z: 0.0046667387}
-    stackableAreas: []
-    option_scale: NULL
-    dynamic_scale: 1
-  - fileName: /Users/chengxuz/3Dworld/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/ball.bundle
-    complexity: 3
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/12ddb18397a816c8948bef6886fb4ac.bundle
+    complexity: -1
     isLight: 0
     anchorType: 0
     bounds:
       m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.028575, y: 0.028575, z: 0.028575}
+      m_Extent: {x: 0, y: 0, z: 0}
     stackableAreas: []
     option_scale: NULL
     dynamic_scale: 1
-  - fileName: /Users/chengxuz/3Dworld/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/beds.bundle
-    complexity: 3
-    isLight: 0
-    anchorType: 0
-    bounds:
-      m_Center: {x: -0.31785852, y: 0.19514671, z: 0.46911168}
-      m_Extent: {x: 0.92131215, y: 0.19578937, z: 0.858075}
-    stackableAreas: []
-    option_scale: NULL
-    dynamic_scale: 1
-  - fileName: /Users/chengxuz/3Dworld/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/board_big.bundle
-    complexity: 3
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/133ebdf2ca7bf4b81d4e8021f58beea0.bundle
+    complexity: -1
     isLight: 0
     anchorType: 0
     bounds:
       m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.3466558, y: 0.004959047, z: 0.18121696}
+      m_Extent: {x: 0, y: 0, z: 0}
     stackableAreas: []
     option_scale: NULL
     dynamic_scale: 1
-  - fileName: /Users/chengxuz/3Dworld/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/book.bundle
-    complexity: 3
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/13c289d915523f2348132c07d51cd81a.bundle
+    complexity: -1
     isLight: 0
     anchorType: 0
     bounds:
       m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.039271683, y: 0.03137487, z: 0.005615279}
+      m_Extent: {x: 0, y: 0, z: 0}
     stackableAreas: []
     option_scale: NULL
     dynamic_scale: 1
-  - fileName: /Users/chengxuz/3Dworld/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/book_shelfs.bundle
-    complexity: 3
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/144201418b5dccef1a857c47fd0ecdc3.bundle
+    complexity: -1
     isLight: 0
     anchorType: 0
     bounds:
-      m_Center: {x: 0.7494838, y: 0.52414674, z: -0.9404075}
-      m_Extent: {x: 0.05231881, y: 0.23095006, z: 0.44119585}
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
     stackableAreas: []
     option_scale: NULL
     dynamic_scale: 1
-  - fileName: /Users/chengxuz/3Dworld/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/chair.bundle
-    complexity: 3
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/14adee7ed296842c874073279cad6d18.bundle
+    complexity: -1
     isLight: 0
     anchorType: 0
     bounds:
-      m_Center: {x: 0.0037311912, y: 0.0011861622, z: 0.00034576654}
-      m_Extent: {x: 0.05856347, y: 0.1149538, z: 0.060328245}
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
     stackableAreas: []
     option_scale: NULL
     dynamic_scale: 1
-  - fileName: /Users/chengxuz/3Dworld/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/clock.bundle
-    complexity: 3
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/151d033af5381fd4c1e1e64c8ea306ea.bundle
+    complexity: -1
     isLight: 0
     anchorType: 0
     bounds:
-      m_Center: {x: 0, y: -0.0000000064373005, z: 0.014999971}
-      m_Extent: {x: 0.17999999, y: 0.17999999, z: 0.014999999}
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
     stackableAreas: []
     option_scale: NULL
     dynamic_scale: 1
-  - fileName: /Users/chengxuz/3Dworld/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/door.bundle
-    complexity: 3
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/15a95cddbc40994beefc4457af135dc1.bundle
+    complexity: -1
     isLight: 0
     anchorType: 0
     bounds:
-      m_Center: {x: 0.80833954, y: 0.40148062, z: 1.2992213}
-      m_Extent: {x: 0.014915049, y: 0.35259485, z: 0.22098958}
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
     stackableAreas: []
     option_scale: NULL
     dynamic_scale: 1
-  - fileName: /Users/chengxuz/3Dworld/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/electricity_box.bundle
-    complexity: 3
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/1622e466794cf72998536cff5312b747.bundle
+    complexity: -1
     isLight: 0
     anchorType: 0
     bounds:
-      m_Center: {x: 0, y: -0.000000007450581, z: 0.43159217}
-      m_Extent: {x: 0.19978654, y: 0.09390026, z: 0.43159217}
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
     stackableAreas: []
     option_scale: NULL
     dynamic_scale: 1
-  - fileName: /Users/chengxuz/3Dworld/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/fan.bundle
-    complexity: 3
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/16b2f62791bd9f003554ccf8c30febe7.bundle
+    complexity: -1
     isLight: 0
     anchorType: 0
     bounds:
-      m_Center: {x: 0.025557509, y: 0.03585148, z: -0.10142267}
-      m_Extent: {x: 0.23465067, y: 0.22943091, z: 0.113773525}
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
     stackableAreas: []
     option_scale: NULL
     dynamic_scale: 1
-  - fileName: /Users/chengxuz/3Dworld/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/lamp.bundle
-    complexity: 3
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/1739665585ec210fb04cb542e2c50eb4.bundle
+    complexity: -1
     isLight: 0
     anchorType: 0
     bounds:
-      m_Center: {x: 0, y: 0, z: 0.021852754}
-      m_Extent: {x: 0.27843803, y: 0.035164595, z: 0.021852762}
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
     stackableAreas: []
     option_scale: NULL
     dynamic_scale: 1
-  - fileName: /Users/chengxuz/3Dworld/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/lamps_all_export.bundle
-    complexity: 3
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/17ba1ba8f935f2bbdb01c957364e77d0.bundle
+    complexity: -1
     isLight: 0
     anchorType: 0
     bounds:
-      m_Center: {x: 1.2358356, y: 0.6749923, z: -1.7644596}
-      m_Extent: {x: 5.0430775, y: 2.1080656, z: 2.5165033}
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
     stackableAreas: []
     option_scale: NULL
     dynamic_scale: 1
-  - fileName: /Users/chengxuz/3Dworld/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/loungechairone_connectors_fbx.bundle
-    complexity: 3
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/1821a6d30c529af493b667ec2f48a310.bundle
+    complexity: -1
     isLight: 0
     anchorType: 0
     bounds:
-      m_Center: {x: 0.0055444837, y: 0.035746455, z: -0.14793228}
-      m_Extent: {x: 0.04180479, y: 0.15921003, z: 0.16864012}
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
     stackableAreas: []
     option_scale: NULL
     dynamic_scale: 1
-  - fileName: /Users/chengxuz/3Dworld/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/loungechairone_cushions_fbx.bundle
-    complexity: 3
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/188c3d3b8da2b83c2d4090ebfdad3018.bundle
+    complexity: -1
     isLight: 0
     anchorType: 0
     bounds:
-      m_Center: {x: 0.01794234, y: 0.5420075, z: 0}
-      m_Extent: {x: 0.3964293, y: 0.3450275, z: 0.44138384}
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
     stackableAreas: []
     option_scale: NULL
     dynamic_scale: 1
-  - fileName: /Users/chengxuz/3Dworld/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/loungechairone_feetstand_fbx.bundle
-    complexity: 3
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/19127cb1f535bf2c62c9e7b595148d6a.bundle
+    complexity: -1
     isLight: 0
     anchorType: 0
     bounds:
-      m_Center: {x: -0.032442093, y: 0.13772666, z: 0.0011727214}
-      m_Extent: {x: 0.3399064, y: 0.14038733, z: 0.35412443}
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
     stackableAreas: []
     option_scale: NULL
     dynamic_scale: 1
-  - fileName: /Users/chengxuz/3Dworld/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/loungechairone_shells_fbx.bundle
-    complexity: 3
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/198a109dc6c19ba4c09190536c002dc.bundle
+    complexity: -1
     isLight: 0
     anchorType: 0
     bounds:
-      m_Center: {x: 0.021650553, y: 0.53103715, z: 0}
-      m_Extent: {x: 0.39995414, y: 0.34396762, z: 0.3618573}
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
     stackableAreas: []
     option_scale: NULL
     dynamic_scale: 1
-  - fileName: /Users/chengxuz/3Dworld/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/loungeottoman_cushion_fbx.bundle
-    complexity: 3
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/1a03376343b2e4f0c27d3c9a6f742a5e.bundle
+    complexity: -1
     isLight: 0
     anchorType: 0
     bounds:
-      m_Center: {x: -0.000016868114, y: 0.1052962, z: -0.00000014901161}
-      m_Extent: {x: 0.3111514, y: 0.08386152, z: 0.29678836}
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
     stackableAreas: []
     option_scale: NULL
     dynamic_scale: 1
-  - fileName: /Users/chengxuz/3Dworld/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/loungeottoman_feetstand_fbx.bundle
-    complexity: 3
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/1a6ad7a24bb89733f412783097373bdc.bundle
+    complexity: -1
     isLight: 0
     anchorType: 0
     bounds:
-      m_Center: {x: -0.000000029802322, y: 0.14861205, z: 0.000000074505806}
-      m_Extent: {x: 0.24555075, y: 0.1476652, z: 0.2455507}
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
     stackableAreas: []
     option_scale: NULL
     dynamic_scale: 1
-  - fileName: /Users/chengxuz/3Dworld/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/loungeottoman_shell_fbx.bundle
-    complexity: 3
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/1ac6a3d5c76c8b96edccc47bf0dcf5d3.bundle
+    complexity: -1
     isLight: 0
     anchorType: 0
     bounds:
-      m_Center: {x: 0.0022544742, y: 0.07572786, z: 0}
-      m_Extent: {x: 0.30220455, y: 0.07771503, z: 0.31087014}
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
     stackableAreas: []
     option_scale: NULL
     dynamic_scale: 1
-  - fileName: /Users/chengxuz/3Dworld/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/pc.bundle
-    complexity: 3
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/1b400773151aa9d64c3aee8e9d3a6ffa.bundle
+    complexity: -1
     isLight: 0
     anchorType: 0
     bounds:
-      m_Center: {x: -1.035029, y: 0.32379678, z: -0.18300392}
-      m_Extent: {x: 0.09815431, y: 0.07781029, z: 0.08005531}
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
     stackableAreas: []
     option_scale: NULL
     dynamic_scale: 1
-  - fileName: /Users/chengxuz/3Dworld/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/posters.bundle
-    complexity: 3
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/1ba26b0ca7507edd7c8ffa57cf4ce53a.bundle
+    complexity: -1
     isLight: 0
     anchorType: 0
     bounds:
-      m_Center: {x: 0.0059229434, y: 0.000043570995, z: 0.0058397055}
-      m_Extent: {x: 0.31615594, y: 0.00080505013, z: 0.15591073}
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
     stackableAreas: []
     option_scale: NULL
     dynamic_scale: 1
-  - fileName: /Users/chengxuz/3Dworld/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/printer.bundle
-    complexity: 3
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/1c1899bd9fa34ba7275d003e423c59ba.bundle
+    complexity: -1
     isLight: 0
     anchorType: 0
     bounds:
-      m_Center: {x: 0, y: 0, z: 0.17241688}
-      m_Extent: {x: 0.15363377, y: 0.20065023, z: 0.17241688}
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
     stackableAreas: []
     option_scale: NULL
     dynamic_scale: 1
-  - fileName: /Users/chengxuz/3Dworld/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/projector.bundle
-    complexity: 3
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/1c7f49bab676187480901e43af4435c7.bundle
+    complexity: -1
     isLight: 0
     anchorType: 0
     bounds:
-      m_Center: {x: 0, y: -0.0008789897, z: 0.15163517}
-      m_Extent: {x: 0.062503874, y: 0.076729596, z: 0.15805686}
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
     stackableAreas: []
     option_scale: NULL
     dynamic_scale: 1
-  - fileName: /Users/chengxuz/3Dworld/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/projector_screen.bundle
-    complexity: 3
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/1cf44cb081b1a2b2fcb8d8c6d4df8143.bundle
+    complexity: -1
     isLight: 0
     anchorType: 0
     bounds:
-      m_Center: {x: -0.13258559, y: 0.51962525, z: 1.5429287}
-      m_Extent: {x: 0.6277474, y: 0.22392178, z: 0.0103235245}
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
     stackableAreas: []
     option_scale: NULL
     dynamic_scale: 1
-  - fileName: /Users/chengxuz/3Dworld/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/round_carpet_geo.bundle
-    complexity: 3
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/1d66c26055573243a0efaa0482f35281.bundle
+    complexity: -1
     isLight: 0
     anchorType: 0
     bounds:
-      m_Center: {x: 0.00000023841858, y: 0.0094067, z: -0.00000035762787}
-      m_Extent: {x: 1.3228574, y: 0.0094067, z: 1.315611}
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
     stackableAreas: []
     option_scale: NULL
     dynamic_scale: 1
-  - fileName: /Users/chengxuz/3Dworld/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/shelf.bundle
-    complexity: 3
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/1dea3af9695415f71f6a5b0146bf3030.bundle
+    complexity: -1
     isLight: 0
     anchorType: 0
     bounds:
-      m_Center: {x: -1.9378021, y: 0.54811114, z: 0.014393661}
-      m_Extent: {x: 0.7210965, y: 0.54811114, z: 0.15937991}
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
     stackableAreas: []
     option_scale: NULL
     dynamic_scale: 1
-  - fileName: /Users/chengxuz/3Dworld/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/shelf_d1.bundle
-    complexity: 3
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/1e6d470b0330afe7abccd5469c032787.bundle
+    complexity: -1
     isLight: 0
     anchorType: 0
     bounds:
-      m_Center: {x: 0.27991712, y: 0.54700744, z: -0.12653361}
-      m_Extent: {x: 0.91644883, y: 0.5492149, z: 0.37218195}
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
     stackableAreas: []
     option_scale: NULL
     dynamic_scale: 1
-  - fileName: /Users/chengxuz/3Dworld/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/shelf_d2.bundle
-    complexity: 3
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/1ee7b919637a2acecb2a965e75be701c.bundle
+    complexity: -1
     isLight: 0
     anchorType: 0
     bounds:
-      m_Center: {x: 2.1651878, y: 0.5481111, z: -0.45977557}
-      m_Extent: {x: 0.80840623, y: 0.5481112, z: 0.6335491}
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
     stackableAreas: []
     option_scale: NULL
     dynamic_scale: 1
-  - fileName: /Users/chengxuz/3Dworld/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/sofa.bundle
-    complexity: 3
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/1f5c74f0a55cbf9798d5fc0473d00a1c.bundle
+    complexity: -1
     isLight: 0
     anchorType: 0
     bounds:
-      m_Center: {x: 0, y: 0.40466598, z: 0}
-      m_Extent: {x: 1.0605782, y: 0.40466598, z: 0.5202849}
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
     stackableAreas: []
     option_scale: NULL
     dynamic_scale: 1
-  - fileName: /Users/chengxuz/3Dworld/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/sofa_modern_01_starter.bundle
-    complexity: 3
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/1fc918b0e5c7cf2da5c25aecef10278f.bundle
+    complexity: -1
     isLight: 0
     anchorType: 0
     bounds:
-      m_Center: {x: 0, y: 40.019398, z: -0.8771744}
-      m_Extent: {x: 92.126465, y: 40.00488, z: 42.744957}
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
     stackableAreas: []
     option_scale: NULL
     dynamic_scale: 1
-  - fileName: /Users/chengxuz/3Dworld/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/table_big.bundle
-    complexity: 3
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/2053961ba985591af51f77a6d7299806.bundle
+    complexity: -1
     isLight: 0
     anchorType: 0
     bounds:
-      m_Center: {x: 0.000000029802322, y: -0.000000029802322, z: -0.000000007450581}
-      m_Extent: {x: 0.24736398, y: 0.48412043, z: 0.09606509}
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
     stackableAreas: []
     option_scale: NULL
     dynamic_scale: 1
-  - fileName: /Users/chengxuz/3Dworld/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/table_small.bundle
-    complexity: 3
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/20cdd491a443bc30d9651cd1d591d64d.bundle
+    complexity: -1
     isLight: 0
     anchorType: 0
     bounds:
-      m_Center: {x: 0.000000059604645, y: 0, z: -0.089441955}
-      m_Extent: {x: 0.10499811, y: 0.4233309, z: 0.096065104}
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
     stackableAreas: []
     option_scale: NULL
     dynamic_scale: 1
-  - fileName: /Users/chengxuz/3Dworld/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/tables_few.bundle
-    complexity: 3
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/2145b7d411f1cf91bc4e0550f830290.bundle
+    complexity: -1
     isLight: 0
     anchorType: 0
     bounds:
-      m_Center: {x: 0.000000014901161, y: -0.000000059604645, z: -0.000000007450581}
-      m_Extent: {x: 0.9214595, y: 1.454046, z: 0.09606509}
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
     stackableAreas: []
     option_scale: NULL
     dynamic_scale: 1
-  - fileName: /Users/chengxuz/3Dworld/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/teachers_board.bundle
-    complexity: 3
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/21bf3d8201e3e41f93358ca8580664d1.bundle
+    complexity: -1
     isLight: 0
     anchorType: 0
     bounds:
-      m_Center: {x: 0.000000029802322, y: 0, z: 0}
-      m_Extent: {x: 0.00537315, y: 0.13917726, z: 0.27081394}
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
     stackableAreas: []
     option_scale: NULL
     dynamic_scale: 1
-  - fileName: /Users/chengxuz/3Dworld/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/tvset.bundle
-    complexity: 3
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/22389f9c3c049ce757c29983a611b1c6.bundle
+    complexity: -1
     isLight: 0
     anchorType: 0
     bounds:
-      m_Center: {x: -0.00000011920929, y: 0, z: -0.000000022351742}
-      m_Extent: {x: 0.8618514, y: 0.08357352, z: 0.526924}
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
     stackableAreas: []
     option_scale: NULL
     dynamic_scale: 1
-  - fileName: /Users/chengxuz/3Dworld/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/Separated/window.bundle
-    complexity: 3
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/229a34f1529c4ac14c3aee8e9d3a6ffa.bundle
+    complexity: -1
     isLight: 0
     anchorType: 0
     bounds:
-      m_Center: {x: -1.1745641, y: 0.5600221, z: 0.21887867}
-      m_Extent: {x: 0.014527798, y: 0.26594722, z: 0.2177671}
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
     stackableAreas: []
     option_scale: NULL
     dynamic_scale: 1
-  - fileName: http://threedworld.s3.amazonaws.com/46e777a46aa76681f4fb4dee5181bee.bundle
-    complexity: 229
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/22f89fd9e2a9f1a6bb6bc0db07c71e8.bundle
+    complexity: -1
     isLight: 0
     anchorType: 0
     bounds:
-      m_Center: {x: -0.00037401915, y: -0.164426, z: -0.00006902218}
-      m_Extent: {x: 0.28257298, y: 0.300514, z: 0.282566}
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
     stackableAreas: []
     option_scale: NULL
     dynamic_scale: 1
-  - fileName: http://threedworld.s3.amazonaws.com/46bd9fb29f0ad74151f881addeefe983.bundle
-    complexity: 177
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/2361d8f169a7f3479ed83bc63b2fb8ab.bundle
+    complexity: -1
     isLight: 0
     anchorType: 0
     bounds:
-      m_Center: {x: -0.022920504, y: -0.075486995, z: 0.0016250014}
-      m_Extent: {x: 0.2969755, y: 0.271315, z: 0.296975}
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
     stackableAreas: []
     option_scale: NULL
     dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/23e1e8b7ea54079cd5217e3e48d1c0d9.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/2454758b9629441cf322c3e7acea58f1.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/24cc8816b384723510a7b8c5fa89c603.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/254f1c0cf13108c46c63b8b48495261a.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/25df40f2502c6bc2b2fee0e811c64fd3.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/26642892c5579f25998886098b83a99e.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/26d7ebe6f434ac67e810c01b1498aa2b.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/27436a813a1abe835836c728d324152.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/27cebdcd07cf90aa500158c23c4c5a8e.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/28365bca55784894e99f3a1de720cdd.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/289f7178bfabe667550a2025ec9eef3d.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/291e43df05fba9b53d36088e1ac945e3.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/29925f23c2050efa7def3dd22d9ef72.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/2a05ae00b701fda36567137a59cb1a56.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/2a64bd38a4e42f33dc43fde5155b3946.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/2aca16abe2e5175281faebbdea6bd9be.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/2b48b14e226b131af3b2c084b195b056.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/2bbf7f77d43b74338a331b18e58c6914.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/2c2abe6a7d754a95c79f92df566f8c6b.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/2c9756c06606c05bfa85bd040b2a2468.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/2d0265b94d87d381dc14ba0818ee5cec.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/2d5f1105a92045c8af0fa49592cf7bc7.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/2de1b39fe6dd601f1e03b4418ed1a4f3.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/2e5d2487b7e1b708e4f659f0755a47a.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/2edcb17b897706cf71a782a4379556c7.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/2f4209998288a4634d0af51460733e47.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/2fb9c50ebbd98075ba5342d638d0c267.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/3038a5f927db994e6702681953f194c0.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/30b57b828f961ca8f002715a08c57858.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/31230e9a2e4d7cf7cf291a4a9f36cece.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/319c099e8df5fcae2056b4bd5d870b47.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/3209637ef61547c040feea836646b66e.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/3270016f24001d9f3149bb9ed65c73b1.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/32e4f161682231ceb785a4ac4a0dbd73.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/336c81a0546a4ebaa71c812e027f94d9.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/33c9e81a88866451f4fb6842b3610149.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/341f5b3c74970a618d0dbc7502fb16f2.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/34bbfab80042b25bc1bc03f4ef8a4411.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/35259e9bb2669df79bad64a9c6516f06.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/35b4c449b5ae845013aebd62ca4dcb58.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/36221454034311a4fcaae723fa352fe6.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/3693696a7d11f2a866cf1b4a8fc3914e.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/370c9228a2f41e99346cca8c07629c62.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/377df6e7a3d84edfa123ce0dff5bf4e6.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/37ea55e2d023f9ae9588e71e21de9f30.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/384da5cd806c436b35039158de2eb4b1.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/38c184010d3dbed1d0c05eb40b42c942.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/392b7f2c8b72ba54d05b3855d81c2ed0.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/398fc0e717b0cd524c3a35cee92bb95b.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/39f30c279e085ae41683a1f2bb7ab319.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/3a69ef9c6512041768c981036afdae64.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/3ac69f9e2517f836a341228b21d337a9.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/3b4bc00820afb447ad5067eac75a07f7.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/3bb80aa0267a12bed00bff798ed59ff5.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/3c3f70971f203c4d6ba836372832f055.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/3ca058682dfe98f7f678b53750b6d181.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/3d2ee152db78b312e5a8eba5f6050bab.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/3db03a00661e6113f2a29b1958708a7f.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/3e32e9de344b723435c5f7d532a05db4.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/3ebb9bfa2afb2f8c9db5a91069a42c6a.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/3f4e117f6172555bd7691f54dfc57244.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/3fc3087faa29bce5b1b6b0c5ddacb607.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/401960cb8526894f4b8710a3469971b1.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/408ef9729c48dd40bb273d6b4d49877f.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/40fa6161e7f921f6738e43095496b061.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/416f41390bcf0f87a961b86aefe617fd.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/41dca8046b0edc8f26360e1e29a956c7.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/424d411c37fd30384f224d639c7b7c72.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/42b5ea257418825b5c11b538bde9e3f1.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/433fedbf96f140fb25ebd1cd0b422e32.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/43ad6585f6b9a64675e1008a71b1c5e9.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/44360c91a7e91098d93768e7b9b1eabf.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/44aed693950b077d4f9691cdd5f8749.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/4516c31dae48a0efbff4c0ca0d98b77.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/4590e640c4828cccd57700c05b1862d8.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/45fb33cc152121a97b8f528a5a7a471d.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/4651f5b75533042283bc207d8a5912e3.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/46c7a2ad0abf4463bbc0e8a3b6521117.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/472fe5ae8d386452bcd6195ec0f1e297.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/47adcb0683a3de6cd202a4790115f0c.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/4812245f2f9fa2c953ed9ce120377769.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/48996e27f430ce286f67a5681eaf4d9f.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/48f517497df57a2c2056b4bd5d870b47.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/4976f22bb8ba359713c828323b9d4bf.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/49e9aa7ffa2b1a25e9d8a35d7a1fb08d.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/4a45de600363af6bd5cba62773b8025b.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/4abbc9f36affe95dbcbc3fd6f72b94c.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/4b2e20535d3ecd016b7154919b02cbec.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/4ba2ad7525a7da6c4daf5898cf18a390.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/4c3a0886647ae06a6ecf9e4734c75a01.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/4cb322a9a37e3a4d1c1943a82a09125f.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/4d264fc57f6ea6bde389c9be84ff7ec.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/4dae16dcdfd7d10be6fe3612af521500.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/4e217d2ef816a08251c4deb11af7079e.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/4e934cf95db4cd3bce58f346b4d8abe.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/4f228d116af6e6ad88a3e0e92891ad5.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/4f8952ff04d33784f64801ad2940cdd5.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/501154d9504b62b9da27170f98feb295.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/50882181ce7f2bc1739680f4e31f35e0.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/510fa8653c10b0d1ccd0340812259a39.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/5173aa7f75ff3cf1b55fde51a411949f.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/51ec0bdeb8bd9b8d60eb699207aa149d.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/5261e8e52d1581d2398589a18564a81.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/52da987951645a4b3c8d0fdfb1cc2535.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/5354ecb0e3aa1da074a16879fb3ac81f.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/53cdb2389fe5a5e5bc78bb6f3ca89e4c.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/544fbd4d4c1d445498a4820926b2a786.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/54c4eb19c59440128f7c4148465d43b6.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/55185010b0b6e42eb98f36033d4304b1.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/55858ff5b407677f35a527bc320873ed.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/5608c1b40a0c2fc9c2912ef1a1302821.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/56a32f9e4785d3928a4adbc089030705.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/57202d9819dc44c67d8ecc181daf1385.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/577e1473bbc1e2654fd8f930cee8e385.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/57ffd28975abba38480514d7f2edc0a3.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/585f25e44777c5a1403c57e7ce69f902.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/58ad41e336942bf3c5243a0ab191990d.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/591971ce679ca4b93ad38b993d9e745f.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/59879a7a34ee2ca840e8b85dbf5f349.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/5a09bc1430a2918d1f191e8de8001d7d.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/5a7f14f4b25dd99ceae5cab1248d1ec6.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/5aef22f5441b495d19fb4103277a6b93.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/5b45d3a1edd81a8f2056b4bd5d870b47.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/5ba1fc89122c13c5d4a147733422d301.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/5c0d256f2bf7559bfc8914dd77284b3.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/5c7b3940e988e7e33af041adca0b9ca3.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/5cf6612712d8ad26c5c86021644af7b5.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/5d6b4205111991c879170a5f8beda902.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/5dedf1f1c3c1eb461759ca9eefe0e251.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/5e6d30de53afebe2fb0a4dd466ef3d66.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/5ecf4a1f273ae695729e474769d21582.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/5f356bfdcf9cd4218d4ca42bc1bef451.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/5fb5b09b324dc153ed883f1f11a51185.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/60193289e8d9689b62f6b877265e2679.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/608b46b0f8f9eba81b1a986f753a489b.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/60fc7123d6360e6d620ef1b4a95dca08.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/615417f66fc542c6f51f77a6d7299806.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/61cb695902f7905e7afed106527393f6.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/625ffe6a78f1697d87ea4c09ea2202b1.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/62e723ad4ee0ba9d65579260f47a2d77.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/636b7d403c7717c3edad66bbdfe0c434.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/63e2922c33f79afaec72042a273c8bd8.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/6436ddeaa11efffdcdd34f38f87d26cf.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/64ae981900a1c1a37753393bcfa5f775.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/654a5b26c59c12e5d2c4ce8118ff5045.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/65bd772022c2ac094fd7d35b0d9ebb77.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/663e8f056e9ea81772e0da953d900dd.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/66c8df461f312684d329896bbf26eda9.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/673c3f77f3702338a1845d2858b500eb.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/67a49674df5b8a44f51f77a6d7299806.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/6819949f5625ca12d0f568c31c1cd62a.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/688eacb56a16702f9a6e43b878d5b335.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/68f72d87a2f94e0c8f58b2a82381f0a1.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/69709cb300ae3784ee72e5c46412e9a7.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/69ec86dbd4df85e51ee2805756841071.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/6a6c10088c857de114038d588fd1342f.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/6acb045fe11f7a81f771b7c5ceefa9be.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/6b43cb708670013d2a475baffed905d.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/6ba6309d74f4a131272505863dd1b8dc.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/6c1ca36830d54ca5c9736640ccf985f5.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/6c9a25f120cdcacc25ebd1cd0b422e32.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/6d193b1a63e7f617977a52409ec6c456.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/6d705b609f98e559173b9f28a2caa84d.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/6de1ce73a377df3633faa05410dc119c.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/6e4570ef29d420e17099115060cea9b5.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/6ebad671c5ccfee94c02d21d2fa4d397.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/6f22991fc456e7a5f63bf7d908efc575.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/6f8e17cf5180fa96a911ef3962f7cae2.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/701d5ef8d155c3c7eb6d6d4fb283476.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/709a1592b28e8c16489afeb4f07ae3cc.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/710467261256490ce1bed90743417b0c.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/71752a166bbbb06592bf3ce6b900c3ae.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/71eca23b5fc484cc59fe89a0706f1a71.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/725bbfc557d3e1b9b5af85a5be833ee.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/72d49a11c34a3b6880dd154b5d9c087.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/7336bffce72ea58b90baeef8ba5b93e5.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/739971469c9903eeb6dc6c452bb50aac.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/74126116f42f09e2e6e130a30b5ed875.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/749c3d0d59bf7aface4f274577283b16.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/7520005e70a54526c266013a269e5f81.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/759121663da89b5e7cb17ae4c4c3b9d7.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/7603ca578be87f24b48d582908a164ed.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/76851aaf721dcb63509012911cf74f29.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/7713f61fc0b829f3e196b48bc93a41a.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/777aa4f75debc4e8acbda81da5062d85.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/77fd14f1a7f2d27ec3bd24f986301745.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/78742b25c20ae244cf01bc59d215f0.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/78f69254fdbe4cb4ded49d32c1b10de3.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/798028b70ab2a1d529c726e7d66b139d.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/79e7911ce615b63078831722644c29c3.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/7a617f62ec5bb2075e7faf7f49c2907a.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/7ac63d16fe21f2a491c352d02061b3f7.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/7b2b1c24a60bcfab2cd2160e449d45ae.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/7baed55a551f03efa27ad5a09bb4c2bf.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/7c1bcea89b0037a2d67bd369ec608dad.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/7cb828eb3b8e424b1e88064118b89a3e.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/7d4abd821dfbc7dfcc786970133d7717.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/7dc72dc46c46410168ac0d25269a2c67.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/7e433512ef8beb51b17743c18fb63dc.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/7ec638ee1fa35cbc125fa9990176f0d5.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/7f3562432f02b8a897d3ea932731fd42.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/7fa841359a3dce3dbcb8492ce3867c34.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/8020984fc6e83ac1331b5e6778e27aa.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/8094a6efa5efa16776d812857a5be1ce.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/811e5e7b22e7ed15b9cdfe8062f449fa.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/819a7b31f925a302474a33db0a80b327.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/82138919402b3b8f642f9e27aaf0c47a.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/82c3357fcd007893d17373579e6fd9be.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/83464126ed62ef54707cdefe012d0353.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/83dea2f2561fc2fbe9364d19fabb5f00.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/847ce2a3541a085ccc9651014a82e2b9.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/84fee75d9736808afa29682ba98e856d.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/857ae7eeae1508e9b0957d845ac33749.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/85fa7911905e932bf485d100eb31d589.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/867e978b82c313693002761e7a3ba3bd.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/86fc58a0c40316f2562c8e1ac545ef78.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/878c70bddd336f6019fb4103277a6b93.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/8807a8fdc7a08a0fb664d1885442ba70.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/8877b9b8e68fcda696d7d56afa10bb68.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/88ea703e063e715d6770da39e2737f95.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/895d688a910d8ba0bd647f71fcfdcbe2.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/89e4214536b63bb13fbcdcb4c54d4ba8.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/8a63086a3c861151ce2bbb5a9dafce04.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/8ae5acfaf2b115382d19175e7d19b7cb.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/8b4b176d9393676d5e1f306d831137e1.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/8ba355a47e0dd19c491effd0ae881ea.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/8c23967793e62320825138352acfcb46.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/8ca2c0a0eed4a31abb93315448664e1d.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/8d07df2bf706cda58c5591114064d173.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/8d61836ca7137a07291d22c7a0bd7119.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/8deda7d1c75b33676314c3b6a3a65519.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/8e6312c23b6ac12f956c23e7ddc28c00.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/8ef2169d274aa2e9b16dca03855925bc.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/8f59fee745f1e37ea5c8e9fc8b2242fd.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/8fd9d529453e8d56c09af5354c5cbf4e.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/904ca55b79821ff85dc6bf5b8d674d37.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/90ccd5fbb48ba3bdde650492e45fb14f.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/914a876b24bea577e97426e55fb77981.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/91b2bed2f4b87e615164a043915ac8c4.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/923097cec128ae77469cbaa3d6420fb4.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/92bfb87451cca049febad4f49b26ec52.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/9324b077e28980f3e3dec121245a30.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/939f3dcf67a1e1adbe13ce34aa7c0c1c.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/941289c22ad19099a87002a4eeaf610.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/949054060a3db173d9d07e89322d9cab.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/94ffc8179ae6bf8ddcfd6ca2b952d624.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/956f4464a0c344d621c6aa624f82ef1.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/95fe1f3dec357704e27790b0ec8671f7.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/969c60ef5f2c2fe696d5fa1ee6ada8d1.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/970e70ae46244887c35d3c5d3b1fcf7.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/9798a8b84987bd661851363a5850bdc.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/98011d15300361e54f0e6f5b218145e.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/9862dbfa48af20f5353941f152341c47.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/98db6cb890a9776f65ec59d478b48347.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/9943ae38cd844c91082f2ea630bf69e.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/99b9eb5e1a7dd3b9e4614310319ea50.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/9a2529a1b49282cd6eeb02236344250.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/9aa333a858848cb685a8bf3411bdb83e.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/9b1f0ddd23357e01a81ec39fd9664e9b.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/9b8e6eb835f0c8bcf37af16b2893f1d4.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/9c12baa3337390578592b396b177b348.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/9c72e9c273fa91701b5647ac5820a290.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/9cec9c8b65ec9e4f4c62bee40dcdc539.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/9d5f59e259057baa910a53622567655f.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/9dcf9b3c53f1cb135afcf0aaed5d73d0.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/9e274df011a9643c21ec51d5b72ac4e7.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/9e97c5ba09adfc481b17743c18fb63dc.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/9f07035e2ff0e5946ef2faffa907bc32.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/9f757c0acb5264f665ba78ad9601cf1b.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/a004ad56474501f67eaeab1f0c9120b7.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/a0796a2532fcb95fb1b6b0c5ddacb607.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/a0f57b3d2c2ff2ee2666ee81c3e6ae4f.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/a151ea6f6bf27e2c9a7c2b8fd801b3e8.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/a1ca000d08da97ae43b5d2063387bd6e.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/a23c4789341aa242cb2a965e75be701c.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/a2970be7c866fe33a2c59a4d90e63212.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/a3260f0c8fddf11cf0f4992137d8f4a3.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/a39749334717e07098f49a8972f75c6a.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/a415a0bc88904b24ed56e40d2df47c3.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/a4b0c73d0f12bc75533388d244d29c5c.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/a51d836a9349b2a1f42bc0eea174f82b.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/a5825f1ffa48c72f3754416ec24e02bc.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/a5df9c511f51228f19fb4103277a6b93.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/a65e74617ff51c661b1fe5e2144bf114.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/a6f0f0aab2ab2591341b8a806253912c.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/a78bd5277a6c03cdd3726fd70b88cb7c.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/a838d73a1ae66934b161f36d4e309050.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/a8abbef69d380399429c5e5ac1d52cde.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/a931895438ae4502a9f468923d4ea2fd.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/a99a74777f6aacf2489e5619471f9f53.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/aa1da8200477456bab610b0c94236463.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/aa8f6fbdc184a732cf45555a18e7351a.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/ab1c843def8b843bed98cca8f0ccd5f7.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/ab8cd6dd65cb0ca9770f31b5d5715b63.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/ac026fa4c69669a25b036534f28c2db.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/ac864eb8b8a084756ddf5c10cced4ccf.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/acf4fb74200b838d874179120554c44f.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/ad856cfd25b91563c681404257d94ad9.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/adfda3aefb86478319fb4103277a6b93.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/ae8f31ba66709b8278cd7885232df677.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/af09abc2c30ac934b3c42e318f3affc.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/afaf8f844c5b0ec37f96386fffd17d87.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/b04647659c599ade7fb4fbe822d98e36.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/b0cafe0b5efb6cb44cdd82d9cdddaedf.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/b146fb259f64cefaeb6c29873b08c02.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/b1cad66b13e1a1e7714531f0291497fd.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/b24e1117e49c75f817b431cae0dd70ed.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/b2b0dd16870742a2fc41e59f3518733.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/b3371ffc36150f817bb281f66a49b55.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/b3c5ef225f841cb59725f8348364f5a8.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/b45bae45ccfdd7b9824080f516909671.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/b4e2c11f4c01123933d9cf37f30825d7.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/b56494e8810764286739a7caa0c577bd.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/b5f6fd84a3f44ddb1aa47689117a61e1.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/b66524f44170023ff7248d9dbed7a7b8.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/b6d0cf333c7e013993f0194265a9746c.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/b7316f361054c8501962281db2f162a0.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/b7af84a7e76dfb59b04cb542e2c50eb4.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/b8300f2e4a8adf9b31de0931bd5b560c.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/b8bf7e161cbff74066ab323d8f805a57.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/b92c1ad2943ec29168faa7730065e439.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/b9b2f960a937bb22643ae903098a314.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/ba5054bd7c2598ed832fe5f29a662936.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/bacb5f46add42da9a53649a80e5aff8c.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/bb46957091f2a282cfdfe3f21f42a111.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/bbbca195cd6b85f1562c8e1ac545ef78.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/bc3b68407bba00d92756c2c914ecfebf.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/bcb4f576747e10bdd7f6e86d7d335698.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/bd3408700fb963b436b0f2a1430e993a.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/bdbc01a1bea50bdba6cb562d18000d3d.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/be2df150c86b57d2c9db3276cf490d3d.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/bec151e32bbc7e9b28c54e8f8953f499.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/bf4dbc47f8688cf2b362845c6edb57fc.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/bfbc5e6ebe1813a5d9fad8aba2c312b7.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/c03bbfcd33f310155076fe09061f1a7a.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/c0b4b99b37cfed365143f38859a6efa4.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/c14017bc897d73f46314c3b6a3a65519.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/c1c0b3d35cdef5e2f51fa0238791f5dc.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/c263fec31c8d33874f51382fa3549a00.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/c2e2206394f6de78a78a19ca5a5a5ca3.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/c35fb15786c7622cdf3a1b0d597ce76e.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/c3d845c1fe644b39b6ab6d583025c7a1.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/c46b2f2069ce543c4bbcee86e282d431.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/c4f3ee55952e49ae12b38b1d99376c0b.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/c56bca4b7f353ad86debb0a33c851f8.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/c5f9c372078561644368de794b251ad1.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/c68284aa7904fb4d5e2fdc02779b5bdb.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/c70daedaade33fd0fb24e6a63c26ad2d.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/c77e8499be0ce1e04f3443b22038d340.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/c805f5a262130e6cb4f6b6fae7a188ad.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/c88eb06478809180f7628281ecb18112.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/c91ed7cebef758f935836c728d324152.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/c9a603de83e6914199e8bf807e902261.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/ca2294ffc664a55afab1bffbdecd7709.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/cac1edcba53ae3d16b2c8bb96250e4a0.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/cb6ee0f8931923cd4f262ad0a8c89c0.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/cbe006da89cca7ffd6bab114dd47e3f.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/cc53e7b618721da04b0c98bb5e7fbdd9.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/ccc9cc45699f95f21bec2e8246842c2a.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/cd55a6a2d57067df3e49f3a2a35ec8b6.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/cde9d2f6302fda60cd8d9984f3ad2fd7.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/ce60636e30770f9d8193714e438a24d5.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/cefa8b1b55922f419e5c987c836cf01f.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/cf80306fbfc886095213cec267286d18.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/d01321ae63ae0b40ad1f278e1513f3b7.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/d0891a7d205203a9beedb4c8fd29e2d1.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/d11b1767a70922edb99f5bb707709184.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/d18f361e22f7626b707cdefe012d0353.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/d217e8ab61670bbb433009863c91a425.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/d295c1b6b9d134a65f7f2cf289fe662b.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/d3030c8698bc2f874c4c693a60456ebf.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/d37781e47470fa3d664a56105f5816ce.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/d3f84442201b6c137fb7f79251dd7727.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/d49400b5298fb56adf3a1b0d597ce76e.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/d512e75fe5142f9cc23b8534bf62ba29.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/d599b1176343728c6705ae120c2282cf.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/d6120b12aca39e73cdbe8a30cf95821.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/d685415d4fcd3205a24eeca91f583600.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/d713865a94c8229575f4e5007488531.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/d7c40ca08579ba4e664b3b9b23ddfcbc.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/d847cdb16cae06404d059d8c55114915.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/d8edf163d5f87b055369e32fb818f337.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/d9628700a086ca293c85bd0482f3094.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/d9d1d7161c59786fb58d6ede2c134ee0.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/da4294d14502707a82cb4f2e118e48f4.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/dab9d3c4afc644764732d159b629c6ab.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/db2d4f781756e687d8864caa856253b.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/dbc521b1d4c2d308303d346f4be7d4f.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/dc52131684ed9cbbfe4a8257a424ee86.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/dcd9a34a9892fb11490ad276cd2af3a4.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/dd4f5eff165c85d8200a3881cd915629.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/dddacb5f14641b49766aeccb5d872ce4.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/de5a57d8fce504ced747b49524a1246e.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/df03ded86df8fbd2ebd284456950c944.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/df8440d8678f3a91c8687ff9b0b4e4ac.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/e017cf5dac1e39b013d74211a209ce.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/e083ee4f045402b2806fa01b99bcd24.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/e0e365a2927a7a73bafad60030e6ab60.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/e16e0925ab21f2d3a45eddb1d745bdff.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/e20889cbe2d917787d616ef0c11d6a7f.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/e29fbd1feb9659dc843ead12644a79bb.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/e3287950481e9811cf48ae153052b71a.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/e3a00627dcef6b854b3c42e318f3affc.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/e409d714620161c132fa725d7a62a02a.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/e476ca4169c3d0ca490ad276cd2af3a4.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/e501a0327ab3731d0f859db45b95a2d.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/e566fd9bbc3d51d377b9297f3055210.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/e5ea39e2b4c28ea2a8df8437731d97b4.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/e67c305a676930b123c95a77265c8dd.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/e6ed2c677e158daa1059f490634fcf62.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/e75539f66fe4071e4858278d1f98c5a.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/e7c29b8c7709187d42526f5fcee84e09.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/e854747b2165ffd6f8b75fa4030d2e21.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/e8ba9621aef9395a3019620286259e2c.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/e92386352c19221ac99bbfcf5650bf52.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/e99a4c2fa99a0038a2aa7d89ba9aea43.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/ea127b5b9ba0696967699ff4ba91a25.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/ea80f7a2a3b97d2e8f3f2979f302c57.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/eb039f6a86785f3a9e633556753261cf.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/eb8569cf15db1dac1640aadca4c54050.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/ec1c92efffb9ee78beedb4c8fd29e2d1.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/ecbb5a30557f659b2c528d33bca1ac2.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/ed320d80089655bedf6cfab91d65bb91.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/ed9d0bf4b699c2e86393e0168650b62f.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/ee0e42b157a8d8554d226702c1bfe9e2.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/eebb08eb1a4918b75d71b28e8a5230b9.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/ef4e5099cb7c543830bbd4cddd04c77b.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/efd174efe9130399be7ca2216dc1576a.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/f06843cc11cfe791cbcb2c721c3564d4.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/f0f42d26c4a0be52a53016a50348cce3.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/f1772937648f0a1b602f79528bf8e63.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/f1f0a765def9499c6a2345809e2bb169.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/f28874ee319d1e2dd3bd10ac60e54bc9.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/f3004c5b38bbc0e445804144dab4dd66.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/f3a44bf9a27f1446ae23680cee12f145.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/f43b6b571d66991f95ca4adb70946a21.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/f4d21f925b703fb7e46b767696592d01.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/f5643e3b42fe5144c9f41f411b2bb452.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/f5f7ce79ef61e0ff3f0ee3307f850b4c.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/f67d8afd7611fcdb45e0993de2a122d7.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/f714747e5abc01cc14038d588fd1342f.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/f794d82d7be73b1a9f7e329438453d00.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/f831f836f6468b28bebbd6eb70ab85c0.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/f8e8b0059395805d9bd3e6056359bce9.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/f982748287ef2c7ace029fab54b6cfbd.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/fa041b0276dcaaaf98e0d1738edd4f19.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/fa83ef67ce97491ac955e5ed03ef3a2f.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/fafef4866d1a74f3fcb8d8c6d4df8143.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/fb68077d405c233ef879f4163a3ec7b.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/fbee497d2941270d79368d1198f406e7.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/fc77ad0828db2caa533e44d90297dd6e.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/fcfb3a50acf5e83ecc0484ea4f50062.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/fd5f6ab819910a66dc7f95a5a82e36f7.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/fe0a8440aef8f597a6656391f7752a4d.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/fe7dd4f6b988123bd810b14a81e12eca.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/ff12c3a1d388b03044eedf822e07b7e4.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0
+  - fileName: http://threedworld.s3.amazonaws.com/ff9915c51ece4848cfc689934e433906.bundle
+    complexity: -1
+    isLight: 0
+    anchorType: 0
+    bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+    stackableAreas: []
+    option_scale: NULL
+    dynamic_scale: 1
+    loaded: 0

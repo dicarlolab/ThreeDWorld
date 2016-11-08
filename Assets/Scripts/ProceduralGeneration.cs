@@ -569,12 +569,44 @@ public class ProceduralGeneration : MonoBehaviour
         }
 
         // Randomly add next one?
-        PrefabDatabase.PrefabInfo info = prefabList[_rand.Next(0, prefabList.Count)];
+        int temp_rand_index     = _rand.Next(0, prefabList.Count);
+        PrefabDatabase.PrefabInfo info = prefabList[temp_rand_index];
+
+        if (info.loaded==0) {
+            // Load it now
+            Debug.Log("From http loaded!");
+            var www = WWW.LoadFromCacheOrDownload (info.fileName, 0);
+            var loadedAssetBundle = www.assetBundle;
+            string[] assetList = loadedAssetBundle.GetAllAssetNames ();
+
+            foreach (string asset in assetList) { 
+
+                GameObject gObj = loadedAssetBundle.LoadAsset<GameObject> (asset);
+                GeneratablePrefab[] prefab = gObj.GetComponents<GeneratablePrefab> ();
+                if (prefab.GetLength (0) == 0) {
+                    Debug.LogFormat ("Cannot load GeneratablePrefab component on {0}", gObj);
+                    continue;
+                }
+                GeneratablePrefab prefab_temp   = prefab [0];
+                info.loaded     = 1;
+                info.complexity = prefab_temp.myComplexity;
+                info.bounds     = prefab_temp.myBounds;
+                info.isLight    = prefab_temp.isLight;
+                info.anchorType = prefab_temp.attachMethod;
+                foreach (GeneratablePrefab.StackableInfo stackRegion in prefab_temp.stackableAreas)
+                    info.stackableAreas.Add (stackRegion);
+                prefabList[temp_rand_index]     = info;
+
+            }
+            loadedAssetBundle.Unload (false);
+        }
 
         // Check for excess complexity
         int maxComplexity = (complexityLevelToCreate - _curComplexity);
         if (info.complexity > maxComplexity)
         {
+            // Change for lazy loading
+            /*
             prefabList.RemoveAll((PrefabDatabase.PrefabInfo testInfo)=>{
 				return (testInfo.complexity > maxComplexity) | (testInfo.complexity == 0);
             });
@@ -582,7 +614,11 @@ public class ProceduralGeneration : MonoBehaviour
                 Debug.LogFormat("Filtering for complexity {0} > {1} leaving {2} objects ", info.complexity, maxComplexity, prefabList.Count);
             if (prefabList.Count == 0)
                 return false;
-			info = prefabList[_rand.Next(0, prefabList.Count)];
+            */
+
+            prefabList.Remove(info);
+            return true;
+            //info = prefabList[_rand.Next(0, prefabList.Count)];
         }
 
         // Find a spot to place this object
