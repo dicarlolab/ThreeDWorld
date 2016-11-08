@@ -136,15 +136,17 @@ The config file can be accessed as a JsonData file under `SimulationManager.args
 On `dicarlo-3d0world-editor.mit.edu`, the builds are placed under `/home/threed/builds/v1.0.0beta/v1.0.0b06`.
 
 ## Starting server side
+First make sure that no mongod and /usr/bin/X processes are running (kill'em all!). 
 
-1. Start mongo: `mongod -port 23502`
-(Add a `&` at the end to run it as a background process)
-2. If done remotely and Ubuntu display manager server is running (e.g., a monitor is connected to that machine):
+1. If done remotely and Ubuntu display manager server is running (e.g., a monitor is connected to that machine):
 
     - `sudo service lightdm stop`
     - `sudo nvidia-xconfig -a --use-display-device=None --virtual=1280x1024`
     - `sudo /usr/bin/X :0`
     - (To go the opposite way, kill the X server and restart lightdm -- you might have to reboot(?))
+2. Start mongo: `sudo mongod -port 23502`
+(Add a `&` at the end to run it as a background process)
+
 3. Start queue: `cd ServerTools && sudo python tdw_queue.py` (on `dicarlo-3d0world-editor.mit.edu`, the project is at `/home/richard/Documents/ThreeDWorld_Server/ThreeDWorld`)
 
 Output log is then generated in `ServerTools/output_log.txt`.
@@ -331,7 +333,17 @@ After uploading, one could append the http url to "Assets/PrefabDatabase/list\_a
 
 #### Setting up assetbundles
 
+This action would register all the assetbundles under _Assets/PrefabDatabase/AssetBundles/Separated/_ and remote assetbundles listed in "Assets/PrefabDatabase/list\_aws.txt". For only loading the remote assetbundles lazily, please checkout to branch cmdRun and then using setting up assetbundles lazily (see below for instructions). 
+
 Just clicking *Prefab Database/Setup Bundles* (if you also want to load the remote assetbundles, please click "Play" before setting up, as Loadfromcacheordownload only works in Play mode). Unity would examine all available bundle files under _Assets/PrefabDatabase/AssetBundles/Separated/_ and remote bundle files from "Assets/PrefabDatabase/list\_aws.txt". **NOTE:** All the assetbundles would be loaded for checking and taking needed information. So this process could be slow depending on how many bundle files there (especially the remote bundle files!). The list of files would be stored in "prefabs" of _Assets/ScenePrefabs/PrefabDatabase_.
+
+#### Setting up assetbundles lazily
+
+This action would register the assetbunldes at AWS S3 listed in "Assets/PrefabDatabase/list\_aws.txt" lazily (only actually loading them when used later).
+
+Just clicking *Prefab Database/Setup Bundles lazily*. Unity would examine all remote bundle files from "Assets/PrefabDatabase/list\_aws.txt". All the assetbundles would **NOT** be loaded until they are actually used for procedural generation. The first time of running might need to download lots of models which makes the program take some time. (~10 minutes for 500 models).
+
+The optional lists of remote assetbundels can be found under ServerTools (in cmdRun branch currently). Just replace "Assets/PrefabDatabase/list\_aws.txt" with them if wanted.
 
 # License
 
