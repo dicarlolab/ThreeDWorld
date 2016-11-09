@@ -19,7 +19,7 @@
 
 ## Queue
 
-At the beginning of our network training programs, we need a way to connect to the environment server and send and receive our messages back and forth. This is done by `ServerTools/tdq_queue.py` which manages all the instances of the ThreeDWorlds as we make. This script will be bound to port number 23402 (by default) on any given machine that we are using to run environments.
+At the beginning of our network training programs, we need a way to connect to the environment server and send and receive our messages back and forth. This is done by `ServerTools/tdw_queue.py` which manages all the instances of the ThreeDWorlds as we make. This script will be bound to port number 23402 (by default) on any given machine that we are using to run environments.
 
 To make things more straightforward, use `ClientTools/tdw_client.py` which will auto-connect you to the queue, and allow you to use a small selection of commands to either examine the current processes running on the node, reconnect to an environment process, or create a new process.
 
