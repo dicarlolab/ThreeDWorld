@@ -25,7 +25,7 @@ public class CreatePrefabCMD
 
 
     public static void LoadInfoFromBundle(){
-        using (StreamWriter sw = new StreamWriter("TestFile.txt")) 
+        using (StreamWriter sw = new StreamWriter(GetArg ("-outputFile"))) 
         {
             /*
             // Add some text to the file.
@@ -37,14 +37,15 @@ public class CreatePrefabCMD
             sw.WriteLine(DateTime.Now);
             */
 
-            sw.Write("This is the Test file");
-            string tmp_asset_path = GetArg ("-outputDir");
+            //sw.Write("This is the Test file");
+            string tmp_asset_path = GetArg ("-inputDir");
             string[] dir = Directory.GetFiles(tmp_asset_path, "*.bundle");
             foreach (string d_tmp in dir) {
-                sw.Write("This is line for ");
-                sw.WriteLine(d_tmp);
-                //Debug.Log(d_tmp);
+                //sw.Write("This is line for ");
+                //sw.WriteLine(d_tmp);
                 string data_new_path = d_tmp;
+                sw.Write(d_tmp.Remove(0, d_tmp.LastIndexOf ('/')+1));
+                sw.Write(",");
                 Debug.Log(data_new_path);
 
                 //allSelected.Add (AssetDatabase.LoadMainAssetAtPath(data_new_path) as GameObject, data_new_path);
@@ -68,6 +69,7 @@ public class CreatePrefabCMD
 
         }
     }
+
 	public static void CreatePrefabFromModel ()
 	{
 		Dictionary<GameObject, string> allSelected = new Dictionary<GameObject, string> ();
