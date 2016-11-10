@@ -2,7 +2,7 @@ import zmq
 import time
 import os
 import socket
-import multiprocessing
+#import multiprocessing
 import sys
 import numpy as np
 #import h5py
@@ -110,7 +110,7 @@ def loop():
 		"disabled_items": [], #["SQUIRL", "SNAIL", "STEGOSRS"], // A list of item names to not use, e.g. ["lamp", "bed"] would exclude files with the word "lamp" or "bed" in their file path
 		"permitted_items": [""] , #[],["bed1", "sofa_blue", "lamp"]
                 "scale_relat_dict": {"http://threedworld.s3.amazonaws.com/46e777a46aa76681f4fb4dee5181bee.bundle": {"option": "Multi_size", "scale": 4}},  # option: "Absol_size", "Fract_room", "Multi_size"; TODO: implement "Fract_room"
-		"complexity": 10,
+		"complexity": 200,
 		"num_ceiling_lights": 4,
 		"minimum_stacking_base_objects": 5,
 		"minimum_objects_to_stack": 5,
@@ -194,18 +194,19 @@ def check_if_env_up():
 		if (check_port_num(5556)):
 			sys.exit()
 
-t1 = multiprocessing.Process(target=loop)
-t2 = multiprocessing.Process(target=check_if_env_up)
+#t1 = multiprocessing.Process(target=loop)
+#t2 = multiprocessing.Process(target=check_if_env_up)
 
-t1.start()
-t2.start()
+#t1.start()
+#t2.start()
 
-while True:
-	time.sleep(3)
-	if (not t2.is_alive()):
-		t1.terminate()
-		sys.exit()
-	elif (not t1.is_alive()):
-		t2.terminate()
-		sys.exit()
+#while True:
+#	time.sleep(3)
+#	if (not t2.is_alive()):
+#		t1.terminate()
+#		sys.exit()
+#	elif (not t1.is_alive()):
+#		t2.terminate()
+#		sys.exit()
 
+loop()

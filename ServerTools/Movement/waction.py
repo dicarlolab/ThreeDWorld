@@ -25,8 +25,8 @@ ACTION_WAIT = 15
 
 N = 1024000
 
-#path = 'C:/Users/mrowca/Documents/test'
-path = '/Users/damian/Desktop/images'
+path = 'C:/Users/mrowca/Documents/test'
+#path = '/Users/damian/Desktop/images'
 #infodir = path + '_info'
 #if not os.path.exists(infodir):
 #    os.makedirs(infodir)
