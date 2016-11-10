@@ -2,7 +2,7 @@ import zmq
 import time
 import os
 import socket
-import multiprocessing
+#import multiprocessing
 import sys
 import numpy as np
 #import h5py
@@ -194,18 +194,19 @@ def check_if_env_up():
 		if (check_port_num(5556)):
 			sys.exit()
 
-t1 = multiprocessing.Process(target=loop)
-t2 = multiprocessing.Process(target=check_if_env_up)
+#t1 = multiprocessing.Process(target=loop)
+#t2 = multiprocessing.Process(target=check_if_env_up)
 
-t1.start()
-t2.start()
+#t1.start()
+#t2.start()
 
-while True:
-	time.sleep(3)
-	if (not t2.is_alive()):
-		t1.terminate()
-		sys.exit()
-	elif (not t1.is_alive()):
-		t2.terminate()
-		sys.exit()
+#while True:
+#	time.sleep(3)
+#	if (not t2.is_alive()):
+#		t1.terminate()
+#		sys.exit()
+#	elif (not t1.is_alive()):
+#		t2.terminate()
+#		sys.exit()
 
+loop()

@@ -25,8 +25,8 @@ ACTION_WAIT = 15
 
 N = 1024000
 
-#path = 'C:/Users/mrowca/Documents/test'
-path = '/Users/damian/Desktop/images'
+path = 'C:/Users/mrowca/Documents/test'
+#path = '/Users/damian/Desktop/images'
 #infodir = path + '_info'
 #if not os.path.exists(infodir):
 #    os.makedirs(infodir)
@@ -163,13 +163,16 @@ def make_new_batch(bn):
                                         action_done = True
                                         action_started = False
                                     print('choosing "a"', dist, a)
-                                action['force'] = [a, 3000 * (2 ** amult), 0]
+                                action['force'] = [a, 100 * (2 ** amult), 0]
                                 action['torque'] = [0, g, 0]
                                 action['id'] = str(chosen_o)
                                 action['action_pos'] = map(float, objpi[-1])
 				print 'MOVE OBJECT! ' + str(chosen_o)
                             else:
                                 print(action_ind, i, 'waiting')
+                                msg['msg']['vel'] = [0, 0, 0]
+                                msg['msg']['ang_vel'] = [0, 0, 0]
+                                msg['msg']['actions'] = []
                             action_ind += 1
                             if action_done or (action_ind >= action_length + action_wait):
                                 action_done = True
@@ -180,11 +183,12 @@ def make_new_batch(bn):
                             action_ind = 0
                             action_started = True
                             action['id'] = str(chosen_o)
-                            action['force'] = [a, 3000 * (2 ** amult), 0]
+                            action['force'] = [a, 100 * (2 ** amult), 0]
                             action['torque'] = [0, g, 0]
                             action['action_pos'] = map(float, pos)
 			    print 'MOVE OBJECT! ' + str(chosen_o)
-                        msg['msg']['actions'].append(action)
+			if 'id' in action:    
+                            msg['msg']['actions'].append(action)
             infolist.append(msg['msg'])
             ims.append(imarray)
             norms.append(narray)
