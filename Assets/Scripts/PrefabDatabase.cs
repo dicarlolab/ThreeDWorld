@@ -594,8 +594,8 @@ public class PrefabDatabase : MonoBehaviour
 
 	void Update ()
 	{
-		EditorUtility.UnloadUnusedAssetsImmediate ();
-		GC.Collect ();
+		//EditorUtility.UnloadUnusedAssetsImmediate ();
+		//GC.Collect ();
 	}
 
 

@@ -4,6 +4,7 @@ using NetMQ;
 using System;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using UnityStandardAssets.CinematicEffects;
 
 /// <summary>
 /// Class that captures render output from a camera and returns a 
@@ -185,6 +186,11 @@ public class CameraStreamer : MonoBehaviour
 
     private CapturedImage TakeSnapshotNow(Shader targetShader)
     {
+
+        Debug.Log("NAME SHADER");
+        if(targetShader != null)
+        { Debug.Log(targetShader.name); }
+
         if (NetMessenger.logTimingInfo)
             Debug.LogFormat("Start TakeShapshotNow() {0} {1}", (targetShader == null) ? "(null)" : targetShader.name, Utils.GetTimeStamp());
         // Create a new camera if we need to that we will be manually rendering
@@ -195,6 +201,36 @@ public class CameraStreamer : MonoBehaviour
             _textureCam = newObj.AddComponent<Camera>();
             _textureCam.enabled = false;
             _textureCam.targetTexture = new RenderTexture(targetCam.pixelWidth, targetCam.pixelHeight, 0, RenderTextureFormat.ARGB32);
+
+            // Image Effects
+            if (targetCam != null)
+            {
+                targetCam.hdr = true;
+
+                // Tone Mapping
+                targetCam.gameObject.AddComponent<TonemappingColorGrading>();
+                var tonemapping = targetCam.gameObject.GetComponent<TonemappingColorGrading>().tonemapping; //ToneMappingSettings
+                tonemapping.enabled = true;
+                tonemapping.exposure = 2;
+                tonemapping.tonemapper = TonemappingColorGrading.Tonemapper.Photographic;
+                targetCam.gameObject.GetComponent<TonemappingColorGrading>().tonemapping = tonemapping;
+
+                // Eye Adaptation
+                var eyeadaptation = targetCam.gameObject.GetComponent<TonemappingColorGrading>().eyeAdaptation; //EyeAdaptationSettings
+                eyeadaptation.enabled = true;
+                targetCam.gameObject.GetComponent<TonemappingColorGrading>().eyeAdaptation = eyeadaptation;
+
+                // Depth of Field
+                targetCam.gameObject.AddComponent<DepthOfField>();
+
+                //Ambient Occlusion
+                targetCam.gameObject.AddComponent<AmbientOcclusion>();
+
+                //Screen Space Reflections
+                targetCam.renderingPath = RenderingPath.DeferredShading;
+                targetCam.gameObject.AddComponent<ScreenSpaceReflection>();
+            }
+
             if (testImage != null)
                 testImage.texture = _textureCam.targetTexture;
         }

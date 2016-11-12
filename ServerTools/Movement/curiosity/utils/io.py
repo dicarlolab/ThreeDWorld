@@ -32,15 +32,19 @@ def handle_message(sock, write=False, outdir='', imtype='png', prefix=''):
     oarray = np.asarray(Image.open(StringIO(ostr)).convert('RGB'))
     imstr = sock.recv()
     imarray = np.asarray(Image.open(StringIO(imstr)).convert('RGB'))
+    im = Image.fromarray(imarray)
+    imo = Image.fromarray(oarray)
     if write:
         if not os.path.exists(outdir):
             os.mkdir(outdir)
-        with open(os.path.join(outdir, 'image_%s.%s' % (prefix, imtype)), 'w') as _f:
-            _f.write(imstr)
-        with open(os.path.join(outdir, 'objects_%s.%s' % (prefix, imtype)), 'w') as _f:
-            _f.write(ostr)
-        with open(os.path.join(outdir, 'normals_%s.%s' % (prefix, imtype)), 'w') as _f:
-            _f.write(nstr)
-        with open(os.path.join(outdir, 'info_%s.json' % prefix), 'w') as _f:
-            _f.write(info)
+        im.save(os.path.join(outdir, 'image_%s.%s' % (prefix, imtype)))
+        imo.save(os.path.join(outdir, 'objects_%s.%s' % (prefix, imtype)))
+        #with open(os.path.join(outdir, 'image_%s.%s' % (prefix, imtype)), 'w') as _f:
+        #    _f.write(imstr)
+        #with open(os.path.join(outdir, 'objects_%s.%s' % (prefix, imtype)), 'w') as _f:
+        #    _f.write(ostr)
+        #with open(os.path.join(outdir, 'normals_%s.%s' % (prefix, imtype)), 'w') as _f:
+        #    _f.write(nstr)
+        #with open(os.path.join(outdir, 'info_%s.json' % prefix), 'w') as _f:
+        #    _f.write(info)
     return [info, narray, oarray, imarray]
