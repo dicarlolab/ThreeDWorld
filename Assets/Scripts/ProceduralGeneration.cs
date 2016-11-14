@@ -41,6 +41,7 @@ public class ProceduralGeneration : MonoBehaviour
     public List<string> disabledItems = new List<string>();
     public List<string> permittedItems = new List<string>();
     public float gridDim = 0.4f;
+    public int use_mongodb_inter = 0; // 0 is for not, 1 is for using
     public bool shouldUseStandardizedSize = false;
     public Vector3 standardizedSize = Vector3.one;
     public bool shouldUseGivenSeed = false;
@@ -138,9 +139,12 @@ public class ProceduralGeneration : MonoBehaviour
             MAX_NUM_TWISTS = json["max_wall_twists"].ReadInt(MAX_NUM_TWISTS);
             maxPlacementAttempts = json["max_placement_attempts"].ReadInt(maxPlacementAttempts);
             gridDim = json["grid_size"].ReadFloat(gridDim);
+            use_mongodb_inter   = json["use_mongodb_inter"].ReadInt(use_mongodb_inter);
             // scaleRelatDict = new LitJson.JsonData(json["scale_relat_dict"]);
             //scaleRelatDict = json["scale_relat_dict"];
         }
+
+        Debug.Log("Get mongodb inter:" + use_mongodb_inter);
 
         _curRandSeed = UnityEngine.Random.Range (int.MinValue, int.MaxValue);
         if (shouldUseGivenSeed) {

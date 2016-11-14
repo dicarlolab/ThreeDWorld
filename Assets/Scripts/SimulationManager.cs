@@ -35,6 +35,7 @@ public static class SimulationManager
 	private static string logFileLocation = "output_log.txt";
 	private static string portNumber = "5556";
 	private static string hostAddress = getHostIP();
+        private static string portNumber_info = "5555";
 #endregion
 
 #region Properties
@@ -330,7 +331,7 @@ public static class SimulationManager
         myNetMessenger = GameObject.FindObjectOfType<NetMessenger>();
 		Debug.Log (portNumber);
         if (myNetMessenger != null)
-			myNetMessenger.Init(hostAddress, portNumber, shouldCreateTestClient,shouldCreateServer, debugNetworkMessages, 
+			myNetMessenger.Init(hostAddress, portNumber, portNumber_info, shouldCreateTestClient,shouldCreateServer, debugNetworkMessages, 
 				logSimpleTimeInfo, logDetailedTimeInfo, preferredImageFormat, saveDebugImageFiles, environmentScene);
         else
             Debug.LogWarning("Couldn't find a NetMessenger to Initialize!");
