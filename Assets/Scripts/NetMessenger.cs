@@ -36,6 +36,7 @@ public class NetMessenger : MonoBehaviour
     private NetMQMessage _lastMessage = new NetMQMessage();
     private NetMQMessage _lastMessageSent = new NetMQMessage();
     private NetMQMessage _lastMessage_info = new NetMQMessage();
+    private NetMQMessage _lastMessageSent_info = new NetMQMessage();
     private List<ResponseSocket> _createdSockets = new List<ResponseSocket>();
     private Dictionary<ResponseSocket, Avatar> _avatars = new Dictionary<ResponseSocket, Avatar>();
     private Dictionary<ResponseSocket, RequestSocket> _avatarClients = new Dictionary<ResponseSocket, RequestSocket>();
@@ -117,6 +118,7 @@ public class NetMessenger : MonoBehaviour
         // Start up connections
         _ctx = NetMQContext.Create();
         clientInfo = _ctx.CreateRequestSocket();
+        clientInfo.Options.Linger = TimeSpan.Zero;
         clientInfo.Connect("tcp://" + hostAddress + ":" + portNumber_info);
         CreateNewSocketConnection();
 
@@ -268,6 +270,11 @@ public class NetMessenger : MonoBehaviour
         }
 
         // Tmp for info server test --Chengxu
+        /*
+        _lastMessageSent_info.Clear();
+        _lastMessageSent_info.Append(CreateJoinMsgJson().ToJSON());
+        clientInfo.SendMultipartMessage(_lastMessageSent_info);
+        */
         clientInfo.SendFrame(CreateJoinMsgJson().ToJSON());
         Debug.Log("Test config info sent!");
         //_lastMessage_info = clientInfo.ReceiveMessage();

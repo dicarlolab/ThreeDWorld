@@ -145,6 +145,9 @@ public class ProceduralGeneration : MonoBehaviour
         }
 
         Debug.Log("Get mongodb inter:" + use_mongodb_inter);
+        if (use_mongodb_inter==1){
+
+        }
 
         _curRandSeed = UnityEngine.Random.Range (int.MinValue, int.MaxValue);
         if (shouldUseGivenSeed) {
