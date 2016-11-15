@@ -13,6 +13,7 @@ using UnityStandardAssets.CinematicEffects;
 [RequireComponent(typeof(Camera))]
 public class CameraStreamer : MonoBehaviour
 {
+    bool DEBUG = false;
 #region Data Structures
     // Simple class to make it more clear when passing picture image data
     public class CapturedImage
@@ -67,7 +68,8 @@ public class CameraStreamer : MonoBehaviour
     {
         if (_captureRequests.Contains(newRequest))
         {
-            Debug.Log("Already have a pending request");
+            if(DEBUG)
+                Debug.Log("Already have a pending request");
             return;
         }
         if (newRequest.shadersList == null)
@@ -83,10 +85,10 @@ public class CameraStreamer : MonoBehaviour
     // at the end of the frame(to avoid conflicts with the main rendering logic)
     public IEnumerator CaptureCoroutine()
     {
-        if (NetMessenger.logTimingInfo)
+        if (DEBUG && NetMessenger.logTimingInfo)
             Debug.LogFormat("Start CaptureCoroutine() {0}", Utils.GetTimeStamp());
         yield return new WaitForEndOfFrame();
-        if (NetMessenger.logTimingInfo)
+        if (DEBUG && NetMessenger.logTimingInfo)
             Debug.LogFormat("Reached end of frame {0}", Utils.GetTimeStamp());
         while(_captureRequests.Count > 0)
             ProcessCaptureRequest(_captureRequests.Dequeue());
@@ -120,8 +122,15 @@ public class CameraStreamer : MonoBehaviour
             request.capturedImages.Add(new CapturedImage());
 //            Debug.Log("Capture count now: " + request.capturedImages.Count);
         }
-        for(int i = 0; i < request.shadersList.Count; ++i)
-            request.capturedImages[i].pictureBuffer = TakeSnapshotNow(request.shadersList[i]).pictureBuffer;
+        for (int i = 0; i < request.shadersList.Count; ++i)
+        {
+            if(DEBUG)
+            {
+                Debug.Log("SHADER CALL");
+                Debug.Log(i);
+            }
+            request.capturedImages[i].pictureBuffer = TakeSnapshotNow(request.shadersList[i], i).pictureBuffer;
+        }
         if (request.callbackFunc != null)
             request.callbackFunc(request);
     }
@@ -184,19 +193,23 @@ public class CameraStreamer : MonoBehaviour
         }        
     }
 
-    private CapturedImage TakeSnapshotNow(Shader targetShader)
+    private CapturedImage TakeSnapshotNow(Shader targetShader, int shader_number)
     {
+        if(DEBUG)
+        {
+            Debug.Log("NAME SHADER");
+            if (targetShader != null)
+            { Debug.Log(targetShader.name); }
+        }
 
-        Debug.Log("NAME SHADER");
-        if(targetShader != null)
-        { Debug.Log(targetShader.name); }
 
-        if (NetMessenger.logTimingInfo)
+        if (DEBUG && NetMessenger.logTimingInfo)
             Debug.LogFormat("Start TakeShapshotNow() {0} {1}", (targetShader == null) ? "(null)" : targetShader.name, Utils.GetTimeStamp());
         // Create a new camera if we need to that we will be manually rendering
         if (_textureCam == null)
         {
-			Debug.Log ("Texture cam is null");
+            if(DEBUG)
+                Debug.Log ("Texture cam is null");
             GameObject newObj = new GameObject("Texture-Writing Camera");
             _textureCam = newObj.AddComponent<Camera>();
             _textureCam.enabled = false;
@@ -235,12 +248,49 @@ public class CameraStreamer : MonoBehaviour
                 testImage.texture = _textureCam.targetTexture;
         }
 
+
+        //if(shader_number == 0)
+        //{
+        //    targetCam.hdr = true;
+
+        //    // Tone Mapping
+        //    targetCam.gameObject.AddComponent<TonemappingColorGrading>();
+        //    var tonemapping = targetCam.gameObject.GetComponent<TonemappingColorGrading>().tonemapping; //ToneMappingSettings
+        //    tonemapping.enabled = true;
+        //    tonemapping.exposure = 2;
+        //    tonemapping.tonemapper = TonemappingColorGrading.Tonemapper.Photographic;
+        //    targetCam.gameObject.GetComponent<TonemappingColorGrading>().tonemapping = tonemapping;
+
+        //    // Eye Adaptation
+        //    var eyeadaptation = targetCam.gameObject.GetComponent<TonemappingColorGrading>().eyeAdaptation; //EyeAdaptationSettings
+        //    eyeadaptation.enabled = true;
+        //    targetCam.gameObject.GetComponent<TonemappingColorGrading>().eyeAdaptation = eyeadaptation;
+
+        //    // Depth of Field
+        //    targetCam.gameObject.AddComponent<DepthOfField>();
+
+        //    //Ambient Occlusion
+        //    targetCam.gameObject.AddComponent<AmbientOcclusion>();
+
+        //    //Screen Space Reflections
+        //    targetCam.renderingPath = RenderingPath.DeferredShading;
+        //    targetCam.gameObject.AddComponent<ScreenSpaceReflection>();
+        //}
+        //else if(shader_number == 1)
+        //{
+        //    Debug.Log("EFFECTS OFF");
+        //    Destroy(targetCam.gameObject.GetComponent<TonemappingColorGrading>());
+        //    Destroy(targetCam.gameObject.GetComponent<DepthOfField>());
+        //    Destroy(targetCam.gameObject.GetComponent<AmbientOcclusion>());
+        //    Destroy(targetCam.gameObject.GetComponent<ScreenSpaceReflection>());
+        //}
+
         // Call render with the appropriate shaders
         if (targetShader != null)
             targetCam.RenderWithShader(targetShader, null);
         else
             targetCam.Render();
-        if (NetMessenger.logTimingInfo)
+        if (DEBUG && NetMessenger.logTimingInfo)
             Debug.LogFormat("  Finished Rendering {0}", Utils.GetTimeStamp());
 
         // Copy and convert rendered image to PNG format as a byte array
@@ -256,7 +306,7 @@ public class CameraStreamer : MonoBehaviour
         _outPhoto.ReadPixels(new Rect(0, 0, pixWidth, pixHeight), 0, 0);
         _outPhoto.Apply();
 
-        if (NetMessenger.logTimingInfo)
+        if (DEBUG && NetMessenger.logTimingInfo)
             Debug.LogFormat("  Created texture(internal format) {0}", Utils.GetTimeStamp());
 
         CapturedImage retImage = new CapturedImage();
@@ -266,7 +316,7 @@ public class CameraStreamer : MonoBehaviour
             retImage.pictureBuffer = _outPhoto.EncodeToJPG();
         else
             EncodeBMP(ref retImage, _outPhoto, pixWidth, pixHeight);
-        if (NetMessenger.logTimingInfo)
+        if (DEBUG && NetMessenger.logTimingInfo)
             Debug.LogFormat("  Encoded image {0}", Utils.GetTimeStamp());
         return retImage;
     }

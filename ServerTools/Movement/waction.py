@@ -14,7 +14,7 @@ from curiosity.utils.io import (handle_message,
 				send_array,
 				recv_array)
 
-SCREEN_WIDTH = 640
+SCREEN_WIDTH = 256 #640
 
 BATCH_SIZE = 256
 MULTSTART = -1
