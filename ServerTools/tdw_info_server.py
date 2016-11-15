@@ -3,7 +3,7 @@ import zmq
 import json
 import subprocess
 import socket
-from pymongo import MongoClient
+import pymongo
 #import psutil
 import os
 from tabulate import tabulate
@@ -14,6 +14,7 @@ import fcntl
 import struct
 from optparse import OptionParser
 import time
+import numpy as np
 
 if __name__ == "__main__":
 
@@ -21,6 +22,9 @@ if __name__ == "__main__":
     parser.add_option("-p", "--port", dest="portn", default =5555, type=int)
 
     (options, args) = parser.parse_args()
+
+    conn = pymongo.MongoClient(port=22334)
+    coll = conn['synthetic_generative']['3d_models']
 
     port = str(options.portn)
     context = zmq.Context()
@@ -36,15 +40,56 @@ if __name__ == "__main__":
     print "host: " + host_address + " with port: " + port
     socket_self.bind("tcp://%s:%s" % (host_address, port))
 
+    default_inquery     = {'type': 'shapenet', 'version': 2, 'has_texture':True, 'complexity': {'$exists': True}, 'center_pos': {'$exists': True}, 'boundb_pos': {'$exists': True}, 'isLight': {'$exists': True}, 'anchor_type': {'$exists': True}, 'aws_address': {'$exists': True}}
+    test_coll = coll.find(default_inquery)
+    default_coll    = list(test_coll[:])
+
     while True:
         #  Wait for next request from client
         print "Waiting for info: "
         message = socket_self.recv_json()
         print "Received request: ", message
         #time.sleep (1)  
-        time.sleep(0.1)
-        test_dict   = {"test": 0}
-        socket_self.send_json(test_dict)
+        #time.sleep(0.1)
+        #test_dict   = {"test": 0}
+
+        return_dict     = {}
+        #return_dict     = {"test": 0}
+        for key_value in message:
+            now_request     = message[key_value]
+            if (not type(now_request['find_argu']) is dict) and (now_request['find_argu'] == 'default'):
+                print("Using default inquery!")
+                #test_coll = coll.find(default_inquery)
+                test_coll   = default_coll
+            else:
+                test_coll = coll.find(now_request['find_argu'])
+                test_coll       = list(test_coll[:])
+
+            num_ava         = len(test_coll)
+            if now_request['choose_mode']=='all':
+                for indx_tmp in range(num_ava):
+                    now_indx_dict   = len(return_dict)
+                    return_dict[now_indx_dict]   = test_coll[indx_tmp]
+                    if '_id' in return_dict[now_indx_dict]:
+                        return_dict[now_indx_dict].pop('_id')
+
+            if now_request['choose_mode']=='random':
+                if 'seed' in now_request['choose_argu']:
+                    rand_seed   = now_request['choose_argu']['seed']
+                else:
+                    rand_seed   = 0
+
+                np.random.seed(rand_seed)
+
+                for indx_tmp in np.random.choice(range(num_ava), now_request['choose_argu']['number']):
+                    now_indx_dict   = len(return_dict)
+                    return_dict[now_indx_dict]   = test_coll[indx_tmp]
+                    if '_id' in return_dict[now_indx_dict]:
+                        return_dict[now_indx_dict].pop('_id')
+
+            #return_dict[0]  = test_coll[0]
+            #return_dict[0].pop('_id')
+
+        print(len(return_dict))
+        socket_self.send_json(return_dict)
         #socket_self.send("World from %s" % port)
-
-

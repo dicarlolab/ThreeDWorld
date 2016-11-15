@@ -269,12 +269,11 @@ public class NetMessenger : MonoBehaviour
                 CreateTestClient(server);
         }
 
-        // Tmp for info server test --Chengxu
+        // Tmp codes for info server test --Chengxu
         /*
         _lastMessageSent_info.Clear();
         _lastMessageSent_info.Append(CreateJoinMsgJson().ToJSON());
         clientInfo.SendMultipartMessage(_lastMessageSent_info);
-        */
         clientInfo.SendFrame(CreateJoinMsgJson().ToJSON());
         Debug.Log("Test config info sent!");
         //_lastMessage_info = clientInfo.ReceiveMessage();
@@ -286,7 +285,7 @@ public class NetMessenger : MonoBehaviour
             JsonData jsonData = _lastMessage_info.ReadJson(out msgHeader);
             Debug.Log("To Json: " + jsonData);
         }
-        //clientInfo.Close();
+        */
 
 		/**
         else
@@ -304,6 +303,25 @@ public class NetMessenger : MonoBehaviour
         client.Connect("tcp://" + hostAddress + ":" + portNumber);
         _avatarClients[server] = client;
         client.SendFrame(CreateJoinMsgJson().ToJSON());
+    }
+    #endregion
+
+    #region For mongodb intergration
+    public JsonData SendAndReceiveMongoDB(JsonData jsonData){
+        clientInfo.SendFrame(jsonData.ToJSON());
+        Debug.Log("Message info sent!");
+        //_lastMessage_info = clientInfo.ReceiveMessage();
+        TimeSpan timeout = TimeSpan.FromSeconds(30);
+        if (clientInfo.TryReceiveMultipartMessage(timeout, ref _lastMessage_info)){
+        //if (clientInfo.TryReceiveMultipartMessage(ref _lastMessage_info)){
+            Debug.Log("Receive info: ");
+
+            string msgHeader = _lastMessage_info.First.ConvertToString();
+            JsonData jsonData_ = _lastMessage_info.ReadJson(out msgHeader);
+            Debug.Log("To Json: " + jsonData_);
+            return jsonData_;
+        }
+        return CreateMsgJson("Noback");
     }
     #endregion
 

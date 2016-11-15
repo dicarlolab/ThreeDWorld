@@ -44,6 +44,7 @@ public static class SimulationManager
             return framesToProcess > 0;
         }
     }
+
     
     public static float timeElapsed {
         get {
@@ -73,6 +74,11 @@ public static class SimulationManager
 	public static void setArgsConfig(JsonData jsonData) {
 		_readJsonArgs = jsonData;
 	}
+
+        public static JsonData sendMongoDBsearch(JsonData jsonData){
+            Debug.Log("I am in Sending message!" + jsonData.ToJSON());
+            return myNetMessenger.SendAndReceiveMongoDB(jsonData);
+        }
 
 	private static string getHostIP() {
 		IPHostEntry host;
