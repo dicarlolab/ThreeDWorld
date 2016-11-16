@@ -19,7 +19,7 @@
 
 ## Queue
 
-At the beginning of our network training programs, we need a way to connect to the environment server and send and receive our messages back and forth. This is done by `ServerTools/tdq_queue.py` which manages all the instances of the ThreeDWorlds as we make. This script will be bound to port number 23402 (by default) on any given machine that we are using to run environments.
+At the beginning of our network training programs, we need a way to connect to the environment server and send and receive our messages back and forth. This is done by `ServerTools/tdw_queue.py` which manages all the instances of the ThreeDWorlds as we make. This script will be bound to port number 23402 (by default) on any given machine that we are using to run environments.
 
 To make things more straightforward, use `ClientTools/tdw_client.py` which will auto-connect you to the queue, and allow you to use a small selection of commands to either examine the current processes running on the node, reconnect to an environment process, or create a new process.
 
@@ -333,7 +333,7 @@ After uploading, one could append the http url to "Assets/PrefabDatabase/list\_a
 
 #### Setting up assetbundles
 
-This action would register all the assetbundles under _Assets/PrefabDatabase/AssetBundles/Separated/_ and remote assetbundles listed in "Assets/PrefabDatabase/list\_aws.txt". For only loading the remote assetbundles lazily, please checkout to branch cmdRun and then using setting up assetbundles lazily (see below for instructions). 
+This action would register all the assetbundles under _Assets/PrefabDatabase/AssetBundles/Separated/_ and remote assetbundles listed in "Assets/PrefabDatabase/list\_aws.txt". For only loading the remote assetbundles lazily, please use setting up assetbundles lazily (see below for instructions). 
 
 Just clicking *Prefab Database/Setup Bundles* (if you also want to load the remote assetbundles, please click "Play" before setting up, as Loadfromcacheordownload only works in Play mode). Unity would examine all available bundle files under _Assets/PrefabDatabase/AssetBundles/Separated/_ and remote bundle files from "Assets/PrefabDatabase/list\_aws.txt". **NOTE:** All the assetbundles would be loaded for checking and taking needed information. So this process could be slow depending on how many bundle files there (especially the remote bundle files!). The list of files would be stored in "prefabs" of _Assets/ScenePrefabs/PrefabDatabase_.
 
@@ -343,7 +343,7 @@ This action would register the assetbunldes at AWS S3 listed in "Assets/PrefabDa
 
 Just clicking *Prefab Database/Setup Bundles lazily*. Unity would examine all remote bundle files from "Assets/PrefabDatabase/list\_aws.txt". All the assetbundles would **NOT** be loaded until they are actually used for procedural generation. The first time of running might need to download lots of models which makes the program take some time. (~10 minutes for 500 models).
 
-The optional lists of remote assetbundels can be found under ServerTools (in cmdRun branch currently). Just replace "Assets/PrefabDatabase/list\_aws.txt" with them if wanted.
+The optional lists of remote assetbundels can be found under ServerTools. Just replace "Assets/PrefabDatabase/list\_aws.txt" with them if wanted.
 
 # License
 
