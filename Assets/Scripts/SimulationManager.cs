@@ -35,6 +35,7 @@ public static class SimulationManager
 	private static string logFileLocation = "output_log.txt";
 	private static string portNumber = "5556";
 	private static string hostAddress = getHostIP();
+        private static string portNumber_info = "5555";
 #endregion
 
 #region Properties
@@ -43,6 +44,7 @@ public static class SimulationManager
             return framesToProcess > 0;
         }
     }
+
     
     public static float timeElapsed {
         get {
@@ -72,6 +74,11 @@ public static class SimulationManager
 	public static void setArgsConfig(JsonData jsonData) {
 		_readJsonArgs = jsonData;
 	}
+
+        public static JsonData sendMongoDBsearch(JsonData jsonData){
+            Debug.Log("I am in Sending message!" + jsonData.ToJSON());
+            return myNetMessenger.SendAndReceiveMongoDB(jsonData);
+        }
 
 	private static string getHostIP() {
 		IPHostEntry host;
@@ -330,7 +337,7 @@ public static class SimulationManager
         myNetMessenger = GameObject.FindObjectOfType<NetMessenger>();
 		Debug.Log (portNumber);
         if (myNetMessenger != null)
-			myNetMessenger.Init(hostAddress, portNumber, shouldCreateTestClient,shouldCreateServer, debugNetworkMessages, 
+			myNetMessenger.Init(hostAddress, portNumber, portNumber_info, shouldCreateTestClient,shouldCreateServer, debugNetworkMessages, 
 				logSimpleTimeInfo, logDetailedTimeInfo, preferredImageFormat, saveDebugImageFiles, environmentScene);
         else
             Debug.LogWarning("Couldn't find a NetMessenger to Initialize!");

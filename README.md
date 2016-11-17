@@ -345,6 +345,18 @@ Just clicking *Prefab Database/Setup Bundles lazily*. Unity would examine all re
 
 The optional lists of remote assetbundels can be found under ServerTools. Just replace "Assets/PrefabDatabase/list\_aws.txt" with them if wanted.
 
+### Mongodb Integration
+
+The list of assetbundles on remote server and related information can be fetched directly from MongoDB database on dicarlo5 everytime a new scene is created now (currently only in branch mongodb\_inter). Two steps needed as below:
+
+#### Run the mongodb python server
+
+Run "Python tdw\_info\_server.py" under "ServerTools" before hit play or run your binary files and keep it open. Allow around 10 seconds to load initial database and see feedback of "Waiting for info:".
+
+#### Add configuration into the client
+
+See "tdw\_editor\_mode\_client.py" for example. Set "use\_mongodb\_inter" to be 1 and "mongodb\_items" to be the lists of desired search patterns and required number of assetbundles (the information of assetbundels would be concatenated to get the final list). You can either define the search pattern yourself (set "find\_argu" to be the arguments sent to find function of pymongo) or use the default search pattern (which would return all available assetbundles of Shapenet.V2, ~30k). You can either choose to load all of the assetbundles returned by your search patter (set "choose\_mode" to be "all") or randomly choose part of them (define your random seed through "seed" and your number through "number" both in "choose\_argu").
+
 # License
 
 Apache 2.0

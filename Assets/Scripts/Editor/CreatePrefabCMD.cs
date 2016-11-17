@@ -22,6 +22,54 @@ public class CreatePrefabCMD
             return null;
         }
 
+
+
+    public static void LoadInfoFromBundle(){
+        using (StreamWriter sw = new StreamWriter(GetArg ("-outputFile"))) 
+        {
+            /*
+            // Add some text to the file.
+            sw.Write("This is the ");
+            sw.WriteLine("header for the file.");
+            sw.WriteLine("-------------------");
+            // Arbitrary objects can also be written to the file.
+            sw.Write("The date is: ");
+            sw.WriteLine(DateTime.Now);
+            */
+
+            //sw.Write("This is the Test file");
+            string tmp_asset_path = GetArg ("-inputDir");
+            string[] dir = Directory.GetFiles(tmp_asset_path, "*.bundle");
+            foreach (string d_tmp in dir) {
+                //sw.Write("This is line for ");
+                //sw.WriteLine(d_tmp);
+                string data_new_path = d_tmp;
+                sw.Write(d_tmp.Remove(0, d_tmp.LastIndexOf ('/')+1));
+                sw.Write(",");
+                Debug.Log(data_new_path);
+
+                //allSelected.Add (AssetDatabase.LoadMainAssetAtPath(data_new_path) as GameObject, data_new_path);
+                AssetBundle loadedAssetBundle = AssetBundle.LoadFromFile (data_new_path);
+                if (loadedAssetBundle == null) {
+                    Debug.Log ("Failed to load AssetBundle!");
+                    continue;
+                }
+                GameObject gObj = loadedAssetBundle.LoadAsset<GameObject> (loadedAssetBundle.GetAllAssetNames () [0]);
+                GeneratablePrefab[] prefab = gObj.GetComponents<GeneratablePrefab> ();
+                loadedAssetBundle.Unload (false);
+                sw.Write(prefab[0].myComplexity);
+                sw.Write(",");
+                sw.Write(prefab[0].myBounds);
+                sw.Write(",");
+                sw.Write(prefab[0].isLight);
+                sw.Write(",");
+                sw.Write(prefab[0].attachMethod);
+                sw.Write("\n");
+            }
+
+        }
+    }
+
 	public static void CreatePrefabFromModel ()
 	{
 		Dictionary<GameObject, string> allSelected = new Dictionary<GameObject, string> ();

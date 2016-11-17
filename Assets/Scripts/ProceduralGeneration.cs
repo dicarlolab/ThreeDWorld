@@ -41,6 +41,7 @@ public class ProceduralGeneration : MonoBehaviour
     public List<string> disabledItems = new List<string>();
     public List<string> permittedItems = new List<string>();
     public float gridDim = 0.4f;
+    public int use_mongodb_inter = 0; // 0 is for not, 1 is for using
     public bool shouldUseStandardizedSize = false;
     public Vector3 standardizedSize = Vector3.one;
     public bool shouldUseGivenSeed = false;
@@ -138,8 +139,46 @@ public class ProceduralGeneration : MonoBehaviour
             MAX_NUM_TWISTS = json["max_wall_twists"].ReadInt(MAX_NUM_TWISTS);
             maxPlacementAttempts = json["max_placement_attempts"].ReadInt(maxPlacementAttempts);
             gridDim = json["grid_size"].ReadFloat(gridDim);
+            use_mongodb_inter   = json["use_mongodb_inter"].ReadInt(use_mongodb_inter);
             // scaleRelatDict = new LitJson.JsonData(json["scale_relat_dict"]);
             //scaleRelatDict = json["scale_relat_dict"];
+        }
+
+        Debug.Log("Get mongodb inter:" + use_mongodb_inter);
+        if (use_mongodb_inter==1){
+            LitJson.JsonData config_for_prefabs = SimulationManager.sendMongoDBsearch(json["mongodb_items"]);
+            //Debug.Log("Config for prefabs:" + config_for_prefabs.ToJSON());
+            int count_prefabs   = config_for_prefabs.Count;
+            Debug.Log("Config for prefabs:" + count_prefabs);
+            //Debug.Log("Config for prefabs:" + config_for_prefabs.);
+            //foreach (LitJson.JsonData elem in config_for_prefabs as IList){
+            for (int indx_now=0; indx_now<count_prefabs; indx_now++){
+                //Debug.Log("Current item: " + elem.ToJSON());
+                //u'version': 2, u'anchor_type': u'Ground', u'synset': [u'n02924116'], u'has_texture': True, u'boundb_pos': [0.1, 0.1, 0.5], u'center_pos': [0.0, 0.0, 0.0], u'upright': [0.0, 0.0, 1.0], u'aws_address': u'http://threedworld.s3.amazonaws.com/1004ae81238886674d44f5db04bf14b8.bundle', u'complexity': 5, u'isLight': u'False', u'source': u'3dw', u'shapenet_synset': u'n02924116', u'front': [-1.0, 0.0, 0.0], u'_id': ObjectId('57b31b77f8b11f6bc2b97af9'), u'type': u'shapenet', u'id': u'1004ae81238886674d44f5db04bf14b8', u'name': u'Tour bus concept purple'
+                LitJson.JsonData current_item    = config_for_prefabs[indx_now.ToString()];
+
+                PrefabDatabase.PrefabInfo newInfo = new PrefabDatabase.PrefabInfo();
+                newInfo.fileName = current_item["aws_address"].ToJSON();
+                newInfo.fileName = newInfo.fileName.Replace("\"", "");
+                newInfo.complexity = current_item["complexity"].ReadInt(-1);
+                newInfo.bounds.center   = current_item["center_pos"].ReadVector3(new Vector3(0f, 0f, 0f));
+                newInfo.bounds.extents  = current_item["boundb_pos"].ReadVector3(new Vector3(0f, 0f, 0f));
+                //newInfo.loaded          = 0;
+                Debug.Log("New info:" + newInfo.bounds + newInfo.complexity + newInfo.fileName);
+                //Debug.Log(newInfo.fileName[0]);
+                //Debug.Log(newInfo);
+                availablePrefabs.Add(newInfo);
+
+                //newInfo.bounds = prefab.myBounds;
+                //newInfo.isLight = prefab.isLight;
+                //newInfo.anchorType = prefab.attachMethod;
+            }
+            Debug.Log(availablePrefabs.Count);
+            /*
+            foreach(string itemName in config_for_prefabs){
+                Debug.Log("Item " + itemName + ":" + config_for_prefabs[itemName].ToJSON());
+            }
+            */
         }
 
         _curRandSeed = UnityEngine.Random.Range (int.MinValue, int.MaxValue);
@@ -166,8 +205,10 @@ public class ProceduralGeneration : MonoBehaviour
             Debug.Log("Null database!" + database_list);
         }
         */
-        PrefabDatabase database = GameObject.FindObjectOfType<PrefabDatabase>();
-        availablePrefabs = database.prefabs;
+        if (use_mongodb_inter==0) {
+            PrefabDatabase database = GameObject.FindObjectOfType<PrefabDatabase>();
+            availablePrefabs = database.prefabs;
+        }
 
         Debug.Log (availablePrefabs.Count);
 
@@ -575,6 +616,7 @@ public class ProceduralGeneration : MonoBehaviour
         if (info.loaded==0) {
             // Load it now
             Debug.Log("From http loaded!");
+            Debug.Log(info.fileName);
             var www = WWW.LoadFromCacheOrDownload (info.fileName, 0);
             var loadedAssetBundle = www.assetBundle;
             string[] assetList = loadedAssetBundle.GetAllAssetNames ();

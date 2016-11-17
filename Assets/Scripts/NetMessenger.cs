@@ -19,6 +19,7 @@ public class NetMessenger : MonoBehaviour
 	public Avatar avatarPrefab;
     public string portNumber = "5556";
     public string hostAddress = "192.168.1.106";
+    public string portNumber_info = "5555";
     public bool shouldCreateTestClient = false;
     public bool shouldCreateServer = true;
     public bool debugNetworkMessages = false;
@@ -27,12 +28,15 @@ public class NetMessenger : MonoBehaviour
     public bool saveDebugImageFiles = false;
     public bool usePngFiles = false;
     public RequestSocket clientSimulation = null;
+    public RequestSocket clientInfo = null;
 	public string environmentScene = "Empty";
 
     private DateTime _timeForLastMsg;
     private NetMQContext _ctx;
     private NetMQMessage _lastMessage = new NetMQMessage();
     private NetMQMessage _lastMessageSent = new NetMQMessage();
+    private NetMQMessage _lastMessage_info = new NetMQMessage();
+    private NetMQMessage _lastMessageSent_info = new NetMQMessage();
     private List<ResponseSocket> _createdSockets = new List<ResponseSocket>();
     private Dictionary<ResponseSocket, Avatar> _avatars = new Dictionary<ResponseSocket, Avatar>();
     private Dictionary<ResponseSocket, RequestSocket> _avatarClients = new Dictionary<ResponseSocket, RequestSocket>();
@@ -78,7 +82,7 @@ public class NetMessenger : MonoBehaviour
         SimulationManager.Init();
     }
 
-	public void Init(string hostAddress, string portNumber, bool shouldCreateTestClient, bool shouldCreateServer, bool debugNetworkMessages,
+	public void Init(string hostAddress, string portNumber, string portNumber_info, bool shouldCreateTestClient, bool shouldCreateServer, bool debugNetworkMessages,
 		bool logSimpleTimingInfo, bool logDetailedTimeInfo, string preferredImageFormat, bool saveDebugImageFiles, string environmentScene)
     {
 		this.avatarPrefab = Resources.Load<Avatar>("Prefabs/Avatar");
@@ -91,6 +95,7 @@ public class NetMessenger : MonoBehaviour
 
         // Read port number
 		this.portNumber = portNumber;
+                this.portNumber_info = portNumber_info;
 		this.hostAddress = hostAddress;
 		this.shouldCreateTestClient = shouldCreateTestClient;
 		this.shouldCreateServer = shouldCreateServer;
@@ -100,6 +105,7 @@ public class NetMessenger : MonoBehaviour
 		CameraStreamer.preferredImageFormat = preferredImageFormat; // defaults to bmp
         this.saveDebugImageFiles = saveDebugImageFiles; // defaults to False
 		this.environmentScene = environmentScene; // defaults to "Empty"
+
 
 		// Load Environment Scene
 		if (shouldCreateServer) {
@@ -111,6 +117,9 @@ public class NetMessenger : MonoBehaviour
 
         // Start up connections
         _ctx = NetMQContext.Create();
+        clientInfo = _ctx.CreateRequestSocket();
+        clientInfo.Options.Linger = TimeSpan.Zero;
+        clientInfo.Connect("tcp://" + hostAddress + ":" + portNumber_info);
         CreateNewSocketConnection();
 
 		Debug.Log ("Net Messenger Initialized!");
@@ -226,6 +235,14 @@ public class NetMessenger : MonoBehaviour
             clientSimulation.Dispose();
             clientSimulation = null;
         }
+
+        if (clientInfo != null)
+        {
+            clientInfo.Close();
+            clientInfo.Dispose();
+            clientInfo = null;
+        }
+
         _avatars.Clear();
         _createdSockets.Clear();
         _avatarClients.Clear();
@@ -252,6 +269,24 @@ public class NetMessenger : MonoBehaviour
                 CreateTestClient(server);
         }
 
+        // Tmp codes for info server test --Chengxu
+        /*
+        _lastMessageSent_info.Clear();
+        _lastMessageSent_info.Append(CreateJoinMsgJson().ToJSON());
+        clientInfo.SendMultipartMessage(_lastMessageSent_info);
+        clientInfo.SendFrame(CreateJoinMsgJson().ToJSON());
+        Debug.Log("Test config info sent!");
+        //_lastMessage_info = clientInfo.ReceiveMessage();
+        TimeSpan timeout = TimeSpan.FromMilliseconds(1000);
+        if (clientInfo.TryReceiveMultipartMessage(timeout, ref _lastMessage_info)){
+            Debug.Log("Receive info: " + _lastMessage_info);
+
+            string msgHeader = _lastMessage_info.First.ConvertToString();
+            JsonData jsonData = _lastMessage_info.ReadJson(out msgHeader);
+            Debug.Log("To Json: " + jsonData);
+        }
+        */
+
 		/**
         else
         {
@@ -268,6 +303,25 @@ public class NetMessenger : MonoBehaviour
         client.Connect("tcp://" + hostAddress + ":" + portNumber);
         _avatarClients[server] = client;
         client.SendFrame(CreateJoinMsgJson().ToJSON());
+    }
+    #endregion
+
+    #region For mongodb intergration
+    public JsonData SendAndReceiveMongoDB(JsonData jsonData){
+        clientInfo.SendFrame(jsonData.ToJSON());
+        Debug.Log("Message info sent!");
+        //_lastMessage_info = clientInfo.ReceiveMessage();
+        TimeSpan timeout = TimeSpan.FromSeconds(30);
+        if (clientInfo.TryReceiveMultipartMessage(timeout, ref _lastMessage_info)){
+        //if (clientInfo.TryReceiveMultipartMessage(ref _lastMessage_info)){
+            Debug.Log("Receive info: ");
+
+            string msgHeader = _lastMessage_info.First.ConvertToString();
+            JsonData jsonData_ = _lastMessage_info.ReadJson(out msgHeader);
+            Debug.Log("To Json: " + jsonData_);
+            return jsonData_;
+        }
+        return CreateMsgJson("Noback");
     }
     #endregion
 
