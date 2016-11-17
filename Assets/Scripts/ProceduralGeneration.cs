@@ -42,6 +42,8 @@ public class ProceduralGeneration : MonoBehaviour
     public List<string> permittedItems = new List<string>();
     public float gridDim = 0.4f;
     public int use_mongodb_inter = 0; // 0 is for not, 1 is for using
+    public int use_cache_self   = 0; // 0 is for not (using Loadfromcacheordownload, 1 is for using)
+    public string cache_folder  = "/Users/chengxuz/3Dworld/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/file_cache_test/";
     public bool shouldUseStandardizedSize = false;
     public Vector3 standardizedSize = Vector3.one;
     public bool shouldUseGivenSeed = false;
@@ -140,6 +142,8 @@ public class ProceduralGeneration : MonoBehaviour
             maxPlacementAttempts = json["max_placement_attempts"].ReadInt(maxPlacementAttempts);
             gridDim = json["grid_size"].ReadFloat(gridDim);
             use_mongodb_inter   = json["use_mongodb_inter"].ReadInt(use_mongodb_inter);
+            use_cache_self      = json["use_cache_self"].ReadInt(use_cache_self);
+            cache_folder        = json["cache_folder"].ReadString(cache_folder);
             // scaleRelatDict = new LitJson.JsonData(json["scale_relat_dict"]);
             //scaleRelatDict = json["scale_relat_dict"];
         }
@@ -158,13 +162,19 @@ public class ProceduralGeneration : MonoBehaviour
                 LitJson.JsonData current_item    = config_for_prefabs[indx_now.ToString()];
 
                 PrefabDatabase.PrefabInfo newInfo = new PrefabDatabase.PrefabInfo();
-                newInfo.fileName = current_item["aws_address"].ToJSON();
-                newInfo.fileName = newInfo.fileName.Replace("\"", "");
+
+                newInfo.fileName = current_item["aws_address"].ReadString(newInfo.fileName);
+                //newInfo.fileName = newInfo.fileName.Replace("\"", "");
                 newInfo.complexity = current_item["complexity"].ReadInt(-1);
                 newInfo.bounds.center   = current_item["center_pos"].ReadVector3(new Vector3(0f, 0f, 0f));
                 newInfo.bounds.extents  = current_item["boundb_pos"].ReadVector3(new Vector3(0f, 0f, 0f));
+
+                newInfo._id_str         = current_item["_id_str"].ReadString(newInfo._id_str);
+                newInfo.aws_version     = current_item["aws_version"].ReadString(newInfo.aws_version);
+
                 //newInfo.loaded          = 0;
                 Debug.Log("New info:" + newInfo.bounds + newInfo.complexity + newInfo.fileName);
+                Debug.Log("To cache into: " + newInfo._id_str + "_" + newInfo.aws_version + ".bundle");
                 //Debug.Log(newInfo.fileName[0]);
                 //Debug.Log(newInfo);
                 availablePrefabs.Add(newInfo);
@@ -613,6 +623,7 @@ public class ProceduralGeneration : MonoBehaviour
         int temp_rand_index     = _rand.Next(0, prefabList.Count);
         PrefabDatabase.PrefabInfo info = prefabList[temp_rand_index];
 
+        // Deprecated
         if (info.loaded==0) {
             // Load it now
             Debug.Log("From http loaded!");
@@ -701,8 +712,28 @@ public class ProceduralGeneration : MonoBehaviour
 //            GameObject newPrefab = Resources.Load<GameObject>(info.
             GameObject newPrefab;
             if (info.fileName.ToLowerInvariant().Contains("http://")) {
-                Debug.Log("From http");
-                newPrefab = PrefabDatabase.LoadAssetFromBundleWWW(info.fileName);
+                if (use_cache_self==1) {
+                    Debug.Log("From cache!");
+                    //StartCoroutine(PrefabDatabase.LoadAssetFromBundleWWW_cached_self(info.fileName));
+                    //newPrefab = PrefabDatabase.LoadAssetFromBundleWWW(info.fileName);
+                    //newPrefab = PrefabDatabase.LoadAssetFromBundleWWW_cache_in_file(info.fileName, info._id_str, info.aws_version, cache_folder);
+                    //
+                    //
+                    //I need to do this here becuase StartCoroutine can not be correctly used in PrefabDatabase
+                    string cache_fileName   = cache_folder + info._id_str + "_" + info.aws_version + ".bundle";
+                    newPrefab   = PrefabDatabase.LoadAssetFromBundle(cache_fileName);
+                    if (newPrefab==null){
+                        // Loading it twice now, might influence the efficiency, TODO: load only once
+                        // Currently the WWW can not be wrote when used for assetbundle
+
+                        Debug.Log("Build the cache!");
+                        StartCoroutine(PrefabDatabase.LoadAssetFromBundleWWW_cached_self(info.fileName, cache_fileName));
+                        newPrefab = PrefabDatabase.LoadAssetFromBundleWWW(info.fileName);
+                    }
+                } else {
+                    Debug.Log("From http");
+                    newPrefab = PrefabDatabase.LoadAssetFromBundleWWW(info.fileName);
+                }
             } else {
                 newPrefab = PrefabDatabase.LoadAssetFromBundle(info.fileName);
             }

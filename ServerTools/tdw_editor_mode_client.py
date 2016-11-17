@@ -32,6 +32,8 @@ def loop():
                 "scale_relat_dict": {"http://threedworld.s3.amazonaws.com/46e777a46aa76681f4fb4dee5181bee.bundle": {"option": "Multi_size", "scale": 4}},  # option: "Absol_size", "Fract_room", "Multi_size"; TODO: implement "Fract_room"
                 "use_mongodb_inter": 1,
                 "mongodb_items": {"shape_cons": {"find_argu": "default", "choose_mode": "random", "choose_argu": {"number": 100, "seed": 0}}},
+                "use_cache_self": 1,
+                "cache_self_directory": "/Users/chengxuz/3Dworld/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/file_cache_test/",
 		"complexity": 2000,
 		"num_ceiling_lights": 4,
 		"minimum_stacking_base_objects": 5,

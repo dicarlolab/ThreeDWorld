@@ -23,6 +23,6 @@ for i in range(100):
     #print(test_coll[i]['id'])
     test_tmp_   = test_tmp[i]
     print(i)
-#print(test_tmp[0])
 print("--- %s seconds ---" % (time.time() - start_time))
+print(test_tmp[0])
 #print(test_coll[0])

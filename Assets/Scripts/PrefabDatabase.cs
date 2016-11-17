@@ -26,6 +26,8 @@ public class PrefabDatabase : MonoBehaviour
 		// for option of how scale should happen
 		public float dynamic_scale = 1f;
                 public int loaded = 1; // 1 means already loaded, otherwise would load it again (just for remote assetbundles)
+                public string aws_version = "0";
+                public string _id_str = "";
 		// for the dynamic scale come with option
 	}
 
@@ -107,8 +109,22 @@ public class PrefabDatabase : MonoBehaviour
 		return prefab;
 	}
 
+        //public static GameObject LoadAssetFromBundleWWW_cached_self (string fileName){
+        public static IEnumerator LoadAssetFromBundleWWW_cached_self (string fileName, string cachedAssetBundle){
+            WWW www = new WWW(fileName);
+            yield return www;
+
+            //string cachedAssetBundle = "/Users/chengxuz/3Dworld/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/file_cache_test/" + fileName.Remove(0, fileName.LastIndexOf ('/')); 
+            System.IO.FileStream cache = new System.IO.FileStream(cachedAssetBundle, System.IO.FileMode.Create);
+
+            cache.Write(www.bytes, 0, www.bytes.Length);
+            cache.Close();
+
+        }
+
 	public static GameObject LoadAssetFromBundleWWW (string fileName)
 	{
+                // 0 is the version number and not used currently
 		var www = WWW.LoadFromCacheOrDownload (fileName, 0);
 
 		if (!String.IsNullOrEmpty (www.error)) {
@@ -121,6 +137,24 @@ public class PrefabDatabase : MonoBehaviour
 
 		return prefab;
 	}
+
+        // Not used now!
+        /*
+        public static GameObject LoadAssetFromBundleWWW_cache_in_file (string fileName, string _id_str, string aws_version, string cache_folder){
+            string cache_fileName   = cache_folder + _id_str + "_" + aws_version + ".bundle";
+            GameObject try_prefab   = LoadAssetFromBundle(cache_fileName);
+            if (try_prefab==null){
+                // Loading it twice now, might influence the efficiency, TODO: load only once
+                // Currently the WWW can not be wrote when used for assetbundle
+
+                Debug.Log("Build the cache!");
+                StartCoroutine(LoadAssetFromBundleWWW_cached_self(fileName, cache_fileName));
+                try_prefab = LoadAssetFromBundleWWW(fileName);
+            }
+
+            return try_prefab;
+        }
+        */
 
 	#if UNITY_EDITOR
 	// Setup a new prefab object from a model
@@ -521,6 +555,7 @@ public class PrefabDatabase : MonoBehaviour
 		}
 
 		// Test code for Loadfromcacheordownload
+                // Deprecated
 
 
 		string list_aws_filename = "Assets/PrefabDatabase/list_aws.txt";

@@ -44,6 +44,16 @@ if __name__ == "__main__":
     test_coll = coll.find(default_inquery)
     default_coll    = list(test_coll[:])
 
+    def inc_one_item(test_coll, return_dict, indx_tmp):
+        now_indx_dict   = len(return_dict)
+        return_dict[now_indx_dict]   = test_coll[indx_tmp]
+        if '_id' in return_dict[now_indx_dict]:
+            # Used for string of _id
+            return_dict[now_indx_dict]['_id_str']       = str(return_dict[now_indx_dict].pop('_id'))
+        if 'aws_version' not in return_dict[now_indx_dict]:
+            # Use this for update aws file and caching it correctly
+            return_dict[now_indx_dict]['aws_version']   = '0'
+
     while True:
         #  Wait for next request from client
         print "Waiting for info: "
@@ -68,10 +78,7 @@ if __name__ == "__main__":
             num_ava         = len(test_coll)
             if now_request['choose_mode']=='all':
                 for indx_tmp in range(num_ava):
-                    now_indx_dict   = len(return_dict)
-                    return_dict[now_indx_dict]   = test_coll[indx_tmp]
-                    if '_id' in return_dict[now_indx_dict]:
-                        return_dict[now_indx_dict].pop('_id')
+                    inc_one_item(test_coll, return_dict, indx_tmp)
 
             if now_request['choose_mode']=='random':
                 if 'seed' in now_request['choose_argu']:
@@ -82,10 +89,7 @@ if __name__ == "__main__":
                 np.random.seed(rand_seed)
 
                 for indx_tmp in np.random.choice(range(num_ava), now_request['choose_argu']['number']):
-                    now_indx_dict   = len(return_dict)
-                    return_dict[now_indx_dict]   = test_coll[indx_tmp]
-                    if '_id' in return_dict[now_indx_dict]:
-                        return_dict[now_indx_dict].pop('_id')
+                    inc_one_item(test_coll, return_dict, indx_tmp)
 
             #return_dict[0]  = test_coll[0]
             #return_dict[0].pop('_id')
