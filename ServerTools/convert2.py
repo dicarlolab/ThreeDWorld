@@ -6,7 +6,9 @@ from yamutils import basic
 
 divide_in   = 1
 #VHACD = '/home/yamins/v-hacd/build/linux2/test/testVHACD'
-VHACD       = '/Users/chengxuz/3Dworld/v-hacd/build/mac/test/testVHACD'
+#VHACD       = '/Users/chengxuz/3Dworld/v-hacd/build/mac/test/testVHACD'
+#VHACD       = '/Users/chengxuz/3Dworld/v-hacd/build/mac/test/testVHACD'
+VHACD       = '/home/chengxuz/ThreeDworld_related/v-hacd/build/linux2/test/testVHACD'
 obj_dir     = ''
 
 def do_it(ind):
@@ -14,7 +16,8 @@ def do_it(ind):
     cmdtmpl1 = '%s --input "%s" --output "%s" --log log.txt --resolution 500000 --maxNumVerticesPerCH 64' 
     cmdtmpl2 = '%s --input "%s" --output "%s" --log log.txt --resolution 16000000 --concavity 0.001 --maxNumVerticesPerCH 64 --minVolumePerCH 0.0001' 
     
-    L = filter(lambda x: x.endswith('.obj'), basic.recursive_file_list('/Users/chengxuz/3Dworld/ThreeDWorld/Assets/Models/dorsh_models/JobPoses'))
+    #L = filter(lambda x: x.endswith('.obj'), basic.recursive_file_list('/Users/chengxuz/3Dworld/ThreeDWorld/Assets/Models/dorsh_models/JobPoses'))
+    L = filter(lambda x: x.endswith('.obj'), basic.recursive_file_list('/home/chengxuz/ThreeDWorld/Assets/Models/dorsch_models/JobPoses'))
     L.sort()
     
     start_indx  = min(ind * divide_in, len(L))
@@ -41,4 +44,3 @@ if __name__ == '__main__':
     r = pool.map_async(do_it, args)
     r.get()
     print('done')
-       
