@@ -8,6 +8,7 @@ from yamutils import basic
 from optparse import OptionParser
 import numpy as np
 import hashlib
+from bson.objectid import ObjectId
 
 file_list   = []
 options     = []
@@ -43,6 +44,13 @@ def get_file_list():
 
     return file_list
 
+def get_pos(split_lines):
+    pos_list    = []
+    pos_list.append(float(split_lines[0].split('(')[1]))
+    pos_list.append(float(split_lines[1]))
+    pos_list.append(float(split_lines[2][:-1]))
+    return pos_list
+
 if __name__=='__main__':
 
     parser = OptionParser()
@@ -56,6 +64,10 @@ if __name__=='__main__':
     parser.add_option("-e", "--version", dest="version", default = 0, type=int, help = "The value of the variable version to be set in mongodb")
     parser.add_option("-m", "--mapn", dest="mapn", default = 10, type=int, help = "The number in each division used to compute the VHACD files")
     parser.add_option("-f", "--force", dest="force", default = 0, type=int, help = "0 for judging whether continue, 1 for generating and uploading anything anyway")
+    parser.add_option("-a", "--tmpname", dest="tmpname", default = "~tmp_id.txt", type = str, help = "The temporary file for storing path, _id")
+    parser.add_option("-u", "--unity", dest="unity", default = "/opt/Unity/Editor/Unity", type = str, help = "The path of unity")
+    parser.add_option("--tmpnameunity", dest="tmpnameunity", default = "~tmp_info.txt", type = str, help = "The temporary file for storing information extracted")
+    parser.add_option("--url", dest = "urlPrefix", default = "http://threedworld.s3.amazonaws.com/", type = str, help = "The url prefix for aws_address")
 
     (options, args) = parser.parse_args()
 
@@ -128,10 +140,74 @@ if __name__=='__main__':
     
     # Get the _id
     test_coll = coll.find({'type': options.type, 'version': options.version, 'md5_value': {'$in': md5_values_list}})
-    #print(test_coll.count())
+    print(test_coll.count())
     exist_doc_list  = list(test_coll[:])
     for exist_doc in exist_doc_list:
         if exist_doc['obj_file_path'] in file_list:
             _id_dict[exist_doc['obj_file_path']]    = str(exist_doc['_id'])
 
-    
+    if len(file_list)==0:
+        exit()
+
+    #print(_id_dict)
+    fout    = open(options.tmpname, 'w')
+    for file_name in file_list:
+        if file_name in _id_dict:
+            fout.write(file_name[len(options.projectdir)+1:] + "," + _id_dict[file_name] + '\n')
+    fout.close()
+    #exit()
+
+    ### Run the unity command 
+
+    cmd_tmp_unity   = "%s -batchmode -quit -projectPath %s -executeMethod CreatePrefabCMD.CreatePrefabFromModel_script -nographics -logFile -inputFile %s -outputFile %s"
+
+    cmd_str         = cmd_tmp_unity % (options.unity, options.projectdir, "ServerTools/" + options.tmpname, "ServerTools/" + options.tmpnameunity)
+    print("Run " + cmd_str)
+    os.system(cmd_str)
+
+    ### Upload to aws server and update the information in mongodb
+
+    upload_cmd_tmp  = "s3cmd put --acl-public --guess-mime-type %s s3://threedworld/"
+    bundle_prefix   = os.path.join(options.projectdir, 'Assets/PrefabDatabase/AssetBundles/Separated/')
+
+    fin     = open(options.tmpnameunity, 'r')
+    lines   = fin.readlines()
+    all_ids     = _id_dict.values()
+
+    for line in lines:
+
+        split_lines     = line.split(',')
+        file_now        = split_lines[0]
+        id_current      = file_now.split('.')[0]
+        cur_complexity  = int(split_lines[1])
+        center_pos      = get_pos(split_lines[2:5])
+        boundb_pos      = get_pos(split_lines[5:8])
+        isLight         = split_lines[8]
+        anchor_type     = split_lines[9][:-1]
+
+        if not id_current in all_ids:
+            continue
+
+        curr_url        = options.urlPrefix + file_now
+        print(curr_url)
+
+        curr_path       = bundle_prefix + file_now
+        curr_cmd_str    = upload_cmd_tmp % (curr_path)
+        print(curr_cmd_str)
+        os.system(curr_cmd_str)
+
+        coll.update_one({
+            '_id': ObjectId(id_current)
+        },{
+          '$set': {
+            'complexity': cur_complexity,
+            'center_pos': center_pos,
+            'boundb_pos': boundb_pos,
+            'isLight': isLight,
+            'anchor_type': anchor_type,
+            'aws_address': curr_url
+          }
+        }, upsert=True)
+
+    os.system('rm ' + options.tmpname)
+    os.system('rm ' + options.tmpnameunity)
