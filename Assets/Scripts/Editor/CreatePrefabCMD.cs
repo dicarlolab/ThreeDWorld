@@ -70,6 +70,138 @@ public class CreatePrefabCMD
         }
     }
 
+    public static void CreatePrefabFromModel_script (){
+        Dictionary<GameObject, string> allSelected = new Dictionary<GameObject, string> ();
+        Dictionary<string, string> path_to_id = new Dictionary<string, string> ();
+        // argument -inputFile is for the txt file with each line of "obj-path,_id"
+        string tmp_doc_path = GetArg ("-inputFile");;
+        StreamReader theReader = new StreamReader (tmp_doc_path, Encoding.Default);
+        string line;
+
+        // Get the obj path and add it to the dictionary for further processing
+        using (theReader) {
+            do {
+                line = theReader.ReadLine ();
+                if (line != null){
+                    Debug.Log(line);
+                    string now_obj_path     = line.Substring(0, line.LastIndexOf(','));
+                    string now_id           = line.Substring(line.LastIndexOf(',')+1, line.Length -(line.LastIndexOf(',')+1));
+                    //Debug.Log(now_obj_path);
+                    //Debug.Log(now_id);
+                    allSelected.Add (AssetDatabase.LoadMainAssetAtPath(now_obj_path) as GameObject, now_obj_path);
+                    path_to_id.Add (now_obj_path, now_id);
+                }
+            } while (line != null);
+            theReader.Close ();
+        }
+
+        // Generate prefabs from the dictionary
+        if (allSelected == null || allSelected.Count == 0)
+            return;
+
+        List<GameObject> toRemove = new List<GameObject> ();
+        foreach (KeyValuePair<GameObject, string> entry in allSelected) {
+            if (entry.Key == null || PrefabUtility.GetPrefabType (entry.Key) != PrefabType.ModelPrefab) {
+                toRemove.Add (entry.Key);
+            }
+        }
+
+        foreach (GameObject entry in toRemove) {
+            allSelected.Remove (entry);
+        }
+
+        string saving_directory     = Application.dataPath + "/PrefabDatabase/GeneratedPrefabs/objs_by_id/";
+        System.IO.Directory.CreateDirectory(saving_directory);
+
+        foreach (KeyValuePair<GameObject, string> entry in allSelected) {
+            //make meta file
+            EditorApplication.Step ();
+
+            //make prefab
+            MakeSimplePrefabObj (entry.Key, "objs_by_id/" + path_to_id[entry.Value]);
+
+            //force GC
+            EditorApplication.SaveAssets ();
+            Resources.UnloadUnusedAssets ();
+            EditorUtility.UnloadUnusedAssetsImmediate ();
+
+            GC.Collect ();
+            EditorApplication.Step ();
+
+        }
+
+        // Get the available prefabs and generate assetbundles from them
+        allSelected = new Dictionary<GameObject, string> ();
+        foreach (KeyValuePair<string, string> entry in path_to_id){
+            string data_new_path    = "Assets/PrefabDatabase/GeneratedPrefabs/objs_by_id/" + entry.Value + ".prefab";
+            allSelected.Add (AssetDatabase.LoadMainAssetAtPath(data_new_path) as GameObject, data_new_path);
+        }
+        AssetBundleBuild[] buildMap = new AssetBundleBuild[allSelected.Count];
+
+        int loop_counter = 0;
+        foreach (KeyValuePair<GameObject, string> entry in allSelected) {
+            string _bundleName;
+            string[] _assetPath = new string[1];
+            _bundleName = entry.Key.name + ".bundle";
+            // In case prefabs had some kind of file extension replace the file extension with .bundle
+            //			_bundleName = _bundleName.Remove(_bundleName.LastIndexOf('.')) + ".bundle";
+
+            buildMap [loop_counter].assetBundleName = _bundleName;
+            _assetPath [0] = entry.Value;
+            buildMap [loop_counter].assetNames = _assetPath;
+            loop_counter++;
+        }
+
+        string bundle_prefix    = "Assets/PrefabDatabase/AssetBundles/Separated";
+        BuildPipeline.BuildAssetBundles (bundle_prefix, 
+            buildMap, 
+            BuildAssetBundleOptions.None,
+            BuildTarget.StandaloneOSXUniversal
+        );
+
+        // Write the information into the text file indicated by -outputFile
+        string[] all_bundle_path    = new string[allSelected.Count];
+        int now_indx                = 0;
+        foreach (KeyValuePair<GameObject, string> entry in allSelected) {
+            string _bundleName;
+            _bundleName = entry.Key.name + ".bundle";
+            _bundleName = bundle_prefix + "/" + _bundleName;
+            all_bundle_path[now_indx]   = _bundleName;
+            now_indx++;
+        }
+
+        using (StreamWriter sw = new StreamWriter(GetArg ("-outputFile"))) 
+        {
+            foreach (string d_tmp in all_bundle_path) {
+                //sw.Write("This is line for ");
+                //sw.WriteLine(d_tmp);
+                string data_new_path = d_tmp;
+                sw.Write(d_tmp.Remove(0, d_tmp.LastIndexOf ('/')+1));
+                sw.Write(",");
+                Debug.Log(data_new_path);
+
+                //allSelected.Add (AssetDatabase.LoadMainAssetAtPath(data_new_path) as GameObject, data_new_path);
+                AssetBundle loadedAssetBundle = AssetBundle.LoadFromFile (data_new_path);
+                if (loadedAssetBundle == null) {
+                    Debug.Log ("Failed to load AssetBundle!");
+                    continue;
+                }
+                GameObject gObj = loadedAssetBundle.LoadAsset<GameObject> (loadedAssetBundle.GetAllAssetNames () [0]);
+                GeneratablePrefab[] prefab = gObj.GetComponents<GeneratablePrefab> ();
+                loadedAssetBundle.Unload (false);
+                sw.Write(prefab[0].myComplexity);
+                sw.Write(",");
+                sw.Write(prefab[0].myBounds);
+                sw.Write(",");
+                sw.Write(prefab[0].isLight);
+                sw.Write(",");
+                sw.Write(prefab[0].attachMethod);
+                sw.Write("\n");
+            }
+
+        }
+    }
+
 	public static void CreatePrefabFromModel ()
 	{
 		Dictionary<GameObject, string> allSelected = new Dictionary<GameObject, string> ();
