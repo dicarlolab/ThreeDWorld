@@ -361,6 +361,21 @@ See "tdw\_editor\_mode\_client.py" for example. Set "use\_mongodb\_inter" to be 
 
 As there is some problems about Unity's Cache system (4GB's limit), we implemented the cache by our own. You need to send two arguments in scene config through clients to use this: 1. Set "use\_cache\_self" to be 1. 2. Set "cache\_self\_directory" to be the directory for the cached assetbundles. It should exist, be an obsolute directory, and you should have write access to it.
 
+### One command to generate assetbundels from obj file, upload it to AWS, and register the information to mongodb database
+
+We have a basic version to do this. The script you need to run is "ServerTools/script\_obj2bundle.py". To run this, you need to have:
+
+- `yamutils`: Python library by Dan, available through github, easy to install
+- `v-hacd`: The codes for generating VRML files from OBJ files. Availabel through github <https://github.com/kmammou/v-hac://github.com/kmammou/v-hacd>. Currently, only old behavior (generating VRML from OBJ) is supported, but not the current behavior (generating OBJ from OBJ). Please see instructions on v-hacd for getting the old behavior. (It says that you should have "SAVE\_VRML2" option, but I don't know how to do that...Thus I just commentted the related codes in "src/test/src/main.cpp", search for "SAVE\_VRML2")
+
+#### Important arguments for script
+
+See the script help for details. Basically, You need to specify the location for your project, your model directory (relative to the project and should be inside the project), the path to v-hacd testVHACD, and some meta information you want the object to have on mongodb database (version, type). You need to have access to mongodb server at dicarlo5 (see metadata section above). The script would try to find all files under the specified model directory and its subdirectories ending with ".obj". You should also make sure that the same ".mtl" file is also there. If there are already ".wrl" in the same place, then v-hacd would not be run (unless --force is specified).
+
+After generating the ".wrl" files through v-hacd, the script would call unity in batchmode to generate the required assetbundles. Please make sure that you are not opening unity in the same project at the same time and if you are running the script through command line, you may need to disable the monitor (see instructions for running the server above) or alternatively, you could run the script in one tmux session started through desktop or vnc-viewer.
+
+Then, the script would upload the files to AWS server, so make sure you have the access to that.
+
 # License
 
 Apache 2.0

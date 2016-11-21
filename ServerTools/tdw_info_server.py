@@ -88,7 +88,7 @@ if __name__ == "__main__":
 
                 np.random.seed(rand_seed)
 
-                for indx_tmp in np.random.choice(range(num_ava), now_request['choose_argu']['number']):
+                for indx_tmp in np.random.choice(range(num_ava), min(now_request['choose_argu']['number'], num_ava)):
                     inc_one_item(test_coll, return_dict, indx_tmp)
 
             #return_dict[0]  = test_coll[0]
