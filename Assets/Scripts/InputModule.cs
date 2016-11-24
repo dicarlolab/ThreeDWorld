@@ -134,13 +134,14 @@ public class InputModule : AbstractInputModule
 			SemanticObject[] allObjects = UnityEngine.Object.FindObjectsOfType<SemanticObject>();
 			for (int i = 0; i < actionsCount; i++) {
 				JsonData action = actionsList [i];
-				string id = action ["id"].ReadString ();
+				string str_id = action ["id"].ReadString ();
+				int id = int.Parse(str_id);
 				Vector3 force = action ["force"].ReadVector3 ();
 				force = _myAvatar.transform.TransformDirection (force);
 				Vector3 torque = action ["torque"].ReadVector3 ();
 				torque = _myAvatar.transform.TransformDirection (torque);
 				foreach (SemanticObject o in allObjects) {
-					string idval = NetMessenger.colorUIDToString(o.gameObject.GetComponentInChildren<Renderer> ().material.GetColor ("_idval"));
+					int idval = NetMessenger.colorUIDToInt(o.gameObject.GetComponentInChildren<Renderer> ().material.GetColor ("_idval"));
 					if (idval == id) {
 						Rigidbody rb = o.gameObject.GetComponentInChildren<Rigidbody> ();
 						rb.AddForce (force);
@@ -156,7 +157,8 @@ public class InputModule : AbstractInputModule
         Rigidbody myRigidbody = _myAvatar.myRigidbody;
         float rotSpeed = _myAvatar.rotSpeed;
 
-        myRigidbody.velocity = cacheVel;
+		Quaternion curRotation = _myAvatar.transform.rotation;
+        myRigidbody.velocity = curRotation * cacheVel;
 
         Vector3 angChange = cacheAngVel;
         // Clamp drag value for some momentum on gradual stopping
