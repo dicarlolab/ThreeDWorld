@@ -157,12 +157,9 @@ public class InputModule : AbstractInputModule
         Rigidbody myRigidbody = _myAvatar.myRigidbody;
         float rotSpeed = _myAvatar.rotSpeed;
 
+		// transform the velocity to object frame before applying
 		Quaternion curRotation = _myAvatar.transform.rotation;
-        myRigidbody.velocity = curRotation * cacheVel;
-
-	// transform the velocity to object frame before applying
-	Quaternion curRotation = _myAvatar.transform.rotation;
-	myRigidbody.velocity = curRotation * cacheVel;
+		myRigidbody.velocity = curRotation * cacheVel;
 
         Vector3 angChange = cacheAngVel;
         // Clamp drag value for some momentum on gradual stopping
