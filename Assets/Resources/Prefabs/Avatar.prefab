@@ -269,8 +269,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targetCam: {fileID: 2017024}
   testImage: {fileID: 0}
-  _myMessenger: {fileID: 114000014020218576, guid: f1246602f6e6c471ba614cd76f58ce5c,
-    type: 2}
 --- !u!114 &11477270
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -287,6 +285,10 @@ MonoBehaviour:
   - {fileID: 4800000, guid: 01c10d508c72efc4c97ac9ea79b07271, type: 3}
   - {fileID: 4800000, guid: 901e682dceb434687a5ddad2900b85a4, type: 3}
   - {fileID: 0}
+  outputFormatList:
+  - png
+  - png
+  - jpg
   moveSpeed: 5
   rotSpeed: 5
   observedRange: 25
@@ -304,8 +306,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targetCam: {fileID: 2017024}
   testImage: {fileID: 0}
-  _myMessenger: {fileID: 114000014020218576, guid: f1246602f6e6c471ba614cd76f58ce5c,
-    type: 2}
 --- !u!135 &13584730
 SphereCollider:
   m_ObjectHideFlags: 1

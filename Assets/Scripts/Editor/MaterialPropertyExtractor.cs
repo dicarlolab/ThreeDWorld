@@ -77,11 +77,11 @@ public class MaterialPropertyExtractor {
 
 			// Determine Ns
 			float Ns = 0.0f;
-			bool hasNs = ParseMtlScalar("Ns", ref Ns, mtlContents);
+			ParseMtlScalar("Ns", ref Ns, mtlContents);
 
 			// Determine d
 			float d = 0.0f;
-			bool hasD = ParseMtlScalar("d", ref d, mtlContents);
+			ParseMtlScalar("d", ref d, mtlContents);
 
 			// Look up map_Kd
 			bool hasMapKd = LookUpMtlPrefix("map_Kd", mtlContents);
@@ -94,15 +94,15 @@ public class MaterialPropertyExtractor {
 
 			// Determine Ka
 			float[] Ka = new float[3];
-			bool hasKa = ParseMtlVector3D("Ka", ref Ka, mtlContents);
+			ParseMtlVector3D("Ka", ref Ka, mtlContents);
 
 			// Determine Ks
 			float[] Kd = new float[3];
-			bool hasKd = ParseMtlVector3D("Kd", ref Kd, mtlContents);
+			ParseMtlVector3D("Kd", ref Kd, mtlContents);
 
 			// Determine Ks
 			float[] Ks = new float[3];
-			bool hasKs = ParseMtlVector3D("Ks", ref Ks, mtlContents);
+			ParseMtlVector3D("Ks", ref Ks, mtlContents);
 
 
 			// Write Ks, Ns, specular Color and smoothness into file

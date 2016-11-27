@@ -361,6 +361,8 @@ public class NetMessenger : MonoBehaviour
 
 		this.lastSocket = server;
 		this.lastJsonContents = jsonData;
+
+		PrefabDatabase.GarbageCollect();
 	}
 
 	private void sceneWasLoaded(Scene scene, LoadSceneMode mode) {
@@ -389,6 +391,21 @@ public class NetMessenger : MonoBehaviour
 
 		newAvatar.sendSceneInfo = data["send_scene_info"].ReadBool(false);
 		newAvatar.shouldCollectObjectInfo = data["get_obj_data"].ReadBool(false);
+
+		//TODO
+		JsonData JsonOutputFormatList = data["output_formats"];
+		if (JsonOutputFormatList != null) {
+			if (JsonOutputFormatList.Count != newAvatar.outputFormatList.Count) {
+				Debug.LogError(newAvatar.outputFormatList.Count.ToString() + 
+					" output formats need to be specified, one for each shader!");
+			}
+			List<string> outputFormatList = new List<string>();
+			for(int i = 0; i < JsonOutputFormatList.Count; i++) {
+				string outputFormat = JsonOutputFormatList[i].ReadString();
+				outputFormatList.Add(outputFormat);
+			}
+			newAvatar.SetOutputFormatList(outputFormatList);
+		}
         //
         //        // Send confirmation message
         //        lastMessageSent.Clear();
@@ -516,7 +533,19 @@ public class NetMessenger : MonoBehaviour
             // Look up relationship values for all observed semantics objects
             jsonData["observed_objects"] = new JsonData(JsonType.Array);
             foreach(SemanticObject o in a.observedObjs)
-                jsonData["observed_objects"].Add(o.identifier);
+            {	
+            	// Put object ID, name, position and rotation into json message
+            	JsonData _objInfo;
+            	_objInfo = new JsonData(JsonType.Array);
+            	_objInfo.Add(o.identifier);
+				_objInfo.Add(o.gameObject.name);
+				Color colorID = o.gameObject.GetComponentInChildren<Renderer> ().material.GetColor ("_idval");
+				_objInfo.Add(colorUIDToInt(colorID));
+            	_objInfo.Add(o.transform.position.ToJson());
+            	_objInfo.Add(o.transform.rotation.ToJson());
+                jsonData["observed_objects"].Add(_objInfo);
+
+            }
             jsonData["observed_relations"] = new JsonData(JsonType.Object);
             bool collectAllRelationships = a.relationshipsToRetrieve.Contains("ALL");
             foreach(SemanticRelationship rel in _relationsToTest)

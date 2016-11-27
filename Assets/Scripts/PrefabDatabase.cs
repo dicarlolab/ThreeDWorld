@@ -425,7 +425,7 @@ public class PrefabDatabase : MonoBehaviour
 			newFileName = newFileName.Substring (0, newFileName.LastIndexOf ("."));
 		} else {
 			if (!(assetPath.ToLowerInvariant ().Contains ("http://"))) {
-				const string resPrefix = BUNDLES_SUBPATH;
+				//const string resPrefix = BUNDLES_SUBPATH;
 				string currentPath = Directory.GetCurrentDirectory ();
 				newFileName = Path.Combine (currentPath, assetPath);
 			} else {
@@ -594,10 +594,13 @@ public class PrefabDatabase : MonoBehaviour
 
 	void Update ()
 	{
+	}
+
+	public static void GarbageCollect () 
+	{
 		EditorUtility.UnloadUnusedAssetsImmediate ();
 		GC.Collect ();
 	}
-
 
 	public static Dictionary<GameObject, string> ListSelectedPrefabs ()
 	{

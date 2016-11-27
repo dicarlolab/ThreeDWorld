@@ -27,6 +27,7 @@ public class CameraStreamer : MonoBehaviour
     {
         public CollectImages callbackFunc = null;
         public List<Shader> shadersList = null;
+        public List<string> outputFormatList = null;
         public List<CapturedImage> capturedImages = null;
     }
 #endregion
@@ -183,7 +184,7 @@ public class CameraStreamer : MonoBehaviour
         }        
     }
 
-    private CapturedImage TakeSnapshotNow(Shader targetShader)
+    private CapturedImage TakeSnapshotNow(Shader targetShader, string outputFormat = "use_preferred_output_format")
     {
         if (NetMessenger.logTimingInfo)
             Debug.LogFormat("Start TakeShapshotNow() {0} {1}", (targetShader == null) ? "(null)" : targetShader.name, Utils.GetTimeStamp());
@@ -224,14 +225,26 @@ public class CameraStreamer : MonoBehaviour
             Debug.LogFormat("  Created texture(internal format) {0}", Utils.GetTimeStamp());
 
         CapturedImage retImage = new CapturedImage();
-        if (preferredImageFormat == "png")
-            retImage.pictureBuffer = _outPhoto.EncodeToPNG();
-        else if (preferredImageFormat == "jpg")
-            retImage.pictureBuffer = _outPhoto.EncodeToJPG();
-        else
-            EncodeBMP(ref retImage, _outPhoto, pixWidth, pixHeight);
+
+		if(outputFormat == "use_preferred_output_format") 
+        {
+        	if (preferredImageFormat == "png")
+            	retImage.pictureBuffer = _outPhoto.EncodeToPNG();
+        	else if (preferredImageFormat == "jpg")
+            	retImage.pictureBuffer = _outPhoto.EncodeToJPG();
+        	else
+            	EncodeBMP(ref retImage, _outPhoto, pixWidth, pixHeight);
+        }
+        else if (outputFormat == "png")
+			retImage.pictureBuffer = _outPhoto.EncodeToPNG();
+		else if (outputFormat == "jpg")
+			retImage.pictureBuffer = _outPhoto.EncodeToJPG();
+		else
+			EncodeBMP(ref retImage, _outPhoto, pixWidth, pixHeight);
+
         if (NetMessenger.logTimingInfo)
             Debug.LogFormat("  Encoded image {0}", Utils.GetTimeStamp());
+
         return retImage;
     }
 #endregion

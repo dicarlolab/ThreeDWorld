@@ -14,6 +14,8 @@ public class Avatar : MonoBehaviour
     public CameraStreamer myCam = null;
     // Reference to all the shaders we are using with each camera(null uses standard rendering)
     public List<Shader> shaders = null;
+    // Output format corresponding to shaders
+	public List<string> outputFormatList;
     // How fast the avatar can translate using the client controls
     public float moveSpeed = 5.0f;
     // How fast the avatar can rotate using the client controls
@@ -89,12 +91,20 @@ public class Avatar : MonoBehaviour
 		Debug.Log ("got streamer");
         _request.shadersList = shaders;
 		Debug.Log ("got shaders");
+		_request.outputFormatList = outputFormatList;
+		Debug.Log ("got output formats");
         _request.capturedImages = new List<CameraStreamer.CapturedImage>();
 		Debug.Log ("got capt images");
         _myInput = new InputModule(this);
 		Debug.Log ("got input");
         TeleportToValidPosition();
 		Debug.Log ("teleported");
+    }
+
+    public void SetOutputFormatList(List<string> NewOutputFormatList)
+    {
+    	this.outputFormatList = NewOutputFormatList;
+    	_request.outputFormatList = NewOutputFormatList;
     }
 
     private void FixedUpdate()

@@ -29,9 +29,11 @@ public class ProceduralGeneration : MonoBehaviour
     // The number of physics collisions to create
     public int complexityLevelToCreate = 100;
     public int numCeilingLights = 10;
+    public float intensityCeilingLights = 1.0f;
     public int minStackingBases = 0;
     public int forceStackedItems = 5;
     public int maxPlacementAttempts = 300;
+    public bool randomMaterials = false;
     public SemanticObjectSimple floorPrefab;
     public SemanticObjectSimple ceilingPrefab;
     public GameObject DEBUG_testCubePrefab = null;
@@ -78,7 +80,7 @@ public class ProceduralGeneration : MonoBehaviour
     private Transform _curRoom = null;
     private int _failures = 0; // Counter to avoid infinite loops if we can't place anything
     private List<WallArray> wallSegmentList = new List<WallArray>();
-    private List<PrefabDatabase.PrefabInfo> ceilingLightPrefabs = new List<PrefabDatabase.PrefabInfo>();
+    //private List<PrefabDatabase.PrefabInfo> ceilingLightPrefabs = new List<PrefabDatabase.PrefabInfo>();
     private List<PrefabDatabase.PrefabInfo> groundPrefabs = new List<PrefabDatabase.PrefabInfo>();
     private List<PrefabDatabase.PrefabInfo> stackingPrefabs = new List<PrefabDatabase.PrefabInfo>();
     public List<HeightPlane> _allHeightPlanes = new List<HeightPlane>();
@@ -118,7 +120,9 @@ public class ProceduralGeneration : MonoBehaviour
             json["disabled_items"].ReadList(ref disabledItems);
             json["permitted_items"].ReadList(ref permittedItems);
             complexityLevelToCreate = json["complexity"].ReadInt(complexityLevelToCreate);
+            randomMaterials = json["random_materials"].ReadBool(false);
             numCeilingLights = json["num_ceiling_lights"].ReadInt(numCeilingLights);
+            intensityCeilingLights = json["intensity_ceiling_lights"].ReadFloat(intensityCeilingLights);
             minStackingBases = json["minimum_stacking_base_objects"].ReadInt(minStackingBases);
             forceStackedItems = json["minimum_objects_to_stack"].ReadInt(forceStackedItems);
             roomDim.x = json["room_width"].ReadFloat(roomDim.x);
@@ -218,7 +222,7 @@ public class ProceduralGeneration : MonoBehaviour
             return true;
         }));
         // TODO: We're not filtering the ceiling lights, since we currently only have 1 prefab that works
-        ceilingLightPrefabs = availablePrefabs.FindAll(((PrefabDatabase.PrefabInfo info)=>{return info.anchorType == GeneratablePrefab.AttachAnchor.Ceiling && info.isLight;}));
+        //ceilingLightPrefabs = availablePrefabs.FindAll(((PrefabDatabase.PrefabInfo info)=>{return info.anchorType == GeneratablePrefab.AttachAnchor.Ceiling && info.isLight;}));
         groundPrefabs = filteredPrefabs.FindAll(((PrefabDatabase.PrefabInfo info)=>{return info.anchorType == GeneratablePrefab.AttachAnchor.Ground;}));
         stackingPrefabs = groundPrefabs.FindAll(((PrefabDatabase.PrefabInfo info)=>{return info.stackableAreas.Count > 0;}));
         List<PrefabDatabase.PrefabInfo> itemsForStacking = groundPrefabs.FindAll(((PrefabDatabase.PrefabInfo info)=>{return true;}));
@@ -686,7 +690,13 @@ public class ProceduralGeneration : MonoBehaviour
             {
                     foreach (Material _mat in _rend.materials)
                     {
-                            _mat.SetColor("_idval", colorID);	
+                            _mat.SetColor("_idval", colorID);
+
+                            //TODO SET MATERIAL GLOSSINESS AND METALLICNESS BASED ON DISTRIBUTION
+                            if(randomMaterials) {
+								_mat.SetFloat("_Glossiness", Convert.ToSingle(_rand.NextDouble()));	
+								_mat.SetFloat("_Metallic", Convert.ToSingle(_rand.NextDouble()));	
+							}
                     }
             }	
 	
@@ -760,6 +770,10 @@ public class ProceduralGeneration : MonoBehaviour
          */
 		double scalingFactor = 0.0106;
 		int totalNumberOfLights = Convert.ToInt32(scalingFactor * roomDimensions.x * roomDimensions.z);
+
+		if(numCeilingLights > 0)
+			totalNumberOfLights = numCeilingLights;
+
 		int widthNumberOfLights = Convert.ToInt32(Math.Sqrt(totalNumberOfLights * roomDimensions.x / roomDimensions.z));
 		int lengthNumberOfLights = Convert.ToInt32(Math.Sqrt(totalNumberOfLights * roomDimensions.z / roomDimensions.x));
 
@@ -767,6 +781,10 @@ public class ProceduralGeneration : MonoBehaviour
 		float lengthLightDistance = ceilingSize.z / lengthNumberOfLights;
 
 		float intensity = 1.0f;
+
+		if(intensityCeilingLights > 0.0f)
+			intensity = intensityCeilingLights;
+
 		int iter_light = 0;
 		for(float i = ceilingStart.x + widthLightDistance / 2.0f; i <= ceilingStart.x + ceilingSize.x; i = i + widthLightDistance)
         {
