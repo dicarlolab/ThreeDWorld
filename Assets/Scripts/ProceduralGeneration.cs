@@ -70,6 +70,7 @@ public class ProceduralGeneration : MonoBehaviour
     public Material ceilingMaterial = null;
     public Material wallTrimMaterial = null;
     public Material windowMaterial = null;
+    public Material skyboxMaterial = null;
     public Material windowTrimMaterial = null;
     public bool showProcGenDebug = false;
     public LitJson.JsonData scaleRelatDict = new LitJson.JsonData();
@@ -775,6 +776,7 @@ public class ProceduralGeneration : MonoBehaviour
 								_mat.SetFloat("_Glossiness", Convert.ToSingle(_rand.NextDouble()));	
 								_mat.SetFloat("_Metallic", Convert.ToSingle(_rand.NextDouble()));	
 							}
+                            //TODO REMOVE _mat.renderQueue = 4001;
                     }
             }	
 	
@@ -837,9 +839,10 @@ public class ProceduralGeneration : MonoBehaviour
 		Vector3 ceilingStart = roomCenter + new Vector3(-0.5f * roomDimensions.x, roomDimensions.y, -0.5f * roomDimensions.z);
 
         Debug.Log("SETTING SKYBOX!");
-		var bundle = AssetBundle.LoadFromFile("Assets/Scenes/Lighting/" + "sunnyskybox");
-		Material levelMat = bundle.LoadAsset(bundle.GetAllAssetNames()[0]) as Material;
-        RenderSettings.skybox = levelMat;
+        //var bundle = AssetBundle.LoadFromFile("Assets/Scenes/Lighting/" + "sunnyskybox_windows");
+        //Material levelMat = bundle.LoadAsset(bundle.GetAllAssetNames()[0]) as Material;
+        //RenderSettings.skybox = levelMat;
+        RenderSettings.skybox = skyboxMaterial;
 
         /* 
          *  We want to keep the total light energy constant in a given volume. 

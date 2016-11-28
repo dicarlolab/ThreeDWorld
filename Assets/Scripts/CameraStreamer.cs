@@ -36,6 +36,7 @@ public class CameraStreamer : MonoBehaviour
 
 #region Fields
     public Camera targetCam = null;
+    public Camera shaderCam = null;
     // Debug UI image that shows what this camera is rendering out
     public RawImage testImage = null;
 
@@ -130,7 +131,7 @@ public class CameraStreamer : MonoBehaviour
                 Debug.Log("SHADER CALL");
                 Debug.Log(i);
             }
-            request.capturedImages[i].pictureBuffer = TakeSnapshotNow(request.shadersList[i], i).pictureBuffer;
+			request.capturedImages[i].pictureBuffer = TakeSnapshotNow(request.shadersList[i], request.outputFormatList[i]).pictureBuffer;
         }
         if (request.callbackFunc != null)
             request.callbackFunc(request);
@@ -212,13 +213,14 @@ public class CameraStreamer : MonoBehaviour
         {
             if(DEBUG)
                 Debug.Log ("Texture cam is null");
+
             GameObject newObj = new GameObject("Texture-Writing Camera");
             _textureCam = newObj.AddComponent<Camera>();
             _textureCam.enabled = false;
             _textureCam.targetTexture = new RenderTexture(targetCam.pixelWidth, targetCam.pixelHeight, 0, RenderTextureFormat.ARGB32);
 
             // Image Effects
-            if (targetCam != null)
+            if (true && targetCam != null)
             {
                 targetCam.hdr = true;
 
@@ -252,9 +254,15 @@ public class CameraStreamer : MonoBehaviour
 
         // Call render with the appropriate shaders
         if (targetShader != null)
-            targetCam.RenderWithShader(targetShader, null);
+        {
+            RenderTexture.active = shaderCam.targetTexture;
+            shaderCam.RenderWithShader(targetShader, null);
+        }
         else
+        {
+            RenderTexture.active = targetCam.targetTexture;
             targetCam.Render();
+        }
         if (DEBUG && NetMessenger.logTimingInfo)
             Debug.LogFormat("  Finished Rendering {0}", Utils.GetTimeStamp());
 

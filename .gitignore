@@ -22,3 +22,7 @@ obj/Debug/*
 *.prefab
 *.bundle
 *.manifest
+*.x86
+*.x86_64
+*.exe
+*_Data/
