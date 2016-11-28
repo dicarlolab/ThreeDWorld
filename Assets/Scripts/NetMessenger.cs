@@ -36,7 +36,7 @@ public class NetMessenger : MonoBehaviour
     private NetMQMessage _lastMessage = new NetMQMessage();
     private NetMQMessage _lastMessageSent = new NetMQMessage();
     private NetMQMessage _lastMessage_info = new NetMQMessage();
-    private NetMQMessage _lastMessageSent_info = new NetMQMessage();
+    //private NetMQMessage _lastMessageSent_info = new NetMQMessage();
     private List<ResponseSocket> _createdSockets = new List<ResponseSocket>();
     private Dictionary<ResponseSocket, Avatar> _avatars = new Dictionary<ResponseSocket, Avatar>();
     private Dictionary<ResponseSocket, RequestSocket> _avatarClients = new Dictionary<ResponseSocket, RequestSocket>();
@@ -163,6 +163,7 @@ public class NetMessenger : MonoBehaviour
 				}
 
 				scenesToUnload.Clear ();
+				PrefabDatabase.GarbageCollect();
 
 				OnClientJoin (lastSocket, lastJsonContents);
 				Debug.Log ("Client Join Handled");
@@ -415,8 +416,6 @@ public class NetMessenger : MonoBehaviour
 
 		this.lastSocket = server;
 		this.lastJsonContents = jsonData;
-
-		PrefabDatabase.GarbageCollect();
 	}
 
 	private void sceneWasLoaded(Scene scene, LoadSceneMode mode) {
@@ -451,7 +450,8 @@ public class NetMessenger : MonoBehaviour
 		if (JsonOutputFormatList != null) {
 			if (JsonOutputFormatList.Count != newAvatar.outputFormatList.Count) {
 				Debug.LogError(newAvatar.outputFormatList.Count.ToString() + 
-					" output formats need to be specified, one for each shader!");
+					" output formats need to be specified, one for each shader!" +
+					" Using standard output formats.");
 			}
 			List<string> outputFormatList = new List<string>();
 			for(int i = 0; i < JsonOutputFormatList.Count; i++) {
@@ -592,9 +592,14 @@ public class NetMessenger : MonoBehaviour
             	JsonData _objInfo;
             	_objInfo = new JsonData(JsonType.Array);
             	_objInfo.Add(o.identifier);
-				_objInfo.Add(o.gameObject.name);
-				Color colorID = o.gameObject.GetComponentInChildren<Renderer> ().material.GetColor ("_idval");
-				_objInfo.Add(colorUIDToInt(colorID));
+				if(o.gameObject.GetComponentInChildren<Renderer>().material.HasProperty("_idval")) {
+					Color colorID = o.gameObject.GetComponentInChildren<Renderer> ().material.GetColor ("_idval");
+					_objInfo.Add(colorUIDToInt(colorID));
+				}
+				else {
+					_objInfo.Add(-1);
+					Debug.Log("Material doesn't have a color property '_idval', hence it was set to -1!");
+				}
             	_objInfo.Add(o.transform.position.ToJson());
             	_objInfo.Add(o.transform.rotation.ToJson());
                 jsonData["observed_objects"].Add(_objInfo);
@@ -625,8 +630,14 @@ public class NetMessenger : MonoBehaviour
 				JsonData _info;
 				_info = new JsonData(JsonType.Array);
 				_info.Add(semObj.gameObject.name);
-				Color colorID = semObj.gameObject.GetComponentInChildren<Renderer> ().material.GetColor ("_idval");
-				_info.Add(colorUIDToInt(colorID));
+				if(semObj.gameObject.GetComponentInChildren<Renderer>().material.HasProperty("_idval")) {
+					Color colorID = semObj.gameObject.GetComponentInChildren<Renderer> ().material.GetColor ("_idval");
+					_info.Add(colorUIDToInt(colorID));
+				}
+				else {
+					_info.Add(-1);
+					Debug.Log("Material doesn't have a color property '_idval', hence it was set to -1!");
+				}
 				jsonData["sceneInfo"].Add(_info);
 
 	    	}

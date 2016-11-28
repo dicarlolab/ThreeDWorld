@@ -110,7 +110,7 @@ public class InputModule : AbstractInputModule
     // Parse the input sent from the client and use it to update the controls for the next simulation segment
     public override void HandleNetInput(JsonData jsonData, ref Vector3 targetVel)
     {
-		Debug.Log (jsonData.ToJSON ());
+		//Debug.Log (jsonData.ToJSON ());
         // Get movement
         _myAvatar.sendSceneInfo = jsonData["send_scene_info"].ReadBool(false);
         cacheVel = _myAvatar.moveSpeed * jsonData["vel"].ReadVector3(Vector3.zero);

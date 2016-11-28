@@ -36,6 +36,7 @@ global tstart
 
 #path = 'C:/Users/mrowca/Documents/test'
 path = '/home/mrowca/Desktop/images'
+path = '/Users/damian/Desktop/test_images'
 #infodir = path + '_info'
 #if not os.path.exists(infodir):
 #    os.makedirs(infodir)
@@ -81,15 +82,32 @@ def make_new_batch(bn):
             number_of_frames = number_of_frames + 1;
             print(i)
             info, narray, oarray, imarray = handle_message(sock,
-                                                           write=True,
+                                                           write=False,
                                                            outdir=path, prefix=str(bn) + '_' + str(i))
-            if(reset == True):
+
+	    info = json.loads(info)
+	    
+	    #Print object information 
+	    #print '................'
+	    #print 'observed object 0'
+	    #print info['observed_objects'][0][0] #name
+	    #print info['observed_objects'][0][1] #ID
+	    #print info['observed_objects'][0][2] #position
+	    #print info['observed_objects'][0][3] #rotation
+	    
+	    print '................'
+	    print 'avatar'
+            print info['avatar_position']
+	    print info['avatar_rotation']
+	    print '................'
+
+	    if(reset == True):
               	tstart = time.time()
                 reset = False
             
             msg = {'n': 4,
                    'msg': {"msg_type": "CLIENT_INPUT",
-                           "get_obj_data": False,
+                           "get_obj_data": True,
                            "actions": []}}
 
             if i == 0:
@@ -254,8 +272,10 @@ def loop():
 		"disabled_items": [], #["SQUIRL", "SNAIL", "STEGOSRS"], // A list of item names to not use, e.g. ["lamp", "bed"] would exclude files with the word "lamp" or "bed" in their file path
 		"permitted_items": [""] , #[],["bed1", "sofa_blue", "lamp"]
                 "scale_relat_dict": {"http://threedworld.s3.amazonaws.com/46e777a46aa76681f4fb4dee5181bee.bundle": {"option": "Multi_size", "scale": 4}},  # option: "Absol_size", "Fract_room", "Multi_size"; TODO: implement "Fract_room"
-		"complexity": 10,
+		"complexity": 2000,
+		"random_materials": True,
 		"num_ceiling_lights": 4,
+		"intensity_ceiling_lights": 0.8,
 		"minimum_stacking_base_objects": 5,
 		"minimum_objects_to_stack": 5,
 		"room_width": 20.0,
@@ -280,7 +300,7 @@ def loop():
 	print "sending join..."
 	#sock.send_json({"msg_type" : "SWITCH_SCENES", "get_obj_data" : True, "send_scene_info" : True})
 	#sock.send_json({"msg_type" : "CLIENT_JOIN", "get_obj_data" : True, "send_scene_info" : True})
-        sock.send_json({"msg_type" : "CLIENT_JOIN_WITH_CONFIG", "config" : config, "get_obj_data" : True, "send_scene_info" : True})
+        sock.send_json({"msg_type" : "CLIENT_JOIN_WITH_CONFIG", "config" : config, "get_obj_data" : True, "send_scene_info" : True, "output_formats": ["png", "png", "jpg"]})
 	print "...join sent"
 
 	'''

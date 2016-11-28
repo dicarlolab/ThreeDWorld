@@ -33,7 +33,7 @@ public static class SimulationManager
     private static MyLogLevel logLevel = MyLogLevel.LogAll;
     private static MyLogLevel stackLogLevel = MyLogLevel.Warning;
 	private static string logFileLocation = "output_log.txt";
-	private static string portNumber = "5557";
+	private static string portNumber = "5556";
 	private static string hostAddress = getHostIP();
         private static string portNumber_info = "5555";
 #endregion
@@ -293,6 +293,7 @@ public static class SimulationManager
 				} else if (arg.StartsWith ("-preferredImageFormat=")) {
 					try {
 						preferredImageFormat = arg.Substring ("-preferredImageFormat=".IndexOf ("=") + 1);
+						Debug.LogWarning ("DEPRECATED! Each client can specify its own format on join now which will overwrite this setting!");
 					} catch {
 						Debug.LogWarning ("No targetFPS!"); 
 					}

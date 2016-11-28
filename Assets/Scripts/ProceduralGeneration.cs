@@ -644,8 +644,6 @@ public class ProceduralGeneration : MonoBehaviour
             var loadedAssetBundle = www.assetBundle;
             string[] assetList = loadedAssetBundle.GetAllAssetNames ();
 
-			System.Diagnostics.Stopwatch watch = new System.Diagnostics.Stopwatch();
-			watch.Start();
             foreach (string asset in assetList) { 
 
                 GameObject gObj = loadedAssetBundle.LoadAsset<GameObject> (asset);
@@ -665,8 +663,6 @@ public class ProceduralGeneration : MonoBehaviour
                 prefabList[temp_rand_index]     = info;
 
             }
-			watch.Stop();
-			Debug.Log("LOOP TIME:" + watch.Elapsed.TotalMilliseconds + " ms.");
             loadedAssetBundle.Unload (false);
         }
 
@@ -773,7 +769,8 @@ public class ProceduralGeneration : MonoBehaviour
 
                             //TODO SET MATERIAL GLOSSINESS AND METALLICNESS BASED ON DISTRIBUTION
                             if(randomMaterials) {
-								_mat.SetFloat("_Glossiness", Convert.ToSingle(_rand.NextDouble()));	
+								float glossiness = 0.5f + Convert.ToSingle(_rand.NextDouble()) * (1.0f - 0.5f);
+								_mat.SetFloat("_Glossiness", glossiness);	
 								_mat.SetFloat("_Metallic", Convert.ToSingle(_rand.NextDouble()));	
 							}
                             //TODO REMOVE _mat.renderQueue = 4001;
