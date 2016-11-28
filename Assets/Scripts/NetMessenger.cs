@@ -598,7 +598,6 @@ public class NetMessenger : MonoBehaviour
 				}
 				else {
 					_objInfo.Add(-1);
-					Debug.Log("Material doesn't have a color property '_idval', hence it was set to -1!");
 				}
             	_objInfo.Add(o.transform.position.ToJson());
             	_objInfo.Add(o.transform.rotation.ToJson());
