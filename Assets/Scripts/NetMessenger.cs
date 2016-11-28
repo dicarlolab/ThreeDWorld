@@ -613,7 +613,7 @@ public class NetMessenger : MonoBehaviour
             }
         }
         jsonData["avatar_position"] = a.transform.position.ToJson();
-        jsonData["avatar_rotation"] = a.transform.rotation.ToJson();
+        jsonData["avatar_rotation"] = a.transform.rotation.eulerAngles.ToJson();
 //        // Add in captured frames
 //        int numValues = Mathf.Min(streamCapture.shadersList.Count, streamCapture.capturedImages.Count);
 //        JSONArray imagesArray = new JsonData(JsonType.Array);

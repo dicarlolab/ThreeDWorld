@@ -26,16 +26,16 @@ def choose_action_position(objarray):
   pos = zip(xs, ys)
   return pos[rng.randint(len(pos))]
 
-def balance(position, rotation):
-  return [position, rotation]
-
-
 # bn integer
 def make_new_batch(bn, sock, path):
     # how many frames of action its allowed to take
     action_length = ACTION_LENGTH #(bsize - i) / 3
     # how long it waits after action end
     action_wait = ACTION_WAIT
+    # how long it waits when it gets stuck before it turns away
+    is_stuck = False
+    x_torque_prev = 360
+    z_torque_prev = 360
 
     bsize = BATCH_SIZE
     start = BATCH_SIZE * bn
@@ -73,9 +73,12 @@ def make_new_batch(bn, sock, path):
                            "get_obj_data": True,
                            "actions": []}}
 
-            balance(position, rotation)
+	    # if agent tilted move it back
+	    x_angle = info['avatar_rotation'][0]
+	    y_angle = info['avatar_rotation'][1]
+	    z_angle = info['avatar_rotation'][2]
 
-            if i == 0:
+	    if i == 0:
                 if bn == 0:
                     msg['msg']['get_obj_data'] = True
                 #print('turning at %d ... ' % i)
@@ -89,6 +92,37 @@ def make_new_batch(bn, sock, path):
                 objpi = []
                 aset = achoice[:]
                 amult = MULTSTART
+            elif (x_angle > 1 and x_angle < 359) or (z_angle > 1 and z_angle < 359):
+		print('standing back up')
+		x_torque = -0.01 * x_angle
+		z_torque = -0.01 * z_angle
+		x_torque = min(x_torque, -0.1)
+		z_torque = min(z_torque, -0.1)
+		
+		if x_angle > 180:
+		    x_torque = 0.01 * (360 - x_angle)
+		    x_torque = max(x_torque, 0.1)
+		
+		if z_angle > 180:
+		    z_torque = 0.01 * (360 - z_angle)
+		    z_torque = max(z_torque, 0.1)
+
+		if x_torque > x_torque_prev or z_torque > z_torque_prev:
+		    is_stuck = True
+
+		# if the agent is stuck rotate randomly
+		if is_stuck:
+		    print('teleport')
+		    msg['msg']['teleport_random'] = True
+        	    is_stuck = False
+		    x_torque_prev = 360
+		    z_torque_prev = 360
+		else:
+		    print('x-turn and z-turn')
+		    msg['msg']['ang_vel'] = [x_torque, 0 , z_torque]
+		msg['msg']['vel'] = [0, 0, 0]
+		x_torque_prev = x_torque
+		z_torque_prev = z_torque
             else:
                 oarray1 = 256**2 * oarray[:, :, 0] + 256 * oarray[:, :, 1] + oarray[:, :, 2]
                 obs = np.unique(oarray1)
@@ -135,7 +169,7 @@ def make_new_batch(bn, sock, path):
                     if frac0 < 0.005 and not action_started:
                         xs, ys = (oarray1 == chosen_o).nonzero()
                         pos = np.round(np.array(zip(xs, ys)).mean(0))
-                        if np.abs(SCREEN_WIDTH/2 - pos[1]) < 3:
+                        if np.abs(SCREEN_WIDTH/2 - pos[1]) < 10:
                             d = 0
                         else:
                             d =  -0.1 * np.sign(SCREEN_WIDTH/2 - pos[1])
