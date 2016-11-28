@@ -1,4 +1,4 @@
-# Upload the generated assetbundles to the AWS server
+# Upload the generated assetbundles to the AWS server or write the name to list_aws.txt
 
 import sys
 import os
