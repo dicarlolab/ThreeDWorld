@@ -356,7 +356,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetCam: {fileID: 20000013785537022}
-  shaderCam: {fileID: 0}
+  shaderCam: {fileID: 20000013489230540}
   testImage: {fileID: 0}
 --- !u!114 &114000012808683060
 MonoBehaviour:
@@ -370,7 +370,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetCam: {fileID: 20000013785537022}
-  shaderCam: {fileID: 0}
+  shaderCam: {fileID: 20000013489230540}
   testImage: {fileID: 0}
 --- !u!114 &114000013552895040
 MonoBehaviour:
@@ -384,7 +384,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetCam: {fileID: 20000013785537022}
-  shaderCam: {fileID: 0}
+  shaderCam: {fileID: 20000013489230540}
   testImage: {fileID: 0}
 --- !u!114 &114000013826100310
 MonoBehaviour:
