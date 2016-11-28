@@ -141,7 +141,9 @@ public class InputModule : AbstractInputModule
 				Vector3 torque = action ["torque"].ReadVector3 ();
 				torque = _myAvatar.transform.TransformDirection (torque);
 				foreach (SemanticObject o in allObjects) {
-					int idval = NetMessenger.colorUIDToInt(o.gameObject.GetComponentInChildren<Renderer> ().material.GetColor ("_idval"));
+					int idval = -999;
+					if(o.gameObject.GetComponentInChildren<Renderer>().material.HasProperty("_idval"))
+						idval = NetMessenger.colorUIDToInt(o.gameObject.GetComponentInChildren<Renderer> ().material.GetColor ("_idval"));
 					if (idval == id) {
 						Rigidbody rb = o.gameObject.GetComponentInChildren<Rigidbody> ();
 						rb.AddForce (force);

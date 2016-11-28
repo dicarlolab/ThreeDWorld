@@ -767,8 +767,6 @@ public class ProceduralGeneration : MonoBehaviour
             {
                     foreach (Material _mat in _rend.materials)
                     {
-                            _mat.SetColor("_idval", colorID);
-
                             //TODO SET MATERIAL GLOSSINESS AND METALLICNESS BASED ON DISTRIBUTION
                             if(randomMaterials) {
 								float glossiness = 0.5f + Convert.ToSingle(_rand.NextDouble()) * (1.0f - 0.5f);
@@ -776,8 +774,11 @@ public class ProceduralGeneration : MonoBehaviour
 								_mat.SetFloat("_Metallic", Convert.ToSingle(_rand.NextDouble()));	
 							}
 
+							// Always use standard shader
 							if(useStandardShader) 
 								_mat.shader = Shader.Find("Standard");
+
+							_mat.SetColor("_idval", colorID);
                     }
             }	
 	
