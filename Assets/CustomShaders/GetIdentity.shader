@@ -3,6 +3,9 @@
 		_idval ("Object Identity", Color) = (0, 0, 0, 0)
 	}
     SubShader {
+		Tags { 
+		      "Queue" = "Overlay+1" 
+		}
         Pass {
 
             CGPROGRAM

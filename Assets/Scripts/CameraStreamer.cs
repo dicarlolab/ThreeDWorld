@@ -35,6 +35,7 @@ public class CameraStreamer : MonoBehaviour
 
 #region Fields
     public Camera targetCam = null;
+    public Camera shaderCam = null;
     // Debug UI image that shows what this camera is rendering out
     public RawImage testImage = null;
 
@@ -210,13 +211,14 @@ public class CameraStreamer : MonoBehaviour
         {
             if(DEBUG)
                 Debug.Log ("Texture cam is null");
+
             GameObject newObj = new GameObject("Texture-Writing Camera");
             _textureCam = newObj.AddComponent<Camera>();
             _textureCam.enabled = false;
             _textureCam.targetTexture = new RenderTexture(targetCam.pixelWidth, targetCam.pixelHeight, 0, RenderTextureFormat.ARGB32);
 
             // Image Effects
-            if (targetCam != null)
+            if (true && targetCam != null)
             {
                 targetCam.hdr = true;
 
@@ -248,48 +250,17 @@ public class CameraStreamer : MonoBehaviour
                 testImage.texture = _textureCam.targetTexture;
         }
 
-
-        //if(shader_number == 0)
-        //{
-        //    targetCam.hdr = true;
-
-        //    // Tone Mapping
-        //    targetCam.gameObject.AddComponent<TonemappingColorGrading>();
-        //    var tonemapping = targetCam.gameObject.GetComponent<TonemappingColorGrading>().tonemapping; //ToneMappingSettings
-        //    tonemapping.enabled = true;
-        //    tonemapping.exposure = 2;
-        //    tonemapping.tonemapper = TonemappingColorGrading.Tonemapper.Photographic;
-        //    targetCam.gameObject.GetComponent<TonemappingColorGrading>().tonemapping = tonemapping;
-
-        //    // Eye Adaptation
-        //    var eyeadaptation = targetCam.gameObject.GetComponent<TonemappingColorGrading>().eyeAdaptation; //EyeAdaptationSettings
-        //    eyeadaptation.enabled = true;
-        //    targetCam.gameObject.GetComponent<TonemappingColorGrading>().eyeAdaptation = eyeadaptation;
-
-        //    // Depth of Field
-        //    targetCam.gameObject.AddComponent<DepthOfField>();
-
-        //    //Ambient Occlusion
-        //    targetCam.gameObject.AddComponent<AmbientOcclusion>();
-
-        //    //Screen Space Reflections
-        //    targetCam.renderingPath = RenderingPath.DeferredShading;
-        //    targetCam.gameObject.AddComponent<ScreenSpaceReflection>();
-        //}
-        //else if(shader_number == 1)
-        //{
-        //    Debug.Log("EFFECTS OFF");
-        //    Destroy(targetCam.gameObject.GetComponent<TonemappingColorGrading>());
-        //    Destroy(targetCam.gameObject.GetComponent<DepthOfField>());
-        //    Destroy(targetCam.gameObject.GetComponent<AmbientOcclusion>());
-        //    Destroy(targetCam.gameObject.GetComponent<ScreenSpaceReflection>());
-        //}
-
         // Call render with the appropriate shaders
         if (targetShader != null)
-            targetCam.RenderWithShader(targetShader, null);
+        {
+            RenderTexture.active = shaderCam.targetTexture;
+            shaderCam.RenderWithShader(targetShader, null);
+        }
         else
+        {
+            RenderTexture.active = targetCam.targetTexture;
             targetCam.Render();
+        }
         if (DEBUG && NetMessenger.logTimingInfo)
             Debug.LogFormat("  Finished Rendering {0}", Utils.GetTimeStamp());
 
@@ -301,8 +272,7 @@ public class CameraStreamer : MonoBehaviour
         if (_outPhoto == null || _outPhoto.width != pixWidth || _outPhoto.height != pixHeight) 
             _outPhoto = new Texture2D(pixWidth, pixHeight, TextureFormat.ARGB32, SHOULD_USE_MIPMAPS);
 
-		//Debug.Log ("pW: " + pixWidth + ", pH: " + pixHeight + ", opW: " + _outPhoto.width + ", opH" + _outPhoto.height);
-
+        //Debug.Log ("pW: " + pixWidth + ", pH: " + pixHeight + ", opW: " + _outPhoto.width + ", opH" + _outPhoto.height);
         _outPhoto.ReadPixels(new Rect(0, 0, pixWidth, pixHeight), 0, 0);
         _outPhoto.Apply();
 

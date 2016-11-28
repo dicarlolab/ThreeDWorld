@@ -1,10 +1,20 @@
 fileFormatVersion: 2
 guid: 6838632603741a1428102a46a4ed23d2
-timeCreated: 1453310807
-licenseType: Pro
+timeCreated: 1479381667
+licenseType: Free
 MonoImporter:
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - floorPrefab: {instanceID: 0}
+  - ceilingPrefab: {instanceID: 0}
+  - DEBUG_testCubePrefab: {instanceID: 0}
+  - DEBUG_testGridPrefab: {instanceID: 0}
+  - floorMaterial: {instanceID: 0}
+  - ceilingMaterial: {instanceID: 0}
+  - wallTrimMaterial: {instanceID: 0}
+  - windowMaterial: {instanceID: 0}
+  - skyboxMaterial: {instanceID: 0}
+  - windowTrimMaterial: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
