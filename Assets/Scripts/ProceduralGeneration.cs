@@ -1,4 +1,5 @@
-﻿//TODO:  -- more generic way to deterine object identity
+﻿
+//TODO:  -- more generic way to deterine object identity
 //       -- assign different identity to different walls
  
 using UnityEngine;
@@ -589,6 +590,8 @@ public class ProceduralGeneration : MonoBehaviour
             var loadedAssetBundle = www.assetBundle;
             string[] assetList = loadedAssetBundle.GetAllAssetNames ();
 
+			System.Diagnostics.Stopwatch watch = new System.Diagnostics.Stopwatch();
+			watch.Start();
             foreach (string asset in assetList) { 
 
                 GameObject gObj = loadedAssetBundle.LoadAsset<GameObject> (asset);
@@ -608,6 +611,8 @@ public class ProceduralGeneration : MonoBehaviour
                 prefabList[temp_rand_index]     = info;
 
             }
+			watch.Stop();
+			Debug.Log("LOOP TIME:" + watch.Elapsed.TotalMilliseconds + " ms.");
             loadedAssetBundle.Unload (false);
         }
 
@@ -768,7 +773,7 @@ public class ProceduralGeneration : MonoBehaviour
          *  Therefore, we base the number of lights and their intensities on the volume of each room.
          *  At first the intensity of each light is assumed to be constant.
          */
-		double scalingFactor = 0.0106;
+		double scalingFactor = 0.0156;
 		int totalNumberOfLights = Convert.ToInt32(scalingFactor * roomDimensions.x * roomDimensions.z);
 
 		if(numCeilingLights > 0)

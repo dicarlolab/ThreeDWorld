@@ -14,7 +14,7 @@ from curiosity.utils.io import (handle_message,
 				send_array,
 				recv_array)
 
-SCREEN_WIDTH = 640
+SCREEN_WIDTH = 256 #640
 
 BATCH_SIZE = 256
 MULTSTART = -1
@@ -93,6 +93,7 @@ def make_new_batch(bn):
                 oarray1 = 256**2 * oarray[:, :, 0] + 256 * oarray[:, :, 1] + oarray[:, :, 2]
                 obs = np.unique(oarray1)
                 obs = obs[obs > 10]
+                obs = obs[obs < 256]
                 if len(obs) == 0:
                     print('turning at %d ... ' % i)
                     msg['msg']['ang_vel'] = [0, 10 * (2 * rng.uniform() - 1), 0]

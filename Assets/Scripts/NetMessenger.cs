@@ -517,7 +517,7 @@ public class NetMessenger : MonoBehaviour
 		int r = (int)(colorUID.r * 256f);
 		int g = (int)(colorUID.g * 256f);
 		int b = (int)(colorUID.b * 256f);
-		return r*256*256 + g*256 + b;
+		return r * 256 * 256 + g * 256 + b;
 	}
 
     public void SendFrameUpdate(CameraStreamer.CaptureRequest streamCapture, Avatar a)

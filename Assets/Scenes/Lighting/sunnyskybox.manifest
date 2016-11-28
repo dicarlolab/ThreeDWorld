@@ -1,9 +1,9 @@
 ManifestFileVersion: 0
-CRC: 2838773866
+CRC: 2792064173
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 7b577865d06ab7ca38654c91fd33a6cc
+    Hash: 45dc76261979f1d8e726b8181275993e
   TypeTreeHash:
     serializedVersion: 2
     Hash: 6e91bf4d7bfc7c90eaa9aea5318d52d8
@@ -16,5 +16,5 @@ ClassTypes:
 - Class: 48
   Script: {instanceID: 0}
 Assets:
-- Assets/Scenes/Sunny1Skybox.mat
+- Assets/Scenes/Lighting/Sunny1Skybox.mat
 Dependencies: []

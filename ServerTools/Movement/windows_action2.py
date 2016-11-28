@@ -115,7 +115,7 @@ def loop():
 		"minimum_stacking_base_objects": 5,
 		"minimum_objects_to_stack": 5,
 		"room_width": 20.0,
-		"room_height": 5.0,
+		"room_height": 10.0,
 		"room_length": 20.0,
 		"wall_width": 1.0,
 		"door_width": 1.5,

@@ -4,6 +4,7 @@ using NetMQ;
 using System;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using UnityStandardAssets.CinematicEffects;
 
 /// <summary>
 /// Class that captures render output from a camera and returns a 
@@ -12,6 +13,7 @@ using System.Collections.Generic;
 [RequireComponent(typeof(Camera))]
 public class CameraStreamer : MonoBehaviour
 {
+    bool DEBUG = false;
 #region Data Structures
     // Simple class to make it more clear when passing picture image data
     public class CapturedImage
@@ -67,7 +69,8 @@ public class CameraStreamer : MonoBehaviour
     {
         if (_captureRequests.Contains(newRequest))
         {
-            Debug.Log("Already have a pending request");
+            if(DEBUG)
+                Debug.Log("Already have a pending request");
             return;
         }
         if (newRequest.shadersList == null)
@@ -83,10 +86,10 @@ public class CameraStreamer : MonoBehaviour
     // at the end of the frame(to avoid conflicts with the main rendering logic)
     public IEnumerator CaptureCoroutine()
     {
-        if (NetMessenger.logTimingInfo)
+        if (DEBUG && NetMessenger.logTimingInfo)
             Debug.LogFormat("Start CaptureCoroutine() {0}", Utils.GetTimeStamp());
         yield return new WaitForEndOfFrame();
-        if (NetMessenger.logTimingInfo)
+        if (DEBUG && NetMessenger.logTimingInfo)
             Debug.LogFormat("Reached end of frame {0}", Utils.GetTimeStamp());
         while(_captureRequests.Count > 0)
             ProcessCaptureRequest(_captureRequests.Dequeue());
@@ -120,8 +123,15 @@ public class CameraStreamer : MonoBehaviour
             request.capturedImages.Add(new CapturedImage());
 //            Debug.Log("Capture count now: " + request.capturedImages.Count);
         }
-        for(int i = 0; i < request.shadersList.Count; ++i)
-            request.capturedImages[i].pictureBuffer = TakeSnapshotNow(request.shadersList[i]).pictureBuffer;
+        for (int i = 0; i < request.shadersList.Count; ++i)
+        {
+            if(DEBUG)
+            {
+                Debug.Log("SHADER CALL");
+                Debug.Log(i);
+            }
+            request.capturedImages[i].pictureBuffer = TakeSnapshotNow(request.shadersList[i], i).pictureBuffer;
+        }
         if (request.callbackFunc != null)
             request.callbackFunc(request);
     }
@@ -184,18 +194,58 @@ public class CameraStreamer : MonoBehaviour
         }        
     }
 
+
     private CapturedImage TakeSnapshotNow(Shader targetShader, string outputFormat = "use_preferred_output_format")
     {
-        if (NetMessenger.logTimingInfo)
+        if(DEBUG)
+        {
+            Debug.Log("NAME SHADER");
+            if (targetShader != null)
+            { Debug.Log(targetShader.name); }
+        }
+
+
+        if (DEBUG && NetMessenger.logTimingInfo)
             Debug.LogFormat("Start TakeShapshotNow() {0} {1}", (targetShader == null) ? "(null)" : targetShader.name, Utils.GetTimeStamp());
         // Create a new camera if we need to that we will be manually rendering
         if (_textureCam == null)
         {
-			Debug.Log ("Texture cam is null");
+            if(DEBUG)
+                Debug.Log ("Texture cam is null");
             GameObject newObj = new GameObject("Texture-Writing Camera");
             _textureCam = newObj.AddComponent<Camera>();
             _textureCam.enabled = false;
             _textureCam.targetTexture = new RenderTexture(targetCam.pixelWidth, targetCam.pixelHeight, 0, RenderTextureFormat.ARGB32);
+
+            // Image Effects
+            if (targetCam != null)
+            {
+                targetCam.hdr = true;
+
+                // Tone Mapping
+                targetCam.gameObject.AddComponent<TonemappingColorGrading>();
+                var tonemapping = targetCam.gameObject.GetComponent<TonemappingColorGrading>().tonemapping; //ToneMappingSettings
+                tonemapping.enabled = true;
+                tonemapping.exposure = 2;
+                tonemapping.tonemapper = TonemappingColorGrading.Tonemapper.Photographic;
+                targetCam.gameObject.GetComponent<TonemappingColorGrading>().tonemapping = tonemapping;
+
+                // Eye Adaptation
+                var eyeadaptation = targetCam.gameObject.GetComponent<TonemappingColorGrading>().eyeAdaptation; //EyeAdaptationSettings
+                eyeadaptation.enabled = true;
+                targetCam.gameObject.GetComponent<TonemappingColorGrading>().eyeAdaptation = eyeadaptation;
+
+                // Depth of Field
+                targetCam.gameObject.AddComponent<DepthOfField>();
+
+                //Ambient Occlusion
+                targetCam.gameObject.AddComponent<AmbientOcclusion>();
+
+                //Screen Space Reflections
+                targetCam.renderingPath = RenderingPath.DeferredShading;
+                targetCam.gameObject.AddComponent<ScreenSpaceReflection>();
+            }
+
             if (testImage != null)
                 testImage.texture = _textureCam.targetTexture;
         }
@@ -205,7 +255,7 @@ public class CameraStreamer : MonoBehaviour
             targetCam.RenderWithShader(targetShader, null);
         else
             targetCam.Render();
-        if (NetMessenger.logTimingInfo)
+        if (DEBUG && NetMessenger.logTimingInfo)
             Debug.LogFormat("  Finished Rendering {0}", Utils.GetTimeStamp());
 
         // Copy and convert rendered image to PNG format as a byte array
@@ -216,17 +266,15 @@ public class CameraStreamer : MonoBehaviour
         if (_outPhoto == null || _outPhoto.width != pixWidth || _outPhoto.height != pixHeight) 
             _outPhoto = new Texture2D(pixWidth, pixHeight, TextureFormat.ARGB32, SHOULD_USE_MIPMAPS);
 
-		//Debug.Log ("pW: " + pixWidth + ", pH: " + pixHeight + ", opW: " + _outPhoto.width + ", opH" + _outPhoto.height);
-
         _outPhoto.ReadPixels(new Rect(0, 0, pixWidth, pixHeight), 0, 0);
         _outPhoto.Apply();
 
-        if (NetMessenger.logTimingInfo)
+        if (DEBUG && NetMessenger.logTimingInfo)
             Debug.LogFormat("  Created texture(internal format) {0}", Utils.GetTimeStamp());
 
         CapturedImage retImage = new CapturedImage();
 
-		if(outputFormat == "use_preferred_output_format") 
+	if(outputFormat == "use_preferred_output_format") 
         {
         	if (preferredImageFormat == "png")
             	retImage.pictureBuffer = _outPhoto.EncodeToPNG();
