@@ -31,6 +31,7 @@ public class ProceduralGeneration : MonoBehaviour
     public int complexityLevelToCreate = 100;
     public int numCeilingLights = 10;
     public float intensityCeilingLights = 1.0f;
+	public bool useStandardShader = false;
     public int minStackingBases = 0;
     public int forceStackedItems = 5;
     public int maxPlacementAttempts = 300;
@@ -127,6 +128,7 @@ public class ProceduralGeneration : MonoBehaviour
             complexityLevelToCreate = json["complexity"].ReadInt(complexityLevelToCreate);
             randomMaterials = json["random_materials"].ReadBool(false);
             numCeilingLights = json["num_ceiling_lights"].ReadInt(numCeilingLights);
+            useStandardShader = json["use_standard_shader"].ReadBool(false);
             intensityCeilingLights = json["intensity_ceiling_lights"].ReadFloat(intensityCeilingLights);
             minStackingBases = json["minimum_stacking_base_objects"].ReadInt(minStackingBases);
             forceStackedItems = json["minimum_objects_to_stack"].ReadInt(forceStackedItems);
@@ -773,7 +775,9 @@ public class ProceduralGeneration : MonoBehaviour
 								_mat.SetFloat("_Glossiness", glossiness);	
 								_mat.SetFloat("_Metallic", Convert.ToSingle(_rand.NextDouble()));	
 							}
-                            //TODO REMOVE _mat.renderQueue = 4001;
+
+							if(useStandardShader) 
+								_mat.shader = Shader.Find("Standard");
                     }
             }	
 	
@@ -835,10 +839,7 @@ public class ProceduralGeneration : MonoBehaviour
 		Vector3 ceilingSize = new Vector3(roomDimensions.x, 0, roomDimensions.z);
 		Vector3 ceilingStart = roomCenter + new Vector3(-0.5f * roomDimensions.x, roomDimensions.y, -0.5f * roomDimensions.z);
 
-        Debug.Log("SETTING SKYBOX!");
-        //var bundle = AssetBundle.LoadFromFile("Assets/Scenes/Lighting/" + "sunnyskybox_windows");
-        //Material levelMat = bundle.LoadAsset(bundle.GetAllAssetNames()[0]) as Material;
-        //RenderSettings.skybox = levelMat;
+		// set skybox to Material assigned to ProceduralGeneration prefab
         RenderSettings.skybox = skyboxMaterial;
 
         /* 
@@ -868,15 +869,6 @@ public class ProceduralGeneration : MonoBehaviour
         {
 			for(float j = ceilingStart.z + lengthLightDistance / 2.0f; j <= ceilingStart.x + ceilingSize.z; j = j + lengthLightDistance)
         	{
-        		/*GameObject lightGameObject = new GameObject("Point Light " + iter_light.ToString());
-        		Light lightComp = lightGameObject.AddComponent<Light>();
-        		lightComp.color = Color.white;
-				lightComp.range = 1.7f * roomDimensions.y;;
-        		lightComp.intensity = intensity;
-				lightComp.renderMode = LightRenderMode.ForcePixel;
-				lightComp.shadows = LightShadows.Soft;
-        		lightGameObject.transform.position = new Vector3(i, ceilingStart.y * 0.7f, j);*/
-
 				GameObject spotLightGameObject = new GameObject("Spot Light " + iter_light.ToString());
         		Light spotLight = spotLightGameObject.AddComponent<Light>();
         		spotLight.type = LightType.Spot;
@@ -886,7 +878,7 @@ public class ProceduralGeneration : MonoBehaviour
 				spotLight.spotAngle = 145.0f;
 				spotLight.renderMode = LightRenderMode.ForcePixel;
 				spotLight.shadows = LightShadows.Soft;
-				spotLightGameObject.transform.position = new Vector3(i, ceilingStart.y * 0.7f, j);
+				spotLightGameObject.transform.position = new Vector3(i, ceilingStart.y * 0.8f, j);
 				Quaternion rot = Quaternion.identity;
 				rot.eulerAngles = new Vector3(90, 0, 0);
 				spotLightGameObject.transform.rotation = rot;

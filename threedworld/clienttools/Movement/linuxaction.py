@@ -276,6 +276,7 @@ def loop():
 		"random_materials": True,
 		"num_ceiling_lights": 4,
 		"intensity_ceiling_lights": 0.8,
+		"use_standard_shader": True,
 		"minimum_stacking_base_objects": 5,
 		"minimum_objects_to_stack": 5,
 		"room_width": 20.0,
