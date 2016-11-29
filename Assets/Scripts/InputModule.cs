@@ -110,6 +110,14 @@ public class InputModule : AbstractInputModule
     // Parse the input sent from the client and use it to update the controls for the next simulation segment
     public override void HandleNetInput(JsonData jsonData, ref Vector3 targetVel)
     {
+        Vector3 angles;
+		angles.x = -1;
+		angles.y = -1;
+		angles.z = -1;
+        angles = jsonData["set_ang"].ReadVector3(angles);
+        if(angles.x + angles.y + angles.z != -3) {
+        	_myAvatar.setRotationEuler(angles);
+       	}
 		//Debug.Log (jsonData.ToJSON ());
         // Get movement
         _myAvatar.sendSceneInfo = jsonData["send_scene_info"].ReadBool(false);

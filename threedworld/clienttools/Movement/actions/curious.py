@@ -34,8 +34,11 @@ def make_new_batch(bn, sock, path):
     action_wait = ACTION_WAIT
     # how long it waits when it gets stuck before it turns away
     is_stuck = False
+    time_stuck = 2
+    direction_stuck = 1;
     x_torque_prev = 360
     z_torque_prev = 360
+    init_y_pos = 0
 
     bsize = BATCH_SIZE
     start = BATCH_SIZE * bn
@@ -72,12 +75,13 @@ def make_new_batch(bn, sock, path):
                    'msg': {"msg_type": "CLIENT_INPUT",
                            "get_obj_data": True,
                            "actions": []}}
-
+	    	    
 	    # if agent tilted move it back
 	    x_angle = info['avatar_rotation'][0]
 	    y_angle = info['avatar_rotation'][1]
 	    z_angle = info['avatar_rotation'][2]
-
+	    
+	    is_tilted = (x_angle > 5 and x_angle < 355) or (z_angle > 5 and z_angle < 355)
 	    if i == 0:
                 if bn == 0:
                     msg['msg']['get_obj_data'] = True
@@ -92,7 +96,9 @@ def make_new_batch(bn, sock, path):
                 objpi = []
                 aset = achoice[:]
                 amult = MULTSTART
-            elif (x_angle > 1 and x_angle < 359) or (z_angle > 1 and z_angle < 359):
+		# initial y-pos of agent
+		init_y_pos = info['avatar_position'][1]
+	    elif is_tilted or is_stuck:
 		print('standing back up')
 		x_torque = -0.01 * x_angle
 		z_torque = -0.01 * z_angle
@@ -108,22 +114,34 @@ def make_new_batch(bn, sock, path):
 		    z_torque = max(z_torque, 0.1)
 
 		if x_torque > x_torque_prev or z_torque > z_torque_prev:
+		    print('angle set')
+		    msg['msg']['set_ang'] = [0, y_angle, 0]
 		    is_stuck = True
 
 		# if the agent is stuck rotate randomly
 		if is_stuck:
-		    print('teleport')
-		    msg['msg']['teleport_random'] = True
-        	    is_stuck = False
-		    x_torque_prev = 360
-		    z_torque_prev = 360
+		    print('move backwards')
+		    #msg['msg']['teleport_random'] = False
+        	    if time_stuck > 0:
+		    	time_stuck = time_stuck - 1;
+		    else:
+			direction_stuck = np.sign(2 * rng.uniform() - 1);
+			time_stuck = 2;
+		    	is_stuck = False
+		    	x_torque_prev = 360
+		     	z_torque_prev = 360
+		    	chosen = False
+		    	action_started = False
+		    	action_done = False 
+		    msg['msg']['ang_vel'] = [0, 0.1 * direction_stuck, 0]
+		    msg['msg']['vel'] = [0, 0, -0.1]
 		else:
 		    print('x-turn and z-turn')
 		    msg['msg']['ang_vel'] = [x_torque, 0 , z_torque]
-		msg['msg']['vel'] = [0, 0, 0]
+		    msg['msg']['vel'] = [0, 0, 0]
 		x_torque_prev = x_torque
 		z_torque_prev = z_torque
-            else:
+	    else:
                 oarray1 = 256**2 * oarray[:, :, 0] + 256 * oarray[:, :, 1] + oarray[:, :, 2]
                 obs = np.unique(oarray1)
                 obs = obs[obs > 18]
@@ -224,7 +242,17 @@ def make_new_batch(bn, sock, path):
                             print 'MOVE OBJECT! ' + str(chosen_o)
                         if 'id' in action:
                             msg['msg']['actions'].append(action)
-            infolist.append(msg['msg'])
+            
+       	    if init_y_pos + 0.01 < info['avatar_position'][1]:
+		print('moving down')
+		if 'vel' in msg['msg']:
+		    msg['msg']['set_ang'] = [0, y_angle, 0]
+		    msg['msg']['vel'][1] = -0.1
+		else:
+		    msg['msg']['set_ang'] = [0, y_angle, 0]
+		    msg['msg']['vel'] = [0, -0.1, 0]
+
+	    infolist.append(msg['msg'])
             ims.append(imarray)
             norms.append(narray)
             objs.append(oarray)

@@ -126,6 +126,12 @@ public class Avatar : MonoBehaviour
 		}
     }
 
+    public void setRotationEuler(Vector3 newAngles) {
+		Quaternion avatarRotation = this.transform.rotation;
+		avatarRotation.eulerAngles = newAngles;
+		this.transform.rotation = avatarRotation;
+    }
+
     // Looks for all the SemanticObject's that are within the range
     public void UpdateObservedObjects()
     {
