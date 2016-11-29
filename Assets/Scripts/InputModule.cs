@@ -145,9 +145,9 @@ public class InputModule : AbstractInputModule
 				string str_id = action ["id"].ReadString ();
 				int id = int.Parse(str_id);
 				Vector3 force = action ["force"].ReadVector3 ();
-				force = _myAvatar.transform.TransformDirection (force);
+				//force = _myAvatar.transform.TransformDirection (force);
 				Vector3 torque = action ["torque"].ReadVector3 ();
-				torque = _myAvatar.transform.TransformDirection (torque);
+				//torque = _myAvatar.transform.TransformDirection (torque);
 				foreach (SemanticObject o in allObjects) {
 					int idval = -999;
 					if(o.gameObject.GetComponentInChildren<Renderer>().material.HasProperty("_idval"))
