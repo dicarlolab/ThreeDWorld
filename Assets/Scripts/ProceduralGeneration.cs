@@ -43,6 +43,7 @@ public class ProceduralGeneration : MonoBehaviour
     public float gridDim = 0.4f;
     public int use_mongodb_inter = 0; // 0 is for not, 1 is for using
     public int use_cache_self   = 0; // 0 is for not (using Loadfromcacheordownload, 1 is for using)
+    public int disable_rand_stacking = 1; //0 is for not disabling
     public string cache_folder  = "/Users/chengxuz/3Dworld/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/file_cache_test/";
     public bool shouldUseStandardizedSize = false;
     public Vector3 standardizedSize = Vector3.one;
@@ -144,6 +145,7 @@ public class ProceduralGeneration : MonoBehaviour
             use_mongodb_inter   = json["use_mongodb_inter"].ReadInt(use_mongodb_inter);
             use_cache_self      = json["use_cache_self"].ReadInt(use_cache_self);
             cache_folder        = json["cache_folder"].ReadString(cache_folder);
+            disable_rand_stacking   = json["disable_rand_stacking"].ReadInt(disable_rand_stacking);
             // scaleRelatDict = new LitJson.JsonData(json["scale_relat_dict"]);
             //scaleRelatDict = json["scale_relat_dict"];
         }
@@ -304,6 +306,9 @@ public class ProceduralGeneration : MonoBehaviour
             Debug.LogFormat("Stacking {0} objects: {1} types", forceStackedItems, itemsForStacking.Count);
         // Place stacking bases first so we can have more opportunities to stack on top
         _forceStackObject = true;
+
+        Debug.Log("Now plane number:" + _allHeightPlanes.Count);
+
         for(int i = 0; (i - _failures) < forceStackedItems && itemsForStacking.Count > 0; ++i)
             AddObjects(itemsForStacking);
         _failures = 0;
@@ -374,7 +379,10 @@ public class ProceduralGeneration : MonoBehaviour
             if (boundsHeight >= curHeightPlane.planeHeight || curHeightPlane.cornerPos.y + boundsHeight >= _curRoomHeight)
                 continue;
             // Only get grid squares which are valid to place on.
-            List<GridInfo> validValues = curHeightPlane.myGridSpots.FindAll((GridInfo info)=>{return info.rightSquares >= (boundsWidth-1) && info.downSquares > (boundsLength-1) && !info.inUse;});
+            
+            // List<GridInfo> validValues = curHeightPlane.myGridSpots.FindAll((GridInfo info)=>{return info.rightSquares >= (boundsWidth-1) && info.downSquares > (boundsLength-1) && !info.inUse;});
+            List<GridInfo> validValues = curHeightPlane.myGridSpots.FindAll((GridInfo info)=>{return info.rightSquares >= (boundsWidth-1) && info.downSquares > (boundsLength-1);});
+            //Debug.Log("Valid positions:" + validValues.Count);
             while(validValues.Count > 0 && !foundValid)
             {
 				int randIndex = _rand.Next(0, validValues.Count);
@@ -385,7 +393,8 @@ public class ProceduralGeneration : MonoBehaviour
                     Vector3 centerPos = curHeightPlane.cornerPos + new Vector3(gridDim * (testInfo.x + (0.5f * boundsWidth)), 0.1f+boundsHeight, gridDim * (testInfo.y + (0.5f * boundsLength)));
                     if (anchorType == GeneratablePrefab.AttachAnchor.Ceiling)
                         centerPos.y = _roomCornerPos.y + _curRoomHeight - (0.1f+boundsHeight);
-                    if (Physics.CheckBox(centerPos, testBounds.extents))
+                    if (Physics.CheckBox(centerPos, testBounds.extents) && (disable_rand_stacking == 1))
+                    //if (false)
                     {
                         // Found another object here, let the plane know that there's something above messing with some of the squares
                         string debugText = "";
@@ -775,7 +784,9 @@ public class ProceduralGeneration : MonoBehaviour
             // For stackable objects, create a new height plane to stack
             if (info.anchorType == GeneratablePrefab.AttachAnchor.Ground)
             {
-                targetHeightPlane.UpdateGrid(spawnX, spawnZ, boundsWidth, boundsLength);
+                if (disable_rand_stacking==1) {
+                    targetHeightPlane.UpdateGrid(spawnX, spawnZ, boundsWidth, boundsLength);
+                }
                 foreach(GeneratablePrefab.StackableInfo stackInfo in info.stackableAreas)
                 {
                     int width = Mathf.FloorToInt(stackInfo.dimensions.x / gridDim);
