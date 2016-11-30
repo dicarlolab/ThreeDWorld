@@ -17,7 +17,6 @@ from PIL import Image
 import time
 import logging
 import numpy as np
-import time
 import h5py
 import re
 import pymongo as pm
@@ -27,11 +26,26 @@ import matplotlib.patches as patches
 
 
 # Constants for image generation
-DEF_NUM_SCENE_SW = 5
-DEF_NUM_SCENE_IMG = 50
+DEF_NUM_SCENE_SW = 2
+DEF_NUM_SCENE_IMG = 20
 DEF_IMG_SIZE = [224, 224, 3]
 DEF_h5_filename = '/Users/pouyabashivan/Dropbox (MIT)/test_file.hdf5'
 DEF_OBJ_DISCARD_TH = 0.1  # Threshold value to discard objects in the image (as % of image occupied by each object)
+
+
+def static_vars(**kwargs):
+    """
+    Generic decorator function
+    :param kwargs: static variables
+    :return: function decorator
+    """
+
+    def decorate(func):
+        for k in kwargs:
+            setattr(func, k, kwargs[k])
+        return func
+
+    return decorate
 
 
 class TDWGenerator(TDW_Client):
@@ -127,46 +141,61 @@ class TDWGenerator(TDW_Client):
 
 
     @staticmethod
-    def create_obj_scale_dictionary(obj_names, cat_scales_dic):
+    def create_obj_scale_dictionary(obj_names, scales_dic, key_type='synset'):
         """
         Creates a dictionary containing association between objects in the list_aws file and their synset names given
-        A dictionary of desired category<>scale associations. Category names can be retrieved from the 'shapenet_synset'
-        field on the shapenet meta db. Example of such categories are:
-        'airplane', 'bag', 'bathtub', 'train'
+        A dictionary of desired category<>scale or synset<>scale associations.
+        Category names can be retrieved from the 'shapenet_synset' field on the shapenet meta db.
+        Example of such categories are: 'airplane', 'bag', 'bathtub', 'train'
 
         :param obj_names: list containing the object names
-        :param cat_scales_dic: A dictionary containing scale values for particualr class of objects
+        :param scales_dic: A dictionary containing scale values for particualr class of objects
+        :param key_type: Type of keys in scales_dic. Could be 'synset' (Default) or 'category'.
         :return: association dictionary with object names as keys
         """
-        print('Getting synset offsets from MongoDB...')
         try:
+            print('Getting synset offsets from MongoDB...')
             db_client = pm.MongoClient(port=22334)
             table = db_client['synthetic_generative']['3d_models']
             cursor = table.find({'type': 'shapenet',
                                  'version': 2,
                                  'id': {'$in': obj_names}})
-            obj_scale_dic = dict()  # Stores the table for id-scale correspondence
-            for doc in cursor:
-                # print(doc['shapenet_synset'])
-                offset = doc['shapenet_synset']
-                synset_name = wn._synset_from_pos_and_offset(offset[0], int(offset[1:])).name()
-                basic_name = synset_name.split('.')[0]  # Take the first part of the synset name
-                if basic_name in cat_scales_dic:
-                    obj_scale_dic["http://threedworld.s3.amazonaws.com/"+doc['id']+'.bundle'] = \
-                        {'option': 'Multi_size', 'scale': cat_scales_dic[basic_name]}
-                else:
-                    obj_scale_dic["http://threedworld.s3.amazonaws.com/"+doc['id']+'.bundle'] = \
-                        {'option': 'Multi_size', 'scale': 1}
+
+            if key_type == 'category':
+                obj_scale_dic = dict()  # Stores the table for id-scale correspondence
+                for doc in cursor:
+                    offset = doc['shapenet_synset']
+                    synset_name = wn._synset_from_pos_and_offset(offset[0], int(offset[1:])).name()
+                    basic_name = synset_name.split('.')[0]  # Take the first part of the synset name
+                    if basic_name in scales_dic:
+                        obj_scale_dic["http://threedworld.s3.amazonaws.com/"+doc['id']+'.bundle'] = \
+                            {'option': 'Multi_size', 'scale': scales_dic[basic_name]}
+                    else:
+                        obj_scale_dic["http://threedworld.s3.amazonaws.com/"+doc['id']+'.bundle'] = \
+                            {'option': 'Multi_size', 'scale': 1}
+            elif key_type == 'synset':
+                obj_scale_dic = dict()  # Stores the table for id-scale correspondence
+                for doc in cursor:
+                    offset = doc['shapenet_synset']
+                    if offset in scales_dic:
+                        obj_scale_dic["http://threedworld.s3.amazonaws.com/" + doc['id'] + '.bundle'] = \
+                            {'option': 'Multi_size', 'scale': scales_dic[offset]}
+                    else:
+                        obj_scale_dic["http://threedworld.s3.amazonaws.com/" + doc['id'] + '.bundle'] = \
+                            {'option': 'Multi_size', 'scale': 1}
+            else:
+                raise ValueError("Key type should be either: 'synset' or 'category'.")
+            print('Table created!')
+            db_client.close()
         except:
             print('Could not connect to DB. Create a SSH tunnel.')
             raise
-        print('Table created!')
-        db_client.close()
+
         return obj_scale_dic
 
 
     @staticmethod
-    def list_2_string(in_list):
+    def _list_2_string(in_list):
         """
         Makes a string representation of a python list.
         Use this function when the variable is a list.
@@ -177,7 +206,7 @@ class TDWGenerator(TDW_Client):
 
 
     @staticmethod
-    def var_2_string(in_var):
+    def _var_2_string(in_var):
         """
         Makes a string representation of a python variable.
         Use this function when the variable is anything other than a list.
@@ -188,7 +217,7 @@ class TDWGenerator(TDW_Client):
 
 
     @staticmethod
-    def string_2_list(in_string):
+    def _string_2_list(in_string):
         """
         Restore the original list from its string representation.
         Use this function when the orignial variable is a list.
@@ -199,7 +228,7 @@ class TDWGenerator(TDW_Client):
 
 
     @staticmethod
-    def string_2_var(in_string):
+    def _string_2_var(in_string):
         """
         Restore the original variable from its string representation.
         Use this function when the original variable is anything other than a list.
@@ -216,7 +245,7 @@ class TDWGenerator(TDW_Client):
         """
         self.sock.send_json({'n': 4, 'msg': {"msg_type": "CLIENT_INPUT", "teleport_random": True,
                                              'sendSceneInfo': False,
-                                             "ang_vel": np.random.uniform(low=-1, high=1, size=(3,)).tolist()
+                                             "ang_vel": np.random.uniform(low=-0.5, high=0.5, size=(3,)).tolist()
                                              }})
         return self._rcv_imageset()
 
@@ -242,7 +271,7 @@ class TDWGenerator(TDW_Client):
                     Image.open(StringIO(msg)).convert('RGB').show()
         else:
             logging.info('%' * 20 + ' Server Response ' + '%' * 20)
-            logging.info(server_response)
+            logging.info(server_response[:100])
             for i in range(3):
                 msg = self.sock.recv()
                 images.append(np.array(Image.open(StringIO(msg)).convert('RGB')))
@@ -284,8 +313,8 @@ class TDWGenerator(TDW_Client):
 
         return (min_row, min_col), max_row-min_row, max_col-min_col
 
-
-    def plot_bbox(self, image, bboxes):
+    @staticmethod
+    def plot_bbox(image, bboxes):
         """
         Plots the received image and and the object bounding boxes.
         :param image: Image containing the objects.
@@ -405,8 +434,16 @@ class TDWGenerator(TDW_Client):
         return self._rcv_imageset()
 
 
-    def test_timing(self):
-        pass
+    @staticmethod
+    @static_vars(current_time=time.time())
+    def time_lap():
+        """
+        Lap timer which returns time passed since the last time the timer has been called.
+        :return: Lap time
+        """
+        time_diff = time.time() - time_lap.current_time
+        time_lap.current_time = time.time()
+        return time_diff
 
 
 def main(args):
@@ -476,15 +513,20 @@ def main(args):
     # Check if the objects table exists
     assert gen.obj_labels_dic is not None, 'No world object table exists. Provide list of objects in the world.'
 
-    obj_scale_dic = gen.create_obj_scale_dictionary(gen.obj_labels_dic.keys(),
-                                                    {'train': 3,
-                                                     'airplane': 3,
-                                                     'bus': 3,
-                                                     'motorcycle': 2,
-                                                     'guitar': 3,
-                                                     'chair': 3,
-                                                     'sofa': 4
-                                                     })
+    # For object scales according to object category
+    # obj_scale_dic = gen.create_obj_scale_dictionary(gen.obj_labels_dic.keys(),
+    #                                                 {'train': 3,
+    #                                                  'airplane': 3,
+    #                                                  'bus': 3,
+    #                                                  'motorcycle': 2,
+    #                                                  'guitar': 3,
+    #                                                  'chair': 3,
+    #                                                  'sofa': 4
+    #                                                  })
+
+    # Try random object scales
+    rand_scales = np.random.randint(1, high=5, size=(len(gen.obj_labels_dic.keys()),))
+    obj_scale_dic = dict(zip(gen.obj_labels_dic.keys(), rand_scales))
 
     # Setup the world with predefined configuration
     config = {
@@ -541,10 +583,10 @@ def main(args):
         _, imageset = gen.generate_random_image()
         image_times.append(time.time() - loop_start_time)
         # Check whether the image contains objects and discard the labels for objects which are too small.
-        image_good, obj_ids, obj_color_codes, obj_pixel_counts = gen.process_image_objs(imageset,
+        image_good, obj_ids, obj_color_codes, obj_pixel_counts, bboxes = gen.process_image_objs(imageset,
                                                                                         scene_obj_colors_table)
         if image_good:
-            # Extract the labels vector from segmentation image.
+            # Extract the labels vector from image segmentation.
             obj_labels, obj_valid_flags = gen.extract_labels(obj_ids)
 
             # Images as flattened arrays
@@ -559,12 +601,12 @@ def main(args):
             ds_images[image_num] = imageset
 
             # Python dictionaries and lists should be stored as strings in HDF5 file.
-            ds_labels[image_num] = gen.var_2_string(obj_labels)
-            ds_ids[image_num] = gen.list_2_string(obj_ids)
-            ds_obj_pixel_counts[image_num] = gen.var_2_string(obj_pixel_counts)
-            ds_color_codes[image_num] = gen.var_2_string(obj_color_codes)
-            ds_valid_obj_flag[image_num] = gen.var_2_string(obj_valid_flags)
-            ds_image_info[image_num] = gen.var_2_string(image_info)
+            ds_labels[image_num] = gen._var_2_string(obj_labels)
+            ds_ids[image_num] = gen._list_2_string(obj_ids)
+            ds_obj_pixel_counts[image_num] = gen._var_2_string(obj_pixel_counts)
+            ds_color_codes[image_num] = gen._var_2_string(obj_color_codes)
+            ds_valid_obj_flag[image_num] = gen._var_2_string(obj_valid_flags)
+            ds_image_info[image_num] = gen._var_2_string(image_info)
             image_num += 1
         else:
             logging.info('Discarded image ({0}).'.format(discarded_images_count + 1))
