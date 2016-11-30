@@ -376,6 +376,10 @@ After generating the ".wrl" files through v-hacd, the script would call unity in
 
 Then, the script would upload the files to AWS server, so make sure you have the access to that.
 
+### Random stacking
+
+Set "disable\_rand\_stacking" to be 0 in scene\_config to enable random stacking, currently the object would be placed nearly at the same place, so the stacking might be very wild.
+
 # License
 
 Apache 2.0
