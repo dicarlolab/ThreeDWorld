@@ -2,11 +2,15 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Text.RegularExpressions;
 
 public class MaterialProcessor : AssetPostprocessor
 {
+	private static bool USE_REGRESSION = true;
+	private static string PYTHONPATH = "/usr/local/opt/python/bin/python2.7";
+
 	// path of the mtl file
 	private string mtlPath;
 
@@ -163,10 +167,19 @@ public class MaterialProcessor : AssetPostprocessor
         TrySetTexMap("map_bump", "_ParallaxMap", m, texDirectory, mtlFileContents);
         TrySetTexMap("bump", "_ParallaxMap", m, texDirectory, mtlFileContents);
         TrySetColor("Kd", "d", "_Color", m, mtlFileContents);
-        TrySetColor("Ks", null, "_SpecColor", m, mtlFileContents);
-        testString = LookUpMtlPrefix("Ns", mtlFileContents);
-        if (testString != null && float.TryParse(testString, out testVal))
-            m.SetFloat("_Glossiness", testVal * 0.001f);
+
+		if(USE_REGRESSION)
+		{
+			TryRegressProperties(m, mtlFileContents);
+		}
+		else 
+		{
+			TrySetColor("Ks", null, "_SpecColor", m, mtlFileContents);
+			testString = LookUpMtlPrefix("Ns", mtlFileContents);
+			if (testString != null && float.TryParse(testString, out testVal))
+				m.SetFloat("_Glossiness", testVal * 0.001f);
+        }
+
         AssetDatabase.SaveAssets();
     }
 
@@ -196,6 +209,44 @@ public class MaterialProcessor : AssetPostprocessor
         }
         mat.SetColor(shaderKey, newColor);
     }
+
+	private void TryRegressProperties(Material mat, string mtlContents)
+	{
+		float[] p = new float[14];
+		MaterialPropertyExtractor.ExtractAllProperties(mtlContents, ref p);
+
+		ProcessStartInfo start = new ProcessStartInfo();
+		start.FileName = PYTHONPATH;
+		string script =  "Scripts/Editor/MaterialProcessing/predict_material.py";
+		string reglib = "Scripts/Editor/MaterialProcessing/matregression.pkl";
+		start.Arguments = string.Format("{0} {1} {2} {3} {4} {5} " +
+							  "{6} {7} {8} {9} {10} {11} {12} {13} {14} {15}",
+							  Path.Combine(Application.dataPath, script),
+							  Path.Combine(Application.dataPath, reglib),
+							  p[0], p[1], p[2], p[3], p[4], p[5], p[6], p[7],
+							  p[8], p[9], p[10], p[11], p[12], p[13]);
+		start.UseShellExecute = false;
+		start.RedirectStandardOutput = true;
+
+		using(Process process = Process.Start(start))
+     	{
+        	using(StreamReader reader = process.StandardOutput)
+        	{
+        		Color specColor = new Color();
+        		specColor.r = float.Parse(reader.ReadLine());
+				specColor.g = float.Parse(reader.ReadLine());
+				specColor.b = float.Parse(reader.ReadLine());
+				specColor.a = float.Parse(reader.ReadLine());
+
+				float glossiness = float.Parse(reader.ReadLine());
+				float metallicness = float.Parse(reader.ReadLine());
+
+				mat.SetColor("_SpecColor", specColor);
+				mat.SetFloat("_Glossiness", glossiness);
+				mat.SetFloat("_Metallic", metallicness);
+			}
+		}
+	}
 
     private string LookUpMtlPrefix(string mtlKey, string mtlContents)
     {
