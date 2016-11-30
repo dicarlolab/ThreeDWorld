@@ -143,6 +143,9 @@ public class MaterialProcessor : AssetPostprocessor
         string fullPath = Path.Combine(Application.dataPath, materialLocation.Substring(7));
         Material m = AssetDatabase.LoadAssetAtPath<Material>(materialLocation);
 
+        if(m == null)
+        	return;
+
         string testString = null;
         float testVal = 0.0f;
         int testInt = 0;

@@ -138,6 +138,16 @@ public class PrefabDatabase : MonoBehaviour
 		return prefab;
 	}
 
+	public static void GarbageCollect () 
+	{
+		#if UNITY_EDITOR
+		EditorUtility.UnloadUnusedAssetsImmediate ();
+		#else
+		Resources.UnloadUnusedAssets();
+		#endif
+		GC.Collect ();
+	}
+
         // Not used now!
         /*
         public static GameObject LoadAssetFromBundleWWW_cache_in_file (string fileName, string _id_str, string aws_version, string cache_folder){
@@ -629,12 +639,6 @@ public class PrefabDatabase : MonoBehaviour
 
 	void Update ()
 	{
-	}
-
-	public static void GarbageCollect () 
-	{
-		EditorUtility.UnloadUnusedAssetsImmediate ();
-		GC.Collect ();
 	}
 
 	public static Dictionary<GameObject, string> ListSelectedPrefabs ()
