@@ -125,7 +125,6 @@ def make_new_batch(bn, sock, path):
 
 		if x_torque > x_torque_prev or z_torque > z_torque_prev:
 		    print('angle set')
-		    msg['msg']['set_ang'] = [0, y_angle, 0]
 		    is_stuck = True
 
 		# if the agent is stuck rotate randomly
@@ -144,7 +143,9 @@ def make_new_batch(bn, sock, path):
 		    	action_started = False
 		    	action_done = False 
 		    msg['msg']['ang_vel'] = [0, 0.1 * direction_stuck, 0]
-		    msg['msg']['vel'] = [0, 0, -0.1]
+		    msg['msg']['vel'] = [0, 0.1, -0.1]
+		elif x_torque < 0.01 or z_torque < 0.01:
+		    msg['msg']['set_ang'] = [0, y_angle, 0]
 		else:
 		    print('x-turn and z-turn')
 		    msg['msg']['ang_vel'] = [x_torque, 0 , z_torque]
@@ -196,7 +197,7 @@ def make_new_batch(bn, sock, path):
                         frac0 = fracs[obs.tolist().index(chosen_o)]
                     print('FRAC:', frac0, chosen, chosen_o, action_started, action_ind, action_done)
                     # reset if action is done
-		    if action_ind >= action_length + action_wait:
+		    if action_ind >= action_length + action_wait or action_done and action_started:
                         action_done = True
                         action_started = False
                         action_ind = 0
@@ -248,7 +249,7 @@ def make_new_batch(bn, sock, path):
                                     action['id'] = str(chosen_o)
                                     action['action_pos'] = map(float, objpi[-1])
                                     print 'MOVE OBJECT! ' + str(chosen_o)
-				elif action_type == 1:
+				elif action_type == 1 or action_type == 2:
 					obs_obj = info['observed_objects']
 					idx = find_in_observed_objects(chosen_o, obs_obj)
 					idx2 = find_in_observed_objects(chosen_o2, obs_obj)
@@ -300,7 +301,7 @@ def make_new_batch(bn, sock, path):
 			    action_ind = 0
                             action_type = rng.randint(2)
 			    action_started = True
-			    if action_type == 0:
+			    if action_type == 0 or action_type == 2:
                                 action['id'] = str(chosen_o)
                                 action['force'] = [a, 100 * (2 ** amult), 0]
                                 action['torque'] = [0, g, 0]
