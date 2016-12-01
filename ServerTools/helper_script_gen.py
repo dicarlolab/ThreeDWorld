@@ -44,6 +44,12 @@ if __name__ == "__main__":
         original_proj   = '/Users/chengxuz/3Dworld/ThreeDWorld/ServerTools/cmd_related/empty_project'
         unity_path      = '/Applications/Unity/Unity.app/Contents/MacOS/Unity'
         target_prefix   = '/Users/chengxuz/3Dworld/ThreeDWorld/Assets/Models/sel_objs/test_mine'
+    elif options.windowsflag==3: # 3 for freud
+        shapenet_prefix = '/home/chengxuz/data/threedworld_related/ShapeNetCore.v2'
+        project_path    = '/home/chengxuz/test_empty_all/test_empty_project_' + str(options.indexn) 
+        original_proj   = '/home/chengxuz/ThreeDWorld/ServerTools/cmd_related/empty_project'
+        unity_path      = '/opt/Unity/Editor/Unity'
+        target_prefix   = '/home/chengxuz/test_empty_all/temp_objs/now_objs_' + str(options.indexn)
 
     #target_prefix   = project_path + '/Assets/Models/sel_objs/temp_for_cmdRun'
     #target_bund_pre = project_path + '/Assets/PrefabDatabase/AssetBundles/Separated/'
@@ -60,6 +66,7 @@ if __name__ == "__main__":
         os.system('cp -r ' + new_path + ' ' + target_prefix)
     
     cmd_str     = "python script_obj2bundle.py --inputdir %s --projectdir %s --type shapenetremat --version 0 --unity %s --parallel 1 --emptyproject %s --forcebundle 1"
+    #cmd_str     = "python script_obj2bundle.py --inputdir %s --projectdir %s --type shapenettest --version 0 --unity %s --parallel 1 --emptyproject %s --forcebundle 1"
     now_cmd     = cmd_str % (target_prefix, project_path, unity_path, original_proj)
     print(now_cmd)
     os.system(now_cmd)
