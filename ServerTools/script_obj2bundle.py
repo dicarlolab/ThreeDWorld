@@ -98,6 +98,8 @@ if __name__=='__main__':
         exit()
     '''
 
+    #print(len(file_list))
+
     if options.forcevhacd==0:
         new_file_list   = []
         for file_name in file_list:
