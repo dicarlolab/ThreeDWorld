@@ -383,7 +383,7 @@ Set "disable\_rand\_stacking" to be 0 in scene\_config to enable random stacking
 
 ### Material Processing
 
-Make sure the python module "sklearn" is installed. Set the path of your python binary in MaterialProcessor.cs. After doing this, material parameter regression should work. 
+Make sure the python module "sklearn" (version >= 0.18.1) is installed. Set the path of your python binary in MaterialProcessor.cs. After doing this, material parameter regression should work. 
 
 # License
 
