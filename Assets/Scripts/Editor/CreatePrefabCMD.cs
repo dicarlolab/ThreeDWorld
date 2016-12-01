@@ -89,7 +89,7 @@ public class CreatePrefabCMD
                     //Debug.Log(now_obj_path);
                     //Debug.Log(now_id);
                     
-                    if (now_obj_path.ToLowerInvariant ().EndsWith (".obj")) {
+                    if ((now_obj_path.ToLowerInvariant ().EndsWith (".obj")) || (now_obj_path.ToLowerInvariant ().EndsWith (".obj,"))) {
                         AssetDatabase.ImportAsset (now_obj_path, ImportAssetOptions.ForceUpdate | ImportAssetOptions.ImportRecursive);
                     }
 
