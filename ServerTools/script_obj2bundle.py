@@ -186,7 +186,7 @@ if __name__=='__main__':
 
     ### Run the unity command 
 
-    cmd_tmp_unity   = "%s -batchmode -quit -projectPath %s -executeMethod CreatePrefabCMD.CreatePrefabFromModel_script -nographics -logFile -inputFile %s -outputFile %s"
+    cmd_tmp_unity   = "%s -batchmode -quit -projectPath %s -executeMethod CreatePrefabCMD.CreatePrefabFromModel_script -nographics -inputFile %s -outputFile %s"
 
     cmd_str         = cmd_tmp_unity % (options.unity, options.projectdir, "ServerTools/" + options.tmpname, "ServerTools/" + options.tmpnameunity)
     print("Run " + cmd_str)

@@ -29,7 +29,8 @@ if __name__ == "__main__":
         project_path    = '/home/chengxuz/test_empty_all/test_empty_project_' + str(options.indexn) 
         original_proj   = '/home/chengxuz/ThreeDWorld/ServerTools/cmd_related/empty_project'
         unity_path      = '/opt/Unity/Editor/Unity'
-        target_prefix   = '/home/chengxuz/ThreeDWorld/Assets/Models/sel_objs/subsample'
+        #target_prefix   = '/home/chengxuz/ThreeDWorld/Assets/Models/sel_objs/subsample'
+        target_prefix   = '/home/chengxuz/test_empty_all/temp_objs/now_objs_' + str(options.indexn)
         #bundle_path     = '/home/chengxuz/test_empty_all/bundle_all/'
     elif options.windowsflag==1: # 1 for windows
         shapenet_prefix = 'C:/Users/threed/Documents/shapenet/ShapeNetCore.v2'
@@ -49,16 +50,17 @@ if __name__ == "__main__":
 
     #os.system('cp -r ' + original_proj + project_path)
 
-    '''
+    if os.path.exists(target_prefix):
+        os.system('rm -r ' + target_prefix)
+    os.system('mkdir -p ' + target_prefix)
     for index_tmp in range(options.startn, max_lengthn):
         shapenet_info_tmp = test_coll[index_tmp]
         new_path    = os.path.join(shapenet_prefix, shapenet_info_tmp['shapenet_synset'][1:], shapenet_info_tmp['id'])
         #print(new_path)
         os.system('cp -r ' + new_path + ' ' + target_prefix)
-    '''
     
-    cmd_str     = "python script_obj2bundle.py --inputdir %s --projectdir %s --type shapenettest --version 0 --unity %s --parallel 1 --emptyproject %s --forcebundle 1"
+    cmd_str     = "python script_obj2bundle.py --inputdir %s --projectdir %s --type shapenetremat --version 0 --unity %s --parallel 1 --emptyproject %s --forcebundle 1"
     now_cmd     = cmd_str % (target_prefix, project_path, unity_path, original_proj)
     print(now_cmd)
     os.system(now_cmd)
-    #os.system('rm -r ' + project_path)
+    os.system('rm -r ' + project_path)
