@@ -27,8 +27,9 @@ if __name__ == "__main__":
     if options.windowsflag==0: # 0 for kanefsky
         shapenet_prefix = '/mnt/data/threedworld_related/ShapeNetCore.v2'
         project_path    = '/home/chengxuz/test_empty_all/test_empty_project_' + str(options.indexn) 
-        original_proj   = '/home/chengxuz/test_empty_project '
+        original_proj   = '/home/chengxuz/ThreeDWorld/ServerTools/cmd_related/empty_project'
         unity_path      = '/opt/Unity/Editor/Unity'
+        target_prefix   = '/home/chengxuz/ThreeDWorld/Assets/Models/sel_objs/subsample'
         #bundle_path     = '/home/chengxuz/test_empty_all/bundle_all/'
     elif options.windowsflag==1: # 1 for windows
         shapenet_prefix = 'C:/Users/threed/Documents/shapenet/ShapeNetCore.v2'
@@ -60,4 +61,4 @@ if __name__ == "__main__":
     now_cmd     = cmd_str % (target_prefix, project_path, unity_path, original_proj)
     print(now_cmd)
     os.system(now_cmd)
-    os.system('rm -r ' + project_path)
+    #os.system('rm -r ' + project_path)
