@@ -5,6 +5,7 @@
 - `zmq`
 - `tabulate`
 - `pick`
+- `sklearn`
 
 ## Download
 
@@ -379,6 +380,10 @@ Then, the script would upload the files to AWS server, so make sure you have the
 ### Random stacking
 
 Set "disable\_rand\_stacking" to be 0 in scene\_config to enable random stacking, currently the object would be placed nearly at the same place, so the stacking might be very wild.
+
+### Material Processing
+
+Make sure the python module "sklearn" is installed. Set the path of your python binary in MaterialProcessor.cs. After doing this, material parameter regression should work. 
 
 # License
 
