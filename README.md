@@ -5,7 +5,7 @@
 - `zmq`
 - `tabulate`
 - `pick`
-- `sklearn`
+- `sklearn >= 0.18.1`
 
 ## Download
 
