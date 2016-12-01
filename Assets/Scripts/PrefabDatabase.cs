@@ -184,9 +184,8 @@ public class PrefabDatabase : MonoBehaviour
 		foreach (GameObject obj in Selection.gameObjects) {
 
 			allSelected.Add (obj, AssetDatabase.GetAssetPath (obj));
-
-                        tmp_asset_path   = AssetDatabase.GetAssetPath (obj);
-                        Debug.Log(tmp_asset_path);
+			tmp_asset_path   = AssetDatabase.GetAssetPath (obj);
+            Debug.Log(tmp_asset_path);
 		}
 
 		foreach (UnityEngine.Object obj in Selection.objects) {
@@ -203,6 +202,14 @@ public class PrefabDatabase : MonoBehaviour
 						allSelected.Add (child, AssetDatabase.GetAssetPath (child));
 
                                                 tmp_asset_path   = AssetDatabase.GetAssetPath (child);
+
+                                                // Force reimport on .obj
+												if(tmp_asset_path.ToLowerInvariant().EndsWith(".obj"))
+												{
+													AssetDatabase.ImportAsset(tmp_asset_path, ImportAssetOptions.ForceUpdate | ImportAssetOptions.ImportRecursive);
+													Debug.LogError("FORCE REIMPORT: " + tmp_asset_path);
+												}
+
                                                 Debug.Log(tmp_asset_path);
                                                 //Debug.Log(AssetDatabase.LoadMainAssetAtPath(tmp_asset_path)==child);
 					}
