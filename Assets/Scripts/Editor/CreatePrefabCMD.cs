@@ -89,9 +89,11 @@ public class CreatePrefabCMD
                     //Debug.Log(now_obj_path);
                     //Debug.Log(now_id);
                     
+                    /*
                     if ((now_obj_path.ToLowerInvariant ().EndsWith (".obj")) || (now_obj_path.ToLowerInvariant ().EndsWith (".obj,"))) {
                         AssetDatabase.ImportAsset (now_obj_path, ImportAssetOptions.ForceUpdate | ImportAssetOptions.ImportRecursive);
                     }
+                    */
 
                     allSelected.Add (AssetDatabase.LoadMainAssetAtPath(now_obj_path) as GameObject, now_obj_path);
                     path_to_id.Add (now_obj_path, now_id);
