@@ -601,6 +601,7 @@ public class NetMessenger : MonoBehaviour
 				}
             	_objInfo.Add(o.transform.position.ToJson());
             	_objInfo.Add(o.transform.rotation.ToJson());
+            	_objInfo.Add(o.isStatic);
                 jsonData["observed_objects"].Add(_objInfo);
 
             }
@@ -613,7 +614,10 @@ public class NetMessenger : MonoBehaviour
             }
         }
         jsonData["avatar_position"] = a.transform.position.ToJson();
-        jsonData["avatar_rotation"] = a.transform.rotation.eulerAngles.ToJson();
+        jsonData["avatar_rotation"] = a.transform.up.ToJson();
+        jsonData["avatar_velocity"] = a.GetComponent<Rigidbody>().velocity.ToJson();
+        jsonData["avatar_angvel"] = a.GetComponent<Rigidbody>().angularVelocity.ToJson();
+
 //        // Add in captured frames
 //        int numValues = Mathf.Min(streamCapture.shadersList.Count, streamCapture.capturedImages.Count);
 //        JSONArray imagesArray = new JsonData(JsonType.Array);

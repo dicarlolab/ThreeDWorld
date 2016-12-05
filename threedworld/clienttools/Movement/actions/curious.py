@@ -1,4 +1,5 @@
 import numpy as np
+import scipy.linalg
 import json
 from curiosity.utils.io import (handle_message,
                                 send_array,
@@ -32,6 +33,18 @@ def find_in_observed_objects(idx, obs_obj):
 	if obs_obj[i][1] == idx:
 	    return i
     return -1
+
+def stabilize(rotation, angvel, stability=0.3, speed=0.5):
+    if(np.linalg.norm(angvel) == 0):
+        return [0, 0, 0]
+    ang = np.linalg.norm(angvel) * stability / speed;
+    rot = scipy.linalg.expm3(np.cross(np.eye(3), angvel/np.linalg.norm(angvel) * ang))
+    y_axis = np.array([-0.01, 1, 0])
+    y_pred = np.dot(rot, np.array(rotation))
+    torque = np.cross(y_pred, y_axis)
+    print rotation
+    return (torque * speed * speed).tolist()
+
 
 # bn integer
 def make_new_batch(bn, sock, path):
@@ -71,7 +84,7 @@ def make_new_batch(bn, sock, path):
             #print info['observed_objects'][0][1] #ID
             #print info['observed_objects'][0][2] #position
             #print info['observed_objects'][0][3] #rotation
-
+	    #print info['observed_objects'][0][4] #isStatic
             print '................'
             #print 'avatar'
             #print info['avatar_position']
@@ -84,18 +97,12 @@ def make_new_batch(bn, sock, path):
                            "actions": []}}
 	    	    
 	    # if agent tilted move it back
-	    x_angle = info['avatar_rotation'][0]
-	    y_angle = info['avatar_rotation'][1]
-	    z_angle = info['avatar_rotation'][2]
-	    
-	    is_tilted = (x_angle > 5 and x_angle < 355) or (z_angle > 5 and z_angle < 355)
+    
+	    is_tilted = info['avatar_rotation'][1] < 0.99
 	    # teleport and reinitialize
 	    if i == 0:
                 if bn == 0:
                     msg['msg']['get_obj_data'] = True
-                #print('turning at %d ... ' % i)
-                #msg['msg']['ang_vel'] = [0, 10 * (rng.uniform() - 1), 0]
-                #msg['msg']['vel'] = [0, 0, 1]
                 msg['msg']['teleport_random'] = True
                 chosen = False
                 action_started = False
@@ -110,54 +117,16 @@ def make_new_batch(bn, sock, path):
 	    # stand back up
 	    elif is_tilted or is_stuck:
 		print('standing back up')
-		x_torque = -0.01 * x_angle
-		z_torque = -0.01 * z_angle
-		x_torque = min(x_torque, -0.1)
-		z_torque = min(z_torque, -0.1)
-		
-		if x_angle > 180:
-		    x_torque = 0.01 * (360 - x_angle)
-		    x_torque = max(x_torque, 0.1)
-		
-		if z_angle > 180:
-		    z_torque = 0.01 * (360 - z_angle)
-		    z_torque = max(z_torque, 0.1)
-
-		if x_torque > x_torque_prev or z_torque > z_torque_prev:
-		    print('angle set')
-		    is_stuck = True
-
-		# if the agent is stuck rotate randomly
-		if is_stuck:
-		    print('move backwards')
-		    #msg['msg']['teleport_random'] = False
-        	    if time_stuck > 0:
-		    	time_stuck = time_stuck - 1;
-		    else:
-			direction_stuck = np.sign(2 * rng.uniform() - 1);
-			time_stuck = 2;
-		    	is_stuck = False
-		    	x_torque_prev = 360
-		     	z_torque_prev = 360
-		    	chosen = False
-		    	action_started = False
-		    	action_done = False 
-		    msg['msg']['ang_vel'] = [0, 0.1 * direction_stuck, 0]
-		    msg['msg']['vel'] = [0, 0.1, -0.1]
-		elif x_torque < 0.01 or z_torque < 0.01:
-		    msg['msg']['set_ang'] = [0, y_angle, 0]
-		else:
-		    print('x-turn and z-turn')
-		    msg['msg']['ang_vel'] = [x_torque, 0 , z_torque]
-		    msg['msg']['vel'] = [0, 0, 0]
-		x_torque_prev = x_torque
-		z_torque_prev = z_torque
+                msg['msg']['ang_vel'] = stabilize(info['avatar_rotation'], info['avatar_angvel'])
 	    # object interactions 
 	    else:
                 oarray1 = 256**2 * oarray[:, :, 0] + 256 * oarray[:, :, 1] + oarray[:, :, 2]
                 obs = np.unique(oarray1)
-                obs = obs[obs > 18]
-                obs = obs[obs < 256]
+		valido = []
+                for o in info['observed_objects']:
+                    if not o[4] and o[1] in obs:
+                        valido.append(o[1])
+                obs = np.array(valido)
 		# random searching for object
                 if len(obs) == 0:
                     print('turning at %d ... ' % i)
@@ -346,14 +315,12 @@ def make_new_batch(bn, sock, path):
 			    msg['msg']['actions'].append(action2)
             
 	    # move down 
-       	    if not (is_tilted or is_stuck) and init_y_pos + 0.01 < info['avatar_position'][1]:
+       	    if not is_tilted and init_y_pos + 0.01 < info['avatar_position'][1]:
 		print('moving down')
 		if 'vel' in msg['msg']:
-		    msg['msg']['set_ang'] = [0, y_angle, 0]
-		    msg['msg']['vel'][1] = -0.1
+                    msg['msg']['vel'][1] = -0.1
 		else:
-		    msg['msg']['set_ang'] = [0, y_angle, 0]
-		    msg['msg']['vel'] = [0, -0.1, 0]
+                    msg['msg']['vel'] = [0, -0.1, 0]'''
 
 	    infolist.append(msg['msg'])
             ims.append(imarray)

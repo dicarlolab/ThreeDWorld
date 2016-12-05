@@ -770,6 +770,7 @@ public class ProceduralGeneration : MonoBehaviour
             //newInstance.name = string.Format("{0} #{1} on {2}", newPrefab.name, (_curRoom != null) ? _curRoom.childCount.ToString() : "?", targetHeightPlane.name);
             
             newInstance.name = string.Format("{0}, {1}, {2}", info.fileName, newPrefab.name, (_curRoom != null) ? _curRoom.childCount.ToString() : "?");
+            newInstance.GetComponent<SemanticObject>().isStatic = false;
             Renderer[] RendererList = newInstance.GetComponentsInChildren<Renderer>();
             Color colorID = getNewUIDColor ();
             foreach (Renderer _rend in RendererList)
