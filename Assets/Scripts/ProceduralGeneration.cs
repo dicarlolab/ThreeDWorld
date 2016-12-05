@@ -789,7 +789,7 @@ public class ProceduralGeneration : MonoBehaviour
 								float METALLIC_STD = 0.271416832554f;
 
 								// Set glossiness using statistical properties derived from a test set
-                                float glossiness = GLOSS_MEAN;
+								float glossiness = GLOSS_MEAN;
 								if(_mat.HasProperty("_Glossiness"))
 									glossiness = _mat.GetFloat("_Glossiness");
 								glossiness = glossiness + Convert.ToSingle(_rand.NextDouble()) * GLOSS_STD * 2 - GLOSS_STD;
