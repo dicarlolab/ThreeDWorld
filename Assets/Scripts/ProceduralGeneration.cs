@@ -779,9 +779,15 @@ public class ProceduralGeneration : MonoBehaviour
                     {
                             //TODO SET MATERIAL GLOSSINESS AND METALLICNESS BASED ON DISTRIBUTION
                             if(randomMaterials) {
-								float glossiness = 0.5f + Convert.ToSingle(_rand.NextDouble()) * (1.0f - 0.5f);
-								_mat.SetFloat("_Glossiness", glossiness);	
-								_mat.SetFloat("_Metallic", Convert.ToSingle(_rand.NextDouble()));	
+								float glossiness = _mat.GetFloat("_Glossiness") + Convert.ToSingle(_rand.NextDouble()) * 0.2f - 0.1f;
+								glossiness = Mathf.Min(glossiness, 1.0f);
+								glossiness = Mathf.Max(glossiness, 0.0f);
+								_mat.SetFloat("_Glossiness", glossiness);
+
+								float metallic = _mat.GetFloat("_Metallic") + Convert.ToSingle(_rand.NextDouble()) * 0.2f - 0.1f;
+								metallic = Mathf.Min(metallic, 1.0f);
+								metallic = Mathf.Max(metallic, 0.0f);
+								_mat.SetFloat("_Metallic", metallic);	
 							}
 
 							// Always use standard shader
