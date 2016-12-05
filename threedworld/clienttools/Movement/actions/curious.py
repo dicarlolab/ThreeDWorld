@@ -315,13 +315,13 @@ def make_new_batch(bn, sock, path):
 			    msg['msg']['actions'].append(action2)
             
 	    # move down 
-       	    if not is_tilted and init_y_pos + 0.01 < info['avatar_position'][1]:
+       	    '''if not is_tilted and init_y_pos + 0.01 < info['avatar_position'][1]:
 		print('moving down')
 		if 'vel' in msg['msg']:
                     msg['msg']['vel'][1] = -0.1
 		else:
                     msg['msg']['vel'] = [0, -0.1, 0]
-
+            '''
 	    infolist.append(msg['msg'])
             ims.append(imarray)
             norms.append(narray)
