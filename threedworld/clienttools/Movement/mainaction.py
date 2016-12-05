@@ -10,18 +10,14 @@ import numpy as np
 import json
 from PIL import Image
 from StringIO import StringIO
-from actions.curious import make_new_batch
+import actions.curious # import make_new_batch
 from environment import config
+
+CREATE_HDF5 = False
 
 #path = 'C:/Users/mrowca/Documents/test'
 #path = '/home/mrowca/Desktop/images'
 path = '/Users/damian/Desktop/test_images'
-
-#file = h5py.File(path, mode='a')
-#valid = file.require_dataset('valid', shape=(N,), dtype=np.bool)
-#images = file.require_dataset('images', shape=(N, 256, 256, 3), dtype=np.uint8)
-#normals = file.require_dataset('normals', shape=(N, 256, 256, 3), dtype=np.uint8)
-#objects = file.require_dataset('objects', shape=(N, 256, 256, 3), dtype=np.uint8)
 
 #TODO: rather hacky, but works for now  
 s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -44,9 +40,10 @@ def loop():
 	print "...join sent"
 
 	bn = 0
+	agent = actions.curious.agent()
 	while True:
 		print "waiting on messages"
-		make_new_batch(bn, sock, path)
+                agent.make_new_batch(bn, sock, path, CREATE_HDF5)
 		print "messages received"
 		bn = bn + 1
 	
