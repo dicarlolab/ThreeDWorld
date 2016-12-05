@@ -320,7 +320,7 @@ def make_new_batch(bn, sock, path):
 		if 'vel' in msg['msg']:
                     msg['msg']['vel'][1] = -0.1
 		else:
-                    msg['msg']['vel'] = [0, -0.1, 0]'''
+                    msg['msg']['vel'] = [0, -0.1, 0]
 
 	    infolist.append(msg['msg'])
             ims.append(imarray)
