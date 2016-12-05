@@ -15,6 +15,8 @@ from environment import config
 
 CREATE_HDF5 = False
 
+SCENE_SWITCH = 0
+
 #path = 'C:/Users/mrowca/Documents/test'
 #path = '/home/mrowca/Desktop/images'
 path = '/Users/damian/Desktop/test_images'
@@ -42,6 +44,12 @@ def loop():
 	bn = 0
 	agent = actions.curious.agent()
 	while True:
+		if(SCENE_SWITCH != 0 and bn % SCENE_SWITCH == 0):
+			print "switching scene..."
+			for i in range(4):
+			    sock.recv();
+			sock.send_json({"msg_type" : "SCENE_SWITCH", "config" : config, "get_obj_data" : True, "send_scene_info" : True, "output_formats": ["png", "png", "jpg"]})
+			print "scene switched..."
 		print "waiting on messages"
                 agent.make_new_batch(bn, sock, path, CREATE_HDF5)
 		print "messages received"
