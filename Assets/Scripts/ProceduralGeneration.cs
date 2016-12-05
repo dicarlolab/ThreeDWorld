@@ -777,23 +777,37 @@ public class ProceduralGeneration : MonoBehaviour
             {
                     foreach (Material _mat in _rend.materials)
                     {
-                            //TODO SET MATERIAL GLOSSINESS AND METALLICNESS BASED ON DISTRIBUTION
+							// Always use standard shader
+							if(useStandardShader) 
+								_mat.shader = Shader.Find("Standard");
+
+                            // Set glossiness and metallic randomly
                             if(randomMaterials) {
-								float glossiness = _mat.GetFloat("_Glossiness") + Convert.ToSingle(_rand.NextDouble()) * 0.2f - 0.1f;
+								float GLOSS_MEAN = 0.588270935961f;
+								float GLOSS_STD = 0.265175303096f;
+								float METALLIC_MEAN = 0.145517241379f;
+								float METALLIC_STD = 0.271416832554f;
+
+								// Set glossiness using statistical properties derived from a test set
+                                float glossiness = GLOSS_MEAN;
+								if(_mat.HasProperty("_Glossiness"))
+									glossiness = _mat.GetFloat("_Glossiness");
+								glossiness = glossiness + Convert.ToSingle(_rand.NextDouble()) * GLOSS_STD * 2 - GLOSS_STD;
 								glossiness = Mathf.Min(glossiness, 1.0f);
 								glossiness = Mathf.Max(glossiness, 0.0f);
 								_mat.SetFloat("_Glossiness", glossiness);
 
-								float metallic = _mat.GetFloat("_Metallic") + Convert.ToSingle(_rand.NextDouble()) * 0.2f - 0.1f;
+								// Set metallic using statistical properties derived from a test set
+								float metallic = METALLIC_MEAN;
+								if(_mat.HasProperty("_Metallic"))
+									metallic = _mat.GetFloat("_Metallic");
+								metallic = metallic + Convert.ToSingle(_rand.NextDouble()) * METALLIC_STD * 2 - METALLIC_STD;
 								metallic = Mathf.Min(metallic, 1.0f);
 								metallic = Mathf.Max(metallic, 0.0f);
 								_mat.SetFloat("_Metallic", metallic);	
 							}
 
-							// Always use standard shader
-							if(useStandardShader) 
-								_mat.shader = Shader.Find("Standard");
-
+							// Add idval to shader
 							_mat.SetColor("_idval", colorID);
                     }
             }	

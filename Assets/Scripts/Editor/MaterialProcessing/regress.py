@@ -29,8 +29,8 @@ def func(x, a, b):
 def func(x, a, b, c, d):
     return a * np.exp(-b * x)/ (c + np.exp(-d * x))
 
-def func(x, a, b, c):
-    return a * np.exp( ( (x-b) ** 2 ) / (2 * (c ** 2)))
+def func(x, m, std):
+    return (1 / np.sqrt(2 * (std ** 2) * np.pi)) * np.exp( - ( (x - m) ** 2 ) / (2 * (std ** 2)))
     
 f = open("matparam.txt", "r")
 l = np.array([ map(float,line.split(',')) for line in f ])
@@ -95,6 +95,12 @@ print "SVR"
 print str(r1) + " " + str(r2) + " " + str(r3) + " " + str(r4) + " " + str(r5) + " " + str(r6)
 print "ground truth"
 print l[i,18:24]
+print "stats glossiness: "
+print np.std(l[:,22])
+print np.mean(l[:,22])
+print "stats metallic: "
+print np.std(l[:,23])
+print np.mean(l[:,23])
 
 # Debugging plotting functions
 #plt.hist(l[:,22])
