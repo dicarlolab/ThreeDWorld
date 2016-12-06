@@ -127,6 +127,23 @@ public class InputModule : AbstractInputModule
         if (jsonData["teleport_random"].ReadBool(false))
             _myAvatar.TeleportToValidPosition();
         _myAvatar.shouldCollectObjectInfo = jsonData["get_obj_data"].ReadBool(false);
+
+        //TODO
+		JsonData JsonOutputFormatList = jsonData["output_formats"];
+		if (JsonOutputFormatList != null) {
+			if (JsonOutputFormatList.Count != _myAvatar.outputFormatList.Count) {
+				Debug.LogError(_myAvatar.outputFormatList.Count.ToString() + 
+					" output formats need to be specified, one for each shader!" +
+					" Using standard output formats.");
+			}
+			List<string> outputFormatList = new List<string>();
+			for(int i = 0; i < JsonOutputFormatList.Count; i++) {
+				string outputFormat = JsonOutputFormatList[i].ReadString();
+				outputFormatList.Add(outputFormat);
+			}
+			_myAvatar.SetOutputFormatList(outputFormatList);
+		}
+
         List<string> relationships = new List<string>();
         if (!jsonData["relationships"].ReadList(ref relationships))
         {
