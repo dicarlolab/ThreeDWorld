@@ -9,7 +9,7 @@ config = {
 	"permitted_items": [""] , #[],["bed1", "sofa_blue", "lamp"]
 	"scale_relat_dict": {"http://threedworld.s3.amazonaws.com/46e777a46aa76681f4fb4dee5181bee.bundle": {"option": "Multi_size", "scale": 4}},  # option: "Absol_size", "Fract_room", "Multi_size"; TODO: implement "Fract_room"
 	"complexity": 10,
-	#"random_materials": True,
+	"random_materials": True,
 	"num_ceiling_lights": 4,
 	"intensity_ceiling_lights": 1,
 	"use_standard_shader": True,
@@ -33,6 +33,6 @@ config = {
 	"max_wall_twists": 3,
 	"max_placement_attempts": 300,   #Maximum number of failed placements before we consider a room fully filled.
 	"grid_size": 0.4,    #Determines how fine tuned a grid the objects are placed on during Proc. Gen. Smaller the number, the
-        #"use_mongodb_inter": 1, 
-        #"mongodb_items": {"shape_cons": {"find_argu": default_inquery, "choose_mode": "random", "choose_argu": {"number": 100, "seed": 0}}}
+        "use_mongodb_inter": 1, 
+        "mongodb_items": {"shape_cons": {"find_argu": default_inquery, "choose_mode": "random", "choose_argu": {"number": 100, "seed": 0}}}
 }

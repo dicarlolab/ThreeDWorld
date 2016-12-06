@@ -19,7 +19,7 @@ class agent:
 	ACTION_LENGTH = 15
 	ACTION_WAIT = 15
 
-	N = 1024
+	N = 1024000
 	valid = np.zeros((N,1)) 
 
 	rng = np.random.RandomState(0)
@@ -52,10 +52,9 @@ class agent:
 		return [0, 0, 0]
 	    ang = np.linalg.norm(angvel) * stability / speed;
 	    rot = scipy.linalg.expm3(np.cross(np.eye(3), angvel/np.linalg.norm(angvel) * ang))
-	    y_axis = np.array([-0.01, 1, 0])
+	    y_axis = np.array([0, 1, 0])
 	    y_pred = np.dot(rot, np.array(rotation))
 	    torque = np.cross(y_pred, y_axis)
-	    print rotation
 	    return (torque * speed * speed).tolist()
 
 
@@ -129,6 +128,14 @@ class agent:
 		    elif is_tilted:
 			print('standing back up')
 			msg['msg']['ang_vel'] = self.stabilize(info['avatar_rotation'], info['avatar_angvel'])
+                        #action_done = False
+                        #action_started = False
+                        #action_ind = 0
+                        #objpi = []
+                        #aset = self.achoice[:]
+                        #amult = self.MULTSTART
+                        #chosen = False
+                        #g = 7.5 * (2 * self.rng.uniform() - 1)
 		    # object interactions 
 		    else:
 			oarray1 = 256**2 * oarray[:, :, 0] + 256 * oarray[:, :, 1] + oarray[:, :, 2]
@@ -175,14 +182,14 @@ class agent:
 				frac0 = 0
 			    else:
 				frac0 = fracs[obs.tolist().index(chosen_o)]
-			    print('FRAC:', frac0, chosen, chosen_o, action_started, action_ind, action_done)
+			    #print('FRAC:', frac0, chosen, chosen_o, action_started, action_ind, action_done)
 			    # reset if action is done
 			    if action_ind >= action_length + action_wait or action_done and action_started:
 				action_done = True
 				action_started = False
 				action_ind = 0
 			    # if object too far and no action is performed move closer
-			    if frac0 < 0.005 and not action_started:
+			    if frac0 < 0.015 and not action_started:
 				xs, ys = (oarray1 == chosen_o).nonzero()
 				pos = np.round(np.array(zip(xs, ys)).mean(0))
 				if np.abs(self.SCREEN_WIDTH/2 - pos[1]) < 10:
@@ -325,14 +332,16 @@ class agent:
 				if 'id' in action2:
 				    msg['msg']['actions'].append(action2)
 		    
-		    # move down 
-		    '''if not is_tilted and init_y_pos + 0.01 < info['avatar_position'][1]:
-			print('moving down')
+		    # move down
+		    if not is_tilted and init_y_pos != info['avatar_position'][1]:
+			#print('moving up/down')
+                        gravity = info['avatar_position'][1] - init_y_pos
 			if 'vel' in msg['msg']:
-			    msg['msg']['vel'][1] = -0.1
+			    msg['msg']['vel'][1] = -0.1 * gravity
 			else:
-			    msg['msg']['vel'] = [0, -0.1, 0]
-		    '''
+			    msg['msg']['vel'] = [0, -0.1 * gravity, 0]
+		    
+		    #msg['msg']['output_formats'] = ["png", "png", "jpg"]
 		    infolist.append(msg['msg'])
 		    ims.append(imarray)
 		    norms.append(narray)

@@ -204,6 +204,9 @@ public class Avatar : MonoBehaviour
                 if (Physics.SphereCast(spawnTest, radius, Vector3.down, out hit, startHeight))
                 {
 					spawnTest.y += UnityEngine.Random.Range(0, hit.distance);
+					bool HOVER = true;
+					if(HOVER)
+						spawnTest.y += 0.1f;
                     transform.position = spawnTest;
                     transform.rotation = Quaternion.identity;
                     return;
