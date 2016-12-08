@@ -125,7 +125,7 @@ class agent:
 		for i in range(bsize):
 		    print(i)
 		    info, narray, oarray, imarray = handle_message(sock,
-								   write=True,
+								   write=False,
 								   outdir=path, prefix=str(bn) + '_' + str(i))
 
 		    info = json.loads(info)
@@ -367,7 +367,12 @@ class agent:
 						    print 'CRASH OBJECTS! ' + str(chosen_o) + ' ' + str(chosen_o2) + ' ' + str(mov) + ' ' + str(mov2) + ' ' + str(pos_obj) + ' ' + str(pos_obj2)+ ' ' + obs_obj[idx][0] + ' ' + obs_obj[idx2][0]
 						else:
 						    print 'CRASH NOT FOUND!'
-
+                                        elif action_type == 2:
+                                            action['force'] = [0, self.rng.rand(1)[0] * 10 + 48, 0]
+                                            action['torque'] = [0, 0, 0]
+                                            action['id'] = str(chosen_o)
+                                            action['action_pos'] = map(float, pos)
+                                            print 'LIFT OBJECT! ' + str(action['force']) + ' ' + str(chosen_o)
 				    else:
 					print(action_ind, i, 'waiting')
 					msg['msg']['vel'] = [0, 0, 0]
@@ -388,7 +393,7 @@ class agent:
 				    objpi = []
 				    objpi2 = []
 				    action_ind = 0
-				    action_type = self.rng.randint(2)
+				    action_type = self.rng.randint(3)
 				    action_started = True
 				    if action_type == 0:
 					action['id'] = str(chosen_o)
@@ -428,6 +433,13 @@ class agent:
 					else:
 					    action_done = True
 					    print 'CRASH NOT FOUND!'
+				    elif action_type == 2:
+				        action['force'] = [0, self.rng.rand(1)[0] * 10 + 48, 0]
+				        action['torque'] = [0, 0, 0]
+				        action['id'] = str(chosen_o)
+				        action['action_pos'] = map(float, pos)
+				        print 'LIFT OBJECT! ' + str(action['force']) + ' ' + str(chosen_o)
+
 				# add action if new action defined
 				if 'id' in action:
 				    msg['msg']['actions'].append(action)
