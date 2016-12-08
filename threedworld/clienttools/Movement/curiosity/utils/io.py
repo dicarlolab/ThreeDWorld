@@ -38,7 +38,7 @@ def handle_message(sock, write=False, outdir='', imtype='png', prefix=''):
         if not os.path.exists(outdir):
             os.mkdir(outdir)
         im.save(os.path.join(outdir, 'image_%s.%s' % (prefix, imtype)))
-        imo.save(os.path.join(outdir, 'objects_%s.%s' % (prefix, imtype)))
+        #imo.save(os.path.join(outdir, 'objects_%s.%s' % (prefix, imtype)))
         #with open(os.path.join(outdir, 'image_%s.%s' % (prefix, imtype)), 'w') as _f:
         #    _f.write(imstr)
         #with open(os.path.join(outdir, 'objects_%s.%s' % (prefix, imtype)), 'w') as _f:

@@ -10,7 +10,7 @@ import os
 class agent:
         is_init = True
 
-        SCREEN_WIDTH = 256 #640
+        SCREEN_WIDTH = 256 #512
 
 	BATCH_SIZE = 256
 	MULTSTART = -1
@@ -23,6 +23,7 @@ class agent:
 	valid = np.zeros((N,1)) 
 
 	rng = np.random.RandomState(0)
+        use_stabilization = True
 
 	def open_hdf5(self, path):
             h5path = os.path.join(path, 'dataset1')
@@ -47,17 +48,48 @@ class agent:
 		    return i
 	    return -1
 
-	def stabilize(self, rotation, angvel, stability=0.3, speed=0.5):
-	    if(np.linalg.norm(angvel) == 0):
-		return [0, 0, 0]
+	def stabilize(self, rotation, angvel, target_axis=[0,1,0], stability=0.3, speed=0.5):
+	    norm = np.linalg.norm(angvel)
+            if(norm == 0):
+		norm = np.array(1)
 	    ang = np.linalg.norm(angvel) * stability / speed;
-	    rot = scipy.linalg.expm3(np.cross(np.eye(3), angvel/np.linalg.norm(angvel) * ang))
-	    y_axis = np.array([0, 1, 0])
-	    y_pred = np.dot(rot, np.array(rotation))
-	    torque = np.cross(y_pred, y_axis)
+	    rot = scipy.linalg.expm3(np.cross(np.eye(3), angvel / norm * ang))
+	    target_axis = np.array(target_axis)
+	    target_pred = np.dot(rot, np.array(rotation))
+	    torque = np.cross(target_pred, target_axis)
 	    return (torque * speed * speed).tolist()
 
+        def rotate_smooth(self, current_up, current_angvel, target_rot, speed = 0.01):
+	    for i in range(len(target_rot)):
+	        if target_rot[i] > 360:
+		    target_rot[i] -= 360
+                if target_rot[i] < 0:
+		    target_rot[i] += 360
+	    print 'TARGET_ROT ' + str(target_rot)
+	#    direction = (np.array(target_rot) - np.array(current_rot))
+	#    print str(target_rot)
+	#    print str(current_rot)
+        #   direction = speed * direction
 
+	    target_rot = np.array(target_rot)
+	    target_rot = np.deg2rad(target_rot)
+	    # x axis rotation
+	    th = target_rot[0]
+	    rx = np.array([[1, 0, 0], [0, np.cos(th), np.sin(th)], [0, -np.sin(th), np.cos(th)]])
+	    # y axis rotation
+	    th = target_rot[1]
+	    ry = np.array([[np.cos(th), 0, -np.sin(th)], [0, 1, 0], [np.sin(th), 0, np.cos(th)]])
+	    # z axis rotation
+	    th = target_rot[2]
+	    rz = np.array([[np.cos(th), np.sin(th), 0], [-np.sin(th), np.cos(th), 0], [0, 0, 1]])
+
+	    target_axis = np.matmul(np.matmul(np.matmul(rx,ry), rz), current_up)
+ 
+	    # z rotation only does not work with [0, 0, 1] have to rotate around other axis
+            #if(target_axis == np.array([0, 0, 1])).all():
+            #    current_up = [0, 1, 0]
+	    #	target_axis = np.matmul(np.matmul(np.matmul(rx,ry), rz), current_up)
+            return target_axis #self.stabilize(current_up, current_angvel, target_axis)
 	# bn integer
 	def make_new_batch(self, bn, sock, path, create_hdf5):
 	    if(self.is_init and create_hdf5):
@@ -69,6 +101,17 @@ class agent:
 	    action_wait = self.ACTION_WAIT
 	    # how long it waits when it gets stuck before it turns away
 	    init_y_pos = 0
+
+	    # look around variables 
+            look_init_direction = [0, 0, 0]
+            look_length = 25
+	    look_around = 0
+            look_is_looking = 1
+            look_i = 0
+
+	    # turn variables
+  	    turn_on = False
+	    turn_length = 5
 
 	    bsize = self.BATCH_SIZE
 	    start = self.BATCH_SIZE * bn
@@ -82,7 +125,7 @@ class agent:
 		for i in range(bsize):
 		    print(i)
 		    info, narray, oarray, imarray = handle_message(sock,
-								   write=False,
+								   write=True,
 								   outdir=path, prefix=str(bn) + '_' + str(i))
 
 		    info = json.loads(info)
@@ -99,16 +142,21 @@ class agent:
 		    #print 'avatar'
 		    #print info['avatar_position']
 		    #print info['avatar_rotation']
+		    #print info['avatar_up']
 		    #print '................'
 
 		    msg = {'n': 4,
 			   'msg': {"msg_type": "CLIENT_INPUT",
 				   "get_obj_data": True,
-				   "actions": []}}
-			    
+				   "actions": []}}	    
 		    # if agent tilted move it back
-	    
-		    is_tilted = info['avatar_rotation'][1] < 0.99
+		    is_tilted = info['avatar_up'][1] < 0.99
+		    
+		    
+		    if look_around == 0: 
+                         look_around = self.rng.randint(5) + 1
+			 print look_around
+
 		    # teleport and reinitialize
 		    if i == 0:
 			if bn == 0:
@@ -124,10 +172,46 @@ class agent:
 			amult = self.MULTSTART
 			# initial y-pos of agent
 			init_y_pos = info['avatar_position'][1]
-		    # stand back up
-		    elif is_tilted:
+		    elif look_around == 1:
+                        # first look sequence - select target angle
+			if look_i == 0: 
+			    # store init looking direction
+			    if look_is_looking == 1:
+                                look_init_direction = info['avatar_rotation']
+			    target_angle = []
+			    random_angle = (self.rng.randint(30) - 15)
+                            target_angle.append(random_angle)
+			    random_angle = self.rng.randint(360) - 180;
+			    while(abs(random_angle) < 140):
+				 random_angle = (self.rng.randint(360) - 180);
+                            target_angle.append(random_angle)
+                            target_angle.append(0)
+			    target_axis = self.rotate_smooth(info['avatar_forward'], info['avatar_angvel'], target_angle)
+			    #if look_is_looking % 2 != 0: 
+			    #    target_angle = look_init_direction
+			look_i = look_i + 1
+			# end of one looking sequence
+                        if look_i == look_length:
+                            look_i = 0
+			    look_is_looking += 1
+		
+		        if look_is_looking % 2 == 0:
+			    msg['msg']['ang_vel'] = self.stabilize(info['avatar_up'], info['avatar_angvel'])
+			    #print "STAB: " + str(info['avatar_forward'])
+			else:
+	 		    print 'TARGET_ANGLE ' + str(target_angle)
+			    print 'AVATER ROT ' + str(info['avatar_rotation'])
+			    print 'IS LOOKING ' + str(look_is_looking)
+   			    print 'TARGET_AXIS ' + str(target_axis)
+			    msg['msg']['ang_vel'] = self.stabilize(info['avatar_forward'], info['avatar_angvel'], target_axis)
+		    	   
+
+			msg['msg']['vel'] = [0, 0, 0]
+			print 'LOOK AROUND!'		
+                    # stand back up
+		    elif is_tilted and self.use_stabilization:
 			print('standing back up')
-			msg['msg']['ang_vel'] = self.stabilize(info['avatar_rotation'], info['avatar_angvel'])
+			msg['msg']['ang_vel'] = self.stabilize(info['avatar_up'], info['avatar_angvel'])
                         #action_done = False
                         #action_started = False
                         #action_ind = 0
@@ -147,9 +231,27 @@ class agent:
 			obs = np.array(valido)
 			# random searching for object
 			if len(obs) == 0:
-			    print('turning at %d ... ' % i)
-			    msg['msg']['ang_vel'] = [0, 10 * (2 * self.rng.uniform() - 1), 0]
-			    msg['msg']['vel'] = [0, 0, 2 * (2 * self.rng.uniform() - 1)]
+			    print('turning at %d ... ' % i)			    
+       		    
+			    if not turn_on:
+			        turn_on = True
+                                t = 0
+				target_angle = []
+				target_angle.append(0)
+				random_angle = self.rng.randint(360) - 180;
+				while(abs(random_angle) < 140):
+				    random_angle = (self.rng.randint(360) - 180);
+				target_angle.append(random_angle)
+				target_angle.append(0)
+				target_axis = self.rotate_smooth(info['avatar_forward'], info['avatar_angvel'], target_angle)
+			        target_velocity = 2 * (2 * self.rng.uniform() - 1)
+			    if t == turn_length:
+			        turn_on = False
+			    t += 1
+			    
+			    #msg['msg']['ang_vel'] = [0, 10 * (2 * self.rng.uniform() - 1), 0]
+                            msg['msg']['ang_vel'] = self.stabilize(info['avatar_forward'], info['avatar_angvel'], target_axis)
+			    msg['msg']['vel'] = [0, 0, 0.1 * target_velocity]
 			    action_done = False
 			    action_started = False
 			    action_ind = 0
@@ -157,7 +259,7 @@ class agent:
 			    aset = self.achoice[:]
 			    amult = self.MULTSTART
 			    chosen = False
-			    g = 7.5 * (2 * self.rng.uniform() - 1)
+			    g = 7.5 * (2 * self.rng.uniform() - 1) 
 			# object selection
 			else:
 			    fracs = []
@@ -236,7 +338,7 @@ class agent:
 					    action['id'] = str(chosen_o)
 					    action['action_pos'] = map(float, objpi[-1])
 					    print 'MOVE OBJECT! ' + str(chosen_o)
-					elif action_type == 1 or action_type == 2:
+					elif action_type == 1:
 						obs_obj = info['observed_objects']
 						idx = self.find_in_observed_objects(chosen_o, obs_obj)
 						idx2 = self.find_in_observed_objects(chosen_o2, obs_obj)
@@ -288,7 +390,7 @@ class agent:
 				    action_ind = 0
 				    action_type = self.rng.randint(2)
 				    action_started = True
-				    if action_type == 0 or action_type == 2:
+				    if action_type == 0:
 					action['id'] = str(chosen_o)
 					action['force'] = [a, 100 * (2 ** amult), 0]
 					action['torque'] = [0, g, 0]

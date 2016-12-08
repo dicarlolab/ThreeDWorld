@@ -614,7 +614,10 @@ public class NetMessenger : MonoBehaviour
             }
         }
         jsonData["avatar_position"] = a.transform.position.ToJson();
-        jsonData["avatar_rotation"] = a.transform.up.ToJson();
+		jsonData["avatar_up"] = a.transform.up.ToJson();
+		jsonData["avatar_forward"] = a.transform.forward.ToJson();
+		jsonData["avatar_right"] = a.transform.right.ToJson();
+		jsonData["avatar_rotation"] = a.transform.rotation.eulerAngles.ToJson();
         jsonData["avatar_velocity"] = a.GetComponent<Rigidbody>().velocity.ToJson();
         jsonData["avatar_angvel"] = a.GetComponent<Rigidbody>().angularVelocity.ToJson();
 
