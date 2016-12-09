@@ -71,7 +71,6 @@ class agent:
 		    target_rot[i] -= 360
                 if target_rot[i] < 0:
 		    target_rot[i] += 360
-	    print 'TARGET_ROT ' + str(target_rot)
 	#    direction = (np.array(target_rot) - np.array(current_rot))
 	#    print str(target_rot)
 	#    print str(current_rot)
@@ -167,7 +166,6 @@ class agent:
 		    
 		    if look_around == 0: 
                          look_around = self.rng.randint(5) + 1
-			 print look_around
 
 		    # teleport and reinitialize
 		    if i == 0:
@@ -211,10 +209,6 @@ class agent:
 			    msg['msg']['ang_vel'] = self.stabilize(info['avatar_up'], info['avatar_angvel'])
 			    #print "STAB: " + str(info['avatar_forward'])
 			else:
-	 		    print 'TARGET_ANGLE ' + str(target_angle)
-			    print 'AVATER ROT ' + str(info['avatar_rotation'])
-			    print 'IS LOOKING ' + str(look_is_looking)
-   			    print 'TARGET_AXIS ' + str(target_axis)
 			    msg['msg']['ang_vel'] = self.stabilize(info['avatar_forward'], info['avatar_angvel'], target_axis)
 		    	   
 
@@ -222,7 +216,7 @@ class agent:
 			print 'LOOK AROUND!'		
                     # stand back up
 		    elif is_tilted and self.use_stabilization:
-			print('standing back up')
+			print('STANDING BACK UP')
 			msg['msg']['ang_vel'] = self.stabilize(info['avatar_up'], info['avatar_angvel'])
                         #action_done = False
                         #action_started = False
@@ -286,11 +280,13 @@ class agent:
 				objpi = []
 				aset = self.achoice[:]
 				amult = self.MULTSTART
-				chosen_o, index_o = self.choose(obs[np.argsort(fracs)[-10:]])
+				chosen_o, index_o = self.choose(obs[np.argsort(fracs)[-5:]])
+				chosen_o_name = obs_obj[self.find_in_observed_objects(chosen_o, obs_obj)][0]
 				chosen = True
-				print('Choosing object', chosen_o)
+				print 'CHOOSING OBJECT ' + str(chosen_o) + " " + str(chosen_o_name)
 				g = 15. * (2 * self.rng.uniform() - 1)
 				a = self.achoice[self.rng.randint(len(self.achoice))]
+			   	target_distance = self.rng.rand(1)[0] * 2 + 0.8
 			    # determine fraction and position of chosen objects
 			    if chosen_o not in obs.tolist():
 				frac0 = 0
@@ -301,8 +297,7 @@ class agent:
                                 if obs_idx != -1:
                                     pos3d = np.array(obs_obj[obs_idx][2])
 				    obs_dist = np.linalg.norm(pos3d - np.array(info['avatar_position']))
-				    print str(pos3d) + " " + str(np.array(info['avatar_position'])) + " " + str(obs_dist) + " " + str(obs_dist.size)
-			    #print('FRAC:', frac0, chosen, chosen_o, action_started, action_ind, action_done)
+		            #print('FRAC:', frac0, chosen, chosen_o, action_started, action_ind, action_done)
 			    # reset if action is done
 			    if action_ind >= action_length + action_wait or action_done and action_started:
 				action_done = True
@@ -310,7 +305,8 @@ class agent:
 				action_ind = 0
 				waiting = False
 			    # if object too far and no action is performed move closer
-			    if obs_dist.size != 0 and obs_dist > 1 and not action_started:
+			    if obs_dist.size != 0 and obs_dist > target_distance and not action_started:
+				print 'MOVING CLOSER TO ' + str(chosen_o)
 				xs, ys = (oarray1 == chosen_o).nonzero()
 				pos = np.round(np.array(zip(xs, ys)).mean(0))
 				if np.abs(self.SCREEN_WIDTH/2 - pos[1]) < 10:
@@ -319,7 +315,6 @@ class agent:
 				    d =  -0.1 * np.sign(self.SCREEN_WIDTH/2 - pos[1])
 				msg['msg']['vel'] = [0, 0, .25]
 				msg['msg']['ang_vel'] = [0, d, 0]
-				print(pos, d)
 			    # perform action on chosen object
 			    else:
 				xs, ys = (oarray1 == chosen_o).nonzero()
@@ -336,7 +331,6 @@ class agent:
 				    # if action is running and object is there, then perform action
 				    if action_ind < action_length and len(objpi) > 2:
 					dist = np.sqrt(((objpi[-2] - objpi[-1])**2).sum())
-					print('dist', dist)
 					# if object has not moved, reset action and remove already performed force from action set
 					if dist < 1:
 					    action_ind = 0
@@ -392,7 +386,7 @@ class agent:
                                             action['action_pos'] = map(float, pos)
                                             print 'LIFT OBJECT! ' + str(action['force']) + ' ' + str(chosen_o)
 				    else:
-					print(action_ind, i, 'waiting')
+					print('WAITING')
 					msg['msg']['vel'] = [0, 0, 0]
 					msg['msg']['ang_vel'] = [0, 0, 0]
 					msg['msg']['actions'] = []
