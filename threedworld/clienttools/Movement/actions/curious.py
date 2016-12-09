@@ -19,7 +19,7 @@ class agent:
 	ACTION_LENGTH = 15
 	ACTION_WAIT = 15
 
-	N = 1024000
+	N = 1024
 	valid = np.zeros((N,1)) 
 
 	rng = np.random.RandomState(0)
@@ -28,12 +28,18 @@ class agent:
 	def open_hdf5(self, path):
             h5path = os.path.join(path, 'dataset1')
             self.hdf5 = h5py.File(h5path, mode='a')
-	    self.valid = self.hdf5.require_dataset('valid', shape=(self.N,), dtype=np.bool)
-	    self.images = self.hdf5.require_dataset('images', shape=(self.N, 256, 256, 3), dtype=np.uint8)
-	    self.normals = self.hdf5.require_dataset('normals', shape=(self.N, 256, 256, 3), dtype=np.uint8)
-	    self.objects = self.hdf5.require_dataset('objects', shape=(self.N, 256, 256, 3), dtype=np.uint8)
 
-	def choose(self, x):
+        def get_hdf5_handles(self):
+            dt = h5py.special_dtype(vlen=str)
+            valid = self.hdf5.require_dataset('valid', shape=(self.N,), dtype=np.bool)
+            images = self.hdf5.require_dataset('images', shape=(self.N, 256, 256, 3), dtype=np.uint8)
+            normals = self.hdf5.require_dataset('normals', shape=(self.N, 256, 256, 3), dtype=np.uint8)
+            objects = self.hdf5.require_dataset('objects', shape=(self.N, 256, 256, 3), dtype=np.uint8)
+            worldinfos = self.hdf5.require_dataset('worldinfo', shape=(self.N,), dtype=dt)
+            agentactions = self.hdf5.require_dataset('actions', shape=(self.N,), dtype=dt)
+            return [valid, images, normals, objects, worldinfos, agentactions]
+
+        def choose(self, x):
 	  index = self.rng.randint(len(x))
 	  return [x[index], index]
 
@@ -92,9 +98,12 @@ class agent:
             return target_axis #self.stabilize(current_up, current_angvel, target_axis)
 	# bn integer
 	def make_new_batch(self, bn, sock, path, create_hdf5):
-	    if(self.is_init and create_hdf5):
-                self.open_hdf5(path)
-                is_init = False
+	    if(create_hdf5):
+                if(self.is_init):
+                    self.open_hdf5(path)
+                    is_init = False
+                self.valid, images, normals, objects, worldinfos, agentactions = self.get_hdf5_handles()
+
             # how many frames of action its allowed to take
 	    action_length = self.ACTION_LENGTH #(bsize - i) / 3
 	    # how long it waits after action end
@@ -122,6 +131,7 @@ class agent:
 		objs = []
 		norms = []
 		infolist = []
+		infs = []
 		for i in range(bsize):
 		    print(i)
 		    info, narray, oarray, imarray = handle_message(sock,
@@ -456,9 +466,10 @@ class agent:
 			    msg['msg']['vel'] = [0, -0.1 * gravity, 0]
 		    
 		    #msg['msg']['output_formats'] = ["png", "png", "jpg"]
-		    infolist.append(msg['msg'])
+		    infolist.append(json.dumps(msg['msg']))
 		    ims.append(imarray)
 		    norms.append(narray)
+		    infs.append(json.dumps(info))
 		    objs.append(oarray)
 		    sock.send_json(msg['msg'])
 		ims = np.array(ims)
@@ -466,16 +477,18 @@ class agent:
 		objs = np.array(objs)
 
 		if(create_hdf5):
-                    actioninfopath = os.path.join(path, str(bn) + '_action.json')
-		    with open(actioninfopath, 'w') as _f:
-		        json.dump(infolist, _f)
-                    objectinfopath = os.path.join(path, str(bn) + '_objects.json')
-                    with open(objectinfopath, 'w') as _f:
-                        json.dump(info, _f)
+                   #actioninfopath = os.path.join(path, str(bn) + '_action.json')
+                   #with open(actioninfopath, 'w') as _f:
+                   #    json.dump(infolist, _f)
+                   #objectinfopath = os.path.join(path, str(bn) + '_objects.json')
+                   #with open(objectinfopath, 'w') as _f:
+                   #    json.dump(infs, _f)
 
-		    self.images[start: end] = ims
-		    self.normals[start: end] = norms
-		    self.objects[start: end] = objs
+		    images[start: end] = ims
+		    normals[start: end] = norms
+		    objects[start: end] = objs
 		    self.valid[start: end] = True
+		    worldinfos[start: end] = infs
+		    agentactions[start: end] = infolist
 	    if(create_hdf5):
 	        self.hdf5.flush()
