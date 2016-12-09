@@ -108,6 +108,8 @@ In the example config message, there is one dictionary called "scale\_relat\_dic
 - "Multi\_size":
         Just multiple the native size by "scale"
 
+Besides those per-prefab options, you could set "enable\_global\_unit\_scale" to 1 in scene configuration to make every prefabs normalized by making their longest axis to be 1 unit.
+
 ## Creating new `enviroment_scene`
 
 There are no requirements for any given Unity scene to be an environment scene type. Even an empty scene will meet the requirements. However, if you want objects in your generated environment you will have to create this in one of two ways:
