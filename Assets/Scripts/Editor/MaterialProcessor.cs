@@ -9,7 +9,8 @@ using System.Text.RegularExpressions;
 public class MaterialProcessor : AssetPostprocessor
 {
 	private static bool USE_REGRESSION = true;
-	private static string PYTHONPATH = "/usr/local/opt/python/bin/python2.7";
+	//private static string PYTHONPATH = "/usr/local/opt/python/bin/python2.7";
+	private static string PYTHONPATH = "/usr/bin/python";
 
 	// path of the mtl file
 	private string mtlPath;

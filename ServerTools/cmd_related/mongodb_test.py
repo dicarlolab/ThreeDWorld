@@ -28,6 +28,7 @@ print(test_tmp[0])
 #print(test_coll[0])
 '''
 
-test_coll   = coll.find({'_id' : ObjectId('582e842b2d88a1e2b1a09722')})
+#test_coll   = coll.find({'_id' : ObjectId('582e842b2d88a1e2b1a09722')})
+test_coll   = coll.find({'type' : 'shapenettest'})
 print(test_coll.count())
 print(test_coll[0])

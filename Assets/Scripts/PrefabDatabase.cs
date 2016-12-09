@@ -173,14 +173,16 @@ public class PrefabDatabase : MonoBehaviour
 	{
 		Dictionary<GameObject, string> allSelected = new Dictionary<GameObject, string> ();
 
+        /*
                 string tmp_asset_path = "Assets/Models/sel_objs/test_mine/";
                 string[] dir = Directory.GetDirectories(tmp_asset_path);
                 foreach (string d_tmp in dir) {
                     Debug.Log(d_tmp);
                     Debug.Log(d_tmp + d_tmp.Remove(0, d_tmp.LastIndexOf ('/')) + ".obj");
                 }
+        */
 
-		//string tmp_asset_path;
+		string tmp_asset_path;
 		foreach (GameObject obj in Selection.gameObjects) {
 
 			allSelected.Add (obj, AssetDatabase.GetAssetPath (obj));

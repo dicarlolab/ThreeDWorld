@@ -26,3 +26,4 @@ obj/Debug/*
 *.x86_64
 *.exe
 *_Data/
+*.mat
