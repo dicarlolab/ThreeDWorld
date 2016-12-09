@@ -48,6 +48,7 @@ public class ProceduralGeneration : MonoBehaviour
     public int use_mongodb_inter = 0; // 0 is for not, 1 is for using
     public int use_cache_self   = 0; // 0 is for not (using Loadfromcacheordownload, 1 is for using)
     public int disable_rand_stacking = 1; //0 is for not disabling
+    public int enable_global_unit_scale = 0; //1 is for enabling
     public string cache_folder  = "/Users/chengxuz/3Dworld/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/file_cache_test/";
     public bool shouldUseStandardizedSize = false;
     public Vector3 standardizedSize = Vector3.one;
@@ -154,6 +155,7 @@ public class ProceduralGeneration : MonoBehaviour
             use_cache_self      = json["use_cache_self"].ReadInt(use_cache_self);
             cache_folder        = json["cache_folder"].ReadString(cache_folder);
             disable_rand_stacking   = json["disable_rand_stacking"].ReadInt(disable_rand_stacking);
+            enable_global_unit_scale    = json["enable_global_unit_scale"].ReadInt(enable_global_unit_scale);
             // scaleRelatDict = new LitJson.JsonData(json["scale_relat_dict"]);
             //scaleRelatDict = json["scale_relat_dict"];
         }
@@ -745,8 +747,14 @@ public class ProceduralGeneration : MonoBehaviour
         if (info.option_scale=="Absol_size")
         {
             float longest_axis      = info.bounds.size.magnitude;
-            Debug.Log("Longest axis: " + longest_axis.ToString());
+            //Debug.Log("Longest axis: " + longest_axis.ToString());
             modScale                = info.dynamic_scale/longest_axis;
+        }
+
+        if (enable_global_unit_scale==1){
+            float longest_axis      = info.bounds.size.magnitude;
+            //Debug.Log("Longest axis: " + longest_axis.ToString());
+            modScale                = 1/longest_axis;
         }
 
         HeightPlane targetHeightPlane;
