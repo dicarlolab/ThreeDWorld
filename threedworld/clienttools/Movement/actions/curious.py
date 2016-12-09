@@ -19,7 +19,7 @@ class agent:
 	ACTION_LENGTH = 15
 	ACTION_WAIT = 15
 
-	N = 1024
+	N = 1024000
 	valid = np.zeros((N,1)) 
 
 	rng = np.random.RandomState(0)
@@ -44,7 +44,7 @@ class agent:
 	  return [x[index], index]
 
 	def choose_action_position(self, objarray):
-	  xs, ys = (objarray > 2).nonzero()
+	  xs, ys = objarray.nonzero()
 	  pos = zip(xs, ys)
 	  return pos[self.rng.randint(len(pos))]
 
@@ -108,6 +108,7 @@ class agent:
 	    action_length = self.ACTION_LENGTH #(bsize - i) / 3
 	    # how long it waits after action end
 	    action_wait = self.ACTION_WAIT
+	    waiting = False
 	    # how long it waits when it gets stuck before it turns away
 	    init_y_pos = 0
 
@@ -139,6 +140,7 @@ class agent:
 								   outdir=path, prefix=str(bn) + '_' + str(i))
 
 		    info = json.loads(info)
+		    obs_obj = info['observed_objects']
 
 		    #Print object information 
 		    #print '................'
@@ -240,7 +242,7 @@ class agent:
 				valido.append(o[1])
 			obs = np.array(valido)
 			# random searching for object
-			if len(obs) == 0:
+			if len(obs) == 0 and not waiting:
 			    print('turning at %d ... ' % i)			    
        		    
 			    if not turn_on:
@@ -289,19 +291,26 @@ class agent:
 				print('Choosing object', chosen_o)
 				g = 15. * (2 * self.rng.uniform() - 1)
 				a = self.achoice[self.rng.randint(len(self.achoice))]
-			    # determine fraction of chosen objects
+			    # determine fraction and position of chosen objects
 			    if chosen_o not in obs.tolist():
 				frac0 = 0
+				obs_dist = np.array([])
 			    else:
 				frac0 = fracs[obs.tolist().index(chosen_o)]
+                                obs_idx = self.find_in_observed_objects(chosen_o, obs_obj)
+                                if obs_idx != -1:
+                                    pos3d = np.array(obs_obj[obs_idx][2])
+				    obs_dist = np.linalg.norm(pos3d - np.array(info['avatar_position']))
+				    print str(pos3d) + " " + str(np.array(info['avatar_position'])) + " " + str(obs_dist) + " " + str(obs_dist.size)
 			    #print('FRAC:', frac0, chosen, chosen_o, action_started, action_ind, action_done)
 			    # reset if action is done
 			    if action_ind >= action_length + action_wait or action_done and action_started:
 				action_done = True
 				action_started = False
 				action_ind = 0
+				waiting = False
 			    # if object too far and no action is performed move closer
-			    if frac0 < 0.015 and not action_started:
+			    if obs_dist.size != 0 and obs_dist > 1.7 and not action_started:
 				xs, ys = (oarray1 == chosen_o).nonzero()
 				pos = np.round(np.array(zip(xs, ys)).mean(0))
 				if np.abs(self.SCREEN_WIDTH/2 - pos[1]) < 10:
@@ -349,7 +358,6 @@ class agent:
 					    action['action_pos'] = map(float, objpi[-1])
 					    print 'MOVE OBJECT! ' + str(chosen_o)
 					elif action_type == 1:
-						obs_obj = info['observed_objects']
 						idx = self.find_in_observed_objects(chosen_o, obs_obj)
 						idx2 = self.find_in_observed_objects(chosen_o2, obs_obj)
 
@@ -388,11 +396,13 @@ class agent:
 					msg['msg']['vel'] = [0, 0, 0]
 					msg['msg']['ang_vel'] = [0, 0, 0]
 					msg['msg']['actions'] = []
+					waiting = True
 				    action_ind += 1
 				    if action_done or (action_ind >= action_length + action_wait):
 					action_done = True
 					chosen = False
 					action_started = False
+					waiting = False
 				# start new action
 				elif not action_started:
 				    chosen_o2 = chosen_o
@@ -413,7 +423,6 @@ class agent:
 					print 'MOVE OBJECT! ' + str(chosen_o)
 
 				    elif action_type == 1:
-					obs_obj = info['observed_objects']
 					idx = self.find_in_observed_objects(chosen_o, obs_obj)
 					idx2 = self.find_in_observed_objects(chosen_o2, obs_obj)
 					

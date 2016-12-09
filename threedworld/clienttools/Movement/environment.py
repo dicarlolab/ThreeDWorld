@@ -12,7 +12,7 @@ config = {
 	"disabled_items": [], #["SQUIRL", "SNAIL", "STEGOSRS"], // A list of item names to not use, e.g. ["lamp", "bed"] would exclude files with the word "lamp" or "bed" in their file path
 	"permitted_items": [""] , #[],["bed1", "sofa_blue", "lamp"]
 	"scale_relat_dict": {"http://threedworld.s3.amazonaws.com/46e777a46aa76681f4fb4dee5181bee.bundle": {"option": "Multi_size", "scale": 4}},  # option: "Absol_size", "Fract_room", "Multi_size"; TODO: implement "Fract_room"
-	"complexity": 4000,
+	"complexity": 100,
 	"random_materials": True,
 	"num_ceiling_lights": 4,
 	"intensity_ceiling_lights": 1,
@@ -35,8 +35,9 @@ config = {
 	"min_hallway_width": 5.0,
 	"number_rooms": 1,
 	"max_wall_twists": 3,
+	"enable_global_unit_scale": 1,
 	"max_placement_attempts": 300,   #Maximum number of failed placements before we consider a room fully filled.
 	"grid_size": 0.4,    #Determines how fine tuned a grid the objects are placed on during Proc. Gen. Smaller the number, the
         "use_mongodb_inter": 1, 
-        "mongodb_items": {"shape_cons": {"find_argu": shapenet_inquery, "choose_mode": "random", "choose_argu": {"number": 100, "seed": 0}}, "dosch":  {"find_argu": dosch_inquery, "choose_mode": "random", "choose_argu": {"number": 0, "seed": 0}}}
+        "mongodb_items": {"shape_cons": {"find_argu": shapenet_inquery, "choose_mode": "random", "choose_argu": {"number": 0, "seed": 0}}, "dosch":  {"find_argu": dosch_inquery, "choose_mode": "random", "choose_argu": {"number": 10, "seed": 0}}}
 }
