@@ -310,7 +310,7 @@ class agent:
 				action_ind = 0
 				waiting = False
 			    # if object too far and no action is performed move closer
-			    if obs_dist.size != 0 and obs_dist > 1.7 and not action_started:
+			    if obs_dist.size != 0 and obs_dist > 1 and not action_started:
 				xs, ys = (oarray1 == chosen_o).nonzero()
 				pos = np.round(np.array(zip(xs, ys)).mean(0))
 				if np.abs(self.SCREEN_WIDTH/2 - pos[1]) < 10:

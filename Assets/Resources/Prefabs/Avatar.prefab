@@ -185,7 +185,7 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
-  field of view: 60
+  field of view: 107
   orthographic: 0
   orthographic size: 5
   m_Depth: -1
@@ -219,7 +219,7 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
-  field of view: 60
+  field of view: 107
   orthographic: 0
   orthographic size: 5
   m_Depth: -1
@@ -253,7 +253,7 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
-  field of view: 60
+  field of view: 107
   orthographic: 0
   orthographic size: 5
   m_Depth: -1
@@ -275,7 +275,7 @@ MeshRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000010787762006}
-  m_Enabled: 0
+  m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_MotionVectors: 1
@@ -398,6 +398,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   identifier: 
+  isStatic: 1
 --- !u!135 &135000010043974536
 SphereCollider:
   m_ObjectHideFlags: 1
