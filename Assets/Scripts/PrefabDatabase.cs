@@ -22,13 +22,30 @@ public class PrefabDatabase : MonoBehaviour
 		public GeneratablePrefab.AttachAnchor anchorType = GeneratablePrefab.AttachAnchor.Ground;
 		public Bounds bounds;
 		public List<GeneratablePrefab.StackableInfo> stackableAreas = new List<GeneratablePrefab.StackableInfo> ();
-		public string option_scale = "NULL";
+
+        // Properties related to scale
+		public string option_scale  = "NULL";
 		// for option of how scale should happen
-		public float dynamic_scale = 1f;
-                public int loaded = 1; // 1 means already loaded, otherwise would load it again (just for remote assetbundles)
-                public string aws_version = "0";
-                public string _id_str = "";
-		// for the dynamic scale come with option
+		public float dynamic_scale  = 1f;
+        public float scale_var      = 1f;
+        public int scale_seed       = 0;
+        public bool use_global_rand = true;
+        public int rand_index       = 0;
+        public bool apply_to_inst   = false;
+        public float first_rand     = 0f;
+
+        public int loaded = 1; // 1 means already loaded, otherwise would load it again (just for remote assetbundles)
+        public string aws_version = "0";
+        public string _id_str = "";
+
+        public void set_scale(LitJson.JsonData json_now){
+            option_scale    = json_now["option"].ReadString(option_scale);
+            dynamic_scale   = json_now["scale"].ReadFloat(dynamic_scale);
+            scale_var       = json_now["var"].ReadFloat(scale_var);
+            scale_seed      = json_now["seed"].ReadInt(scale_seed);
+            use_global_rand = json_now["use_global_rand"].ReadBool(use_global_rand);
+            apply_to_inst   = json_now["apply_to_inst"].ReadBool(apply_to_inst);
+        }
 	}
 
 	#region Fields

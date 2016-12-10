@@ -41,7 +41,7 @@ if __name__ == "__main__":
     socket_self.bind("tcp://%s:%s" % (host_address, port))
 
     #default_inquery     = {'type': 'shapenet', 'version': 2, 'has_texture':True, 'complexity': {'$exists': True}, 'center_pos': {'$exists': True}, 'boundb_pos': {'$exists': True}, 'isLight': {'$exists': True}, 'anchor_type': {'$exists': True}, 'aws_address': {'$exists': True}}
-    default_inquery     = {'type': 'shapenetremat', 'complexity': {'$exists': True}, 'center_pos': {'$exists': True}, 'boundb_pos': {'$exists': True}, 'isLight': {'$exists': True}, 'anchor_type': {'$exists': True}, 'aws_address': {'$exists': True}}
+    default_inquery     = {'type': 'shapenetremat', 'has_texture': True, 'complexity': {'$exists': True}, 'center_pos': {'$exists': True}, 'boundb_pos': {'$exists': True}, 'isLight': {'$exists': True}, 'anchor_type': {'$exists': True}, 'aws_address': {'$exists': True}}
     test_coll = coll.find(default_inquery)
     # Download all the default information
     default_coll    = list(test_coll[:])

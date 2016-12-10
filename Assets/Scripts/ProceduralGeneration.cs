@@ -25,6 +25,31 @@ public class ProceduralGeneration : MonoBehaviour
         public List<GeneratablePrefab.StackableInfo> stackableAreas = new List<GeneratablePrefab.StackableInfo>();
     }
 
+    [System.Serializable]
+    public class Random_help{
+        public System.Random _rand;
+        public Random_help (int rand_seed){
+            _rand   = new System.Random(rand_seed);
+        }
+        public float Next_Gaussian(float mean, float stdDev){
+            
+            double randNormal   = -1f;
+            int try_times       = 0;
+            while (randNormal <= 0f && try_times < 200){
+                double u1 = _rand.NextDouble(); //these are uniform(0,1) random doubles
+                double u2 = _rand.NextDouble();
+                double randStdNormal = Math.Sqrt(-2.0 * Math.Log(u1)) *
+                             Math.Sin(2.0 * Math.PI * u2); //random normal(0,1)
+                randNormal =
+                             mean + stdDev * randStdNormal; //random normal(mean,stdDev^2)
+                try_times   = try_times + 1;
+            }
+            if (try_times==200)
+                randNormal  = 1;
+            return (float) randNormal;
+        }
+    }
+
 
 #region Fields
     // The number of physics collisions to create
@@ -56,6 +81,12 @@ public class ProceduralGeneration : MonoBehaviour
     public int desiredRndSeed = -1;
 	public System.Random _rand;
 
+    // Relate to global scale control
+    public int scene_scale_seed     = 0;
+    public string scene_scale_con   = "NULL";
+    public float scene_scale_mean   = 1f;
+    public float scene_scale_var    = 0f;
+
     public float WALL_WIDTH = 1.0f;
     public float DOOR_WIDTH = 1.5f;
     public float DOOR_HEIGHT = 3.0f;
@@ -76,7 +107,7 @@ public class ProceduralGeneration : MonoBehaviour
     public Material skyboxMaterial = null;
     public Material windowTrimMaterial = null;
     public bool showProcGenDebug = false;
-    public LitJson.JsonData scaleRelatDict = new LitJson.JsonData();
+    public List<Random_help> list_rands    = new List<Random_help>();
 
     private int _curRandSeed = 0;
     private int _curComplexity = 0;
@@ -114,6 +145,14 @@ public class ProceduralGeneration : MonoBehaviour
 		Init ();
 	}
 #endregion
+
+    public void gen_rand_forinfo(ref PrefabDatabase.PrefabInfo info){
+        if (!info.use_global_rand){
+            list_rands.Add(new Random_help(info.scale_seed));
+            info.rand_index     = list_rands.Count - 1;
+            info.first_rand     = list_rands[info.rand_index].Next_Gaussian(info.dynamic_scale, info.scale_var);
+        }
+    }
 
     public void Init()
     {
@@ -156,9 +195,17 @@ public class ProceduralGeneration : MonoBehaviour
             cache_folder        = json["cache_folder"].ReadString(cache_folder);
             disable_rand_stacking   = json["disable_rand_stacking"].ReadInt(disable_rand_stacking);
             enable_global_unit_scale    = json["enable_global_unit_scale"].ReadInt(enable_global_unit_scale);
-            // scaleRelatDict = new LitJson.JsonData(json["scale_relat_dict"]);
-            //scaleRelatDict = json["scale_relat_dict"];
+            try {
+                scene_scale_seed    = json["global_scale_dict"]["seed"].ReadInt(scene_scale_seed);
+                scene_scale_mean    = json["global_scale_dict"]["scale"].ReadFloat(scene_scale_mean);
+                scene_scale_var     = json["global_scale_dict"]["var"].ReadFloat(scene_scale_var);
+                scene_scale_con     = json["global_scale_dict"]["option"].ReadString(scene_scale_con);
+            }
+            catch{}
         }
+
+        list_rands.Clear();
+        list_rands.Add(new Random_help(scene_scale_seed));
 
         Debug.Log("Get mongodb inter:" + use_mongodb_inter);
         if (use_mongodb_inter==1){
@@ -252,15 +299,22 @@ public class ProceduralGeneration : MonoBehaviour
                         // Get the option and scale from json message
 
                         try {
-                            info.option_scale   = json["scale_relat_dict"][itemName]["option"].ReadString(info.option_scale);
-                            info.dynamic_scale  = json["scale_relat_dict"][itemName]["scale"].ReadFloat(info.dynamic_scale);
+                            //info.option_scale   = json["scale_relat_dict"][itemName]["option"].ReadString(info.option_scale);
+                            //info.dynamic_scale  = json["scale_relat_dict"][itemName]["scale"].ReadFloat(info.dynamic_scale);
+                            //info.scale_var      = json["scale_relat_dict"][itemName][""]
+                            info.set_scale(json["scale_relat_dict"][itemName]);
+                            gen_rand_forinfo(ref info);
+                            return true;
                         } catch {
                         }
 
                         // Get the option and scale via the Filename (recommend for http files)
                         try {
-                            info.option_scale   = json["scale_relat_dict"][info.fileName]["option"].ReadString(info.option_scale);
-                            info.dynamic_scale  = json["scale_relat_dict"][info.fileName]["scale"].ReadFloat(info.dynamic_scale);
+                            //info.option_scale   = json["scale_relat_dict"][info.fileName]["option"].ReadString(info.option_scale);
+                            //info.dynamic_scale  = json["scale_relat_dict"][info.fileName]["scale"].ReadFloat(info.dynamic_scale);
+                            info.set_scale(json["scale_relat_dict"][info.fileName]);
+                            gen_rand_forinfo(ref info);
+                            return true;
                         } catch {
                         }
 
@@ -273,8 +327,10 @@ public class ProceduralGeneration : MonoBehaviour
             // Get the option and scale via the Filename (recommend for http files)
 
             try {
-                info.option_scale   = json["scale_relat_dict"][info.fileName]["option"].ReadString(info.option_scale);
-                info.dynamic_scale  = json["scale_relat_dict"][info.fileName]["scale"].ReadFloat(info.dynamic_scale);
+                //info.option_scale   = json["scale_relat_dict"][info.fileName]["option"].ReadString(info.option_scale);
+                //info.dynamic_scale  = json["scale_relat_dict"][info.fileName]["scale"].ReadFloat(info.dynamic_scale);
+                info.set_scale(json["scale_relat_dict"][info.fileName]);
+                gen_rand_forinfo(ref info);
             } catch {
             }
 
@@ -435,7 +491,6 @@ public class ProceduralGeneration : MonoBehaviour
                         float max_height = 0f;
                         int try_times = 0;
                         while (Physics.CheckBox(centerPos, testBounds.extents) &&  try_times < 20){
-                            string debugText = "";
                             Collider[] hitObjs = Physics.OverlapBox(centerPos, testBounds.extents);
                             HashSet<string> hitObjNames = new HashSet<string>();
                             foreach(Collider col in hitObjs)
@@ -737,24 +792,36 @@ public class ProceduralGeneration : MonoBehaviour
         float modScale = 1.0f;
         float offset_y = 0.1f;
 
-        // For option "Multi_size"
-        if (info.option_scale=="Multi_size")
-        {
-            modScale    = modScale*info.dynamic_scale;
-        }
-
-        // For option "Absol_size"
-        if (info.option_scale=="Absol_size")
-        {
-            float longest_axis      = info.bounds.size.magnitude;
-            //Debug.Log("Longest axis: " + longest_axis.ToString());
-            modScale                = info.dynamic_scale/longest_axis;
-        }
-
+        // For global setting
         if (enable_global_unit_scale==1){
             float longest_axis      = info.bounds.size.magnitude;
             //Debug.Log("Longest axis: " + longest_axis.ToString());
             modScale                = 1/longest_axis;
+        }
+
+        if (scene_scale_con=="Multi_size")
+            modScale    = list_rands[0].Next_Gaussian(scene_scale_mean, scene_scale_var);
+
+        if (scene_scale_con=="Absol_size"){
+            float longest_axis      = info.bounds.size.magnitude;
+            modScale                = list_rands[0].Next_Gaussian(scene_scale_mean, scene_scale_var)/longest_axis;
+        }
+
+        // For option "Multi_size"
+        if (info.option_scale=="Multi_size"){
+            if (info.apply_to_inst)
+                modScale    = list_rands[info.rand_index].Next_Gaussian(info.dynamic_scale, info.scale_var);
+            else
+                modScale    = info.first_rand;
+        }
+
+        // For option "Absol_size"
+        if (info.option_scale=="Absol_size"){
+            float longest_axis      = info.bounds.size.magnitude;
+            if (info.apply_to_inst)
+                modScale            = list_rands[info.rand_index].Next_Gaussian(info.dynamic_scale, info.scale_var)/longest_axis;
+            else
+                modScale            = info.first_rand/longest_axis;
         }
 
         HeightPlane targetHeightPlane;
