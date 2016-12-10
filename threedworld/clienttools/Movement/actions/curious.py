@@ -1,5 +1,6 @@
 import numpy as np
 import scipy.linalg
+import scipy.ndimage.morphology
 import json
 from curiosity.utils.io import (handle_message,
                                 send_array,
@@ -43,10 +44,19 @@ class agent:
 	  index = self.rng.randint(len(x))
 	  return [x[index], index]
 
-	def choose_action_position(self, objarray):
-	  xs, ys = objarray.nonzero()
+	def choose_action_position(self, objarray, chosen_object, slipage=2):
+
+          selection = np.zeros(objarray.shape)
+          selection[objarray == chosen_object] = objarray[objarray == chosen_object]
+
+	  # dilate image to add imprecision in selecting actions
+	  dialated_selection = scipy.ndimage.grey_dilation(selection, size=(slipage,slipage))
+	  xs, ys = dialated_selection.nonzero()
 	  pos = zip(xs, ys)
-	  return pos[self.rng.randint(len(pos))]
+	  if len(pos) == 0:
+	      return [np.array([]), chosen_object]
+          chosen_pos = pos[self.rng.randint(len(pos))]
+	  return [np.array(chosen_pos), objarray[chosen_pos]]
 
 	def find_in_observed_objects(self, idx, obs_obj):
 	    for i in range(len(obs_obj)):
@@ -230,11 +240,17 @@ class agent:
 		    else:
 			oarray1 = 256**2 * oarray[:, :, 0] + 256 * oarray[:, :, 1] + oarray[:, :, 2]
 			obs = np.unique(oarray1)
+			# remove static objects from object list
 			valido = []
 			for o in info['observed_objects']:
 			    if not o[4] and o[1] in obs:
 				valido.append(o[1])
+			diff = set(valido).symmetric_difference(set(obs))
 			obs = np.array(valido)
+			# remove static objects from objects image
+			for d in diff:
+			    oarray1[oarray1 == d] = 0
+			
 			# random searching for object
 			if len(obs) == 0 and not waiting:
 			    print('turning at %d ... ' % i)			    
@@ -280,7 +296,7 @@ class agent:
 				objpi = []
 				aset = self.achoice[:]
 				amult = self.MULTSTART
-				chosen_o, index_o = self.choose(obs[np.argsort(fracs)[-5:]])
+				chosen_o, index_o = self.choose(obs[np.argsort(fracs)[-5:]])								
 				chosen_o_name = obs_obj[self.find_in_observed_objects(chosen_o, obs_obj)][0]
 				chosen = True
 				print 'CHOOSING OBJECT ' + str(chosen_o) + " " + str(chosen_o_name)
@@ -307,6 +323,7 @@ class agent:
 			    # if object too far and no action is performed move closer
 			    if obs_dist.size != 0 and obs_dist > target_distance and not action_started:
 				print 'MOVING CLOSER TO ' + str(chosen_o)
+				print 'TARGET DISTANCE ' + str(target_distance) + ' > ' + str(obs_dist)
 				xs, ys = (oarray1 == chosen_o).nonzero()
 				pos = np.round(np.array(zip(xs, ys)).mean(0))
 				if np.abs(self.SCREEN_WIDTH/2 - pos[1]) < 10:
@@ -317,9 +334,14 @@ class agent:
 				msg['msg']['ang_vel'] = [0, d, 0]
 			    # perform action on chosen object
 			    else:
+				# choose position of action
+				pos, chosen_id  = self.choose_action_position(oarray1, chosen_o)
+				print 'ACTION POS: ' + str(chosen_o) + " " + str(chosen_id)
+				
+				# find object centroid
 				xs, ys = (oarray1 == chosen_o).nonzero()
-				pos = np.round(np.array(zip(xs, ys)).mean(0))
-				objpi.append(pos)
+				centroid = np.round(np.array(zip(xs, ys)).mean(0))
+			        objpi.append(centroid)
 			
 				action = {}
 				action2 = {}
@@ -346,10 +368,11 @@ class agent:
 						action_started = False
 					    print('choosing "a"', dist, a)
 					if action_type == 0:
-					    action['force'] = [a, 100 * (2 ** amult), 0]
+					    action['force'] = [a, 105 * (2 ** amult), 0]
 					    action['torque'] = [0, g, 0]
-					    action['id'] = str(chosen_o)
-					    action['action_pos'] = map(float, objpi[-1])
+					    action['id'] = str(chosen_id)
+					    action['object'] = str(chosen_o)
+					    action['action_pos'] = map(float, pos)
 					    print 'MOVE OBJECT! ' + str(chosen_o)
 					elif action_type == 1:
 						idx = self.find_in_observed_objects(chosen_o, obs_obj)
@@ -365,15 +388,17 @@ class agent:
 						    mov = 200 * (2 ** amult) * mov
 						    mov2 = -mov
 
-						    action['id'] = str(chosen_o)
+						    action['id'] = str(chosen_id)
+						    action['object'] = str(chosen_o)
 						    action['force'] = mov.tolist()
 						    action['torque'] = [0, g, 0]
 						    action['action_pos'] = map(float, pos)
 
-						    action2['id'] = str(chosen_o2)
+						    action2['id'] = str(chosen_id2)
+						    action2['object'] = str(chosen_o2)
 						    action2['force'] = mov2.tolist()
 						    action2['torque'] = [0, g, 0]
-						    action2['action_pos'] = map(float, pos)
+						    action2['action_pos'] = map(float, pos2)
 
 						    action_ind = action_length
 						    print 'CRASH OBJECTS! ' + str(chosen_o) + ' ' + str(chosen_o2) + ' ' + str(mov) + ' ' + str(mov2) + ' ' + str(pos_obj) + ' ' + str(pos_obj2)+ ' ' + obs_obj[idx][0] + ' ' + obs_obj[idx2][0]
@@ -382,8 +407,9 @@ class agent:
                                         elif action_type == 2:
                                             action['force'] = [0, self.rng.rand(1)[0] * 10 + 48, 0]
                                             action['torque'] = [0, 0, 0]
-                                            action['id'] = str(chosen_o)
-                                            action['action_pos'] = map(float, pos)
+                                            action['id'] = str(chosen_id)
+                                            action['object'] = str(chosen_o)
+					    action['action_pos'] = map(float, pos)
                                             print 'LIFT OBJECT! ' + str(action['force']) + ' ' + str(chosen_o)
 				    else:
 					print('WAITING')
@@ -403,15 +429,16 @@ class agent:
 				    if len(obs) > 1:
 					while (chosen_o2 == chosen_o):
 					    chosen_o2, index_o2 = self.choose(obs[np.argsort(fracs)[-10:]])
-
+				    pos2, chosen_id2  = self.choose_action_position(oarray1, chosen_o2)
 				    objpi = []
 				    objpi2 = []
 				    action_ind = 0
 				    action_type = self.rng.randint(3)
 				    action_started = True
 				    if action_type == 0:
-					action['id'] = str(chosen_o)
-					action['force'] = [a, 100 * (2 ** amult), 0]
+					action['id'] = str(chosen_id)
+					action['object'] = str(chosen_o)
+					action['force'] = [a, 105 * (2 ** amult), 0]
 					action['torque'] = [0, g, 0]
 					action['action_pos'] = map(float, pos)
 					print 'MOVE OBJECT! ' + str(chosen_o)
@@ -430,15 +457,17 @@ class agent:
 					    mov = 200 * (2 ** amult) * mov
 					    mov2 = -mov
 
-					    action['id'] = str(chosen_o)
+					    action['id'] = str(chosen_id)
+					    action['object'] = str(chosen_o)
 					    action['force'] = mov.tolist()
 					    action['torque'] = [0, g, 0]
 					    action['action_pos'] = map(float, pos)
 
-					    action2['id'] = str(chosen_o2)
+					    action2['id'] = str(chosen_id2)
+					    action2['object'] = str(chosen_o2)
 					    action2['force'] = mov2.tolist()
 					    action2['torque'] = [0, g, 0]
-					    action2['action_pos'] = map(float, pos)
+					    action2['action_pos'] = map(float, pos2)
 
 					    action_ind = action_length
 					    
@@ -449,8 +478,9 @@ class agent:
 				    elif action_type == 2:
 				        action['force'] = [0, self.rng.rand(1)[0] * 10 + 48, 0]
 				        action['torque'] = [0, 0, 0]
-				        action['id'] = str(chosen_o)
-				        action['action_pos'] = map(float, pos)
+				        action['id'] = str(chosen_id)
+				        action['object'] = str(chosen_o)
+					action['action_pos'] = map(float, pos)
 				        print 'LIFT OBJECT! ' + str(action['force']) + ' ' + str(chosen_o)
 
 				# add action if new action defined
