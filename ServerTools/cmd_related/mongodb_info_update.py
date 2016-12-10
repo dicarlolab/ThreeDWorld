@@ -89,7 +89,7 @@ if options.flag==0:
 else:
     # Do the update remat information
 
-    test_coll_new   = coll.find({'type' : 'shapenetremat', 'complexity': {'$exists': True}, 'center_pos': {'$exists': True}, 'boundb_pos': {'$exists': True}, 'isLight': {'$exists': True}, 'anchor_type': {'$exists': True}, 'aws_address': {'$exists': True}})
+    test_coll_new   = coll.find({'type' : 'shapenetremat', 'complexity': {'$exists': True}, 'center_pos': {'$exists': True}, 'boundb_pos': {'$exists': True}, 'isLight': {'$exists': True}, 'anchor_type': {'$exists': True}, 'aws_address': {'$exists': True}, 'has_texture': {'$exists': False}})
     list_coll_new   = list(test_coll_new[:])
 
     print("New info got!")
