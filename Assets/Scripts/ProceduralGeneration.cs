@@ -48,6 +48,7 @@ public class ProceduralGeneration : MonoBehaviour
     public int use_mongodb_inter = 0; // 0 is for not, 1 is for using
     public int use_cache_self   = 0; // 0 is for not (using Loadfromcacheordownload, 1 is for using)
     public int disable_rand_stacking = 1; //0 is for not disabling
+    public int enable_global_unit_scale = 0; //1 is for enabling
     public string cache_folder  = "/Users/chengxuz/3Dworld/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/file_cache_test/";
     public bool shouldUseStandardizedSize = false;
     public Vector3 standardizedSize = Vector3.one;
@@ -154,6 +155,7 @@ public class ProceduralGeneration : MonoBehaviour
             use_cache_self      = json["use_cache_self"].ReadInt(use_cache_self);
             cache_folder        = json["cache_folder"].ReadString(cache_folder);
             disable_rand_stacking   = json["disable_rand_stacking"].ReadInt(disable_rand_stacking);
+            enable_global_unit_scale    = json["enable_global_unit_scale"].ReadInt(enable_global_unit_scale);
             // scaleRelatDict = new LitJson.JsonData(json["scale_relat_dict"]);
             //scaleRelatDict = json["scale_relat_dict"];
         }
@@ -183,8 +185,8 @@ public class ProceduralGeneration : MonoBehaviour
                 newInfo.aws_version     = current_item["aws_version"].ReadString(newInfo.aws_version);
 
                 //newInfo.loaded          = 0;
-                Debug.Log("New info:" + newInfo.bounds + newInfo.complexity + newInfo.fileName);
-                Debug.Log("To cache into: " + newInfo._id_str + "_" + newInfo.aws_version + ".bundle");
+                //Debug.Log("New info:" + newInfo.bounds + newInfo.complexity + newInfo.fileName);
+                //Debug.Log("To cache into: " + newInfo._id_str + "_" + newInfo.aws_version + ".bundle");
                 //Debug.Log(newInfo.fileName[0]);
                 //Debug.Log(newInfo);
                 availablePrefabs.Add(newInfo);
@@ -355,10 +357,11 @@ public class ProceduralGeneration : MonoBehaviour
 	/// <param name="whichPlane">Which height plane the object should spawn on.</param>
         ///
 
-    private bool TryPlaceGroundObject(Bounds bounds, float modScale, GeneratablePrefab.AttachAnchor anchorType, out int finalX, out int finalY, out HeightPlane whichPlane)
+    private bool TryPlaceGroundObject(Bounds bounds, float modScale, GeneratablePrefab.AttachAnchor anchorType, out int finalX, out int finalY, out HeightPlane whichPlane, out float offset_height)
     {
         finalX = 0;
         finalY = 0;
+        offset_height = 0.1f;
         whichPlane = null;
 
         /*
@@ -427,11 +430,42 @@ public class ProceduralGeneration : MonoBehaviour
                         if (showProcGenDebug)
                             Debug.LogFormat("Unexpected objects: ({0}) at ({1},{2}) on plane {3} with test {5} ext: {4}", debugText, testInfo.x, testInfo.y, curHeightPlane.name, testBounds.extents, centerPos);
                     }
-                    else
+                    if (Physics.CheckBox(centerPos, testBounds.extents) && (disable_rand_stacking == 0)){
+
+                        float max_height = 0f;
+                        int try_times = 0;
+                        while (Physics.CheckBox(centerPos, testBounds.extents) &&  try_times < 20){
+                            string debugText = "";
+                            Collider[] hitObjs = Physics.OverlapBox(centerPos, testBounds.extents);
+                            HashSet<string> hitObjNames = new HashSet<string>();
+                            foreach(Collider col in hitObjs)
+                            {
+                                if (col.attachedRigidbody != null)
+                                    hitObjNames.Add(col.attachedRigidbody.name);
+                                else
+                                    hitObjNames.Add(col.gameObject.name );
+                                if (max_height < col.bounds.center.y + col.bounds.extents.y){
+                                    max_height  = col.bounds.center.y + col.bounds.extents.y;
+                                };
+                            }
+                            centerPos.y     = max_height + 0.1f+boundsHeight;
+                            try_times       = try_times + 1;
+                        }
+                        Debug.Log("Choosing highest height:" + max_height + " " + try_times);
+                        finalX = testInfo.x;
+                        finalY = testInfo.y;
+                        offset_height = max_height + 0.1f;
+                        whichPlane = curHeightPlane;
+                        foundValid = true;
+                        return foundValid;
+                    }
+
+                    if (!Physics.CheckBox(centerPos, testBounds.extents) || (disable_rand_stacking == 0))
                     {
 //                        Debug.LogFormat("Selecting ({0},{1}) which has ({2},{3}) to place ({4},{5})", testInfo.x, testInfo.y, testInfo.rightSquares, testInfo.downSquares, boundsWidth, boundsLength);
                         finalX = testInfo.x;
                         finalY = testInfo.y;
+                        offset_height = 0.1f;
                         whichPlane = curHeightPlane;
                         foundValid = true;
                         return foundValid;
@@ -701,6 +735,7 @@ public class ProceduralGeneration : MonoBehaviour
         int spawnX, spawnZ;
         //float modScale = prefabDatabase.GetSceneScale (info);
         float modScale = 1.0f;
+        float offset_y = 0.1f;
 
         // For option "Multi_size"
         if (info.option_scale=="Multi_size")
@@ -712,8 +747,14 @@ public class ProceduralGeneration : MonoBehaviour
         if (info.option_scale=="Absol_size")
         {
             float longest_axis      = info.bounds.size.magnitude;
-            Debug.Log("Longest axis: " + longest_axis.ToString());
+            //Debug.Log("Longest axis: " + longest_axis.ToString());
             modScale                = info.dynamic_scale/longest_axis;
+        }
+
+        if (enable_global_unit_scale==1){
+            float longest_axis      = info.bounds.size.magnitude;
+            //Debug.Log("Longest axis: " + longest_axis.ToString());
+            modScale                = 1/longest_axis;
         }
 
         HeightPlane targetHeightPlane;
@@ -723,11 +764,12 @@ public class ProceduralGeneration : MonoBehaviour
             modifiedRotation = Quaternion.Euler(new Vector3(0, (float) _rand.NextDouble() * 360f,0));
         Bounds modifiedBounds = info.bounds.Rotate(modifiedRotation);
 
-        if (TryPlaceGroundObject(modifiedBounds, modScale, info.anchorType, out spawnX, out spawnZ, out targetHeightPlane))
+        if (TryPlaceGroundObject(modifiedBounds, modScale, info.anchorType, out spawnX, out spawnZ, out targetHeightPlane, out offset_y))
         {
             int boundsWidth = Mathf.CeilToInt(modScale* 2f * modifiedBounds.extents.x / gridDim) - 1;
             int boundsLength = Mathf.CeilToInt(modScale* 2f * modifiedBounds.extents.z / gridDim) - 1;
-            float modHeight = 0.1f+(modifiedBounds.extents.y * modScale);
+            //float modHeight = 0.1f+(modifiedBounds.extents.y * modScale);
+            float modHeight = offset_y+(modifiedBounds.extents.y * modScale);
             Vector3 centerPos = targetHeightPlane.cornerPos + new Vector3(gridDim * (spawnX + (0.5f * boundsWidth)), modHeight, gridDim * (spawnZ + (0.5f * boundsLength)));
             if (info.anchorType == GeneratablePrefab.AttachAnchor.Ceiling)
                 centerPos.y = _roomCornerPos.y + _curRoomHeight - modHeight;
@@ -736,7 +778,7 @@ public class ProceduralGeneration : MonoBehaviour
             GameObject newPrefab;
             if (info.fileName.ToLowerInvariant().Contains("http://")) {
                 if (use_cache_self==1) {
-                    Debug.Log("From cache!");
+                    //Debug.Log("From cache!");
                     //StartCoroutine(PrefabDatabase.LoadAssetFromBundleWWW_cached_self(info.fileName));
                     //newPrefab = PrefabDatabase.LoadAssetFromBundleWWW(info.fileName);
                     //newPrefab = PrefabDatabase.LoadAssetFromBundleWWW_cache_in_file(info.fileName, info._id_str, info.aws_version, cache_folder);
@@ -749,12 +791,12 @@ public class ProceduralGeneration : MonoBehaviour
                         // Loading it twice now, might influence the efficiency, TODO: load only once
                         // Currently the WWW can not be wrote when used for assetbundle
 
-                        Debug.Log("Build the cache!");
+                        //Debug.Log("Build the cache!");
                         StartCoroutine(PrefabDatabase.LoadAssetFromBundleWWW_cached_self(info.fileName, cache_fileName));
                         newPrefab = PrefabDatabase.LoadAssetFromBundleWWW(info.fileName);
                     }
                 } else {
-                    Debug.Log("From http");
+                    //Debug.Log("From http");
                     newPrefab = PrefabDatabase.LoadAssetFromBundleWWW(info.fileName);
                 }
             } else {
