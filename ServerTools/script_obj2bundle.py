@@ -110,7 +110,7 @@ if __name__=='__main__':
         exit()
     '''
 
-    #print(len(file_list))
+    print(len(file_list))
 
     if options.forcevhacd==0:
         new_file_list   = []
@@ -158,7 +158,7 @@ if __name__=='__main__':
                 file_name_now   = md5_dict_i[exist_doc['md5_value']]
                 file_list.remove(file_name_now)
 
-    #print(len(file_list))
+    print(len(file_list))
     print('Register the models')
     for file_name in file_list:
         coll.update_one({
