@@ -117,6 +117,9 @@ public class ProceduralGeneration : MonoBehaviour
 
     public void Init()
     {
+    	// Reset the UID Color counter
+    	resetUIDColor();
+
         LitJson.JsonData json = SimulationManager.argsConfig;
         if (json != null)
         {
@@ -657,6 +660,10 @@ public class ProceduralGeneration : MonoBehaviour
         EditorUtility.SetDirty(this);
     }
 #endif
+
+	public static void resetUIDColor() {
+		UID_BY_INDEX = 0x3;
+	}
 
 	public static Color getNewUIDColor() {
 		if (UID_BY_INDEX >= 0x1000000)

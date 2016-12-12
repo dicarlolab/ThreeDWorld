@@ -322,7 +322,7 @@ class agent:
 				waiting = False
 			    # if object too far and no action is performed move closer
 			    if obs_dist.size != 0 and obs_dist > target_distance and not action_started:
-				print 'MOVING CLOSER TO ' + str(chosen_o)
+				print 'MOVING CLOSER TO ' + str(chosen_o) + ' ' + str(chosen_o_name)
 				print 'TARGET DISTANCE ' + str(target_distance) + ' > ' + str(obs_dist)
 				xs, ys = (oarray1 == chosen_o).nonzero()
 				pos = np.round(np.array(zip(xs, ys)).mean(0))
