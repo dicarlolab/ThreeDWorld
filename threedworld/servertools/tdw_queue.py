@@ -451,7 +451,7 @@ class Three_D_World_Queue(object):
 			except psutil.AccessDenied:
 			    print "'%s' Process is not allowing us to view exe!" % proc.name
 			    continue
-			if (proc.exe().startswith(self.build_dir)):
+			if (proc_path.startswith(self.build_dir)):
 				#check if process is already in the database
 				for entry in self.process_info.find({"proc_pid" : pid,
                                                                      "proc_create_time" : proc.create_time()}):
