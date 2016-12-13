@@ -14,6 +14,8 @@ import sys
 import struct
 
 DEFAULT_QUEUE_PORT=23402
+os.environ['THREEDWORLD_BUILD_DIR'] = "C:\Users\mrowca\Desktop\world"
+os.environ['THREEDWORLD_CODE_DIR'] = "C:\Users\mrowca\Documents\GitHub\ThreeDWorld"
 
 class Three_D_World_Queue(object):
 
@@ -167,9 +169,12 @@ class Three_D_World_Queue(object):
 
 		#collect available builds in build_dir
 		builds = list()
+                file_extension = ".x86_64"
+                if os.name == 'nt':
+                    file_extension = ".exe"
 		for root, _, files in os.walk(self.build_dir):
 		    for f in files:
-		        if f.endswith(".x86_64"):
+		        if f.endswith(file_extension):
 			    builds.append(os.path.join(root, f))
 
 		return self.send_options(builds, "Select a build:")
@@ -190,12 +195,17 @@ class Three_D_World_Queue(object):
 	    print "nohup " + j["selected_build"] +  " -force-opengl -port=" + str(forward_port_num) + " -address=" + self.host_address + " -batchmode"
 
 	    #separate j and assign defaults to optional args excluded from message
-	    process = ["nohup",
+            process = ["nohup",
                        j["selected_build"],
                        "-force-opengl",
                        "-port=" + str(forward_port_num),
                        "-address=" + self.host_address,
                        "-batchmode"]
+            
+            if os.name == 'nt':
+                process = [j["selected_build"],
+                           "-port=" + str(forward_port_num),
+                           "-address=" + self.host_address]
 
 	    if ("screen_width" in j.keys()):
 		process = process + ["-screenWidth=" + str(j["screen_width"])]
@@ -242,8 +252,11 @@ class Three_D_World_Queue(object):
 		print (" ".join(process))
 		print ("\nenvironment @%s:%d" % (self.host_address, forward_port_num))
             my_env = os.environ.copy()
-            my_env['DISPLAY'] = ':0'
-	    environment = subprocess.Popen(process, preexec_fn=self.preexec_function, env=my_env)
+            if os.name == 'nt':
+                 environment = subprocess.Popen(process, env=my_env)
+            else:
+                my_env['DISPLAY'] = ':0'
+                environment = subprocess.Popen(process, env=my_env, preexec_fn=self.preexec_function)
 	    if (self.debug):
 	        print ("environment pid: %d" % environment.pid)
 
@@ -259,17 +272,29 @@ class Three_D_World_Queue(object):
                                                                    j["port_num"],
                                                                    self.host_address,
                                                                    forward_port_num))
-	    port_forwarder = subprocess.Popen(["nohup",
-					       "python",
-					       os.path.join(self.code_dir,
-                                                            'threedworld',
-                                                            "servertools",
-                                                            "forward.py"),
-					       "--port=" + str(j["port_num"]),
-					       "--hostaddress=" + self.host_address,
-					       "--forwardport=" + str(forward_port_num),
-					       "--forwardhostaddress=" + self.host_address],
-					      preexec_fn=self.preexec_function)
+            if os.name == 'nt':
+	        port_forwarder = subprocess.Popen(["python",
+					            os.path.join(self.code_dir,
+                                                                'threedworld',
+                                                                "servertools",
+                                                                "forward.py"),
+					           "--port=" + str(j["port_num"]),
+					           "--hostaddress=" + self.host_address,
+					           "--forwardport=" + str(forward_port_num),
+					           "--forwardhostaddress=" + self.host_address])
+            else:
+	        port_forwarder = subprocess.Popen(["nohup",
+			    		           "python",
+					            os.path.join(self.code_dir,
+                                                                'threedworld',
+                                                                "servertools",
+                                                                "forward.py"),
+					           "--port=" + str(j["port_num"]),
+					           "--hostaddress=" + self.host_address,
+					           "--forwardport=" + str(forward_port_num),
+					           "--forwardhostaddress=" + self.host_address],
+					           preexec_fn=self.preexec_function)
+
 
 	    if (self.debug):
 		print ("forward port pid: %d"  % port_forwarder.pid)
@@ -475,17 +500,29 @@ class Three_D_World_Queue(object):
                                                                                            forward_port_num,
 								                           proc.connections(kind="tcp")[0].laddr[0],
                                                                                            proc.connections(kind="tcp")[0].laddr[1]))
-					    port_forwarder = subprocess.Popen(["nohup",
-									       "python",
-                                                                               os.path.join(self.code_dir,
-                                                                                            "threedworld",
-                                                                                            "servertools",
-                                                                                            "forward.py"),
-									       "--port=" + str(forward_port_num),
-								"--hostaddress=" + self.host_address,
-								"--forwardport=" + str(proc.connections(kind="tcp")[0].laddr[1]),
-								"--forwardhostaddress=" + proc.connections(kind="tcp")[0].laddr[0]],
-									      preexec_fn=self.preexec_function)
+                                            if os.name == 'nt':    
+					        port_forwarder = subprocess.Popen(["python",
+                                                                                   os.path.join(self.code_dir,
+                                                                                                "threedworld",
+                                                                                                "servertools",
+                                                                                                "forward.py"),
+									           "--port=" + str(forward_port_num),
+								                   "--hostaddress=" + self.host_address,
+						 		                   "--forwardport=" + str(proc.connections(kind="tcp")[0].laddr[1]),
+								                   "--forwardhostaddress=" + proc.connections(kind="tcp")[0].laddr[0]])
+                                            else:
+					        port_forwarder = subprocess.Popen(["nohup",
+									           "python",
+                                                                                   os.path.join(self.code_dir,
+                                                                                                "threedworld",
+                                                                                                "servertools",
+                                                                                                "forward.py"),
+									           "--port=" + str(forward_port_num),
+								                   "--hostaddress=" + self.host_address,
+						 		                   "--forwardport=" + str(proc.connections(kind="tcp")[0].laddr[1]),
+								                   "--forwardhostaddress=" + proc.connections(kind="tcp")[0].laddr[0]],
+									           preexec_fn=self.preexec_function)
+
 					    if (self.debug):
 				          	print ("forward port pid: " + str(port_forwarder.pid))
 

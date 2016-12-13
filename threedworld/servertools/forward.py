@@ -31,12 +31,12 @@ ctx = zmq.Context()
 def check_port_num(port_num):
 	s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 	try:
-		print "poking environment"
+		print("poking environment at port %d" % int(port_num))
 		s.bind((host_address, int(port_num)))
 	except socket.error as e:
 		s.close()
-		print "error!"
-		if (e.errno == 98):
+		print("error number %d" % e.errno)
+		if (e.errno in [98, 10048]):
 			print "is active"
 			return False
 		else:
@@ -88,13 +88,15 @@ def run():
 		if (debug):
 			print "...sent message to client\n"
 
-t1 = multiprocessing.Process (target=run)
-t2 = multiprocessing.Process (target=check_if_environment_up)
 
-t1.start()
-t2.start()
+if __name__ == '__main__':
+    t1 = multiprocessing.Process (target=run)
+    t2 = multiprocessing.Process (target=check_if_environment_up)
 
-while (True):
+    t1.start()
+    t2.start()
+
+    while (True):
 	time.sleep(3)
 	if (not t2.is_alive()):
 		t1.terminate()

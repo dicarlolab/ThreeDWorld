@@ -1,9 +1,10 @@
 import os, json, datetime
 import zmq
 from tabulate import tabulate
-from pick import pick
-
 from threedworld.servertools.tdw_queue import DEFAULT_QUEUE_PORT
+
+if os.name != 'nt':
+    from pick import pick
 
 class TDW_Client(object):
 
@@ -235,7 +236,7 @@ class TDW_Client(object):
         # reformat options
         refmt_options = []
         for option in msg['options']:
-            i = option.rfind('/')
+            i = option.rfind(os.path.sep)
             if i < 0:
                 i = 0
             refmt_options += [option[i+1:]]
