@@ -10,7 +10,7 @@ from tabulate import tabulate
 import datetime
 import signal
 import sys
-import fcntl
+#import fcntl
 import struct
 
 DEFAULT_QUEUE_PORT=23402
@@ -446,6 +446,11 @@ class Three_D_World_Queue(object):
 		#update mongoD database and create new forward ports
 		for pid in psutil.pids():
 			proc = psutil.Process(pid)
+			try:
+			    proc_path = proc.exe()
+			except psutil.AccessDenied:
+			    #print "'%s' Process is not allowing us to view exe!" % proc.name
+			    continue
 			if (proc.exe().startswith(self.build_dir)):
 				#check if process is already in the database
 				for entry in self.process_info.find({"proc_pid" : pid,

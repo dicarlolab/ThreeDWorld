@@ -10,7 +10,7 @@ from tabulate import tabulate
 import datetime
 import signal
 import sys
-import fcntl
+#import fcntl
 import struct
 from optparse import OptionParser
 import time
