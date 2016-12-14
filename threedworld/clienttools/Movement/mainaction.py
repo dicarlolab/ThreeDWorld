@@ -15,7 +15,7 @@ from environment import config
 
 CREATE_HDF5 = False
 
-SCENE_SWITCH = 0
+SCENE_SWITCH = 20
 
 #path = 'C:/Users/mrowca/Documents/test'
 #path = '/home/mrowca/Desktop/images'
