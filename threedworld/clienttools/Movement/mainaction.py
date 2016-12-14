@@ -14,6 +14,7 @@ import actions.curious # import make_new_batch
 from environment import environment
 from threedworld.clienttools.tdw_client import TDW_Client
 
+SEED = 0
 CREATE_HDF5 = False
 USE_TDW = False
 SCENE_SWITCH = 20
@@ -33,7 +34,7 @@ s.close()
 ctx = zmq.Context()
 def loop():
 	global sock
-	env = environment(seed=0)	
+	env = environment(SEED)	
 	if USE_TDW:
 		env.next_config()
 		tc = TDW_Client(host_address,
