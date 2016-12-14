@@ -500,9 +500,9 @@ class agent:
 				        print 'LIFT OBJECT! ' + str(action['force']) + ' ' + str(chosen_o)
 				    elif action_type == 3:
                                         action['force'] = [0, 0, 0]
-					rotation_torque = self.rng.rand(1)[0] * 40 - 20
-					while abs(rotation_torque) < 15:
-					    rotation_torque = self.rng.rand(1)[0] * 40 - 20
+					rotation_torque = self.rng.rand(1)[0] * 100 - 50
+					while abs(rotation_torque) < 30:
+					    rotation_torque = self.rng.rand(1)[0] * 100 - 50
                                         action['torque'] = [0, rotation_torque, 0]
                                         action['id'] = str(chosen_id)
                                         action['object'] = str(chosen_o)
