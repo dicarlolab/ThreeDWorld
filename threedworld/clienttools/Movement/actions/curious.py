@@ -20,7 +20,7 @@ class agent:
 	ACTION_LENGTH = 15
 	ACTION_WAIT = 15
 
-	N = 1024000
+	N = 2048000
 	valid = np.zeros((N,1)) 
 
 	rng = np.random.RandomState(0)
@@ -334,8 +334,9 @@ class agent:
 				msg['msg']['ang_vel'] = [0, d, 0]
 			    # perform action on chosen object
 			    else:
-				# choose position of action
-				pos, chosen_id  = self.choose_action_position(oarray1, chosen_o)
+				if action_ind == 0:
+				    # choose position of action
+				    pos, chosen_id  = self.choose_action_position(oarray1, chosen_o)
 				print 'ACTION POS: ' + str(chosen_o) + " " + str(chosen_id)
 				
 				# find object centroid
@@ -411,6 +412,14 @@ class agent:
                                             action['object'] = str(chosen_o)
 					    action['action_pos'] = map(float, pos)
                                             print 'LIFT OBJECT! ' + str(action['force']) + ' ' + str(chosen_o)
+					elif action_type == 3:
+                                            action['force'] = [0, 0, 0]
+                                            action['torque'] = [0, rotation_torque, 0]
+                                            action['id'] = str(chosen_id)
+                                            action['object'] = str(chosen_o)
+                                            action['action_pos'] = map(float, pos)
+                                            print 'ROTATE OBJECT! ' + str(action['torque']) + ' ' + str(chosen_o)
+
 				    else:
 					print('WAITING')
 					msg['msg']['vel'] = [0, 0, 0]
@@ -433,7 +442,7 @@ class agent:
 				    objpi = []
 				    objpi2 = []
 				    action_ind = 0
-				    action_type = self.rng.randint(3)
+				    action_type = self.rng.randint(4)
 				    action_started = True
 				    if action_type == 0:
 					action['id'] = str(chosen_id)
@@ -482,6 +491,16 @@ class agent:
 				        action['object'] = str(chosen_o)
 					action['action_pos'] = map(float, pos)
 				        print 'LIFT OBJECT! ' + str(action['force']) + ' ' + str(chosen_o)
+				    elif action_type == 3:
+                                        action['force'] = [0, 0, 0]
+					rotation_torque = self.rng.rand(1)[0] * 40 - 20
+					while abs(rotation_torque) < 15:
+					    rotation_torque = self.rng.rand(1)[0] * 40 - 20
+                                        action['torque'] = [0, rotation_torque, 0]
+                                        action['id'] = str(chosen_id)
+                                        action['object'] = str(chosen_o)
+                                        action['action_pos'] = map(float, pos)
+                                        print 'ROTATE OBJECT! ' + str(action['torque']) + ' ' + str(chosen_o)
 
 				# add action if new action defined
 				if 'id' in action:
