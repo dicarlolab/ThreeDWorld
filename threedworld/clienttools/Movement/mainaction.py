@@ -11,11 +11,14 @@ import json
 from PIL import Image
 from StringIO import StringIO
 import actions.curious # import make_new_batch
-from environment import config
+from environment import environment
+from threedworld.clienttools.tdw_client import TDW_Client
 
 CREATE_HDF5 = False
-
+USE_TDW = False
 SCENE_SWITCH = 20
+SCREEN_WIDTH = 512
+SCREEN_HEIGHT = 384
 
 #path = 'C:/Users/mrowca/Documents/test'
 #path = '/home/mrowca/Desktop/images'
@@ -29,26 +32,44 @@ s.close()
 
 ctx = zmq.Context()
 def loop():
-	print "connecting..."
-	global sock 
-	sock = ctx.socket(zmq.REQ)
-	sock.connect("tcp://" + host_address + ":5556")
-	print "... connected @" + host_address + ":" + "5556"
+	global sock
+	env = environment()	
+	if USE_TDW:
+		tc = TDW_Client(host_address,
+			initial_command='request_create_environment',
+			description="test script",
+			selected_build='test_none.x86_64',  # or skip to select from UI
+			#queue_port_num="23402",
+			get_obj_data=True,
+			send_scene_info=True
+			)
+		tc.load_config(env.config)
+		tc.load_profile({'screen_width': SCREEN_WIDTH, 'screen_height': SCREEN_HEIGHT})
+		sock = tc.run()
+	else:
+		print "connecting..." 
+		sock = ctx.socket(zmq.REQ)
+		sock.connect("tcp://" + host_address + ":5556")
+		print "... connected @" + host_address + ":" + "5556"
 
-	print "sending join..."
-	#sock.send_json({"msg_type" : "SWITCH_SCENES", "get_obj_data" : True, "send_scene_info" : True})
-	#sock.send_json({"msg_type" : "CLIENT_JOIN", "get_obj_data" : True, "send_scene_info" : True})
-        sock.send_json({"msg_type" : "CLIENT_JOIN_WITH_CONFIG", "config" : config, "get_obj_data" : True, "send_scene_info" : True, "output_formats": ["png", "png", "jpg"]})
-	print "...join sent"
+		print "sending join..."
+		#sock.send_json({"msg_type" : "SWITCH_SCENES", "get_obj_data" : True, "send_scene_info" : True})
+		#sock.send_json({"msg_type" : "CLIENT_JOIN", "get_obj_data" : True, "send_scene_info" : True})
+		#environment.next_config()
+		sock.send_json({"msg_type" : "CLIENT_JOIN_WITH_CONFIG", "config" : env.config, "get_obj_data" : True, "send_scene_info" : True, "output_formats": ["png", "png", "jpg"]})
+		print "...join sent"
 
 	bn = 0
 	agent = actions.curious.agent()
+	if USE_TDW:
+		agent.set_screen_width(SCREEN_WIDTH)
 	while True:
 		if(bn != 0 and SCENE_SWITCH != 0 and bn % SCENE_SWITCH == 0):
 			print "switching scene..."
 			for i in range(4):
 			    sock.recv();
-			sock.send_json({"msg_type" : "SCENE_SWITCH", "config" : config, "get_obj_data" : True, "send_scene_info" : True, "output_formats": ["png", "png", "jpg"]})
+			env.next_config()
+			sock.send_json({"msg_type" : "SCENE_SWITCH", "config" : env.config, "get_obj_data" : True, "send_scene_info" : True, "output_formats": ["png", "png", "jpg"]})
 			print "scene switched..."
 		print "waiting on messages"
                 agent.make_new_batch(bn, sock, path, CREATE_HDF5)

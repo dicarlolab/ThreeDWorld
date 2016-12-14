@@ -26,8 +26,15 @@ class agent:
 	rng = np.random.RandomState(0)
         use_stabilization = True
 
+	def set_screen_width(self, screen_width):
+	    self.SCREEN_WIDTH = screen_width
+
 	def open_hdf5(self, path):
-            h5path = os.path.join(path, 'dataset1')
+	    file_iter = 1
+            h5path = os.path.join(path, 'dataset' + str(file_iter) + ".hdf5")
+	    while os.path.isfile(h5path):
+		file_iter += 1
+		h5path = os.path.join(path, 'dataset' + str(file_iter) + ".hdf5")
             self.hdf5 = h5py.File(h5path, mode='a')
 
         def get_hdf5_handles(self):
