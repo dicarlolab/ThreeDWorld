@@ -11,6 +11,8 @@ import os
 class agent:
         is_init = True
 
+	WRITE_FILES = False
+
         SCREEN_WIDTH = 256 #512
 
 	BATCH_SIZE = 256
@@ -152,7 +154,7 @@ class agent:
 		for i in range(bsize):
 		    print(i)
 		    info, narray, oarray, imarray = handle_message(sock,
-								   write=False,
+								   write=self.WRITE_FILES,
 								   outdir=path, prefix=str(bn) + '_' + str(i))
 
 		    info = json.loads(info)
@@ -189,6 +191,7 @@ class agent:
 			if bn == 0:
 			    msg['msg']['get_obj_data'] = True
 			msg['msg']['teleport_random'] = True
+			msg['msg']['action_type'] = "TELEPORT"
 			chosen = False
 			action_started = False
 			action_done = False
@@ -230,12 +233,14 @@ class agent:
 		    	   
 
 			msg['msg']['vel'] = [0, 0, 0]
+			msg['msg']['action_type'] = "LOOK"
 			print 'LOOK AROUND!'		
                     # stand back up
 		    elif is_tilted and self.use_stabilization:
 			print('STANDING BACK UP')
 			msg['msg']['ang_vel'] = self.stabilize(info['avatar_up'], info['avatar_angvel'])
-                        #action_done = False
+                        msg['msg']['action_type'] = "STANDUP"
+			#action_done = False
                         #action_started = False
                         #action_ind = 0
                         #objpi = []
@@ -281,6 +286,7 @@ class agent:
 			    #msg['msg']['ang_vel'] = [0, 10 * (2 * self.rng.uniform() - 1), 0]
                             msg['msg']['ang_vel'] = self.stabilize(info['avatar_forward'], info['avatar_angvel'], target_axis)
 			    msg['msg']['vel'] = [0, 0, 0.1 * target_velocity]
+			    msg['msg']['action_type'] = "SEARCHING"
 			    action_done = False
 			    action_started = False
 			    action_ind = 0
@@ -339,6 +345,7 @@ class agent:
 				    d =  -0.1 * np.sign(self.SCREEN_WIDTH/2 - pos[1])
 				msg['msg']['vel'] = [0, 0, .25]
 				msg['msg']['ang_vel'] = [0, d, 0]
+				msg['msg']['action_type'] = "MOVING_CLOSER"
 			    # perform action on chosen object
 			    else:
 				if action_ind == 0:
@@ -381,6 +388,7 @@ class agent:
 					    action['id'] = str(chosen_id)
 					    action['object'] = str(chosen_o)
 					    action['action_pos'] = map(float, pos)
+					    msg['msg']['action_type'] = "MOVING_OBJECT"
 					    print 'MOVE OBJECT! ' + str(chosen_o)
 					elif action_type == 1:
 						idx = self.find_in_observed_objects(chosen_o, obs_obj)
@@ -407,6 +415,7 @@ class agent:
 						    action2['force'] = mov2.tolist()
 						    action2['torque'] = [0, g, 0]
 						    action2['action_pos'] = map(float, pos2)
+						    msg['msg']['action_type'] = "CRASHING"
 
 						    action_ind = action_length
 						    print 'CRASH OBJECTS! ' + str(chosen_o) + ' ' + str(chosen_o2) + ' ' + str(mov) + ' ' + str(mov2) + ' ' + str(pos_obj) + ' ' + str(pos_obj2)+ ' ' + obs_obj[idx][0] + ' ' + obs_obj[idx2][0]
@@ -418,6 +427,7 @@ class agent:
                                             action['id'] = str(chosen_id)
                                             action['object'] = str(chosen_o)
 					    action['action_pos'] = map(float, pos)
+					    msg['msg']['action_type'] = "LIFTING"
                                             print 'LIFT OBJECT! ' + str(action['force']) + ' ' + str(chosen_o)
 					elif action_type == 3:
                                             action['force'] = [0, 0, 0]
@@ -425,6 +435,7 @@ class agent:
                                             action['id'] = str(chosen_id)
                                             action['object'] = str(chosen_o)
                                             action['action_pos'] = map(float, pos)
+					    msg['msg']['action_type'] = "ROTATING"
                                             print 'ROTATE OBJECT! ' + str(action['torque']) + ' ' + str(chosen_o)
 
 				    else:
@@ -432,6 +443,7 @@ class agent:
 					msg['msg']['vel'] = [0, 0, 0]
 					msg['msg']['ang_vel'] = [0, 0, 0]
 					msg['msg']['actions'] = []
+					msg['msg']['action_type'] = "WAITING"
 					waiting = True
 				    action_ind += 1
 				    if action_done or (action_ind >= action_length + action_wait):
@@ -457,6 +469,7 @@ class agent:
 					action['force'] = [a, 105 * (2 ** amult), 0]
 					action['torque'] = [0, g, 0]
 					action['action_pos'] = map(float, pos)
+					msg['msg']['action_type'] = "MOVING_OBJECT"
 					print 'MOVE OBJECT! ' + str(chosen_o)
 
 				    elif action_type == 1:
@@ -484,6 +497,7 @@ class agent:
 					    action2['force'] = mov2.tolist()
 					    action2['torque'] = [0, g, 0]
 					    action2['action_pos'] = map(float, pos2)
+					    msg['msg']['action_type'] = "CRASHING"
 
 					    action_ind = action_length
 					    
@@ -497,6 +511,7 @@ class agent:
 				        action['id'] = str(chosen_id)
 				        action['object'] = str(chosen_o)
 					action['action_pos'] = map(float, pos)
+					msg['msg']['action_type'] = "LIFTING"
 				        print 'LIFT OBJECT! ' + str(action['force']) + ' ' + str(chosen_o)
 				    elif action_type == 3:
                                         action['force'] = [0, 0, 0]
@@ -507,7 +522,8 @@ class agent:
                                         action['id'] = str(chosen_id)
                                         action['object'] = str(chosen_o)
                                         action['action_pos'] = map(float, pos)
-                                        print 'ROTATE OBJECT! ' + str(action['torque']) + ' ' + str(chosen_o)
+                                        msg['msg']['action_type'] = "ROTATING"
+					print 'ROTATE OBJECT! ' + str(action['torque']) + ' ' + str(chosen_o)
 
 				# add action if new action defined
 				if 'id' in action:
@@ -525,6 +541,10 @@ class agent:
 			    msg['msg']['vel'] = [0, -0.1 * gravity, 0]
 		    
 		    #msg['msg']['output_formats'] = ["png", "png", "jpg"]
+		    if(not 'action_type' in msg['msg']):
+			print("ERROR! Action not recognized")
+		    else:
+		        print(msg['msg']['action_type'])
 		    infolist.append(json.dumps(msg['msg']))
 		    ims.append(imarray)
 		    norms.append(narray)
