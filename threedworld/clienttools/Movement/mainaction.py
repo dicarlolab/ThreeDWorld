@@ -35,6 +35,7 @@ def loop():
 	global sock
 	env = environment(seed=0)	
 	if USE_TDW:
+		env.next_config()
 		tc = TDW_Client(host_address,
 			initial_command='request_create_environment',
 			description="test script",
