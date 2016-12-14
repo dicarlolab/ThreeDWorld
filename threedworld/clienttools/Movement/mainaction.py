@@ -44,7 +44,7 @@ def loop():
 	bn = 0
 	agent = actions.curious.agent()
 	while True:
-		if(SCENE_SWITCH != 0 and bn % SCENE_SWITCH == 0):
+		if(bn != 0 and SCENE_SWITCH != 0 and bn % SCENE_SWITCH == 0):
 			print "switching scene..."
 			for i in range(4):
 			    sock.recv();
