@@ -18,7 +18,8 @@ class environment:
 
 	rng_config = np.random.RandomState(0)
 
-	def __init__(self):
+	def __init__(self, seed=0):
+		self.rng_config = np.random.RandomState(seed)
 		self.next_config(init=True)
 
 	# update config for next scene switch
