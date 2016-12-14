@@ -14,17 +14,19 @@ import actions.curious # import make_new_batch
 from environment import environment
 from threedworld.clienttools.tdw_client import TDW_Client
 
-SEED = 0
-CREATE_HDF5 = False
-USE_TDW = False
+SEED = 3
+CREATE_HDF5 = True
+USE_TDW = True
 SCENE_SWITCH = 20
 SCREEN_WIDTH = 512
 SCREEN_HEIGHT = 384
-SELECTED_BUILD = 'test_none.x86_64'
+SELECTED_BUILD = 'one_world.exe'
 
+os.environ['USER'] = 'mrowca'
 #path = 'C:/Users/mrowca/Documents/test'
+path = 'D:\one_world_dataset'
 #path = '/home/mrowca/Desktop/images'
-path = '/Users/damian/Desktop/test_images'
+#path = '/Users/damian/Desktop/test_images'
 
 #TODO: rather hacky, but works for now  
 s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -63,9 +65,10 @@ def loop():
 		print "...join sent"
 
 	bn = 0
-	agent = actions.curious.agent()
+	agent = actions.curious.agent(CREATE_HDF5, path)
 	if USE_TDW:
 		agent.set_screen_width(SCREEN_WIDTH)
+                agent.set_screen_height(SCREEN_HEIGHT)
 	while True:
 		if(bn != 0 and SCENE_SWITCH != 0 and bn % SCENE_SWITCH == 0):
 			print "switching scene..."
@@ -75,7 +78,7 @@ def loop():
 			sock.send_json({"msg_type" : "SCENE_SWITCH", "config" : env.config, "get_obj_data" : True, "send_scene_info" : True, "output_formats": ["png", "png", "jpg"]})
 			print "scene switched..."
 		print "waiting on messages"
-                agent.make_new_batch(bn, sock, path, CREATE_HDF5)
+                agent.make_new_batch(bn, sock, path, CREATE_HDF5, USE_TDW)
 		print "messages received"
 		bn = bn + 1
 	

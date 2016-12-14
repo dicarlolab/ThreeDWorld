@@ -14,8 +14,8 @@ import sys
 import struct
 
 DEFAULT_QUEUE_PORT=23402
-#os.environ['THREEDWORLD_BUILD_DIR'] = "C:\Users\mrowca\Desktop\world"
-#os.environ['THREEDWORLD_CODE_DIR'] = "C:\Users\mrowca\Documents\GitHub\ThreeDWorld"
+os.environ['THREEDWORLD_BUILD_DIR'] = "C:\Users\mrowca\Desktop\world"
+os.environ['THREEDWORLD_CODE_DIR'] = "C:\Users\mrowca\Documents\GitHub\ThreeDWorld"
 
 class Three_D_World_Queue(object):
 
@@ -92,7 +92,14 @@ class Three_D_World_Queue(object):
 		while True:
 			msg = self.recv_json(self.sock1)
 			self.handle_message(msg)
-
+       
+        #select gpu
+        gpu_id = 0
+        def next_gpu(self):
+            self.gpu_id += 1
+            if self.gpu_id == 4:
+                self.gpu_id = 0
+            return str(self.gpu_id)
 	#sub main loop
 	def handle_message(self, message):
 	    reactions = {"CREATE_ENVIRONMENT_1": self.create_environment__1,
@@ -205,7 +212,8 @@ class Three_D_World_Queue(object):
             if os.name == 'nt':
                 process = [j["selected_build"],
                            "-port=" + str(forward_port_num),
-                           "-address=" + self.host_address]
+                           "-address=" + self.host_address,
+                           "-gpu " + self.next_gpu()]
 
 	    if ("screen_width" in j.keys()):
 		process = process + ["-screenWidth=" + str(j["screen_width"])]
@@ -253,7 +261,7 @@ class Three_D_World_Queue(object):
 		print ("\nenvironment @%s:%d" % (self.host_address, forward_port_num))
             my_env = os.environ.copy()
             if os.name == 'nt':
-                 environment = subprocess.Popen(process, env=my_env)
+                environment = subprocess.Popen(process, env=my_env)
             else:
                 my_env['DISPLAY'] = ':0'
                 environment = subprocess.Popen(process, env=my_env, preexec_fn=self.preexec_function)

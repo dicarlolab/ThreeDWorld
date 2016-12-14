@@ -9,11 +9,11 @@ import h5py
 import os
 
 class agent:
-        is_init = True
 
 	WRITE_FILES = False
 
         SCREEN_WIDTH = 256 #512
+        SCREEN_HEIGHT = 256 #384
 
 	BATCH_SIZE = 256
 	MULTSTART = -1
@@ -22,14 +22,22 @@ class agent:
 	ACTION_LENGTH = 15
 	ACTION_WAIT = 15
 
-	N = 2048000
+	N = 256000
 	valid = np.zeros((N,1)) 
 
 	rng = np.random.RandomState(0)
         use_stabilization = True
 
+        def __init__(self, CREATE_HDF5, path=''):
+            if(CREATE_HDF5):
+                self.open_hdf5(path)
+
+
 	def set_screen_width(self, screen_width):
 	    self.SCREEN_WIDTH = screen_width
+        
+        def set_screen_height(self, screen_height):
+            self.SCREEN_HEIGHT = screen_height
 
 	def open_hdf5(self, path):
 	    file_iter = 1
@@ -42,9 +50,9 @@ class agent:
         def get_hdf5_handles(self):
             dt = h5py.special_dtype(vlen=str)
             valid = self.hdf5.require_dataset('valid', shape=(self.N,), dtype=np.bool)
-            images = self.hdf5.require_dataset('images', shape=(self.N, 256, 256, 3), dtype=np.uint8)
-            normals = self.hdf5.require_dataset('normals', shape=(self.N, 256, 256, 3), dtype=np.uint8)
-            objects = self.hdf5.require_dataset('objects', shape=(self.N, 256, 256, 3), dtype=np.uint8)
+            images = self.hdf5.require_dataset('images', shape=(self.N, self.SCREEN_HEIGHT, self.SCREEN_WIDTH, 3), dtype=np.uint8)
+            normals = self.hdf5.require_dataset('normals', shape=(self.N, self.SCREEN_HEIGHT, self.SCREEN_WIDTH, 3), dtype=np.uint8)
+            objects = self.hdf5.require_dataset('objects', shape=(self.N, self.SCREEN_HEIGHT, self.SCREEN_WIDTH, 3), dtype=np.uint8)
             worldinfos = self.hdf5.require_dataset('worldinfo', shape=(self.N,), dtype=dt)
             agentactions = self.hdf5.require_dataset('actions', shape=(self.N,), dtype=dt)
             return [valid, images, normals, objects, worldinfos, agentactions]
@@ -115,11 +123,8 @@ class agent:
 	    #	target_axis = np.matmul(np.matmul(np.matmul(rx,ry), rz), current_up)
             return target_axis #self.stabilize(current_up, current_angvel, target_axis)
 	# bn integer
-	def make_new_batch(self, bn, sock, path, create_hdf5):
+	def make_new_batch(self, bn, sock, path, create_hdf5, use_tdw_msg):
 	    if(create_hdf5):
-                if(self.is_init):
-                    self.open_hdf5(path)
-                    is_init = False
                 self.valid, images, normals, objects, worldinfos, agentactions = self.get_hdf5_handles()
 
             # how many frames of action its allowed to take
@@ -552,7 +557,10 @@ class agent:
 		    norms.append(narray)
 		    infs.append(json.dumps(info))
 		    objs.append(oarray)
-		    sock.send_json(msg['msg'])
+                    if use_tdw_msg:
+                        sock.send_json(msg)
+                    else:
+		        sock.send_json(msg['msg'])
 		ims = np.array(ims)
 		norms = np.array(norms)
 		objs = np.array(objs)
