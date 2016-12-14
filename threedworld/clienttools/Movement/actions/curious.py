@@ -421,6 +421,7 @@ class agent:
 						    print 'CRASH OBJECTS! ' + str(chosen_o) + ' ' + str(chosen_o2) + ' ' + str(mov) + ' ' + str(mov2) + ' ' + str(pos_obj) + ' ' + str(pos_obj2)+ ' ' + obs_obj[idx][0] + ' ' + obs_obj[idx2][0]
 						else:
 						    print 'CRASH NOT FOUND!'
+						    msg['msg']['action_type'] = "NO_CRASH"
                                         elif action_type == 2:
                                             action['force'] = [0, self.rng.rand(1)[0] * 10 + 48, 0]
                                             action['torque'] = [0, 0, 0]
@@ -505,6 +506,7 @@ class agent:
 					else:
 					    action_done = True
 					    print 'CRASH NOT FOUND!'
+					    msg['msg']['action_type'] = "NO_CRASH"
 				    elif action_type == 2:
 				        action['force'] = [0, self.rng.rand(1)[0] * 10 + 48, 0]
 				        action['torque'] = [0, 0, 0]
