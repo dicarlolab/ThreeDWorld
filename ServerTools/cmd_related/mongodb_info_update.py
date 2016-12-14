@@ -86,10 +86,10 @@ if options.flag==0:
         #print(test_coll[0])
         #pass
         #break
-else:
+elif options.flag==1:
     # Do the update remat information
 
-    test_coll_new   = coll.find({'type' : 'shapenetremat', 'complexity': {'$exists': True}, 'center_pos': {'$exists': True}, 'boundb_pos': {'$exists': True}, 'isLight': {'$exists': True}, 'anchor_type': {'$exists': True}, 'aws_address': {'$exists': True}})
+    test_coll_new   = coll.find({'type' : 'shapenetremat', 'complexity': {'$exists': True}, 'center_pos': {'$exists': True}, 'boundb_pos': {'$exists': True}, 'isLight': {'$exists': True}, 'anchor_type': {'$exists': True}, 'aws_address': {'$exists': True}, 'has_texture': {'$exists': False}})
     list_coll_new   = list(test_coll_new[:])
 
     print("New info got!")
@@ -125,4 +125,33 @@ else:
         }, upsert=False)
 
     pass
+elif options.flag==2:
+    # Do the has_texture update
 
+    test_coll   = coll.find({'type': 'shapenet', 'version': 2, 'has_texture': True})
+    print(test_coll.count())
+
+    list_coll   = list(test_coll[:])
+    with_texture_dict   = {}
+    for docu in list_coll:
+        with_texture_dict[docu['id']]   = 0
+
+    test_coll_  = coll.find({'type': 'shapenetremat', 'has_texture': True})
+    print(test_coll_.count())
+
+    list_coll_  = list(test_coll_[:])
+    print("Begin!")
+    start_n         = options.startn
+    end_n           = min(len(list_coll_), start_n + options.length)
+
+    for indx_now in xrange(start_n, end_n):
+        if (indx_now%100==0):
+            print("Now: %i" % indx_now)
+        now_id  = list_coll_[indx_now]['id']
+        if now_id not in with_texture_dict:
+            coll.update_one({
+                '_id': list_coll_[indx_now]['_id']
+            },{
+                '$set': {'has_texture': False}
+            }, upsert=False)
+    pass

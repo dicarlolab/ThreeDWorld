@@ -44,6 +44,15 @@ def get_file_list():
 
     return file_list
 
+def replace_spaces():
+    global options
+    file_list = filter(lambda x: (" " in x) or ("(" in x) or (")" in x), basic.recursive_file_list(os.path.join(options.projectdir, options.inputdir)))
+    for file_name in file_list:
+        new_file    = file_name.replace(" ", "_")
+        new_file    = new_file.replace("(", "_")
+        new_file    = new_file.replace(")", "_")
+        os.system('mv "%s" %s' % (file_name, new_file))
+
 def get_pos(split_lines):
     pos_list    = []
     pos_list.append(float(split_lines[0].split('(')[1]))
@@ -90,6 +99,9 @@ if __name__=='__main__':
     coll = conn['synthetic_generative']['3d_models']
 
     ### Generate the wrl files using VHACD
+
+    # before generating, replace the possible spaces to _
+    replace_spaces()
     file_list = get_file_list()
 
     '''
@@ -98,7 +110,7 @@ if __name__=='__main__':
         exit()
     '''
 
-    #print(len(file_list))
+    print(len(file_list))
 
     if options.forcevhacd==0:
         new_file_list   = []
@@ -146,7 +158,7 @@ if __name__=='__main__':
                 file_name_now   = md5_dict_i[exist_doc['md5_value']]
                 file_list.remove(file_name_now)
 
-    #print(len(file_list))
+    print(len(file_list))
     print('Register the models')
     for file_name in file_list:
         coll.update_one({
@@ -186,7 +198,8 @@ if __name__=='__main__':
 
     ### Run the unity command 
 
-    cmd_tmp_unity   = "%s -batchmode -quit -projectPath %s -executeMethod CreatePrefabCMD.CreatePrefabFromModel_script -nographics -inputFile %s -outputFile %s"
+    #cmd_tmp_unity   = "%s -batchmode -quit -projectPath %s -executeMethod CreatePrefabCMD.CreatePrefabFromModel_script -nographics -inputFile %s -outputFile %s"
+    cmd_tmp_unity   = "%s -batchmode -quit -projectPath %s -executeMethod CreatePrefabCMD.CreatePrefabFromModel_script -logFile -nographics -inputFile %s -outputFile %s"
 
     cmd_str         = cmd_tmp_unity % (options.unity, options.projectdir, "ServerTools/" + options.tmpname, "ServerTools/" + options.tmpnameunity)
     print("Run " + cmd_str)

@@ -99,7 +99,19 @@ All the seeds excluding `'environment_scene'`, are all customizable. If you were
 
 ### About scaling options
 
-In the example config message, there is one dictionary called "scale\_relat\_dict". This dictionary is used to tell the ProceduralGeneration how to scale every object. The key values could be the same as names in permitted\_items or the original filename of that object. Three options are provided:
+(Ordered in priority, later setting would be overwritten by earlier settings)
+
+In the example config message, there is one dictionary called "scale\_relat\_dict". This dictionary is used to tell the ProceduralGeneration how to scale every object. 
+
+The key values **should** be the same as names in permitted\_items or the original filename of that object (http address for aws assetbundles).
+
+One example is as below:
+
+```python
+    "scale_relat_dict": {"584164": {"option": "Multi_size", "scale": 2, "var": 1, "seed": 0, "use_global_rand": False, "apply_to_inst": True}},
+```
+
+For "option", three options are provided (Default is "NULL", which means to do nothing):
 
 - "Absol\_size": 
         The object in the scene would be resized to make the longest axis of that to be the "scale" sent in; 
@@ -108,7 +120,25 @@ In the example config message, there is one dictionary called "scale\_relat\_dic
 - "Multi\_size":
         Just multiple the native size by "scale"
 
-Besides those per-prefab options, you could set "enable\_global\_unit\_scale" to 1 in scene configuration to make every prefabs normalized by making their longest axis to be 1 unit.
+Besides options, other things are:
+- "scale": Mean of scale size. The exact meaning is defined by "option". Default is 1.
+- "var": The variance of scale size. The scale would be drawn from a gaussian distribution. Default is 0.
+- "seed": The random seed. Default is 0.
+- "use\_global\_rand": Bool for whether use global scene random generator defined below. Default is true.
+- "apply\_to\_inst": Bool for whether applying to each instance. Default is false. If false, then the assetbundle would be the same random size for the whole scene.
+
+Additionally, there is one dictionary called "global\_scale\_dict" where you could set some global scale information:
+
+```python
+    "global_scale_dict": {"option": "Multi_size", "scale": 2, "var": 0.1, "seed": 0},
+```
+
+- "option": Same to "option" in "scale\_relat\_dict" for every assetbundle. Default is "NULL".
+- "scale": Mean of scale size. The exact meaning is defined by "option". Default is 1.
+- "var": The variance of scale size. The scale would be drawn from a gaussian distribution. Default is 0.
+- "seed": The random seed. Default is 0.
+
+(Legacy) Besides those options, you could set "enable\_global\_unit\_scale" to 1 in scene configuration to make every prefabs normalized by making their longest axis to be 1 unit.
 
 ## Creating new `enviroment_scene`
 
