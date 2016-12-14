@@ -20,6 +20,7 @@ USE_TDW = False
 SCENE_SWITCH = 20
 SCREEN_WIDTH = 512
 SCREEN_HEIGHT = 384
+SELECTED_BUILD = 'test_none.x86_64'
 
 #path = 'C:/Users/mrowca/Documents/test'
 #path = '/home/mrowca/Desktop/images'
@@ -40,7 +41,7 @@ def loop():
 		tc = TDW_Client(host_address,
 			initial_command='request_create_environment',
 			description="test script",
-			selected_build='test_none.x86_64',  # or skip to select from UI
+			selected_build=SELECTED_BUILD,  # or skip to select from UI
 			#queue_port_num="23402",
 			get_obj_data=True,
 			send_scene_info=True
