@@ -806,8 +806,13 @@ public class ProceduralGeneration : MonoBehaviour
             modScale                = 1/longest_axis;
         }
 
-        if (scene_scale_con=="Multi_size")
-            modScale    = list_rands[0].Next_Gaussian(scene_scale_mean, scene_scale_var);
+        //TODO Verify that we want to scale by the longest_axis here first (DOSCH very big otherwise)
+        if (scene_scale_con=="Multi_size") 
+        {
+			float longest_axis = info.bounds.size.magnitude;
+            modScale = list_rands[0].Next_Gaussian(scene_scale_mean, scene_scale_var);
+			modScale = modScale/longest_axis;
+        }
 
         if (scene_scale_con=="Absol_size"){
             float longest_axis      = info.bounds.size.magnitude;

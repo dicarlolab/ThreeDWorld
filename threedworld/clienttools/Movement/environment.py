@@ -70,7 +70,7 @@ class environment:
 			"number_rooms": 1,
 			"max_wall_twists": 3,
 			#"enable_global_unit_scale": 1,
-			"global_scale_dict": {"option": "Multi_size", "scale": 1, "var": 0.5, "seed": 0},
+			"global_scale_dict": {"option": "Multi_size", "scale": 1, "var": 0.7, "seed": 0},
 			"max_placement_attempts": 300,   #Maximum number of failed placements before we consider a room fully filled.
 			"grid_size": 0.4,    #Determines how fine tuned a grid the objects are placed on during Proc. Gen. Smaller the number, the
 			"use_mongodb_inter": 1, 
