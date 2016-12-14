@@ -905,19 +905,23 @@ public class ProceduralGeneration : MonoBehaviour
 								float METALLIC_STD = 0.271416832554f;
 
 								// Set glossiness using statistical properties derived from a test set
+								Random_help random_gloss = new Random_help(_rand.Next());
 								float glossiness = GLOSS_MEAN;
 								if(_mat.HasProperty("_Glossiness"))
 									glossiness = _mat.GetFloat("_Glossiness");
-								glossiness = glossiness + Convert.ToSingle(_rand.NextDouble()) * GLOSS_STD * 2 - GLOSS_STD;
+								//glossiness = glossiness + Convert.ToSingle(_rand.NextDouble()) * GLOSS_STD * 2 - GLOSS_STD;
+								glossiness = random_gloss.Next_Gaussian(glossiness, GLOSS_STD);
 								glossiness = Mathf.Min(glossiness, 1.0f);
 								glossiness = Mathf.Max(glossiness, 0.0f);
 								_mat.SetFloat("_Glossiness", glossiness);
 
 								// Set metallic using statistical properties derived from a test set
+								Random_help random_metallic = new Random_help(_rand.Next());
 								float metallic = METALLIC_MEAN;
 								if(_mat.HasProperty("_Metallic"))
 									metallic = _mat.GetFloat("_Metallic");
-								metallic = metallic + Convert.ToSingle(_rand.NextDouble()) * METALLIC_STD * 2 - METALLIC_STD;
+								//metallic = metallic + Convert.ToSingle(_rand.NextDouble()) * METALLIC_STD * 2 - METALLIC_STD;
+								metallic = random_metallic.Next_Gaussian(metallic, METALLIC_STD);
 								metallic = Mathf.Min(metallic, 1.0f);
 								metallic = Mathf.Max(metallic, 0.0f);
 								_mat.SetFloat("_Metallic", metallic);	
