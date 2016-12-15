@@ -75,7 +75,11 @@ def loop():
 			for i in range(4):
 			    sock.recv();
 			env.next_config()
-			sock.send_json({"msg_type" : "SCENE_SWITCH", "config" : env.config, "get_obj_data" : True, "send_scene_info" : True, "output_formats": ["png", "png", "jpg"]})
+			scene_switch_msg = {"msg_type" : "SCENE_SWITCH", "config" : env.config, "get_obj_data" : True, "send_scene_info" : True, "output_formats": ["png", "png", "jpg"]}
+			if USE_TDW:
+			    sock.send_json({"msg": scene_switch_msg})
+			else:
+			    sock.send_json(scene_switch_msg)
 			print "scene switched..."
 		print "waiting on messages"
                 agent.make_new_batch(bn, sock, path, CREATE_HDF5, USE_TDW)
