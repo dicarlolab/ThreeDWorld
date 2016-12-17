@@ -14,7 +14,7 @@ import actions.curious # import make_new_batch
 from environment import environment
 from threedworld.clienttools.tdw_client import TDW_Client
 
-SEED = 3
+SEED = 0
 CREATE_HDF5 = True
 USE_TDW = True
 SCENE_SWITCH = 20
@@ -77,7 +77,7 @@ def loop():
 			env.next_config()
 			scene_switch_msg = {"msg_type" : "SCENE_SWITCH", "config" : env.config, "get_obj_data" : True, "send_scene_info" : True, "output_formats": ["png", "png", "jpg"]}
 			if USE_TDW:
-			    sock.send_json({"msg": scene_switch_msg})
+                            sock.send_json({"n": 4, "msg": scene_switch_msg})
 			else:
 			    sock.send_json(scene_switch_msg)
 			print "scene switched..."

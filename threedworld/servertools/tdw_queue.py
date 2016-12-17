@@ -211,9 +211,9 @@ class Three_D_World_Queue(object):
             
             if os.name == 'nt':
                 process = [j["selected_build"],
+                           "-gpu " + self.next_gpu(),
                            "-port=" + str(forward_port_num),
-                           "-address=" + self.host_address,
-                           "-gpu " + self.next_gpu()]
+                           "-address=" + self.host_address]
 
 	    if ("screen_width" in j.keys()):
 		process = process + ["-screenWidth=" + str(j["screen_width"])]
