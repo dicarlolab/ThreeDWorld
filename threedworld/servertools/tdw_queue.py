@@ -16,6 +16,7 @@ import struct
 DEFAULT_QUEUE_PORT=23402
 os.environ['THREEDWORLD_BUILD_DIR'] = "C:\Users\mrowca\Desktop\world"
 os.environ['THREEDWORLD_CODE_DIR'] = "C:\Users\mrowca\Documents\GitHub\ThreeDWorld"
+GPU_NUM = 4
 
 class Three_D_World_Queue(object):
 
@@ -97,7 +98,7 @@ class Three_D_World_Queue(object):
         gpu_id = 0
         def next_gpu(self):
             self.gpu_id += 1
-            if self.gpu_id == 4:
+            if self.gpu_id == GPU_NUM:
                 self.gpu_id = 0
             return str(self.gpu_id)
 	#sub main loop
@@ -211,7 +212,7 @@ class Three_D_World_Queue(object):
             
             if os.name == 'nt':
                 process = [j["selected_build"],
-                           "-gpu " + self.next_gpu(),
+                           "-gpu", self.next_gpu(),
                            "-port=" + str(forward_port_num),
                            "-address=" + self.host_address]
 
