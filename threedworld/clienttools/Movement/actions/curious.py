@@ -28,9 +28,9 @@ class agent:
 	rng = np.random.RandomState(0)
         use_stabilization = True
 
-        def __init__(self, CREATE_HDF5, path=''):
+        def __init__(self, CREATE_HDF5, path='', dataset_num=-1):
             if(CREATE_HDF5):
-                self.open_hdf5(path)
+                self.open_hdf5(path, dataset_num)
 
 
 	def set_screen_width(self, screen_width):
@@ -39,12 +39,16 @@ class agent:
         def set_screen_height(self, screen_height):
             self.SCREEN_HEIGHT = screen_height
 
-	def open_hdf5(self, path):
-	    file_iter = 1
-            h5path = os.path.join(path, 'dataset' + str(file_iter) + ".hdf5")
-	    while os.path.isfile(h5path):
-		file_iter += 1
-		h5path = os.path.join(path, 'dataset' + str(file_iter) + ".hdf5")
+	def open_hdf5(self, path, dataset_num=-1):
+            if dataset_num == -1:
+                file_iter = 1
+                h5path = os.path.join(path, 'dataset' + str(file_iter) + ".hdf5")
+                while os.path.isfile(h5path):
+                    file_iter += 1
+                    h5path = os.path.join(path, 'dataset' + str(file_iter) + ".hdf5")
+            else:
+                h5path = os.path.join(path, 'dataset' + str(dataset_num) + ".hdf5")
+
             self.hdf5 = h5py.File(h5path, mode='a')
 
         def get_hdf5_handles(self):

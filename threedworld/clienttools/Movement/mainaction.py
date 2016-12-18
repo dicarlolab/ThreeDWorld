@@ -14,7 +14,7 @@ import actions.curious # import make_new_batch
 from environment import environment
 from threedworld.clienttools.tdw_client import TDW_Client
 
-SEED = 0
+SEED = int(sys.argv[2])
 CREATE_HDF5 = True
 USE_TDW = True
 SCENE_SWITCH = 20
@@ -24,9 +24,10 @@ SELECTED_BUILD = 'one_world.exe'
 
 os.environ['USER'] = 'mrowca'
 #path = 'C:/Users/mrowca/Documents/test'
-path = 'D:\one_world_dataset'
+#path = 'F:\one_world_dataset'
 #path = '/home/mrowca/Desktop/images'
 #path = '/Users/damian/Desktop/test_images'
+path = sys.argv[1]
 
 #TODO: rather hacky, but works for now  
 s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -65,7 +66,7 @@ def loop():
 		print "...join sent"
 
 	bn = 0
-	agent = actions.curious.agent(CREATE_HDF5, path)
+	agent = actions.curious.agent(CREATE_HDF5, path, SEED)
 	if USE_TDW:
 		agent.set_screen_width(SCREEN_WIDTH)
                 agent.set_screen_height(SCREEN_HEIGHT)
