@@ -224,7 +224,6 @@ public class ProceduralGeneration : MonoBehaviour
                 LitJson.JsonData current_item    = config_for_prefabs[indx_now.ToString()];
 
                 PrefabDatabase.PrefabInfo newInfo = new PrefabDatabase.PrefabInfo();
-
                 newInfo.fileName = current_item["aws_address"].ReadString(newInfo.fileName);
                 //newInfo.fileName = newInfo.fileName.Replace("\"", "");
                 newInfo.complexity = current_item["complexity"].ReadInt(-1);

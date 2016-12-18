@@ -4,6 +4,7 @@ import json
 import subprocess
 import socket
 import pymongo
+from bson.objectid import ObjectId
 #import psutil
 import os
 from tabulate import tabulate
@@ -42,19 +43,16 @@ if __name__ == "__main__":
 
     #default_inquery     = {'type': 'shapenet', 'version': 2, 'has_texture':True, 'complexity': {'$exists': True}, 'center_pos': {'$exists': True}, 'boundb_pos': {'$exists': True}, 'isLight': {'$exists': True}, 'anchor_type': {'$exists': True}, 'aws_address': {'$exists': True}}
     default_inquery     = {'type': 'shapenetremat', 'has_texture': True, 'complexity': {'$exists': True}, 'center_pos': {'$exists': True}, 'boundb_pos': {'$exists': True}, 'isLight': {'$exists': True}, 'anchor_type': {'$exists': True}, 'aws_address': {'$exists': True}}
-    test_coll = coll.find(default_inquery)
-    # Download all the default information
-    default_coll    = list(test_coll[:])
+    CACHE = {}
+    default_keys = ['boundb_pos', 'isLight', 'anchor_type', 'aws_address', 'complexity', 'center_pos']
 
-    def inc_one_item(test_coll, return_dict, indx_tmp):
-        now_indx_dict   = len(return_dict)
-        return_dict[now_indx_dict]   = test_coll[indx_tmp]
-        if '_id' in return_dict[now_indx_dict]:
+    def correct(record):
+        if '_id' in record:
             # Used for string of _id
-            return_dict[now_indx_dict]['_id_str']       = str(return_dict[now_indx_dict].pop('_id'))
-        if 'aws_version' not in return_dict[now_indx_dict]:
+            record['_id_str'] = str(record.pop('_id'))
+        if 'aws_version' not in record:
             # Use this for update aws file and caching it correctly
-            return_dict[now_indx_dict]['aws_version']   = '0'
+            record['aws_version']   = '0'
 
     while True:
         #  Wait for next request from client
@@ -65,37 +63,32 @@ if __name__ == "__main__":
         #time.sleep(0.1)
         #test_dict   = {"test": 0}
 
-        return_dict     = {}
-        #return_dict     = {"test": 0}
+        return_list = []
+        #return_dict = {"test": 0}
         for key_value in message:
-            now_request     = message[key_value]
-            if (not type(now_request['find_argu']) is dict) and (now_request['find_argu'] == 'default'):
-                print("Using default inquery!")
-                #test_coll = coll.find(default_inquery)
-                test_coll   = default_coll
-            else:
-                test_coll = coll.find(now_request['find_argu'])
-                test_coll       = list(test_coll[:])
+            now_request = message[key_value]
+            q = now_request.get('find_argu', default_inquery)
+            for _k in default_keys:
+                if _k not in q:
+                    q[_k] = {'$exists': True}
+            if not str(q) in CACHE:
+                idvals = np.array([str(_x['_id']) for _x in list(coll.find(q, projection=['_id']))])
+                CACHE[str(q)] = idvals
+                print('new', q, len(idvals))
+            idvals = CACHE[str(q)] 
 
-            num_ava         = len(test_coll)
-            if now_request['choose_mode']=='all':
-                for indx_tmp in range(num_ava):
-                    inc_one_item(test_coll, return_dict, indx_tmp)
-
-            if now_request['choose_mode']=='random':
-                if 'seed' in now_request['choose_argu']:
-                    rand_seed   = now_request['choose_argu']['seed']
-                else:
-                    rand_seed   = 0
-
-                np.random.seed(rand_seed)
-
-                for indx_tmp in np.random.choice(range(num_ava), min(now_request['choose_argu']['number'], num_ava)):
-                    inc_one_item(test_coll, return_dict, indx_tmp)
-
-            #return_dict[0]  = test_coll[0]
-            #return_dict[0].pop('_id')
-
-        print(len(return_dict))
+            num_ava = len(idvals)
+            if now_request['choose_mode'] == 'random':
+                rng = np.random.RandomState(seed=now_request['choose_argu'].get('seed', 0))
+                goodidinds = rng.permutation(num_ava)[: now_request['choose_argu']['number']] 
+                goodidvals = idvals[goodidinds]
+            elif now_request['choose_mode'] == 'all':
+                goodidvals = idvals
+            goodidvals = map(ObjectId, goodidvals) 
+            return_list0 = list(coll.find({'_id': {'$in': goodidvals}}, projection=default_keys))
+            map(correct, return_list0)
+            return_list.extend(return_list0)
+        
+        return_dict = dict(enumerate(return_list))
+        print('Returning %d items' % len(return_dict))
         socket_self.send_json(return_dict)
-        #socket_self.send("World from %s" % port)

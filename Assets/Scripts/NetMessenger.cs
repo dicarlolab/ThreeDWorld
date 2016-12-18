@@ -135,18 +135,22 @@ public class NetMessenger : MonoBehaviour
 
     void Update()
     {
-		if (!skipFrame) {
+        if (!skipFrame) {
 			if (!this.waitForSceneInit) {
-				if (clientSimulation != null) {
-					string output;
+                if (clientSimulation != null) {
+                    string output;
 					if (clientSimulation.HasIn && clientSimulation.TryReceiveFrameString (out output))
-						Debug.LogWarning ("Received: " + output);
+                    {
+                        Debug.LogWarning("Received: " + output);
+                    }
 					return;
 				}
 				foreach (ResponseSocket server in _createdSockets) {
-					//Debug.LogFormat ("Server In: {0}, Out: {1}", server.HasIn, server.HasOut);
-					if (server.HasIn && server.TryReceiveMultipartMessage (TimeSpan.Zero, ref _lastMessage))
-						HandleFrameMessage (server, _lastMessage);
+                    //Debug.LogFormat ("Server In: {0}, Out: {1}", server.HasIn, server.HasOut);
+                    if (server.HasIn && server.TryReceiveMultipartMessage(TimeSpan.Zero, ref _lastMessage))
+                    {
+                        HandleFrameMessage(server, _lastMessage);
+                    }
 					RequestSocket client = null;
 					if (_avatarClients.ContainsKey (server))
 						client = _avatarClients [server];
@@ -313,16 +317,17 @@ public class NetMessenger : MonoBehaviour
         Debug.Log("Message info sent!");
         //_lastMessage_info = clientInfo.ReceiveMessage();
         TimeSpan timeout = TimeSpan.FromSeconds(30);
-        if (clientInfo.TryReceiveMultipartMessage(timeout, ref _lastMessage_info)){
+        bool did_receive = false;
+        while(!did_receive)
+            did_receive = clientInfo.TryReceiveMultipartMessage(timeout, ref _lastMessage_info);
         //if (clientInfo.TryReceiveMultipartMessage(ref _lastMessage_info)){
-            Debug.Log("Receive info: ");
+        Debug.Log("Receive info: ");
 
-            string msgHeader = _lastMessage_info.First.ConvertToString();
-            JsonData jsonData_ = _lastMessage_info.ReadJson(out msgHeader);
-            Debug.Log("To Json: " + jsonData_);
-            return jsonData_;
-        }
-        return CreateMsgJson("Noback");
+        string msgHeader = _lastMessage_info.First.ConvertToString();
+        JsonData jsonData_ = _lastMessage_info.ReadJson(out msgHeader);
+        Debug.Log("To Json: " + jsonData_);
+        return jsonData_;
+        //return CreateMsgJson("Noback");
     }
     #endregion
 
