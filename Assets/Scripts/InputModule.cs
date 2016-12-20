@@ -110,7 +110,15 @@ public class InputModule : AbstractInputModule
     // Parse the input sent from the client and use it to update the controls for the next simulation segment
     public override void HandleNetInput(JsonData jsonData, ref Vector3 targetVel)
     {
-		Debug.Log (jsonData.ToJSON ());
+        Vector3 angles;
+		angles.x = -1;
+		angles.y = -1;
+		angles.z = -1;
+        angles = jsonData["set_ang"].ReadVector3(angles);
+        if(angles.x + angles.y + angles.z != -3) {
+        	_myAvatar.setRotationEuler(angles);
+       	}
+		//Debug.Log (jsonData.ToJSON ());
         // Get movement
         _myAvatar.sendSceneInfo = jsonData["send_scene_info"].ReadBool(false);
         cacheVel = _myAvatar.moveSpeed * jsonData["vel"].ReadVector3(Vector3.zero);
@@ -119,6 +127,23 @@ public class InputModule : AbstractInputModule
         if (jsonData["teleport_random"].ReadBool(false))
             _myAvatar.TeleportToValidPosition();
         _myAvatar.shouldCollectObjectInfo = jsonData["get_obj_data"].ReadBool(false);
+
+        //TODO
+		JsonData JsonOutputFormatList = jsonData["output_formats"];
+		if (JsonOutputFormatList != null) {
+			if (JsonOutputFormatList.Count != _myAvatar.outputFormatList.Count) {
+				Debug.LogError(_myAvatar.outputFormatList.Count.ToString() + 
+					" output formats need to be specified, one for each shader!" +
+					" Using standard output formats.");
+			}
+			List<string> outputFormatList = new List<string>();
+			for(int i = 0; i < JsonOutputFormatList.Count; i++) {
+				string outputFormat = JsonOutputFormatList[i].ReadString();
+				outputFormatList.Add(outputFormat);
+			}
+			_myAvatar.SetOutputFormatList(outputFormatList);
+		}
+
         List<string> relationships = new List<string>();
         if (!jsonData["relationships"].ReadList(ref relationships))
         {
@@ -134,13 +159,16 @@ public class InputModule : AbstractInputModule
 			SemanticObject[] allObjects = UnityEngine.Object.FindObjectsOfType<SemanticObject>();
 			for (int i = 0; i < actionsCount; i++) {
 				JsonData action = actionsList [i];
-				string id = action ["id"].ReadString ();
+				string str_id = action ["id"].ReadString ();
+				int id = int.Parse(str_id);
 				Vector3 force = action ["force"].ReadVector3 ();
-				force = _myAvatar.transform.TransformDirection (force);
+				//force = _myAvatar.transform.TransformDirection (force);
 				Vector3 torque = action ["torque"].ReadVector3 ();
-				torque = _myAvatar.transform.TransformDirection (torque);
+				//torque = _myAvatar.transform.TransformDirection (torque);
 				foreach (SemanticObject o in allObjects) {
-					string idval = NetMessenger.colorUIDToString(o.gameObject.GetComponentInChildren<Renderer> ().material.GetColor ("_idval"));
+					int idval = -999;
+					if(o.gameObject.GetComponentInChildren<Renderer>().material.HasProperty("_idval"))
+						idval = NetMessenger.colorUIDToInt(o.gameObject.GetComponentInChildren<Renderer> ().material.GetColor ("_idval"));
 					if (idval == id) {
 						Rigidbody rb = o.gameObject.GetComponentInChildren<Rigidbody> ();
 						rb.AddForce (force);
@@ -156,7 +184,9 @@ public class InputModule : AbstractInputModule
         Rigidbody myRigidbody = _myAvatar.myRigidbody;
         float rotSpeed = _myAvatar.rotSpeed;
 
-        myRigidbody.velocity = cacheVel;
+		// transform the velocity to object frame before applying
+		Quaternion curRotation = _myAvatar.transform.rotation;
+		myRigidbody.velocity = curRotation * cacheVel;
 
         Vector3 angChange = cacheAngVel;
         // Clamp drag value for some momentum on gradual stopping

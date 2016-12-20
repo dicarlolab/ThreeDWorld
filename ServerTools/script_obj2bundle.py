@@ -44,6 +44,15 @@ def get_file_list():
 
     return file_list
 
+def replace_spaces():
+    global options
+    file_list = filter(lambda x: (" " in x) or ("(" in x) or (")" in x), basic.recursive_file_list(os.path.join(options.projectdir, options.inputdir)))
+    for file_name in file_list:
+        new_file    = file_name.replace(" ", "_")
+        new_file    = new_file.replace("(", "_")
+        new_file    = new_file.replace(")", "_")
+        os.system('mv "%s" %s' % (file_name, new_file))
+
 def get_pos(split_lines):
     pos_list    = []
     pos_list.append(float(split_lines[0].split('(')[1]))
@@ -54,30 +63,56 @@ def get_pos(split_lines):
 if __name__=='__main__':
 
     parser = OptionParser()
-    #parser.add_option("-i", "--inputdir", dest="inputdir", default ="Assets/Models/dorsch_models/JobPoses", type=str, help = "The relative directory of all the models (relative to the project path)")
-    parser.add_option("-i", "--inputdir", dest="inputdir", default ="Assets/Models/dorsch_models/JobPoses_test", type=str, help = "The relative directory of all the models (relative to the project path)")
-    parser.add_option("-p", "--projectdir", dest="projectdir", default ="/home/chengxuz/ThreeDWorld", type=str, help = "The absolute path to the Unity project")
+    parser.add_option("-i", "--inputdir", dest="inputdir", default ="Assets/Models/dorsch_models/JobPoses_test", type=str, help = "The relative directory of all the models (relative to the project path), if --parallel is 1, this then should be the absolute path to the models")
+    parser.add_option("-p", "--projectdir", dest="projectdir", default ="/home/chengxuz/ThreeDWorld", type=str, help = "The absolute path to the Unity project, if --parallel is 1, then the project path should not exist (we would copy the empty prjoect there)")
     parser.add_option("-v", "--vhacd", dest="vhacd", default = "/home/chengxuz/ThreeDworld_related/v-hacd/build/linux2/test/testVHACD", type=str, help = "The path to the vhacd generating executable file testVHACD")
     parser.add_option("-o", "--portn", dest="portn", default = 22334, type=int, help = "The port for mongodb connected to the database on dicarlo5")
     parser.add_option("-n", "--processn", dest="processn", default = 2, type=int, help = "The number of processes used to compute the VHACD files")
-    parser.add_option("-t", "--type", dest="type", default = "dorsh", type=str, help = "The value of the variable type to be set in mongodb")
-    parser.add_option("-e", "--version", dest="version", default = 0, type=int, help = "The value of the variable version to be set in mongodb")
+    parser.add_option("-t", "--type", dest="type", default = "dosch", type=str, help = "The value of the variable type to be set in mongodb")
+    parser.add_option("-e", "--version", dest="version", default = 1, type=int, help = "The value of the variable version to be set in mongodb")
     parser.add_option("-m", "--mapn", dest="mapn", default = 10, type=int, help = "The number in each division used to compute the VHACD files")
-    parser.add_option("-f", "--force", dest="force", default = 0, type=int, help = "0 for judging whether continue, 1 for generating and uploading anything anyway")
+    parser.add_option("--forcevhacd", dest="forcevhacd", default = 0, type=int, help = "0 for judging whether use the current wrl files, 1 for generating anyway")
+    parser.add_option("--forcebundle", dest="forcebundle", default = 0, type=int, help = "0 for judging whether use the current bundles in the dataset, 1 for generating and uploading anything anyway")
     parser.add_option("-a", "--tmpname", dest="tmpname", default = "~tmp_id.txt", type = str, help = "The temporary file for storing path, _id")
     parser.add_option("-u", "--unity", dest="unity", default = "/opt/Unity/Editor/Unity", type = str, help = "The path of unity")
     parser.add_option("--tmpnameunity", dest="tmpnameunity", default = "~tmp_info.txt", type = str, help = "The temporary file for storing information extracted")
     parser.add_option("--url", dest = "urlPrefix", default = "http://threedworld.s3.amazonaws.com/", type = str, help = "The url prefix for aws_address")
+    parser.add_option("--parallel", dest = "parallel", default = 0, type = int, help = "Flag whether we should create a new project, put the assetbundles there, and compute there, which would make the computation parallelable")
+    parser.add_option("--emptyproject", dest = "emptyproject", default = "/home/chengxuz/ThreeDWorld/ServerTools/cmd_related/empty_project", help = "The absolute path to the empty project template")
 
     (options, args) = parser.parse_args()
+
+    ### For parallel computing, copy the empty project and then copy the 
+    if options.parallel==1:
+        if os.path.exists(options.projectdir):
+            #os.system('rm -r ' + options.projectdir)
+            pass
+        os.system("cp -r " + options.emptyproject + " " + options.projectdir)
+        os.system("rm -r " + os.path.join(options.projectdir, "Assets/Scripts"))
+        os.system("cp -r ../Assets/Scripts " + os.path.join(options.projectdir, "Assets/Scripts"))
+        os.system("cp -r "+ options.inputdir + " " + os.path.join(options.projectdir, "Assets/Models/script_gen"))
+        os.system("mkdir -p " + os.path.join(options.projectdir, 'ServerTools'))
+
+        options.inputdir    = "Assets/Models/script_gen"
 
     conn = pymongo.MongoClient(port=options.portn)
     coll = conn['synthetic_generative']['3d_models']
 
     ### Generate the wrl files using VHACD
+
+    # before generating, replace the possible spaces to _
+    replace_spaces()
     file_list = get_file_list()
 
-    if options.force==0:
+    '''
+    if options.parallel==1:
+        print(len(file_list))
+        exit()
+    '''
+
+    print(len(file_list))
+
+    if options.forcevhacd==0:
         new_file_list   = []
         for file_name in file_list:
             wrl_path    = file_name[:-3] + 'wrl'
@@ -113,7 +148,7 @@ if __name__=='__main__':
 
     _id_dict    = {}
     md5_values_list     = md5_dict.values()
-    if options.force==0:
+    if options.forcebundle==0:
         test_coll = coll.find({'type': options.type, 'version': options.version, 'md5_value': {'$in': md5_values_list}})
         #print(test_coll.count())
         exist_doc_list  = list(test_coll[:])
@@ -123,7 +158,7 @@ if __name__=='__main__':
                 file_name_now   = md5_dict_i[exist_doc['md5_value']]
                 file_list.remove(file_name_now)
 
-    #print(len(file_list))
+    print(len(file_list))
     print('Register the models')
     for file_name in file_list:
         coll.update_one({
@@ -150,7 +185,11 @@ if __name__=='__main__':
         exit()
 
     #print(_id_dict)
-    fout    = open(options.tmpname, 'w')
+    if options.parallel==0:
+        fout    = open(options.tmpname, 'w')
+    else:
+        fout    = open(os.path.join(options.projectdir, "ServerTools", options.tmpname), 'w')
+
     for file_name in file_list:
         if file_name in _id_dict:
             fout.write(file_name[len(options.projectdir)+1:] + "," + _id_dict[file_name] + '\n')
@@ -159,7 +198,8 @@ if __name__=='__main__':
 
     ### Run the unity command 
 
-    cmd_tmp_unity   = "%s -batchmode -quit -projectPath %s -executeMethod CreatePrefabCMD.CreatePrefabFromModel_script -nographics -logFile -inputFile %s -outputFile %s"
+    #cmd_tmp_unity   = "%s -batchmode -quit -projectPath %s -executeMethod CreatePrefabCMD.CreatePrefabFromModel_script -nographics -inputFile %s -outputFile %s"
+    cmd_tmp_unity   = "%s -batchmode -quit -projectPath %s -executeMethod CreatePrefabCMD.CreatePrefabFromModel_script -logFile -nographics -inputFile %s -outputFile %s"
 
     cmd_str         = cmd_tmp_unity % (options.unity, options.projectdir, "ServerTools/" + options.tmpname, "ServerTools/" + options.tmpnameunity)
     print("Run " + cmd_str)
@@ -170,7 +210,10 @@ if __name__=='__main__':
     upload_cmd_tmp  = "s3cmd put --acl-public --guess-mime-type %s s3://threedworld/"
     bundle_prefix   = os.path.join(options.projectdir, 'Assets/PrefabDatabase/AssetBundles/Separated/')
 
-    fin     = open(options.tmpnameunity, 'r')
+    if options.parallel==0:
+        fin     = open(options.tmpnameunity, 'r')
+    else:
+        fin     = open(os.path.join(options.projectdir, "ServerTools", options.tmpnameunity), 'r')
     lines   = fin.readlines()
     all_ids     = _id_dict.values()
 
@@ -209,5 +252,7 @@ if __name__=='__main__':
           }
         }, upsert=True)
 
-    os.system('rm ' + options.tmpname)
-    os.system('rm ' + options.tmpnameunity)
+    fin.close()
+    if options.parallel==0:
+        os.system('rm ' + options.tmpname)
+        os.system('rm ' + options.tmpnameunity)

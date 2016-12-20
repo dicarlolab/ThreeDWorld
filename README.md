@@ -5,6 +5,7 @@
 - `zmq`
 - `tabulate`
 - `pick`
+- `sklearn (>= 0.18.1)`
 
 ## Download
 
@@ -98,7 +99,19 @@ All the seeds excluding `'environment_scene'`, are all customizable. If you were
 
 ### About scaling options
 
-In the example config message, there is one dictionary called "scale\_relat\_dict". This dictionary is used to tell the ProceduralGeneration how to scale every object. The key values could be the same as names in permitted\_items or the original filename of that object. Three options are provided:
+(Ordered in priority, later setting would be overwritten by earlier settings)
+
+In the example config message, there is one dictionary called "scale\_relat\_dict". This dictionary is used to tell the ProceduralGeneration how to scale every object. 
+
+The key values **should** be the same as names in permitted\_items or the original filename of that object (http address for aws assetbundles).
+
+One example is as below:
+
+```python
+    "scale_relat_dict": {"584164": {"option": "Multi_size", "scale": 2, "var": 1, "seed": 0, "use_global_rand": False, "apply_to_inst": True}},
+```
+
+For "option", three options are provided (Default is "NULL", which means to do nothing):
 
 - "Absol\_size": 
         The object in the scene would be resized to make the longest axis of that to be the "scale" sent in; 
@@ -106,6 +119,26 @@ In the example config message, there is one dictionary called "scale\_relat\_dic
         The object in the scene would be resized to make the longest axis of that to be the "scale"\*"longest axis of the room"
 - "Multi\_size":
         Just multiple the native size by "scale"
+
+Besides options, other things are:
+- "scale": Mean of scale size. The exact meaning is defined by "option". Default is 1.
+- "var": The variance of scale size. The scale would be drawn from a gaussian distribution. Default is 0.
+- "seed": The random seed. Default is 0.
+- "use\_global\_rand": Bool for whether use global scene random generator defined below. Default is true.
+- "apply\_to\_inst": Bool for whether applying to each instance. Default is false. If false, then the assetbundle would be the same random size for the whole scene.
+
+Additionally, there is one dictionary called "global\_scale\_dict" where you could set some global scale information:
+
+```python
+    "global_scale_dict": {"option": "Multi_size", "scale": 2, "var": 0.1, "seed": 0},
+```
+
+- "option": Same to "option" in "scale\_relat\_dict" for every assetbundle. Default is "NULL".
+- "scale": Mean of scale size. The exact meaning is defined by "option". Default is 1.
+- "var": The variance of scale size. The scale would be drawn from a gaussian distribution. Default is 0.
+- "seed": The random seed. Default is 0.
+
+(Legacy) Besides those options, you could set "enable\_global\_unit\_scale" to 1 in scene configuration to make every prefabs normalized by making their longest axis to be 1 unit.
 
 ## Creating new `enviroment_scene`
 
@@ -349,7 +382,7 @@ The optional lists of remote assetbundels can be found under ServerTools. Just r
 
 The list of assetbundles on remote server and related information can be fetched directly from MongoDB database on dicarlo5 everytime a new scene is created now (currently only in branch mongodb\_inter). Two steps needed as below:
 
-#### Run the mongodb python server
+-#### Run the mongodb python server
 
 Run "Python tdw\_info\_server.py" under "ServerTools" before hit play or run your binary files and keep it open. Allow around 10 seconds to load initial database and see feedback of "Waiting for info:".
 
@@ -375,6 +408,38 @@ See the script help for details. Basically, You need to specify the location for
 After generating the ".wrl" files through v-hacd, the script would call unity in batchmode to generate the required assetbundles. Please make sure that you are not opening unity in the same project at the same time and if you are running the script through command line, you may need to disable the monitor (see instructions for running the server above) or alternatively, you could run the script in one tmux session started through desktop or vnc-viewer.
 
 Then, the script would upload the files to AWS server, so make sure you have the access to that.
+
+### Random stacking
+
+Set "disable\_rand\_stacking" to be 0 in scene\_config to enable random stacking, currently the object would be placed nearly at the same place, so the stacking might be very wild.
+
+### Material Processing
+
+Make sure the python module "sklearn" (version >= 0.18.1) is installed. Set the path of your python binary in MaterialProcessor.cs. After doing this, material parameter regression should work. 
+
+### Dataset generation on Windows
+
+Our environment now works on Windows. The code is still not in its best shape. Sorry about that. In order to run it, please follow the following steps:
+- Make sure you are on the beautiful_rendering branch
+- Start putty.exe (on Freud its on my Desktop)
+	- Load the dicarlo5 profile
+	- Adjust the host name to include your user name
+	- Click open
+	- Login to dicarlo5 with your password and hit enter.
+	- If no password error shows up you successfully established a port forwarding on port 22334 to dicarlo5. You will not get any feedback and the screen will just remain as it is after you entered your password.
+- Start the tdw_info_server.py in ServerTool. If successful, a "Waiting for info..." message will show up.
+- Start the tdw_queue.py in the threedworld/servertools folder.
+- For each environment instance that you want to start
+	- start mainaction.py in threedworld/clienttools/Movement as follows <br />
+	`python mainaction <path_to_output_directory [String]> <SEED [Int]>`
+	- This should automatically start the Unity 3D World binary.
+	- A known error is that sometimes the binary won't receive the message from mainaction.py. There are two indicators that this happened: 1.) The tdw_info_server never receives a request from the new binary. 2.) In the task manager, the memory usage of the binary doesn't increase but stays around or below 100MB. If that happens close mainaction.py and the binary and retry starting mainaction.py again until it works.
+	
+- Important parameters for the dataset generation can be found in the following files:
+	- threedworld/clienttools/Movement/actions/curious.py
+	- threedworld/clienttools/Movement/environment.py
+	- threedworld/clienttools/Movement/mainaction.py
+
 
 # License
 

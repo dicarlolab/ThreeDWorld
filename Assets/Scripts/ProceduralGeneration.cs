@@ -1,4 +1,5 @@
-﻿//TODO:  -- more generic way to deterine object identity
+﻿
+//TODO:  -- more generic way to deterine object identity
 //       -- assign different identity to different walls
  
 using UnityEngine;
@@ -24,14 +25,42 @@ public class ProceduralGeneration : MonoBehaviour
         public List<GeneratablePrefab.StackableInfo> stackableAreas = new List<GeneratablePrefab.StackableInfo>();
     }
 
+    [System.Serializable]
+    public class Random_help{
+        public System.Random _rand;
+        public Random_help (int rand_seed){
+            _rand   = new System.Random(rand_seed);
+        }
+        public float Next_Gaussian(float mean, float stdDev){
+            
+            double randNormal   = -1f;
+            int try_times       = 0;
+            while (randNormal <= 0f && try_times < 200){
+                double u1 = _rand.NextDouble(); //these are uniform(0,1) random doubles
+                double u2 = _rand.NextDouble();
+                double randStdNormal = Math.Sqrt(-2.0 * Math.Log(u1)) *
+                             Math.Sin(2.0 * Math.PI * u2); //random normal(0,1)
+                randNormal =
+                             mean + stdDev * randStdNormal; //random normal(mean,stdDev^2)
+                try_times   = try_times + 1;
+            }
+            if (try_times==200)
+                randNormal  = 1;
+            return (float) randNormal;
+        }
+    }
+
 
 #region Fields
     // The number of physics collisions to create
     public int complexityLevelToCreate = 100;
     public int numCeilingLights = 10;
+    public float intensityCeilingLights = 1.0f;
+	public bool useStandardShader = false;
     public int minStackingBases = 0;
     public int forceStackedItems = 5;
     public int maxPlacementAttempts = 300;
+    public bool randomMaterials = false;
     public SemanticObjectSimple floorPrefab;
     public SemanticObjectSimple ceilingPrefab;
     public GameObject DEBUG_testCubePrefab = null;
@@ -43,12 +72,20 @@ public class ProceduralGeneration : MonoBehaviour
     public float gridDim = 0.4f;
     public int use_mongodb_inter = 0; // 0 is for not, 1 is for using
     public int use_cache_self   = 0; // 0 is for not (using Loadfromcacheordownload, 1 is for using)
+    public int disable_rand_stacking = 1; //0 is for not disabling
+    public int enable_global_unit_scale = 0; //1 is for enabling
     public string cache_folder  = "/Users/chengxuz/3Dworld/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/file_cache_test/";
     public bool shouldUseStandardizedSize = false;
     public Vector3 standardizedSize = Vector3.one;
     public bool shouldUseGivenSeed = false;
     public int desiredRndSeed = -1;
 	public System.Random _rand;
+
+    // Relate to global scale control
+    public int scene_scale_seed     = 0;
+    public string scene_scale_con   = "NULL";
+    public float scene_scale_mean   = 1f;
+    public float scene_scale_var    = 0f;
 
     public float WALL_WIDTH = 1.0f;
     public float DOOR_WIDTH = 1.5f;
@@ -67,9 +104,10 @@ public class ProceduralGeneration : MonoBehaviour
     public Material ceilingMaterial = null;
     public Material wallTrimMaterial = null;
     public Material windowMaterial = null;
+    public Material skyboxMaterial = null;
     public Material windowTrimMaterial = null;
     public bool showProcGenDebug = false;
-    public LitJson.JsonData scaleRelatDict = new LitJson.JsonData();
+    public List<Random_help> list_rands    = new List<Random_help>();
 
     private int _curRandSeed = 0;
     private int _curComplexity = 0;
@@ -81,7 +119,7 @@ public class ProceduralGeneration : MonoBehaviour
     private Transform _curRoom = null;
     private int _failures = 0; // Counter to avoid infinite loops if we can't place anything
     private List<WallArray> wallSegmentList = new List<WallArray>();
-    private List<PrefabDatabase.PrefabInfo> ceilingLightPrefabs = new List<PrefabDatabase.PrefabInfo>();
+    //private List<PrefabDatabase.PrefabInfo> ceilingLightPrefabs = new List<PrefabDatabase.PrefabInfo>();
     private List<PrefabDatabase.PrefabInfo> groundPrefabs = new List<PrefabDatabase.PrefabInfo>();
     private List<PrefabDatabase.PrefabInfo> stackingPrefabs = new List<PrefabDatabase.PrefabInfo>();
     public List<HeightPlane> _allHeightPlanes = new List<HeightPlane>();
@@ -108,8 +146,19 @@ public class ProceduralGeneration : MonoBehaviour
 	}
 #endregion
 
+    public void gen_rand_forinfo(ref PrefabDatabase.PrefabInfo info){
+        if (!info.use_global_rand){
+            list_rands.Add(new Random_help(info.scale_seed));
+            info.rand_index     = list_rands.Count - 1;
+            info.first_rand     = list_rands[info.rand_index].Next_Gaussian(info.dynamic_scale, info.scale_var);
+        }
+    }
+
     public void Init()
     {
+    	// Reset the UID Color counter
+    	resetUIDColor();
+
         LitJson.JsonData json = SimulationManager.argsConfig;
         if (json != null)
         {
@@ -121,7 +170,10 @@ public class ProceduralGeneration : MonoBehaviour
             json["disabled_items"].ReadList(ref disabledItems);
             json["permitted_items"].ReadList(ref permittedItems);
             complexityLevelToCreate = json["complexity"].ReadInt(complexityLevelToCreate);
+            randomMaterials = json["random_materials"].ReadBool(false);
             numCeilingLights = json["num_ceiling_lights"].ReadInt(numCeilingLights);
+            useStandardShader = json["use_standard_shader"].ReadBool(false);
+            intensityCeilingLights = json["intensity_ceiling_lights"].ReadFloat(intensityCeilingLights);
             minStackingBases = json["minimum_stacking_base_objects"].ReadInt(minStackingBases);
             forceStackedItems = json["minimum_objects_to_stack"].ReadInt(forceStackedItems);
             roomDim.x = json["room_width"].ReadFloat(roomDim.x);
@@ -144,9 +196,19 @@ public class ProceduralGeneration : MonoBehaviour
             use_mongodb_inter   = json["use_mongodb_inter"].ReadInt(use_mongodb_inter);
             use_cache_self      = json["use_cache_self"].ReadInt(use_cache_self);
             cache_folder        = json["cache_folder"].ReadString(cache_folder);
-            // scaleRelatDict = new LitJson.JsonData(json["scale_relat_dict"]);
-            //scaleRelatDict = json["scale_relat_dict"];
+            disable_rand_stacking   = json["disable_rand_stacking"].ReadInt(disable_rand_stacking);
+            enable_global_unit_scale    = json["enable_global_unit_scale"].ReadInt(enable_global_unit_scale);
+            try {
+                scene_scale_seed    = json["global_scale_dict"]["seed"].ReadInt(scene_scale_seed);
+                scene_scale_mean    = json["global_scale_dict"]["scale"].ReadFloat(scene_scale_mean);
+                scene_scale_var     = json["global_scale_dict"]["var"].ReadFloat(scene_scale_var);
+                scene_scale_con     = json["global_scale_dict"]["option"].ReadString(scene_scale_con);
+            }
+            catch{}
         }
+
+        list_rands.Clear();
+        list_rands.Add(new Random_help(scene_scale_seed));
 
         Debug.Log("Get mongodb inter:" + use_mongodb_inter);
         if (use_mongodb_inter==1){
@@ -162,7 +224,6 @@ public class ProceduralGeneration : MonoBehaviour
                 LitJson.JsonData current_item    = config_for_prefabs[indx_now.ToString()];
 
                 PrefabDatabase.PrefabInfo newInfo = new PrefabDatabase.PrefabInfo();
-
                 newInfo.fileName = current_item["aws_address"].ReadString(newInfo.fileName);
                 //newInfo.fileName = newInfo.fileName.Replace("\"", "");
                 newInfo.complexity = current_item["complexity"].ReadInt(-1);
@@ -173,8 +234,8 @@ public class ProceduralGeneration : MonoBehaviour
                 newInfo.aws_version     = current_item["aws_version"].ReadString(newInfo.aws_version);
 
                 //newInfo.loaded          = 0;
-                Debug.Log("New info:" + newInfo.bounds + newInfo.complexity + newInfo.fileName);
-                Debug.Log("To cache into: " + newInfo._id_str + "_" + newInfo.aws_version + ".bundle");
+                //Debug.Log("New info:" + newInfo.bounds + newInfo.complexity + newInfo.fileName);
+                //Debug.Log("To cache into: " + newInfo._id_str + "_" + newInfo.aws_version + ".bundle");
                 //Debug.Log(newInfo.fileName[0]);
                 //Debug.Log(newInfo);
                 availablePrefabs.Add(newInfo);
@@ -240,15 +301,22 @@ public class ProceduralGeneration : MonoBehaviour
                         // Get the option and scale from json message
 
                         try {
-                            info.option_scale   = json["scale_relat_dict"][itemName]["option"].ReadString(info.option_scale);
-                            info.dynamic_scale  = json["scale_relat_dict"][itemName]["scale"].ReadFloat(info.dynamic_scale);
+                            //info.option_scale   = json["scale_relat_dict"][itemName]["option"].ReadString(info.option_scale);
+                            //info.dynamic_scale  = json["scale_relat_dict"][itemName]["scale"].ReadFloat(info.dynamic_scale);
+                            //info.scale_var      = json["scale_relat_dict"][itemName][""]
+                            info.set_scale(json["scale_relat_dict"][itemName]);
+                            gen_rand_forinfo(ref info);
+                            return true;
                         } catch {
                         }
 
                         // Get the option and scale via the Filename (recommend for http files)
                         try {
-                            info.option_scale   = json["scale_relat_dict"][info.fileName]["option"].ReadString(info.option_scale);
-                            info.dynamic_scale  = json["scale_relat_dict"][info.fileName]["scale"].ReadFloat(info.dynamic_scale);
+                            //info.option_scale   = json["scale_relat_dict"][info.fileName]["option"].ReadString(info.option_scale);
+                            //info.dynamic_scale  = json["scale_relat_dict"][info.fileName]["scale"].ReadFloat(info.dynamic_scale);
+                            info.set_scale(json["scale_relat_dict"][info.fileName]);
+                            gen_rand_forinfo(ref info);
+                            return true;
                         } catch {
                         }
 
@@ -261,15 +329,17 @@ public class ProceduralGeneration : MonoBehaviour
             // Get the option and scale via the Filename (recommend for http files)
 
             try {
-                info.option_scale   = json["scale_relat_dict"][info.fileName]["option"].ReadString(info.option_scale);
-                info.dynamic_scale  = json["scale_relat_dict"][info.fileName]["scale"].ReadFloat(info.dynamic_scale);
+                //info.option_scale   = json["scale_relat_dict"][info.fileName]["option"].ReadString(info.option_scale);
+                //info.dynamic_scale  = json["scale_relat_dict"][info.fileName]["scale"].ReadFloat(info.dynamic_scale);
+                info.set_scale(json["scale_relat_dict"][info.fileName]);
+                gen_rand_forinfo(ref info);
             } catch {
             }
 
             return true;
         }));
         // TODO: We're not filtering the ceiling lights, since we currently only have 1 prefab that works
-        ceilingLightPrefabs = availablePrefabs.FindAll(((PrefabDatabase.PrefabInfo info)=>{return info.anchorType == GeneratablePrefab.AttachAnchor.Ceiling && info.isLight;}));
+        //ceilingLightPrefabs = availablePrefabs.FindAll(((PrefabDatabase.PrefabInfo info)=>{return info.anchorType == GeneratablePrefab.AttachAnchor.Ceiling && info.isLight;}));
         groundPrefabs = filteredPrefabs.FindAll(((PrefabDatabase.PrefabInfo info)=>{return info.anchorType == GeneratablePrefab.AttachAnchor.Ground;}));
         stackingPrefabs = groundPrefabs.FindAll(((PrefabDatabase.PrefabInfo info)=>{return info.stackableAreas.Count > 0;}));
         List<PrefabDatabase.PrefabInfo> itemsForStacking = groundPrefabs.FindAll(((PrefabDatabase.PrefabInfo info)=>{return true;}));
@@ -286,12 +356,18 @@ public class ProceduralGeneration : MonoBehaviour
         CreateRoom(roomDim, new Vector3((roomDim.x-1) * 0.5f,0,(roomDim.z-1) * 0.5f));
 		Debug.Log ("...created!");
 
+		// Create lighting setup
+		Debug.Log("Creating lights...");
+		CreateLightingSetup(roomDim, new Vector3((roomDim.x-1) * 0.5f,0,(roomDim.z-1) * 0.5f));
+		Debug.Log("...created!");
+
         _failures = 0;
         // Keep creating objects until we are supposed to stop
         // TODO: Create a separate plane to map ceiling placement
-        for(int i = 0; (i - _failures) < numCeilingLights && _failures < maxPlacementAttempts; ++i)
+        // TODO: Replace ceilingLightPrefabs with Lighting setup
+        /*for(int i = 0; (i - _failures) < numCeilingLights && _failures < maxPlacementAttempts; ++i)
             AddObjects(ceilingLightPrefabs);
-        _failures = 0;
+        _failures = 0;*/
 
         if (showProcGenDebug && minStackingBases > 0)
             Debug.LogFormat("Stacking {0} objects bases: {1} types", minStackingBases, stackingPrefabs.Count);
@@ -304,6 +380,9 @@ public class ProceduralGeneration : MonoBehaviour
             Debug.LogFormat("Stacking {0} objects: {1} types", forceStackedItems, itemsForStacking.Count);
         // Place stacking bases first so we can have more opportunities to stack on top
         _forceStackObject = true;
+
+        Debug.Log("Now plane number:" + _allHeightPlanes.Count);
+
         for(int i = 0; (i - _failures) < forceStackedItems && itemsForStacking.Count > 0; ++i)
             AddObjects(itemsForStacking);
         _failures = 0;
@@ -336,10 +415,11 @@ public class ProceduralGeneration : MonoBehaviour
 	/// <param name="whichPlane">Which height plane the object should spawn on.</param>
         ///
 
-    private bool TryPlaceGroundObject(Bounds bounds, float modScale, GeneratablePrefab.AttachAnchor anchorType, out int finalX, out int finalY, out HeightPlane whichPlane)
+    private bool TryPlaceGroundObject(Bounds bounds, float modScale, GeneratablePrefab.AttachAnchor anchorType, out int finalX, out int finalY, out HeightPlane whichPlane, out float offset_height)
     {
         finalX = 0;
         finalY = 0;
+        offset_height = 0.1f;
         whichPlane = null;
 
         /*
@@ -374,7 +454,10 @@ public class ProceduralGeneration : MonoBehaviour
             if (boundsHeight >= curHeightPlane.planeHeight || curHeightPlane.cornerPos.y + boundsHeight >= _curRoomHeight)
                 continue;
             // Only get grid squares which are valid to place on.
-            List<GridInfo> validValues = curHeightPlane.myGridSpots.FindAll((GridInfo info)=>{return info.rightSquares >= (boundsWidth-1) && info.downSquares > (boundsLength-1) && !info.inUse;});
+            
+            // List<GridInfo> validValues = curHeightPlane.myGridSpots.FindAll((GridInfo info)=>{return info.rightSquares >= (boundsWidth-1) && info.downSquares > (boundsLength-1) && !info.inUse;});
+            List<GridInfo> validValues = curHeightPlane.myGridSpots.FindAll((GridInfo info)=>{return info.rightSquares >= (boundsWidth-1) && info.downSquares > (boundsLength-1);});
+            //Debug.Log("Valid positions:" + validValues.Count);
             while(validValues.Count > 0 && !foundValid)
             {
 				int randIndex = _rand.Next(0, validValues.Count);
@@ -385,7 +468,8 @@ public class ProceduralGeneration : MonoBehaviour
                     Vector3 centerPos = curHeightPlane.cornerPos + new Vector3(gridDim * (testInfo.x + (0.5f * boundsWidth)), 0.1f+boundsHeight, gridDim * (testInfo.y + (0.5f * boundsLength)));
                     if (anchorType == GeneratablePrefab.AttachAnchor.Ceiling)
                         centerPos.y = _roomCornerPos.y + _curRoomHeight - (0.1f+boundsHeight);
-                    if (Physics.CheckBox(centerPos, testBounds.extents))
+                    if (Physics.CheckBox(centerPos, testBounds.extents) && (disable_rand_stacking == 1))
+                    //if (false)
                     {
                         // Found another object here, let the plane know that there's something above messing with some of the squares
                         string debugText = "";
@@ -404,11 +488,41 @@ public class ProceduralGeneration : MonoBehaviour
                         if (showProcGenDebug)
                             Debug.LogFormat("Unexpected objects: ({0}) at ({1},{2}) on plane {3} with test {5} ext: {4}", debugText, testInfo.x, testInfo.y, curHeightPlane.name, testBounds.extents, centerPos);
                     }
-                    else
+                    if (Physics.CheckBox(centerPos, testBounds.extents) && (disable_rand_stacking == 0)){
+
+                        float max_height = 0f;
+                        int try_times = 0;
+                        while (Physics.CheckBox(centerPos, testBounds.extents) &&  try_times < 20){
+                            Collider[] hitObjs = Physics.OverlapBox(centerPos, testBounds.extents);
+                            HashSet<string> hitObjNames = new HashSet<string>();
+                            foreach(Collider col in hitObjs)
+                            {
+                                if (col.attachedRigidbody != null)
+                                    hitObjNames.Add(col.attachedRigidbody.name);
+                                else
+                                    hitObjNames.Add(col.gameObject.name );
+                                if (max_height < col.bounds.center.y + col.bounds.extents.y){
+                                    max_height  = col.bounds.center.y + col.bounds.extents.y;
+                                };
+                            }
+                            centerPos.y     = max_height + 0.1f+boundsHeight;
+                            try_times       = try_times + 1;
+                        }
+                        Debug.Log("Choosing highest height:" + max_height + " " + try_times);
+                        finalX = testInfo.x;
+                        finalY = testInfo.y;
+                        offset_height = max_height + 0.1f;
+                        whichPlane = curHeightPlane;
+                        foundValid = true;
+                        return foundValid;
+                    }
+
+                    if (!Physics.CheckBox(centerPos, testBounds.extents) || (disable_rand_stacking == 0))
                     {
 //                        Debug.LogFormat("Selecting ({0},{1}) which has ({2},{3}) to place ({4},{5})", testInfo.x, testInfo.y, testInfo.rightSquares, testInfo.downSquares, boundsWidth, boundsLength);
                         finalX = testInfo.x;
                         finalY = testInfo.y;
+                        offset_height = 0.1f;
                         whichPlane = curHeightPlane;
                         foundValid = true;
                         return foundValid;
@@ -601,6 +715,10 @@ public class ProceduralGeneration : MonoBehaviour
     }
 #endif
 
+	public static void resetUIDColor() {
+		UID_BY_INDEX = 0x3;
+	}
+
 	public static Color getNewUIDColor() {
 		if (UID_BY_INDEX >= 0x1000000)
 			Debug.LogError ("UID's has exceeded 256^3, the current max limit of objects which can be formed!");
@@ -678,19 +796,43 @@ public class ProceduralGeneration : MonoBehaviour
         int spawnX, spawnZ;
         //float modScale = prefabDatabase.GetSceneScale (info);
         float modScale = 1.0f;
+        float offset_y = 0.1f;
+
+        // For global setting
+        if (enable_global_unit_scale==1){
+            float longest_axis      = info.bounds.size.magnitude;
+            //Debug.Log("Longest axis: " + longest_axis.ToString());
+            modScale                = 1/longest_axis;
+        }
+
+        //TODO Verify that we want to scale by the longest_axis here first (DOSCH very big otherwise)
+        if (scene_scale_con=="Multi_size") 
+        {
+			float longest_axis = info.bounds.size.magnitude;
+            modScale = list_rands[0].Next_Gaussian(scene_scale_mean, scene_scale_var);
+			modScale = modScale/longest_axis;
+        }
+
+        if (scene_scale_con=="Absol_size"){
+            float longest_axis      = info.bounds.size.magnitude;
+            modScale                = list_rands[0].Next_Gaussian(scene_scale_mean, scene_scale_var)/longest_axis;
+        }
 
         // For option "Multi_size"
-        if (info.option_scale=="Multi_size")
-        {
-            modScale    = modScale*info.dynamic_scale;
+        if (info.option_scale=="Multi_size"){
+            if (info.apply_to_inst)
+                modScale    = list_rands[info.rand_index].Next_Gaussian(info.dynamic_scale, info.scale_var);
+            else
+                modScale    = info.first_rand;
         }
 
         // For option "Absol_size"
-        if (info.option_scale=="Absol_size")
-        {
+        if (info.option_scale=="Absol_size"){
             float longest_axis      = info.bounds.size.magnitude;
-            Debug.Log("Longest axis: " + longest_axis.ToString());
-            modScale                = info.dynamic_scale/longest_axis;
+            if (info.apply_to_inst)
+                modScale            = list_rands[info.rand_index].Next_Gaussian(info.dynamic_scale, info.scale_var)/longest_axis;
+            else
+                modScale            = info.first_rand/longest_axis;
         }
 
         HeightPlane targetHeightPlane;
@@ -700,11 +842,12 @@ public class ProceduralGeneration : MonoBehaviour
             modifiedRotation = Quaternion.Euler(new Vector3(0, (float) _rand.NextDouble() * 360f,0));
         Bounds modifiedBounds = info.bounds.Rotate(modifiedRotation);
 
-        if (TryPlaceGroundObject(modifiedBounds, modScale, info.anchorType, out spawnX, out spawnZ, out targetHeightPlane))
+        if (TryPlaceGroundObject(modifiedBounds, modScale, info.anchorType, out spawnX, out spawnZ, out targetHeightPlane, out offset_y))
         {
             int boundsWidth = Mathf.CeilToInt(modScale* 2f * modifiedBounds.extents.x / gridDim) - 1;
             int boundsLength = Mathf.CeilToInt(modScale* 2f * modifiedBounds.extents.z / gridDim) - 1;
-            float modHeight = 0.1f+(modifiedBounds.extents.y * modScale);
+            //float modHeight = 0.1f+(modifiedBounds.extents.y * modScale);
+            float modHeight = offset_y+(modifiedBounds.extents.y * modScale);
             Vector3 centerPos = targetHeightPlane.cornerPos + new Vector3(gridDim * (spawnX + (0.5f * boundsWidth)), modHeight, gridDim * (spawnZ + (0.5f * boundsLength)));
             if (info.anchorType == GeneratablePrefab.AttachAnchor.Ceiling)
                 centerPos.y = _roomCornerPos.y + _curRoomHeight - modHeight;
@@ -713,7 +856,7 @@ public class ProceduralGeneration : MonoBehaviour
             GameObject newPrefab;
             if (info.fileName.ToLowerInvariant().Contains("http://")) {
                 if (use_cache_self==1) {
-                    Debug.Log("From cache!");
+                    //Debug.Log("From cache!");
                     //StartCoroutine(PrefabDatabase.LoadAssetFromBundleWWW_cached_self(info.fileName));
                     //newPrefab = PrefabDatabase.LoadAssetFromBundleWWW(info.fileName);
                     //newPrefab = PrefabDatabase.LoadAssetFromBundleWWW_cache_in_file(info.fileName, info._id_str, info.aws_version, cache_folder);
@@ -726,12 +869,12 @@ public class ProceduralGeneration : MonoBehaviour
                         // Loading it twice now, might influence the efficiency, TODO: load only once
                         // Currently the WWW can not be wrote when used for assetbundle
 
-                        Debug.Log("Build the cache!");
+                        //Debug.Log("Build the cache!");
                         StartCoroutine(PrefabDatabase.LoadAssetFromBundleWWW_cached_self(info.fileName, cache_fileName));
                         newPrefab = PrefabDatabase.LoadAssetFromBundleWWW(info.fileName);
                     }
                 } else {
-                    Debug.Log("From http");
+                    //Debug.Log("From http");
                     newPrefab = PrefabDatabase.LoadAssetFromBundleWWW(info.fileName);
                 }
             } else {
@@ -747,13 +890,49 @@ public class ProceduralGeneration : MonoBehaviour
             //newInstance.name = string.Format("{0} #{1} on {2}", newPrefab.name, (_curRoom != null) ? _curRoom.childCount.ToString() : "?", targetHeightPlane.name);
             
             newInstance.name = string.Format("{0}, {1}, {2}", info.fileName, newPrefab.name, (_curRoom != null) ? _curRoom.childCount.ToString() : "?");
+            newInstance.GetComponent<SemanticObject>().isStatic = false;
             Renderer[] RendererList = newInstance.GetComponentsInChildren<Renderer>();
             Color colorID = getNewUIDColor ();
             foreach (Renderer _rend in RendererList)
             {
                     foreach (Material _mat in _rend.materials)
                     {
-                            _mat.SetColor("_idval", colorID);	
+							// Always use standard shader
+							if(useStandardShader) 
+								_mat.shader = Shader.Find("Standard");
+
+                            // Set glossiness and metallic randomly
+                            if(randomMaterials) {
+								float GLOSS_MEAN = 0.588270935961f;
+								float GLOSS_STD = 0.265175303096f;
+								float METALLIC_MEAN = 0.145517241379f;
+								float METALLIC_STD = 0.271416832554f;
+
+								// Set glossiness using statistical properties derived from a test set
+								Random_help random_gloss = new Random_help(_rand.Next());
+								float glossiness = GLOSS_MEAN;
+								if(_mat.HasProperty("_Glossiness"))
+									glossiness = _mat.GetFloat("_Glossiness");
+								//glossiness = glossiness + Convert.ToSingle(_rand.NextDouble()) * GLOSS_STD * 2 - GLOSS_STD;
+								glossiness = random_gloss.Next_Gaussian(glossiness, GLOSS_STD);
+								glossiness = Mathf.Min(glossiness, 1.0f);
+								glossiness = Mathf.Max(glossiness, 0.0f);
+								_mat.SetFloat("_Glossiness", glossiness);
+
+								// Set metallic using statistical properties derived from a test set
+								Random_help random_metallic = new Random_help(_rand.Next());
+								float metallic = METALLIC_MEAN;
+								if(_mat.HasProperty("_Metallic"))
+									metallic = _mat.GetFloat("_Metallic");
+								//metallic = metallic + Convert.ToSingle(_rand.NextDouble()) * METALLIC_STD * 2 - METALLIC_STD;
+								metallic = random_metallic.Next_Gaussian(metallic, METALLIC_STD);
+								metallic = Mathf.Min(metallic, 1.0f);
+								metallic = Mathf.Max(metallic, 0.0f);
+								_mat.SetFloat("_Metallic", metallic);	
+							}
+
+							// Add idval to shader
+							_mat.SetColor("_idval", colorID);
                     }
             }	
 	
@@ -775,7 +954,9 @@ public class ProceduralGeneration : MonoBehaviour
             // For stackable objects, create a new height plane to stack
             if (info.anchorType == GeneratablePrefab.AttachAnchor.Ground)
             {
-                targetHeightPlane.UpdateGrid(spawnX, spawnZ, boundsWidth, boundsLength);
+                if (disable_rand_stacking==1) {
+                    targetHeightPlane.UpdateGrid(spawnX, spawnZ, boundsWidth, boundsLength);
+                }
                 foreach(GeneratablePrefab.StackableInfo stackInfo in info.stackableAreas)
                 {
                     int width = Mathf.FloorToInt(stackInfo.dimensions.x / gridDim);
@@ -806,6 +987,80 @@ public class ProceduralGeneration : MonoBehaviour
             ++_failures;
         }
 		return true;
+    }
+
+	public void CreateLightingSetup(Vector3 roomDimensions, Vector3 roomCenter)
+    {
+    	// roomDimensions are the dimensions of the room, with the y coordinate describing the height of the room
+    	// roomCenter describes the center of the room
+		Vector3 ceilingSize = new Vector3(roomDimensions.x, 0, roomDimensions.z);
+		Vector3 ceilingStart = roomCenter + new Vector3(-0.5f * roomDimensions.x, roomDimensions.y, -0.5f * roomDimensions.z);
+
+		// set skybox to Material assigned to ProceduralGeneration prefab
+        RenderSettings.skybox = skyboxMaterial;
+
+        /* 
+         *  We want to keep the total light energy constant in a given volume. 
+         *  Therefore, we base the number of lights and their intensities on the volume of each room.
+         *  At first the intensity of each light is assumed to be constant.
+         */
+		double scalingFactor = 0.0156;
+		int totalNumberOfLights = Convert.ToInt32(scalingFactor * roomDimensions.x * roomDimensions.z);
+
+		if(numCeilingLights > 0)
+			totalNumberOfLights = numCeilingLights;
+
+		int widthNumberOfLights = Convert.ToInt32(Math.Sqrt(totalNumberOfLights * roomDimensions.x / roomDimensions.z));
+		int lengthNumberOfLights = Convert.ToInt32(Math.Sqrt(totalNumberOfLights * roomDimensions.z / roomDimensions.x));
+
+		float widthLightDistance = ceilingSize.x / widthNumberOfLights;
+		float lengthLightDistance = ceilingSize.z / lengthNumberOfLights;
+
+		float intensity = 1.0f;
+
+		if(intensityCeilingLights > 0.0f)
+			intensity = intensityCeilingLights;
+
+		int iter_light = 0;
+		for(float i = ceilingStart.x + widthLightDistance / 2.0f; i <= ceilingStart.x + ceilingSize.x; i = i + widthLightDistance)
+        {
+			for(float j = ceilingStart.z + lengthLightDistance / 2.0f; j <= ceilingStart.x + ceilingSize.z; j = j + lengthLightDistance)
+        	{
+				GameObject spotLightGameObject = new GameObject("Spot Light " + iter_light.ToString());
+        		Light spotLight = spotLightGameObject.AddComponent<Light>();
+        		spotLight.type = LightType.Spot;
+				spotLight.color = Color.white;
+				spotLight.range = 30;
+				spotLight.intensity = intensity;
+				spotLight.spotAngle = 145.0f;
+				spotLight.renderMode = LightRenderMode.ForcePixel;
+				spotLight.shadows = LightShadows.Soft;
+				spotLightGameObject.transform.position = new Vector3(i, ceilingStart.y * 0.8f, j);
+				Quaternion rot = Quaternion.identity;
+				rot.eulerAngles = new Vector3(90, 0, 0);
+				spotLightGameObject.transform.rotation = rot;
+
+        		iter_light++; 
+        	}
+        }
+
+		GameObject directLightGameObject = new GameObject("Directional Light");
+        Light directLightComp = directLightGameObject.AddComponent<Light>();
+        directLightComp.color = Color.white;
+        directLightComp.type = LightType.Directional;
+        directLightComp.intensity = 0.85f;
+        Quaternion target = Quaternion.identity;
+		target.eulerAngles = new Vector3(30, 0, 0);
+		directLightComp.transform.rotation = target;
+		directLightComp.transform.position = new Vector3(100, 100, 100);
+		directLightComp.shadows = LightShadows.Soft;
+
+		GameObject reflectionProbeObject = new GameObject("Reflection Probe");
+		ReflectionProbe reflectionProbe = reflectionProbeObject.AddComponent<ReflectionProbe>();
+		reflectionProbe.transform.position = new Vector3(roomCenter.x, roomDimensions.y / 2.0f, roomCenter.z);
+		reflectionProbe.mode = UnityEngine.Rendering.ReflectionProbeMode.Realtime;
+		reflectionProbe.hdr = true;
+		reflectionProbe.size = new Vector3(roomDimensions.x, roomDimensions.y, roomDimensions.z);
     }
 
     public void CreateRoom(Vector3 roomDimensions, Vector3 roomCenter)

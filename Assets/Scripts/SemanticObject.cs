@@ -18,6 +18,9 @@ public abstract class SemanticObject : MonoBehaviour
     // share the same source
     public string identifier = "";
 
+    // Identifies the object as static or not
+    public bool isStatic = true;
+
     protected List<SemanticObjectComplex> parentObjects;
 
 //    // Keep track of currently active collisions on this object for evaluating various SemanticRelationships

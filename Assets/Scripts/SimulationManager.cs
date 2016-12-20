@@ -293,6 +293,7 @@ public static class SimulationManager
 				} else if (arg.StartsWith ("-preferredImageFormat=")) {
 					try {
 						preferredImageFormat = arg.Substring ("-preferredImageFormat=".IndexOf ("=") + 1);
+						Debug.LogWarning ("DEPRECATED! Each client can specify its own format on join now which will overwrite this setting!");
 					} catch {
 						Debug.LogWarning ("No targetFPS!"); 
 					}

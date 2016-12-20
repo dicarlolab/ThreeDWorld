@@ -22,13 +22,30 @@ public class PrefabDatabase : MonoBehaviour
 		public GeneratablePrefab.AttachAnchor anchorType = GeneratablePrefab.AttachAnchor.Ground;
 		public Bounds bounds;
 		public List<GeneratablePrefab.StackableInfo> stackableAreas = new List<GeneratablePrefab.StackableInfo> ();
-		public string option_scale = "NULL";
+
+        // Properties related to scale
+		public string option_scale  = "NULL";
 		// for option of how scale should happen
-		public float dynamic_scale = 1f;
-                public int loaded = 1; // 1 means already loaded, otherwise would load it again (just for remote assetbundles)
-                public string aws_version = "0";
-                public string _id_str = "";
-		// for the dynamic scale come with option
+		public float dynamic_scale  = 1f;
+        public float scale_var      = 1f;
+        public int scale_seed       = 0;
+        public bool use_global_rand = true;
+        public int rand_index       = 0;
+        public bool apply_to_inst   = false;
+        public float first_rand     = 0f;
+
+        public int loaded = 1; // 1 means already loaded, otherwise would load it again (just for remote assetbundles)
+        public string aws_version = "0";
+        public string _id_str = "";
+
+        public void set_scale(LitJson.JsonData json_now){
+            option_scale    = json_now["option"].ReadString(option_scale);
+            dynamic_scale   = json_now["scale"].ReadFloat(dynamic_scale);
+            scale_var       = json_now["var"].ReadFloat(scale_var);
+            scale_seed      = json_now["seed"].ReadInt(scale_seed);
+            use_global_rand = json_now["use_global_rand"].ReadBool(use_global_rand);
+            apply_to_inst   = json_now["apply_to_inst"].ReadBool(apply_to_inst);
+        }
 	}
 
 	#region Fields
@@ -138,6 +155,16 @@ public class PrefabDatabase : MonoBehaviour
 		return prefab;
 	}
 
+	public static void GarbageCollect () 
+	{
+		#if UNITY_EDITOR
+		EditorUtility.UnloadUnusedAssetsImmediate ();
+		#else
+		Resources.UnloadUnusedAssets();
+		#endif
+		GC.Collect ();
+	}
+
         // Not used now!
         /*
         public static GameObject LoadAssetFromBundleWWW_cache_in_file (string fileName, string _id_str, string aws_version, string cache_folder){
@@ -163,20 +190,21 @@ public class PrefabDatabase : MonoBehaviour
 	{
 		Dictionary<GameObject, string> allSelected = new Dictionary<GameObject, string> ();
 
+        /*
                 string tmp_asset_path = "Assets/Models/sel_objs/test_mine/";
                 string[] dir = Directory.GetDirectories(tmp_asset_path);
                 foreach (string d_tmp in dir) {
                     Debug.Log(d_tmp);
                     Debug.Log(d_tmp + d_tmp.Remove(0, d_tmp.LastIndexOf ('/')) + ".obj");
                 }
+        */
 
-                //string tmp_asset_path;
+		string tmp_asset_path;
 		foreach (GameObject obj in Selection.gameObjects) {
 
 			allSelected.Add (obj, AssetDatabase.GetAssetPath (obj));
-
-                        tmp_asset_path   = AssetDatabase.GetAssetPath (obj);
-                        Debug.Log(tmp_asset_path);
+			tmp_asset_path = AssetDatabase.GetAssetPath (obj);
+			Debug.Log (tmp_asset_path);
 		}
 
 		foreach (UnityEngine.Object obj in Selection.objects) {
@@ -192,9 +220,15 @@ public class PrefabDatabase : MonoBehaviour
 					foreach (GameObject child in children) {
 						allSelected.Add (child, AssetDatabase.GetAssetPath (child));
 
-                                                tmp_asset_path   = AssetDatabase.GetAssetPath (child);
-                                                Debug.Log(tmp_asset_path);
-                                                //Debug.Log(AssetDatabase.LoadMainAssetAtPath(tmp_asset_path)==child);
+						tmp_asset_path = AssetDatabase.GetAssetPath (child);
+
+						// Force reimport on .obj
+						if (tmp_asset_path.ToLowerInvariant ().EndsWith (".obj")) {
+							AssetDatabase.ImportAsset (tmp_asset_path, ImportAssetOptions.ForceUpdate | ImportAssetOptions.ImportRecursive);
+						}
+
+						Debug.Log (tmp_asset_path);
+						//Debug.Log(AssetDatabase.LoadMainAssetAtPath(tmp_asset_path)==child);
 					}
 				}
 			}
@@ -459,7 +493,7 @@ public class PrefabDatabase : MonoBehaviour
 			newFileName = newFileName.Substring (0, newFileName.LastIndexOf ("."));
 		} else {
 			if (!(assetPath.ToLowerInvariant ().Contains ("http://"))) {
-				const string resPrefix = BUNDLES_SUBPATH;
+				//const string resPrefix = BUNDLES_SUBPATH;
 				string currentPath = Directory.GetCurrentDirectory ();
 				newFileName = Path.Combine (currentPath, assetPath);
 			} else {
@@ -629,10 +663,7 @@ public class PrefabDatabase : MonoBehaviour
 
 	void Update ()
 	{
-		EditorUtility.UnloadUnusedAssetsImmediate ();
-		GC.Collect ();
 	}
-
 
 	public static Dictionary<GameObject, string> ListSelectedPrefabs ()
 	{

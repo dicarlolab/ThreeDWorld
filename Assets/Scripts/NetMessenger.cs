@@ -36,7 +36,7 @@ public class NetMessenger : MonoBehaviour
     private NetMQMessage _lastMessage = new NetMQMessage();
     private NetMQMessage _lastMessageSent = new NetMQMessage();
     private NetMQMessage _lastMessage_info = new NetMQMessage();
-    private NetMQMessage _lastMessageSent_info = new NetMQMessage();
+    //private NetMQMessage _lastMessageSent_info = new NetMQMessage();
     private List<ResponseSocket> _createdSockets = new List<ResponseSocket>();
     private Dictionary<ResponseSocket, Avatar> _avatars = new Dictionary<ResponseSocket, Avatar>();
     private Dictionary<ResponseSocket, RequestSocket> _avatarClients = new Dictionary<ResponseSocket, RequestSocket>();
@@ -135,18 +135,22 @@ public class NetMessenger : MonoBehaviour
 
     void Update()
     {
-		if (!skipFrame) {
+        if (!skipFrame) {
 			if (!this.waitForSceneInit) {
-				if (clientSimulation != null) {
-					string output;
+                if (clientSimulation != null) {
+                    string output;
 					if (clientSimulation.HasIn && clientSimulation.TryReceiveFrameString (out output))
-						Debug.LogWarning ("Received: " + output);
+                    {
+                        Debug.LogWarning("Received: " + output);
+                    }
 					return;
 				}
 				foreach (ResponseSocket server in _createdSockets) {
-					//Debug.LogFormat ("Server In: {0}, Out: {1}", server.HasIn, server.HasOut);
-					if (server.HasIn && server.TryReceiveMultipartMessage (TimeSpan.Zero, ref _lastMessage))
-						HandleFrameMessage (server, _lastMessage);
+                    //Debug.LogFormat ("Server In: {0}, Out: {1}", server.HasIn, server.HasOut);
+                    if (server.HasIn && server.TryReceiveMultipartMessage(TimeSpan.Zero, ref _lastMessage))
+                    {
+                        HandleFrameMessage(server, _lastMessage);
+                    }
 					RequestSocket client = null;
 					if (_avatarClients.ContainsKey (server))
 						client = _avatarClients [server];
@@ -163,6 +167,7 @@ public class NetMessenger : MonoBehaviour
 				}
 
 				scenesToUnload.Clear ();
+				PrefabDatabase.GarbageCollect();
 
 				OnClientJoin (lastSocket, lastJsonContents);
 				Debug.Log ("Client Join Handled");
@@ -312,16 +317,17 @@ public class NetMessenger : MonoBehaviour
         Debug.Log("Message info sent!");
         //_lastMessage_info = clientInfo.ReceiveMessage();
         TimeSpan timeout = TimeSpan.FromSeconds(30);
-        if (clientInfo.TryReceiveMultipartMessage(timeout, ref _lastMessage_info)){
+        bool did_receive = false;
+        while(!did_receive)
+            did_receive = clientInfo.TryReceiveMultipartMessage(timeout, ref _lastMessage_info);
         //if (clientInfo.TryReceiveMultipartMessage(ref _lastMessage_info)){
-            Debug.Log("Receive info: ");
+        Debug.Log("Receive info: ");
 
-            string msgHeader = _lastMessage_info.First.ConvertToString();
-            JsonData jsonData_ = _lastMessage_info.ReadJson(out msgHeader);
-            Debug.Log("To Json: " + jsonData_);
-            return jsonData_;
-        }
-        return CreateMsgJson("Noback");
+        string msgHeader = _lastMessage_info.First.ConvertToString();
+        JsonData jsonData_ = _lastMessage_info.ReadJson(out msgHeader);
+        Debug.Log("To Json: " + jsonData_);
+        return jsonData_;
+        //return CreateMsgJson("Noback");
     }
     #endregion
 
@@ -443,6 +449,22 @@ public class NetMessenger : MonoBehaviour
 
 		newAvatar.sendSceneInfo = data["send_scene_info"].ReadBool(false);
 		newAvatar.shouldCollectObjectInfo = data["get_obj_data"].ReadBool(false);
+
+		//TODO
+		JsonData JsonOutputFormatList = data["output_formats"];
+		if (JsonOutputFormatList != null) {
+			if (JsonOutputFormatList.Count != newAvatar.outputFormatList.Count) {
+				Debug.LogError(newAvatar.outputFormatList.Count.ToString() + 
+					" output formats need to be specified, one for each shader!" +
+					" Using standard output formats.");
+			}
+			List<string> outputFormatList = new List<string>();
+			for(int i = 0; i < JsonOutputFormatList.Count; i++) {
+				string outputFormat = JsonOutputFormatList[i].ReadString();
+				outputFormatList.Add(outputFormat);
+			}
+			newAvatar.SetOutputFormatList(outputFormatList);
+		}
         //
         //        // Send confirmation message
         //        lastMessageSent.Clear();
@@ -550,11 +572,11 @@ public class NetMessenger : MonoBehaviour
     #endregion
 
 	//converts color UID to string for sending to client via message
-	public static string colorUIDToString(Color colorUID) {
+	public static int colorUIDToInt(Color colorUID) {
 		int r = (int)(colorUID.r * 256f);
 		int g = (int)(colorUID.g * 256f);
 		int b = (int)(colorUID.b * 256f);
-		return r.ToString ("x2") + g.ToString ("x2") + b.ToString ("x2");
+		return r * 256 * 256 + g * 256 + b;
 	}
 
     public void SendFrameUpdate(CameraStreamer.CaptureRequest streamCapture, Avatar a)
@@ -570,7 +592,24 @@ public class NetMessenger : MonoBehaviour
             // Look up relationship values for all observed semantics objects
             jsonData["observed_objects"] = new JsonData(JsonType.Array);
             foreach(SemanticObject o in a.observedObjs)
-                jsonData["observed_objects"].Add(o.identifier);
+            {	
+            	// Put object ID, name, position and rotation into json message
+            	JsonData _objInfo;
+            	_objInfo = new JsonData(JsonType.Array);
+            	_objInfo.Add(o.identifier);
+				if(o.gameObject.GetComponentInChildren<Renderer>().material.HasProperty("_idval")) {
+					Color colorID = o.gameObject.GetComponentInChildren<Renderer> ().material.GetColor ("_idval");
+					_objInfo.Add(colorUIDToInt(colorID));
+				}
+				else {
+					_objInfo.Add(-1);
+				}
+            	_objInfo.Add(o.transform.position.ToJson());
+            	_objInfo.Add(o.transform.rotation.ToJson());
+            	_objInfo.Add(o.isStatic);
+                jsonData["observed_objects"].Add(_objInfo);
+
+            }
             jsonData["observed_relations"] = new JsonData(JsonType.Object);
             bool collectAllRelationships = a.relationshipsToRetrieve.Contains("ALL");
             foreach(SemanticRelationship rel in _relationsToTest)
@@ -580,7 +619,13 @@ public class NetMessenger : MonoBehaviour
             }
         }
         jsonData["avatar_position"] = a.transform.position.ToJson();
-        jsonData["avatar_rotation"] = a.transform.rotation.ToJson();
+		jsonData["avatar_up"] = a.transform.up.ToJson();
+		jsonData["avatar_forward"] = a.transform.forward.ToJson();
+		jsonData["avatar_right"] = a.transform.right.ToJson();
+		jsonData["avatar_rotation"] = a.transform.rotation.eulerAngles.ToJson();
+        jsonData["avatar_velocity"] = a.GetComponent<Rigidbody>().velocity.ToJson();
+        jsonData["avatar_angvel"] = a.GetComponent<Rigidbody>().angularVelocity.ToJson();
+
 //        // Add in captured frames
 //        int numValues = Mathf.Min(streamCapture.shadersList.Count, streamCapture.capturedImages.Count);
 //        JSONArray imagesArray = new JsonData(JsonType.Array);
@@ -596,8 +641,14 @@ public class NetMessenger : MonoBehaviour
 				JsonData _info;
 				_info = new JsonData(JsonType.Array);
 				_info.Add(semObj.gameObject.name);
-				Color colorID = semObj.gameObject.GetComponentInChildren<Renderer> ().material.GetColor ("_idval");
-				_info.Add(colorUIDToString(colorID));
+				if(semObj.gameObject.GetComponentInChildren<Renderer>().material.HasProperty("_idval")) {
+					Color colorID = semObj.gameObject.GetComponentInChildren<Renderer> ().material.GetColor ("_idval");
+					_info.Add(colorUIDToInt(colorID));
+				}
+				else {
+					_info.Add(-1);
+					Debug.Log("Material doesn't have a color property '_idval', hence it was set to -1!");
+				}
 				jsonData["sceneInfo"].Add(_info);
 
 	    	}

@@ -1,0 +1,53 @@
+{
+    // General
+    "screen_width": 256,
+    "screen_height": 256,
+    "target_fps": 300, // The rate the simulation will try to run at(in terms of unity render frames)
+    "time_step": 0.02, // The length of a physics time step.
+    "num_time_steps": 5, // The number of physics time steps to process each time we send a message to the client.
+    "profiler_frames": 524288, // Mess with at your own risk. Fixes sample errors, but may cause editor to freeze crash when profiling
+    "log_timing_info": false,
+    "log_detailed_timing_info": false,
+    "port_number": "5556",
+    "host_address": "127.0.0.1",
+    "create_test_client": false,
+    "create_server": true,
+    "debug_network_messages": false,
+    "debug_procedural_generation_logs": false,
+    "save_out_debug_image_files": false,
+    "image_format": "bmp", // [bmp, png, jpg]
+    
+    // Logging
+    "log_level": "log",         // Can be "log", "warning", "error", or "none" for the various log levels
+    "stack_log_level": "error", // Minimum log level that we also try to output stack traces
+    "output_log_file": "output_log.txt",
+    
+    // Procedural generation
+    "environment_scene": "ProceduralGeneration",
+    "random_seed": 124123452, // Omit and it will just choose one at random. Chosen seeds are output into the log(under warning or log level).
+    "should_use_standardized_size": false,
+    "standardized_size": [1.0, 1.0, 1.0],
+    "disabled_items": [], // A list of item names to not use, e.g. ["lamp", "bed"] would exclude files with the word "lamp" or "bed" in their file path
+    "permitted_items": [], // If not empty, it will ONLY use items that contain at least one of the given strings in their file path
+    "complexity": 10000,
+    "num_ceiling_lights": 10,
+    "minimum_stacking_base_objects": 0,
+    "minimum_objects_to_stack": 0,
+    "room_width": 40.0,
+    "room_height": 20.0,
+    "room_length": 40.0,
+    "wall_width": 1.0,
+    "door_width": 1.5,
+    "door_height": 3.0,
+    "window_size_width": 2.0,
+    "window_size_height": 2.0,
+    "window_placement_height": 2.0,
+    "window_spacing": 6.0,  // Average spacing between windows on walls
+    "wall_trim_height": 0.5,
+    "wall_trim_thickness": 0.01,
+    "min_hallway_width": 5.0,
+    "number_rooms": 3,
+    "max_wall_twists": 3,
+    "max_placement_attempts": 300,   // Maximum number of failed placements before we consider a room fully filled.
+    "grid_size": 0.4    // Determines how fine tuned a grid the objects are placed on during Proc. Gen. Smaller the number, the 
+}
