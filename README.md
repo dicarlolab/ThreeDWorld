@@ -430,7 +430,7 @@ Our environment now works on Windows. The code is still not in its best shape. S
 - Start the tdw_info_server.py in ServerTool. If successful, a "Waiting for info..." message will show up.
 - Start the tdw_queue.py in the threedworld/servertools folder.
 - For each environment instance that you want to start
-	- start mainaction.py in threedworld/clienttools/Movement as follows
+	- start mainaction.py in threedworld/clienttools/Movement as follows <br />
 	`python mainaction <path_to_output_directory [String]> <SEED [Int]>`
 	- This should automatically start the Unity 3D World binary.
 	- A known error is that sometimes the binary won't receive the message from mainaction.py. There are two indicators that this happened: 1.) The tdw_info_server never receives a request from the new binary. 2.) In the task manager, the memory usage of the binary doesn't increase but stays around or below 100MB. If that happens close mainaction.py and the binary and retry again until it works.
