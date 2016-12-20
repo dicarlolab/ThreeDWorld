@@ -433,7 +433,7 @@ Our environment now works on Windows. The code is still not in its best shape. S
 	- start mainaction.py in threedworld/clienttools/Movement as follows <br />
 	`python mainaction <path_to_output_directory [String]> <SEED [Int]>`
 	- This should automatically start the Unity 3D World binary.
-	- A known error is that sometimes the binary won't receive the message from mainaction.py. There are two indicators that this happened: 1.) The tdw_info_server never receives a request from the new binary. 2.) In the task manager, the memory usage of the binary doesn't increase but stays around or below 100MB. If that happens close mainaction.py and the binary and retry again until it works.
+	- A known error is that sometimes the binary won't receive the message from mainaction.py. There are two indicators that this happened: 1.) The tdw_info_server never receives a request from the new binary. 2.) In the task manager, the memory usage of the binary doesn't increase but stays around or below 100MB. If that happens close mainaction.py and the binary and retry starting mainaction.py again until it works.
 	
 - Important parameters for the dataset generation can be found in the following files:
 	- threedworld/clienttools/Movement/actions/curious.py
