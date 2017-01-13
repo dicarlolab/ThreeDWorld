@@ -324,7 +324,7 @@ class agent:
 				print 'CHOOSING OBJECT ' + str(chosen_o) + " " + str(chosen_o_name)
 				g = 15. * (2 * self.rng.uniform() - 1)
 				a = self.achoice[self.rng.randint(len(self.achoice))]
-			   	target_distance = self.rng.rand(1)[0] * 2 + 0.8
+			   	target_distance = self.rng.rand(1)[0] * 2 + 1.0
 			    # determine fraction and position of chosen objects
 			    if chosen_o not in obs.tolist():
 				frac0 = 0

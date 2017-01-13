@@ -180,9 +180,10 @@ public class Avatar : MonoBehaviour
     {
 		Debug.Log ("Teleporting!");
         // TODO: Have this check for more than a simple sphere of radius 0.5f for when we extend the avatar
-        const float radius = 0.5f;
+        const float radius = 0.3f;
+        transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
 		Debug.Log ("set radius");
-        float startHeight = (1.1f * radius);
+        float startHeight = 1.1f * radius;
 		Debug.Log ("spawning...");
 
 		SpawnArea[] spawnAreaCandidates = GameObject.FindObjectsOfType<SpawnArea> ();
@@ -206,7 +207,7 @@ public class Avatar : MonoBehaviour
 					spawnTest.y += UnityEngine.Random.Range(0, hit.distance);
 					bool HOVER = true;
 					if(HOVER)
-						spawnTest.y += 0.1f;
+						spawnTest.y += 0.5f;
                     transform.position = spawnTest;
                     transform.rotation = Quaternion.identity;
                     return;
