@@ -897,9 +897,16 @@ public class ProceduralGeneration : MonoBehaviour
             {
                     foreach (Material _mat in _rend.materials)
                     {
+                    		// This is just to make objects easier identifiable 
+                    		// by using the "Get Identity" shader
+							Shader originalShader = _mat.shader;
+							_mat.shader = Shader.Find("Get Identity");
+							_mat.SetColor("_idval", colorID);
+							_mat.shader = originalShader;
+
 							// Always use standard shader
-							if(useStandardShader) 
-								_mat.shader = Shader.Find("Standard");
+							//if(useStandardShader) 
+							//	_mat.shader = Shader.Find("Standard");
 
                             // Set glossiness and metallic randomly
                             if(randomMaterials) {
