@@ -178,6 +178,9 @@ public class Avatar : MonoBehaviour
 
     public void TeleportToValidPosition()
     {
+		ProceduralGeneration scene = FindObjectOfType<ProceduralGeneration>();
+		Vector3 look_at_position = new Vector3((scene.roomDim.x-1) * 0.5f, 0, (scene.roomDim.z-1) * 0.5f);
+
 		Debug.Log ("Teleporting!");
         // TODO: Have this check for more than a simple sphere of radius 0.5f for when we extend the avatar
         const float radius = 0.3f;
@@ -191,6 +194,7 @@ public class Avatar : MonoBehaviour
 		if (spawnAreaCandidates.Length == 0)
 			Debug.LogWarning ("No Spawn Areas found!");
 
+		Vector3 look_direction = new Vector3(0f, 0f, 0f);
         for (int i = 0; i < 1000; ++i)
         {
 			SpawnArea chosenSpawnArea = spawnAreaCandidates [_rand.Next (0, spawnAreaCandidates.Length)];
@@ -206,15 +210,23 @@ public class Avatar : MonoBehaviour
                 {
 					spawnTest.y += UnityEngine.Random.Range(0, hit.distance);
 					bool HOVER = true;
-					if(HOVER)
+					if(HOVER) 
+					{
 						spawnTest.y += 0.5f;
+					}
                     transform.position = spawnTest;
-                    transform.rotation = Quaternion.identity;
+                    // Looking towards center
+					look_at_position.y = transform.position.y;
+					look_direction = (look_at_position - transform.position).normalized;
+					transform.rotation = Quaternion.LookRotation(look_direction); //Quaternion.identity;
                     return;
                 }
 
                 transform.position = spawnTest;
-                transform.rotation = Quaternion.identity;
+                // Looking towards center
+				look_at_position.y = transform.position.y;
+				look_direction = (look_at_position - transform.position).normalized;
+				transform.rotation = Quaternion.LookRotation(look_direction); //Quaternion.identity;
 				Debug.Log ("...spawned");
                 return;
             }
