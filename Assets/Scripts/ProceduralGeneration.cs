@@ -905,8 +905,8 @@ public class ProceduralGeneration : MonoBehaviour
 							_mat.shader = originalShader;
 
 							// Always use standard shader
-							//if(useStandardShader) 
-							//	_mat.shader = Shader.Find("Standard");
+							if(useStandardShader) 
+								_mat.shader = Shader.Find("Standard");
 
                             // Set glossiness and metallic randomly
                             if(randomMaterials) {
