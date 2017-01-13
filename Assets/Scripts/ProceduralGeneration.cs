@@ -722,9 +722,9 @@ public class ProceduralGeneration : MonoBehaviour
 	public static Color getNewUIDColor() {
 		if (UID_BY_INDEX >= 0x1000000)
 			Debug.LogError ("UID's has exceeded 256^3, the current max limit of objects which can be formed!");
-		float r = (float) (UID_BY_INDEX / 0x10000) / 256f;
-		float g = (float) ((UID_BY_INDEX / 0x100) % 0x100) / 256f;
-		float b = (float) (UID_BY_INDEX % 0x100) / 256f;
+		float r = (float) (UID_BY_INDEX / 0x10000) / 255f;
+		float g = (float) ((UID_BY_INDEX / 0x100) % 0x100) / 255f;
+		float b = (float) (UID_BY_INDEX % 0x100) / 255f;
 		UID_BY_INDEX += 0x1;
 		return new Color (r, g, b);
 	}
