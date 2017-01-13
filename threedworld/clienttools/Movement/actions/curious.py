@@ -187,6 +187,7 @@ class agent:
 		    msg = {'n': 4,
 			   'msg': {"msg_type": "CLIENT_INPUT",
 				   "get_obj_data": True,
+				   "send_scene_info" : True,
 				   "actions": []}}	    
 		    # if agent tilted move it back
 		    is_tilted = info['avatar_up'][1] < 0.99
