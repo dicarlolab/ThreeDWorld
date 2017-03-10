@@ -25,6 +25,8 @@ public class Avatar : MonoBehaviour
     // send scene info?
 	public bool sendSceneInfo = false;
 
+	public ProceduralGeneration scene{get; set;}
+
     private AbstractInputModule _myInput = null;
     private List<SemanticObject> _observedObjs = new List<SemanticObject>();
     private Vector3 _targetVelocity = Vector3.zero;
@@ -36,6 +38,7 @@ public class Avatar : MonoBehaviour
     private bool _shouldCollectObjectInfo = true;
     private List<string> _relationshipsToRetrieve = new List<string>();
 	private System.Random _rand;
+	private float initialHeight = 0.0f;
 
 #endregion
 
@@ -176,9 +179,24 @@ public class Avatar : MonoBehaviour
 		Debug.Log ("exiting UpdateObserveredObjects");
     }
 
+    public void TeleportToGivenPosition(Vector3 new_position, Vector3 new_rotation)
+    {
+		scene = FindObjectOfType<ProceduralGeneration>();
+		transform.rotation = Quaternion.LookRotation(new_rotation);
+		transform.position = new_position;
+
+		RaycastHit hit = new RaycastHit();
+		const float radius = 0.3f;
+		new_position.y = scene.roomDim.y - 0.5f;
+		if (Physics.Raycast(new_position, Vector3.down, out hit, 2*scene.roomDim.y))
+			new_position.y = hit.point.y;
+		new_position.y = Mathf.Max(initialHeight, new_position.y);
+        transform.position = new_position;
+    }
+
     public void TeleportToValidPosition()
     {
-		ProceduralGeneration scene = FindObjectOfType<ProceduralGeneration>();
+		scene = FindObjectOfType<ProceduralGeneration>();
 		Vector3 look_at_position = new Vector3((scene.roomDim.x-1) * 0.5f, 0, (scene.roomDim.z-1) * 0.5f);
 
 		Debug.Log ("Teleporting!");
@@ -215,6 +233,7 @@ public class Avatar : MonoBehaviour
 						spawnTest.y += 0.5f;
 					}
                     transform.position = spawnTest;
+					initialHeight = transform.position.y;
                     // Looking towards center
 					look_at_position.y = transform.position.y;
 					look_direction = (look_at_position - transform.position).normalized;
@@ -223,6 +242,7 @@ public class Avatar : MonoBehaviour
                 }
 
                 transform.position = spawnTest;
+				initialHeight = transform.position.y;
                 // Looking towards center
 				look_at_position.y = transform.position.y;
 				look_direction = (look_at_position - transform.position).normalized;

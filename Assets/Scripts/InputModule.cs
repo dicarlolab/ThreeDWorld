@@ -124,8 +124,18 @@ public class InputModule : AbstractInputModule
         cacheVel = _myAvatar.moveSpeed * jsonData["vel"].ReadVector3(Vector3.zero);
         targetVel = cacheVel;
         cacheAngVel = _myAvatar.rotSpeed * jsonData["ang_vel"].ReadVector3(Vector3.zero);
-        if (jsonData["teleport_random"].ReadBool(false))
+
+        // Teleport the agent to a user-specified position
+		JsonData teleport_to = jsonData["teleport_to"];
+		if(teleport_to != null)
+		{
+			Vector3 new_avatar_position = teleport_to["position"].ReadVector3(Vector3.zero);
+			Vector3 new_avatar_rotation = teleport_to["rotation"].ReadVector3(Vector3.zero);
+			_myAvatar.TeleportToGivenPosition(new_avatar_position, new_avatar_rotation);
+		}
+		else if (jsonData["teleport_random"].ReadBool(false))
             _myAvatar.TeleportToValidPosition();
+        
         _myAvatar.shouldCollectObjectInfo = jsonData["get_obj_data"].ReadBool(false);
 
         //TODO
@@ -152,7 +162,11 @@ public class InputModule : AbstractInputModule
                 relationships.Add(testStr);
         }
         _myAvatar.relationshipsToRetrieve = relationships;
+
 		// Apply Magic
+		float roomHeight = 2.0f;
+		if(_myAvatar.scene != null)
+		 roomHeight = _myAvatar.scene.roomDim.y;
 		JsonData actionsList = jsonData["actions"];
 		if (actionsList != null) {
 			int actionsCount = actionsList.Count;
@@ -161,6 +175,7 @@ public class InputModule : AbstractInputModule
 				JsonData action = actionsList [i];
 				string str_id = action ["id"].ReadString ();
 				int id = int.Parse(str_id);
+				teleport_to = action["teleport_to"];
 				Vector3 force = action ["force"].ReadVector3 ();
 				//force = _myAvatar.transform.TransformDirection (force);
 				Vector3 torque = action ["torque"].ReadVector3 ();
@@ -170,6 +185,24 @@ public class InputModule : AbstractInputModule
 					if(o.gameObject.GetComponentInChildren<Renderer>().material.HasProperty("_idval"))
 						idval = NetMessenger.colorUIDToInt(o.gameObject.GetComponentInChildren<Renderer> ().material.GetColor ("_idval"));
 					if (idval == id) {
+
+						if(teleport_to != null && !o.isStatic)
+						{
+							Vector3 new_object_position = teleport_to["position"].ReadVector3(Vector3.zero);
+							Vector3 new_object_rotation = teleport_to["rotation"].ReadVector3(Vector3.zero);
+							Quaternion rot = o.transform.rotation;
+							rot.eulerAngles = new_object_rotation;
+							o.transform.rotation = rot;
+
+							RaycastHit hit = new RaycastHit();
+							Vector3 object_size = o.GetComponent<GeneratablePrefab>().myBounds.size;
+							Vector3 raycast_origin = new Vector3(new_object_position.x, roomHeight-0.5f, new_object_position.z);
+							if (Physics.Raycast(raycast_origin, Vector3.down, out hit, roomHeight))
+							{
+								new_object_position.y = Mathf.Max(hit.point.y + object_size.y / 2 + 0.5f, 0);
+							}
+							o.transform.position = new_object_position;
+						}
 						Rigidbody rb = o.gameObject.GetComponentInChildren<Rigidbody> ();
 						rb.AddForce (force);
 						rb.AddTorque (torque);
