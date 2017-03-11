@@ -16,6 +16,7 @@ import struct
 from optparse import OptionParser
 import time
 import numpy as np
+import copy
 
 if __name__ == "__main__":
 
@@ -84,8 +85,13 @@ if __name__ == "__main__":
                 goodidvals = idvals[goodidinds]
             elif now_request['choose_mode'] == 'all':
                 goodidvals = idvals
-            goodidvals = map(ObjectId, goodidvals) 
-            return_list0 = list(coll.find({'_id': {'$in': goodidvals}}, projection=default_keys))
+            goodidvals = map(ObjectId, goodidvals)
+
+            keys = copy.deepcopy(default_keys)
+            for _k in q:
+                if _k not in keys:
+                    keys.append(_k)
+            return_list0 = list(coll.find({'_id': {'$in': goodidvals}}, projection=keys))
             map(correct, return_list0)
             return_list.extend(return_list0)
         

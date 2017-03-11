@@ -330,7 +330,7 @@ public static class SimulationManager
             physicsTimeMultiplier = targetFrameRate * (Time.fixedDeltaTime * numPhysicsFramesPerUpdate * 1.05f);
         }
         QualitySettings.vSyncCount = 0;
-        Profiler.maxNumberOfSamplesPerFrame = profilerFrames;
+        UnityEngine.Profiling.Profiler.maxNumberOfSamplesPerFrame = profilerFrames;
         Application.targetFrameRate = targetFrameRate;
 		// Debug.LogFormat("Setting target render FPS to {0} with speedup: {1} with phys timestep of {2} and {3} phys frames, maxDT: {4}", targetFrameRate, physicsTimeMultiplier, Time.fixedDeltaTime, numPhysicsFramesPerUpdate, Time.maximumDeltaTime);
 

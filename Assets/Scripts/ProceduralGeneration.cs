@@ -122,6 +122,7 @@ public class ProceduralGeneration : MonoBehaviour
     //private List<PrefabDatabase.PrefabInfo> ceilingLightPrefabs = new List<PrefabDatabase.PrefabInfo>();
     private List<PrefabDatabase.PrefabInfo> groundPrefabs = new List<PrefabDatabase.PrefabInfo>();
     private List<PrefabDatabase.PrefabInfo> stackingPrefabs = new List<PrefabDatabase.PrefabInfo>();
+	private List<PrefabDatabase.PrefabInfo> stackablePrefabs = new List<PrefabDatabase.PrefabInfo>();
     public List<HeightPlane> _allHeightPlanes = new List<HeightPlane>();
     private static ProceduralGeneration _Instance = null;
 	private static int UID_BY_INDEX = 0x3;
@@ -218,6 +219,10 @@ public class ProceduralGeneration : MonoBehaviour
             Debug.Log("Config for prefabs:" + count_prefabs);
             //Debug.Log("Config for prefabs:" + config_for_prefabs.);
             //foreach (LitJson.JsonData elem in config_for_prefabs as IList){
+
+			//List of valid stackable synsets
+			List<string> stackableSynsets = new List<string>(new string[] {"n04379243"});
+
             for (int indx_now=0; indx_now<count_prefabs; indx_now++){
                 //Debug.Log("Current item: " + elem.ToJSON());
                 //u'version': 2, u'anchor_type': u'Ground', u'synset': [u'n02924116'], u'has_texture': True, u'boundb_pos': [0.1, 0.1, 0.5], u'center_pos': [0.0, 0.0, 0.0], u'upright': [0.0, 0.0, 1.0], u'aws_address': u'http://threedworld.s3.amazonaws.com/1004ae81238886674d44f5db04bf14b8.bundle', u'complexity': 5, u'isLight': u'False', u'source': u'3dw', u'shapenet_synset': u'n02924116', u'front': [-1.0, 0.0, 0.0], u'_id': ObjectId('57b31b77f8b11f6bc2b97af9'), u'type': u'shapenet', u'id': u'1004ae81238886674d44f5db04bf14b8', u'name': u'Tour bus concept purple'
@@ -232,6 +237,26 @@ public class ProceduralGeneration : MonoBehaviour
 
                 newInfo._id_str         = current_item["_id_str"].ReadString(newInfo._id_str);
                 newInfo.aws_version     = current_item["aws_version"].ReadString(newInfo.aws_version);
+
+
+				newInfo.isStackable = false;
+				if(current_item["synset"] != null)
+				{
+					LitJson.JsonData synsetList = current_item["synset"];
+					for(int j=0; j < synsetList.Count; j++) 
+					{
+						string synset = synsetList[j].ToString();
+						for(int i=0; i < stackableSynsets.Count; i++)
+                		{
+                			if(synset == stackableSynsets[i])
+                			{
+                				newInfo.isStackable = true;
+                				break;
+                			}
+                		}
+                	}
+				}
+
 
                 //newInfo.loaded          = 0;
                 //Debug.Log("New info:" + newInfo.bounds + newInfo.complexity + newInfo.fileName);
@@ -340,8 +365,13 @@ public class ProceduralGeneration : MonoBehaviour
         }));
         // TODO: We're not filtering the ceiling lights, since we currently only have 1 prefab that works
         //ceilingLightPrefabs = availablePrefabs.FindAll(((PrefabDatabase.PrefabInfo info)=>{return info.anchorType == GeneratablePrefab.AttachAnchor.Ceiling && info.isLight;}));
+
         groundPrefabs = filteredPrefabs.FindAll(((PrefabDatabase.PrefabInfo info)=>{return info.anchorType == GeneratablePrefab.AttachAnchor.Ground;}));
+		stackablePrefabs = groundPrefabs.FindAll(((PrefabDatabase.PrefabInfo info)=>{return info.isStackable == true;}));
+
+        // TODO: Remove stackingPrefabs as it is deprecated
         stackingPrefabs = groundPrefabs.FindAll(((PrefabDatabase.PrefabInfo info)=>{return info.stackableAreas.Count > 0;}));
+
         List<PrefabDatabase.PrefabInfo> itemsForStacking = groundPrefabs.FindAll(((PrefabDatabase.PrefabInfo info)=>{return true;}));
 
         // Create grid to populate objects
@@ -375,6 +405,17 @@ public class ProceduralGeneration : MonoBehaviour
         for(int i = 0; (i - _failures) < minStackingBases && stackingPrefabs.Count > 0; ++i)
             AddObjects(stackingPrefabs);
         _failures = 0;
+
+		if(showProcGenDebug && minStackingBases > 0)
+			Debug.LogFormat("Placing {0} stackable objects using {1} types", minStackingBases, stackablePrefabs.Count);
+		_forceStackObject = false;
+		for(int i = 0; (i - _failures) < minStackingBases && stackablePrefabs.Count > 0; ++i)
+		{
+			if(showProcGenDebug)
+				Debug.LogFormat("Placing object {0}", i);
+			AddObjects(stackablePrefabs);
+		}
+		_failures = 0;
 
         if (showProcGenDebug && forceStackedItems > 0)
             Debug.LogFormat("Stacking {0} objects: {1} types", forceStackedItems, itemsForStacking.Count);
@@ -432,7 +473,6 @@ public class ProceduralGeneration : MonoBehaviour
                 standardizedSize.z / bounds.extents.z);
         }
         */
-
         Bounds testBounds = new Bounds(bounds.center, modScale * 2f * bounds.extents);
         int boundsWidth = Mathf.CeilToInt(2 * testBounds.extents.x / gridDim);
         int boundsLength = Mathf.CeilToInt(2 * testBounds.extents.z / gridDim);
@@ -451,8 +491,9 @@ public class ProceduralGeneration : MonoBehaviour
         {
             HeightPlane curHeightPlane = _allHeightPlanes[planeNum];
             // Make sure we aren't hitting the ceiling
-            if (boundsHeight >= curHeightPlane.planeHeight || curHeightPlane.cornerPos.y + boundsHeight >= _curRoomHeight)
+            if (boundsHeight >= curHeightPlane.planeHeight || curHeightPlane.cornerPos.y + boundsHeight >= _curRoomHeight) {
                 continue;
+            }
             // Only get grid squares which are valid to place on.
             
             // List<GridInfo> validValues = curHeightPlane.myGridSpots.FindAll((GridInfo info)=>{return info.rightSquares >= (boundsWidth-1) && info.downSquares > (boundsLength-1) && !info.inUse;});
@@ -467,7 +508,9 @@ public class ProceduralGeneration : MonoBehaviour
                 {
                     Vector3 centerPos = curHeightPlane.cornerPos + new Vector3(gridDim * (testInfo.x + (0.5f * boundsWidth)), 0.1f+boundsHeight, gridDim * (testInfo.y + (0.5f * boundsLength)));
                     if (anchorType == GeneratablePrefab.AttachAnchor.Ceiling)
+                    {
                         centerPos.y = _roomCornerPos.y + _curRoomHeight - (0.1f+boundsHeight);
+                    }
                     if (Physics.CheckBox(centerPos, testBounds.extents) && (disable_rand_stacking == 1))
                     //if (false)
                     {
@@ -890,7 +933,12 @@ public class ProceduralGeneration : MonoBehaviour
             //newInstance.name = string.Format("{0} #{1} on {2}", newPrefab.name, (_curRoom != null) ? _curRoom.childCount.ToString() : "?", targetHeightPlane.name);
             
             newInstance.name = string.Format("{0}, {1}, {2}", info.fileName, newPrefab.name, (_curRoom != null) ? _curRoom.childCount.ToString() : "?");
-            newInstance.GetComponent<SemanticObject>().isStatic = false;
+			newInstance.GetComponent<SemanticObject>().isStatic = false;
+			if(info.isStackable)
+			{
+				newInstance.GetComponent<SemanticObject>().isStackable = true;
+			}
+
             Renderer[] RendererList = newInstance.GetComponentsInChildren<Renderer>();
             Color colorID = getNewUIDColor ();
             foreach (Renderer _rend in RendererList)

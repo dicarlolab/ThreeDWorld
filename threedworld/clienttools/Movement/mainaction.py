@@ -10,13 +10,13 @@ import numpy as np
 import json
 from PIL import Image
 from StringIO import StringIO
-import actions.curious # import make_new_batch
+import actions.test as curious # import make_new_batch
 from environment import environment
 from threedworld.clienttools.tdw_client import TDW_Client
 
 SEED = int(sys.argv[2])
-CREATE_HDF5 = True
-USE_TDW = True
+CREATE_HDF5 = False
+USE_TDW = False
 SCENE_SWITCH = 20
 SCREEN_WIDTH = 512
 SCREEN_HEIGHT = 384
@@ -66,7 +66,7 @@ def loop():
 		print "...join sent"
 
 	bn = 0
-	agent = actions.curious.agent(CREATE_HDF5, path, SEED)
+	agent = curious.agent(CREATE_HDF5, path, SEED)
 	if USE_TDW:
 		agent.set_screen_width(SCREEN_WIDTH)
                 agent.set_screen_height(SCREEN_HEIGHT)

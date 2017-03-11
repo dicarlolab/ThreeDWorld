@@ -128,7 +128,7 @@ public class CreatePrefabCMD
             MakeSimplePrefabObj (entry.Key, "objs_by_id/" + path_to_id[entry.Value]);
 
             //force GC
-            EditorApplication.SaveAssets ();
+            AssetDatabase.SaveAssets ();
             Resources.UnloadUnusedAssets ();
             EditorUtility.UnloadUnusedAssetsImmediate ();
 
@@ -299,7 +299,7 @@ public class CreatePrefabCMD
 				MakeSimplePrefabObj (entry.Key, subPathWithoutFileType);
 
 				//force GC
-				EditorApplication.SaveAssets ();
+				AssetDatabase.SaveAssets ();
 				Resources.UnloadUnusedAssets ();
 				EditorUtility.UnloadUnusedAssetsImmediate ();
 

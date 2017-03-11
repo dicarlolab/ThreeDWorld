@@ -19,6 +19,7 @@ public class PrefabDatabase : MonoBehaviour
 		public string fileName;
 		public int complexity = -1;
 		public bool isLight = false;
+		public bool isStackable = false;
 		public GeneratablePrefab.AttachAnchor anchorType = GeneratablePrefab.AttachAnchor.Ground;
 		public Bounds bounds;
 		public List<GeneratablePrefab.StackableInfo> stackableAreas = new List<GeneratablePrefab.StackableInfo> ();
@@ -273,7 +274,7 @@ public class PrefabDatabase : MonoBehaviour
 				MakeSimplePrefabObj (entry.Key, subPathWithoutFileType);
 
 				//force GC
-				EditorApplication.SaveAssets ();
+				AssetDatabase.SaveAssets ();
 				Resources.UnloadUnusedAssets ();
 				EditorUtility.UnloadUnusedAssetsImmediate ();
 
@@ -449,7 +450,7 @@ public class PrefabDatabase : MonoBehaviour
                 
 		//PrefabDatabase database_ = AssetDatabase.LoadAssetAtPath<PrefabDatabase> (path_database);
 		//PrefabUtility.ReplacePrefab(database, database_);
-		EditorApplication.SaveAssets ();
+		AssetDatabase.SaveAssets ();
 	}
 
 	public static void SetupBundles_lazily ()
@@ -465,7 +466,7 @@ public class PrefabDatabase : MonoBehaviour
                 
 		//PrefabDatabase database_ = AssetDatabase.LoadAssetAtPath<PrefabDatabase> (path_database);
 		//PrefabUtility.ReplacePrefab(database, database_);
-		EditorApplication.SaveAssets ();
+		AssetDatabase.SaveAssets ();
 	}
 
 	public static void SetupPrefabs (bool shouldRecompute)

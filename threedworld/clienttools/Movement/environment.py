@@ -2,19 +2,25 @@ import numpy as np
 
 
 class environment:
+        synset_for_table = [u'n04379243']
+
 	# ShapeNet dictionary inquery
 	shapenet_inquery = {'type': 'shapenetremat', 'version': 0, 'complexity': {'$exists': True}, 'center_pos': {'$exists': True}, 'boundb_pos': {'$exists': True}, 'isLight': {'$exists': True}, 'anchor_type': {'$exists': True}, 'aws_address': {'$exists': True}}
 
 	# Dosch dictionary inquery
 	dosch_inquery = {'type': 'dosch', 'version': 1, 'complexity': {'$exists': True}, 'center_pos': {'$exists': True}, 'boundb_pos': {'$exists': True}, 'isLight': {'$exists': True}, 'anchor_type': {'$exists': True}, 'aws_address': {'$exists': True}}
 
+        # Tables
+        q_tables = {'type': 'shapenetremat', 'version': 0, 'complexity': {'$exists': True}, 'center_pos': {'$exists': True}, 'boundb_pos': {'$exists': True}, 'isLight': {'$exists': True}, 'anchor_type': {'$exists': True}, 'aws_address': {'$exists': True}, 'synset' : synset_for_table}
+
 	RANDOM_SEED = 0
-	COMPLEXITY = 5000
+	COMPLEXITY = 800
 	NUM_LIGHTS = 4
 	ROOM_WIDTH = 20.0
 	ROOM_LENGTH = 20.0
 	NUM_SHAPENET = 200
 	NUM_DOSCH = 10
+        NUM_STACKABLE = 10
 
 	rng_config = np.random.RandomState(0)
 
@@ -75,5 +81,8 @@ class environment:
 			"max_placement_attempts": 300,   #Maximum number of failed placements before we consider a room fully filled.
 			"grid_size": 0.4,    #Determines how fine tuned a grid the objects are placed on during Proc. Gen. Smaller the number, the
 			"use_mongodb_inter": 1, 
-			"mongodb_items": {"shape_cons": {"find_argu": self.shapenet_inquery, "choose_mode": "random", "choose_argu": {"number": self.NUM_SHAPENET, "seed": self.RANDOM_SEED}}, "dosch":  {"find_argu": self.dosch_inquery, "choose_mode": "random", "choose_argu": {"number": self.NUM_DOSCH, "seed": self.RANDOM_SEED}}}
+			"mongodb_items": {
+"shape_cons": {"find_argu": self.shapenet_inquery, "choose_mode": "random", "choose_argu": {"number": self.NUM_SHAPENET, "seed": self.RANDOM_SEED}}, 
+"dosch":  {"find_argu": self.dosch_inquery, "choose_mode": "random", "choose_argu": {"number": self.NUM_DOSCH, "seed": self.RANDOM_SEED}}, 
+"tables": {"find_argu": self.q_tables, "choose_mode": "random", "choose_argu": {"number": self.NUM_STACKABLE, "seed": self.RANDOM_SEED}}}
 		}

@@ -21,6 +21,9 @@ public abstract class SemanticObject : MonoBehaviour
     // Identifies the object as static or not
     public bool isStatic = true;
 
+    // Identifies the object as stackable or not
+	public bool isStackable = false;
+
     protected List<SemanticObjectComplex> parentObjects;
 
 //    // Keep track of currently active collisions on this object for evaluating various SemanticRelationships

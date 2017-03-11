@@ -89,7 +89,6 @@ public class NetMessenger : MonoBehaviour
 		if (this.avatarPrefab == null) {
 			Debug.Log ("it doesnt exist still!");
 		}
-		Debug.Log ("May have just printed something right here^");
 
 		Debug.Log (this.avatarPrefab.name);
 
@@ -607,6 +606,7 @@ public class NetMessenger : MonoBehaviour
             	_objInfo.Add(o.transform.position.ToJson());
             	_objInfo.Add(o.transform.rotation.ToJson());
             	_objInfo.Add(o.isStatic);
+            	_objInfo.Add(o.isStackable);
                 jsonData["observed_objects"].Add(_objInfo);
 
             }

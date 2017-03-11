@@ -450,7 +450,7 @@ class agent:
                                             print 'ROTATE OBJECT! ' + str(action['torque']) + ' ' + str(chosen_o)
                                         elif action_type == 4:
                                             action['id'] = str(chosen_id)
-                                            action['teleport_to'] = {'position': [2, 0.1, 2],
+                                            msg['msg']['teleport_to'] = {'position': [2, 0.1, 2],
                                                                      'rotation': [0, 0, 0]}
                                             msg['msg']['action_type'] = "TELEPORT_OBJECT"
                                             action_ind = action_length
@@ -543,7 +543,7 @@ class agent:
 					print 'ROTATE OBJECT! ' + str(action['torque']) + ' ' + str(chosen_o)
                                     elif action_type == 4:
                                         action['id'] = str(chosen_id)
-                                        action['teleport_to'] = {'position': [2, 0.1, 2],
+                                        msg['msg']['teleport_to'] = {'position': [2, 0.1, 2],
                                                                  'rotation': [0, 0, 0]}
                                         msg['msg']['action_type'] = "TELEPORT_OBJECT"
                                         action_ind = action_length
