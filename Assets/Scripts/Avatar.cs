@@ -182,7 +182,7 @@ public class Avatar : MonoBehaviour
     public void TeleportToGivenPosition(Vector3 new_position, Vector3 new_rotation)
     {
 		scene = FindObjectOfType<ProceduralGeneration>();
-		transform.rotation = Quaternion.LookRotation(new_rotation);
+		transform.localRotation = Quaternion.LookRotation(new_rotation);
 
 		RaycastHit hit = new RaycastHit();
 		const float radius = 0.3f;
