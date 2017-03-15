@@ -52,12 +52,20 @@ public class CameraStreamer : MonoBehaviour
     private static byte[] _bmpHeader = null;
     private static UInt32 _lastBmpDimX = 0;
     private static UInt32 _lastBmpDimY = 0;
+
+    // Snapshot init
+    private List<bool> snapshotInit;
 #endregion
 
 #region Unity callbacks
     // Use this for initialization
     void Start()
     {
+    	snapshotInit = new List<bool>();
+    	for(int i = 0; i < targetCams.Count; i++)
+    	{
+    	   	snapshotInit.Add(true);
+    	}
     }
 
     void Update()
@@ -222,6 +230,12 @@ public class CameraStreamer : MonoBehaviour
             _textureCam.enabled = false;
             _textureCam.targetTexture = new RenderTexture(targetCams[camera_id].pixelWidth, targetCams[camera_id].pixelHeight, 0, RenderTextureFormat.ARGB32);
 
+            if (testImage != null)
+                testImage.texture = _textureCam.targetTexture;
+         }
+         if(snapshotInit[camera_id])
+         {
+			snapshotInit[camera_id] = false;
             // Image Effects
 			if (true && targetCams[camera_id] != null)
             {
@@ -250,9 +264,6 @@ public class CameraStreamer : MonoBehaviour
 				targetCams[camera_id].renderingPath = RenderingPath.DeferredShading;
 				targetCams[camera_id].gameObject.AddComponent<ScreenSpaceReflection>();
 	        }
-
-            if (testImage != null)
-                testImage.texture = _textureCam.targetTexture;
         }
 
         // Call render with the appropriate shaders
