@@ -35,8 +35,8 @@ public class CameraStreamer : MonoBehaviour
 #endregion
 
 #region Fields
-    public Camera targetCam = null;
-    public Camera shaderCam = null;
+    public List<Camera> targetCams;
+    public List<Camera> shaderCams;
     // Debug UI image that shows what this camera is rendering out
     public RawImage testImage = null;
 
@@ -119,9 +119,10 @@ public class CameraStreamer : MonoBehaviour
     {
         if (request.capturedImages == null)
             request.capturedImages = new List<CapturedImage>();
-        while(request.capturedImages.Count < request.shadersList.Count)
+        // times 2 for second camera
+        while(request.capturedImages.Count < request.shadersList.Count * 2)
         {
-            request.capturedImages.Add(new CapturedImage());
+			request.capturedImages.Add(new CapturedImage());
 //            Debug.Log("Capture count now: " + request.capturedImages.Count);
         }
         for (int i = 0; i < request.shadersList.Count; ++i)
@@ -131,7 +132,9 @@ public class CameraStreamer : MonoBehaviour
                 Debug.Log("SHADER CALL");
                 Debug.Log(i);
             }
-			request.capturedImages[i].pictureBuffer = TakeSnapshotNow(request.shadersList[i], request.outputFormatList[i]).pictureBuffer;
+			request.capturedImages[i].pictureBuffer = TakeSnapshotNow(request.shadersList[i], 0, request.outputFormatList[i]).pictureBuffer;
+			// for second camera
+			request.capturedImages[i+3].pictureBuffer = TakeSnapshotNow(request.shadersList[i], 1, request.outputFormatList[i]).pictureBuffer;
         }
         if (request.callbackFunc != null)
             request.callbackFunc(request);
@@ -196,7 +199,7 @@ public class CameraStreamer : MonoBehaviour
     }
 
 
-    private CapturedImage TakeSnapshotNow(Shader targetShader, string outputFormat = "use_preferred_output_format")
+    private CapturedImage TakeSnapshotNow(Shader targetShader, int camera_id, string outputFormat = "use_preferred_output_format")
     {
         if(DEBUG)
         {
@@ -217,36 +220,36 @@ public class CameraStreamer : MonoBehaviour
             GameObject newObj = new GameObject("Texture-Writing Camera");
             _textureCam = newObj.AddComponent<Camera>();
             _textureCam.enabled = false;
-            _textureCam.targetTexture = new RenderTexture(targetCam.pixelWidth, targetCam.pixelHeight, 0, RenderTextureFormat.ARGB32);
+            _textureCam.targetTexture = new RenderTexture(targetCams[camera_id].pixelWidth, targetCams[camera_id].pixelHeight, 0, RenderTextureFormat.ARGB32);
 
             // Image Effects
-            if (true && targetCam != null)
+			if (true && targetCams[camera_id] != null)
             {
-                targetCam.hdr = true;
+				targetCams[camera_id].hdr = true;
 
-                // Tone Mapping
-                targetCam.gameObject.AddComponent<TonemappingColorGrading>();
-                var tonemapping = targetCam.gameObject.GetComponent<TonemappingColorGrading>().tonemapping; //ToneMappingSettings
-                tonemapping.enabled = true;
-                tonemapping.exposure = 2;
-                tonemapping.tonemapper = TonemappingColorGrading.Tonemapper.Photographic;
-                targetCam.gameObject.GetComponent<TonemappingColorGrading>().tonemapping = tonemapping;
+	            // Tone Mapping
+				targetCams[camera_id].gameObject.AddComponent<TonemappingColorGrading>();
+				var tonemapping = targetCams[camera_id].gameObject.GetComponent<TonemappingColorGrading>().tonemapping; //ToneMappingSettings
+	            tonemapping.enabled = true;
+	            tonemapping.exposure = 2;
+	            tonemapping.tonemapper = TonemappingColorGrading.Tonemapper.Photographic;
+				targetCams[camera_id].gameObject.GetComponent<TonemappingColorGrading>().tonemapping = tonemapping;
 
-                // Eye Adaptation
-                var eyeadaptation = targetCam.gameObject.GetComponent<TonemappingColorGrading>().eyeAdaptation; //EyeAdaptationSettings
-                eyeadaptation.enabled = true;
-                targetCam.gameObject.GetComponent<TonemappingColorGrading>().eyeAdaptation = eyeadaptation;
+	            // Eye Adaptation
+				var eyeadaptation = targetCams[camera_id].gameObject.GetComponent<TonemappingColorGrading>().eyeAdaptation; //EyeAdaptationSettings
+	                eyeadaptation.enabled = true;
+				targetCams[camera_id].gameObject.GetComponent<TonemappingColorGrading>().eyeAdaptation = eyeadaptation;
 
-                // Depth of Field
-                targetCam.gameObject.AddComponent<DepthOfField>();
+	            // Depth of Field
+				targetCams[camera_id].gameObject.AddComponent<DepthOfField>();
 
-                //Ambient Occlusion
-                targetCam.gameObject.AddComponent<AmbientOcclusion>();
+	            //Ambient Occlusion
+				targetCams[camera_id].gameObject.AddComponent<AmbientOcclusion>();
 
-                //Screen Space Reflections
-                targetCam.renderingPath = RenderingPath.DeferredShading;
-                targetCam.gameObject.AddComponent<ScreenSpaceReflection>();
-            }
+	            //Screen Space Reflections
+				targetCams[camera_id].renderingPath = RenderingPath.DeferredShading;
+				targetCams[camera_id].gameObject.AddComponent<ScreenSpaceReflection>();
+	        }
 
             if (testImage != null)
                 testImage.texture = _textureCam.targetTexture;
@@ -255,13 +258,13 @@ public class CameraStreamer : MonoBehaviour
         // Call render with the appropriate shaders
         if (targetShader != null)
         {
-            RenderTexture.active = shaderCam.targetTexture;
-            shaderCam.RenderWithShader(targetShader, null);
+			RenderTexture.active = shaderCams[camera_id].targetTexture;
+			shaderCams[camera_id].RenderWithShader(targetShader, null);
         }
         else
         {
-            RenderTexture.active = targetCam.targetTexture;
-            targetCam.Render();
+			RenderTexture.active = targetCams[camera_id].targetTexture;
+			targetCams[camera_id].Render();
         }
         if (DEBUG && NetMessenger.logTimingInfo)
             Debug.LogFormat("  Finished Rendering {0}", Utils.GetTimeStamp());
