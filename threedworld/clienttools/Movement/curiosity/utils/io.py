@@ -25,19 +25,31 @@ def recv_array(socket, flags=0, copy=True, track=False):
 
 
 def handle_message(sock, write=False, outdir='', imtype='png', prefix=''):
+    # Handle info
     info = sock.recv()
+    # Handle first set of images from camera 1
+    nstr = sock.recv()
+    narray2 = np.asarray(Image.open(StringIO(nstr)).convert('RGB'))
+    ostr = sock.recv()
+    oarray2 = np.asarray(Image.open(StringIO(ostr)).convert('RGB'))
+    imstr = sock.recv()
+    imarray2 = np.asarray(Image.open(StringIO(imstr)).convert('RGB'))
+    # Handle second set of images from camera 2
     nstr = sock.recv()
     narray = np.asarray(Image.open(StringIO(nstr)).convert('RGB'))
     ostr = sock.recv()
     oarray = np.asarray(Image.open(StringIO(ostr)).convert('RGB'))
     imstr = sock.recv()
     imarray = np.asarray(Image.open(StringIO(imstr)).convert('RGB'))
+
     im = Image.fromarray(imarray)
+    im2 = Image.fromarray(imarray2)
     imo = Image.fromarray(oarray)
     if write:
         if not os.path.exists(outdir):
             os.mkdir(outdir)
         im.save(os.path.join(outdir, 'image_%s.%s' % (prefix, imtype)))
+        im2.save(os.path.join(outdir, '2image_%s.%s' % (prefix, imtype)))
         imo.save(os.path.join(outdir, 'objects_%s.%s' % (prefix, imtype)))
         #with open(os.path.join(outdir, 'image_%s.%s' % (prefix, imtype)), 'w') as _f:
         #    _f.write(imstr)

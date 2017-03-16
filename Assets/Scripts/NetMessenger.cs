@@ -664,7 +664,7 @@ public class NetMessenger : MonoBehaviour
             Debug.LogFormat("Finished encode json data of length {1}, {0}", Utils.GetTimeStamp(), jsonString.Length);
 
         // Add in captured frames(directly, non-JSON)
-        int numValues = Mathf.Min(streamCapture.shadersList.Count, streamCapture.capturedImages.Count);
+        int numValues = Mathf.Max(streamCapture.shadersList.Count, streamCapture.capturedImages.Count);
         for(int i = 0; i < numValues; ++i)
             _lastMessageSent.Append(streamCapture.capturedImages[i].pictureBuffer);
         if (logTimingInfo)

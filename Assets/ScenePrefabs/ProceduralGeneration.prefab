@@ -5,10 +5,10 @@ GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 433184}
-  - 114: {fileID: 11401938}
+  - component: {fileID: 433184}
+  - component: {fileID: 11401938}
   m_Layer: 0
   m_Name: ProceduralGeneration
   m_TagString: Untagged
@@ -25,10 +25,10 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &11401938
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -42,21 +42,34 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   complexityLevelToCreate: 10000
   numCeilingLights: 3
+  intensityCeilingLights: 1
+  useStandardShader: 0
   minStackingBases: 0
   forceStackedItems: 5
   maxPlacementAttempts: 300
-  floorPrefab: {fileID: 11451076, guid: 781707ea1a041d448b3fe59b839492eb, type: 2}
-  ceilingPrefab: {fileID: 11451076, guid: ada5ed2a4f68e564c88d0efc4eb1c9fa, type: 2}
+  randomMaterials: 0
+  floorPrefab: {fileID: 0}
+  ceilingPrefab: {fileID: 0}
   DEBUG_testCubePrefab: {fileID: 0}
   DEBUG_testGridPrefab: {fileID: 0}
   roomDim: {x: 40, y: 20, z: 40}
+  availablePrefabs: []
   disabledItems: []
   permittedItems: []
   gridDim: 1
+  use_mongodb_inter: 0
+  use_cache_self: 0
+  disable_rand_stacking: 1
+  enable_global_unit_scale: 0
+  cache_folder: /Users/chengxuz/3Dworld/ThreeDWorld/Assets/PrefabDatabase/AssetBundles/file_cache_test/
   shouldUseStandardizedSize: 0
   standardizedSize: {x: 1, y: 1, z: 1}
   shouldUseGivenSeed: 0
   desiredRndSeed: -1
+  scene_scale_seed: 0
+  scene_scale_con: NULL
+  scene_scale_mean: 1
+  scene_scale_var: 0
   WALL_WIDTH: 0.25
   DOOR_WIDTH: 1.5
   DOOR_HEIGHT: 3
@@ -85,8 +98,11 @@ MonoBehaviour:
   ceilingMaterial: {fileID: 2100000, guid: 87294f02d9437b8479f6d772f8b00a8d, type: 2}
   wallTrimMaterial: {fileID: 2100000, guid: baf8ceb37ffecbd42a924d001e01127c, type: 2}
   windowMaterial: {fileID: 2100000, guid: e7a9aa901c4190f4ba2c8d9803d4df8f, type: 2}
+  skyboxMaterial: {fileID: 0}
   windowTrimMaterial: {fileID: 2100000, guid: 037c10e8a9c9c5e47a726216732d17d8, type: 2}
+  physicsMaterial: {fileID: 13400000, guid: 1af4c5ae9e51846a7afeafc7b2937ef3, type: 2}
   showProcGenDebug: 0
+  list_rands: []
   _allHeightPlanes: []
 --- !u!1001 &100100000
 Prefab:

@@ -106,6 +106,7 @@ public class ProceduralGeneration : MonoBehaviour
     public Material windowMaterial = null;
     public Material skyboxMaterial = null;
     public Material windowTrimMaterial = null;
+    public PhysicMaterial physicsMaterial = null;
     public bool showProcGenDebug = false;
     public List<Random_help> list_rands    = new List<Random_help>();
 
@@ -956,6 +957,13 @@ public class ProceduralGeneration : MonoBehaviour
 //				newInstance.transform.localScale *= 1 / Math.Max(newInstance.transform.lossyScale.x,
 //					Math.Max(newInstance.transform.lossyScale.y, newInstance.transform.lossyScale.z));
 //			}
+
+			// Add physics material
+			Collider[] colliders = newInstance.GetComponentsInChildren<Collider>();
+			foreach(Collider collider in colliders)
+			{
+				collider.material = physicsMaterial;
+			}
 
             Renderer[] RendererList = newInstance.GetComponentsInChildren<Renderer>();
             Color colorID = getNewUIDColor ();

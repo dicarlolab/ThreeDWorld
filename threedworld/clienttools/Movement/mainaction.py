@@ -78,7 +78,7 @@ def loop():
 		print(task_params)
 		if(bn != 0 and SCENE_SWITCH != 0 and bn % SCENE_SWITCH == 0):
 			print "switching scene..."
-			for i in range(4):
+			for i in range(7):
 			    sock.recv();
 			env.next_config()
 			scene_switch_msg = {"msg_type" : "SCENE_SWITCH", "config" : env.config, "get_obj_data" : True, "send_scene_info" : True, "output_formats": ["png", "png", "jpg"]}
