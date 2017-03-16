@@ -10,9 +10,10 @@ import numpy as np
 import json
 from PIL import Image
 from StringIO import StringIO
-import actions.test as curious # import make_new_batch
+import actions.curious2 as curious2 # import make_new_batch
 from environment import environment
 from threedworld.clienttools.tdw_client import TDW_Client
+import curricula
 
 SEED = int(sys.argv[2])
 CREATE_HDF5 = False
@@ -34,6 +35,8 @@ s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 s.connect(("google.com",80))
 host_address = s.getsockname()[0]
 s.close()
+
+
 
 ctx = zmq.Context()
 def loop():
@@ -66,11 +69,13 @@ def loop():
 		print "...join sent"
 
 	bn = 0
-	agent = curious.agent(CREATE_HDF5, path, SEED)
+	agent = curious2.agent(CREATE_HDF5, path, SEED)
 	if USE_TDW:
 		agent.set_screen_width(SCREEN_WIDTH)
                 agent.set_screen_height(SCREEN_HEIGHT)
-	while True:
+	# while True:
+	for task_params in curricula.new_table_curriculum:
+		print(task_params)
 		if(bn != 0 and SCENE_SWITCH != 0 and bn % SCENE_SWITCH == 0):
 			print "switching scene..."
 			for i in range(4):
@@ -83,7 +88,7 @@ def loop():
 			    sock.send_json(scene_switch_msg)
 			print "scene switched..."
 		print "waiting on messages"
-                agent.make_new_batch(bn, sock, path, CREATE_HDF5, USE_TDW)
+                agent.make_new_batch(bn, sock, path, CREATE_HDF5, USE_TDW, task_params)
 		print "messages received"
 		bn = bn + 1
 	
