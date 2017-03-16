@@ -484,11 +484,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetCams:
-  - {fileID: 20629766123710396}
   - {fileID: 20628930576830214}
+  - {fileID: 20629766123710396}
   shaderCams:
-  - {fileID: 20434604102114154}
   - {fileID: 20993099742854900}
+  - {fileID: 20434604102114154}
   testImage: {fileID: 0}
 --- !u!114 &114740090283607066
 MonoBehaviour:

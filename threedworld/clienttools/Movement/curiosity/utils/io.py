@@ -29,18 +29,18 @@ def handle_message(sock, write=False, outdir='', imtype='png', prefix=''):
     info = sock.recv()
     # Handle first set of images from camera 1
     nstr = sock.recv()
-    narray = np.asarray(Image.open(StringIO(nstr)).convert('RGB'))
-    ostr = sock.recv()
-    oarray = np.asarray(Image.open(StringIO(ostr)).convert('RGB'))
-    imstr = sock.recv()
-    imarray = np.asarray(Image.open(StringIO(imstr)).convert('RGB'))
-    # Handle second set of images from camera 2
-    nstr = sock.recv()
     narray2 = np.asarray(Image.open(StringIO(nstr)).convert('RGB'))
     ostr = sock.recv()
     oarray2 = np.asarray(Image.open(StringIO(ostr)).convert('RGB'))
     imstr = sock.recv()
     imarray2 = np.asarray(Image.open(StringIO(imstr)).convert('RGB'))
+    # Handle second set of images from camera 2
+    nstr = sock.recv()
+    narray = np.asarray(Image.open(StringIO(nstr)).convert('RGB'))
+    ostr = sock.recv()
+    oarray = np.asarray(Image.open(StringIO(ostr)).convert('RGB'))
+    imstr = sock.recv()
+    imarray = np.asarray(Image.open(StringIO(imstr)).convert('RGB'))
 
     im = Image.fromarray(imarray)
     im2 = Image.fromarray(imarray2)
