@@ -190,9 +190,7 @@ public class InputModule : AbstractInputModule
 						{
 							Vector3 new_object_position = teleport_to["position"].ReadVector3(Vector3.zero);
 							Vector3 new_object_rotation = teleport_to["rotation"].ReadVector3(Vector3.zero);
-							Quaternion rot = o.transform.rotation;
-							rot.eulerAngles = new_object_rotation;
-							o.transform.rotation = rot;
+							o.transform.rotation = Quaternion.LookRotation(new_object_rotation);
 
 							RaycastHit hit = new RaycastHit();
 							Vector3 object_size = o.GetComponent<GeneratablePrefab>().myBounds.size;

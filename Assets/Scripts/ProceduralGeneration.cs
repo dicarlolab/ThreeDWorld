@@ -242,19 +242,20 @@ public class ProceduralGeneration : MonoBehaviour
 				newInfo.isStackable = false;
 				if(current_item["synset"] != null)
 				{
-					LitJson.JsonData synsetList = current_item["synset"];
-					for(int j=0; j < synsetList.Count; j++) 
-					{
-						string synset = synsetList[j].ToString();
-						for(int i=0; i < stackableSynsets.Count; i++)
-                		{
-                			if(synset == stackableSynsets[i])
-                			{
-                				newInfo.isStackable = true;
-                				break;
-                			}
-                		}
-                	}
+					newInfo.isStackable = true;
+//					LitJson.JsonData synsetList = current_item["synset"];
+//					for(int j=0; j < synsetList.Count; j++) 
+//					{
+//						string synset = synsetList[j].ToString();
+//						for(int i=0; i < stackableSynsets.Count; i++)
+//                		{
+//                			if(synset == stackableSynsets[i])
+//                			{
+//                				newInfo.isStackable = true;
+//                				break;
+//                			}
+//                		}
+//                	}
 				}
 
 
@@ -878,6 +879,19 @@ public class ProceduralGeneration : MonoBehaviour
                 modScale            = info.first_rand/longest_axis;
         }
 
+		if (info.isStackable) {
+			modScale = (float) 1 / (float) info.bounds.extents.magnitude;
+//			modScale = 1 / Math.Max (info.bounds.extents.x,
+//				Math.Max (info.bounds.extents.y, 
+//					info.bounds.extents.z));
+		} 
+		else {
+			modScale = (float) .25 / (float) info.bounds.extents.magnitude;
+//			modScale = 1 / Math.Max (info.bounds.extents.x,
+//				Math.Max (info.bounds.extents.y, 
+//					info.bounds.extents.z));
+		}
+
         HeightPlane targetHeightPlane;
         Quaternion modifiedRotation = Quaternion.identity;
 
@@ -934,10 +948,14 @@ public class ProceduralGeneration : MonoBehaviour
             
             newInstance.name = string.Format("{0}, {1}, {2}", info.fileName, newPrefab.name, (_curRoom != null) ? _curRoom.childCount.ToString() : "?");
 			newInstance.GetComponent<SemanticObject>().isStatic = false;
-			if(info.isStackable)
-			{
-				newInstance.GetComponent<SemanticObject>().isStackable = true;
-			}
+			if (info.isStackable) {
+				newInstance.GetComponent<SemanticObject> ().isStackable = true;
+				newInstance.GetComponent<Rigidbody> ().mass = 50;
+			} 
+//			else if (Math.Min(newInstance.transform.lossyScale.x, Math.Min(newInstance.transform.lossyScale.y, newInstance.transform.lossyScale.z)) > 1){
+//				newInstance.transform.localScale *= 1 / Math.Max(newInstance.transform.lossyScale.x,
+//					Math.Max(newInstance.transform.lossyScale.y, newInstance.transform.lossyScale.z));
+//			}
 
             Renderer[] RendererList = newInstance.GetComponentsInChildren<Renderer>();
             Color colorID = getNewUIDColor ();
