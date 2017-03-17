@@ -949,6 +949,7 @@ public class ProceduralGeneration : MonoBehaviour
             
             newInstance.name = string.Format("{0}, {1}, {2}", info.fileName, newPrefab.name, (_curRoom != null) ? _curRoom.childCount.ToString() : "?");
 			newInstance.GetComponent<SemanticObject>().isStatic = false;
+			newInstance.GetComponent<SemanticObject>().extents = modifiedBounds.extents;
 			if (info.isStackable) {
 				newInstance.GetComponent<SemanticObject> ().isStackable = true;
 				newInstance.GetComponent<Rigidbody> ().mass = 50;

@@ -24,6 +24,8 @@ public abstract class SemanticObject : MonoBehaviour
     // Identifies the object as stackable or not
 	public bool isStackable = false;
 
+	public Vector3 extents;
+
     protected List<SemanticObjectComplex> parentObjects;
 
 //    // Keep track of currently active collisions on this object for evaluating various SemanticRelationships

@@ -607,7 +607,7 @@ public class NetMessenger : MonoBehaviour
             	_objInfo.Add(o.transform.rotation.ToJson());
             	_objInfo.Add(o.isStatic);
             	_objInfo.Add(o.isStackable);
-				_objInfo.Add (o.GetComponent<GeneratablePrefab> ().myBounds.extents);
+				_objInfo.Add(o.extents.ToJson());
                 jsonData["observed_objects"].Add(_objInfo);
 
             }
