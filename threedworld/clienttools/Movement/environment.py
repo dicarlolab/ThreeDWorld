@@ -16,7 +16,8 @@ table_scale_deal.update(old_scale_deal)
 class environment:
         synset_for_table = [[u'n04379243']]
         # synset_for_table = [[u'n03207941'], [u'n04004475'], [u'n02958343'], [u'n03001627'], [u'n04256520'], [u'n04330267'], [u'n03593526'], [u'n03761084'], [u'n02933112'], [u'n03001627'], [u'n04468005'], [u'n03691459'], [u'n02946921'], [u'n03337140'], [u'n02924116'], [u'n02801938'], [u'n02828884'], [u'n03001627'], [u'n04554684'], [u'n02808440'], [u'n04460130'], [u'n02843684'], [u'n03928116']]
-
+        # synset_for_table = []
+        rollie_synsets = [[u'n03991062'], [u'n02880940'], [u'n02946921'], [u'n02876657'], [u'n03593526']]
 
 	# ShapeNet dictionary inquery
 	shapenet_inquery = {'type': 'shapenetremat', 'version': 0, 'complexity': {'$exists': True}, 'center_pos': {'$exists': True}, 'boundb_pos': {'$exists': True}, 'isLight': {'$exists': True}, 'anchor_type': {'$exists': True}, 'aws_address': {'$exists': True}}
@@ -28,14 +29,14 @@ class environment:
         # q_tables = {'type': 'shapenetremat', 'version': 0, 'complexity': {'$exists': True}, 'center_pos': {'$exists': True}, 'boundb_pos': {'$exists': True}, 'isLight': {'$exists': True}, 'anchor_type': {'$exists': True}, 'aws_address': {'$exists': True}, 'synset' : synset_for_table}
         q_tables = {'type': 'shapenetremat', 'version': 0, 'complexity': {'$exists': True}, 'center_pos': {'$exists': True}, 'boundb_pos': {'$exists': True}, 'isLight': {'$exists': True}, 'anchor_type': {'$exists': True}, 'aws_address': {'$exists': True}, 'synset' : {'$in' : synset_for_table}}
 
-	RANDOM_SEED = 30
-	COMPLEXITY = 800
+	RANDOM_SEED = 57
+	COMPLEXITY = 1500
 	NUM_LIGHTS = 4
 	ROOM_WIDTH = 20.0
 	ROOM_LENGTH = 20.0
 	NUM_SHAPENET = 200
 	NUM_DOSCH = 10
-        NUM_STACKABLE = 8
+        NUM_STACKABLE = 20
 
 	rng_config = np.random.RandomState(0)
 
@@ -66,7 +67,7 @@ class environment:
 "dosch":  {"find_argu": self.dosch_inquery, "choose_mode": "random", "choose_argu": {"number": self.NUM_DOSCH, "seed": self.RANDOM_SEED}}, 
 		}
 
-		for item in self.synset_for_table:
+		for item in self.rollie_synsets:
 			item_query = copy.deepcopy(self.shapenet_inquery)
 			item_query['synset'] = item
 			items_dict[str(item[0])] = {"find_argu": item_query, "choose_mode": "random", "choose_argu": {"number": self.NUM_STACKABLE, "seed": self.RANDOM_SEED}}

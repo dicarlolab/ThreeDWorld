@@ -74,7 +74,7 @@ def loop():
 		agent.set_screen_width(SCREEN_WIDTH)
                 agent.set_screen_height(SCREEN_HEIGHT)
 	# while True:
-	for task_params in curricula.new_table_curriculum:
+	for task_params in curricula.other_obj_curriculum:
 		print(task_params)
 		if(bn != 0 and SCENE_SWITCH != 0 and bn % SCENE_SWITCH == 0):
 			print "switching scene..."
