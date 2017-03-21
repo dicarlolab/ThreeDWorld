@@ -98,9 +98,9 @@ MonoBehaviour:
   ceilingMaterial: {fileID: 2100000, guid: 87294f02d9437b8479f6d772f8b00a8d, type: 2}
   wallTrimMaterial: {fileID: 2100000, guid: baf8ceb37ffecbd42a924d001e01127c, type: 2}
   windowMaterial: {fileID: 2100000, guid: e7a9aa901c4190f4ba2c8d9803d4df8f, type: 2}
-  skyboxMaterial: {fileID: 0}
+  skyboxMaterial: {fileID: 2100000, guid: 75ab8d55773004d0c847a631d433bd69, type: 2}
   windowTrimMaterial: {fileID: 2100000, guid: 037c10e8a9c9c5e47a726216732d17d8, type: 2}
-  physicsMaterial: {fileID: 13400000, guid: 1af4c5ae9e51846a7afeafc7b2937ef3, type: 2}
+  physicsMaterial: {fileID: 13400000, guid: d678c4a4f7d9c44c1b03019d765cfae0, type: 2}
   showProcGenDebug: 0
   list_rands: []
   _allHeightPlanes: []
