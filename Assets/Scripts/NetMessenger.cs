@@ -607,8 +607,8 @@ public class NetMessenger : MonoBehaviour
             	_objInfo.Add(o.transform.rotation.ToJson());
             	_objInfo.Add(o.isStatic);
 				_objInfo.Add (o.round_num);
-				_objInfo.Add(o.center.ToJson());
 				_objInfo.Add(o.extents.ToJson());
+				_objInfo.Add(o.center.ToJson());
                 jsonData["observed_objects"].Add(_objInfo);
 
             }
