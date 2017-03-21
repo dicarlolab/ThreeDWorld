@@ -843,7 +843,7 @@ class agent:
 	def make_new_batch(self, bn, sock, path, create_hdf5, use_tdw_msg, task_params):
 		self.bn, self.sock, self.path, self.create_hdf5, self.use_tdw_msg = bn, sock, path, create_hdf5, use_tdw_msg
 		self.in_batch_counter = 0
-		self.temp_im_path = os.path.join(self.path, 'wall_test')
+		self.temp_im_path = os.path.join(self.path, 'test_test_test')
 		if not os.path.exists(self.temp_im_path):
 			os.mkdir(self.temp_im_path)
 		self.wait(10)
