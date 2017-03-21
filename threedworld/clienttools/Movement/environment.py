@@ -1,14 +1,23 @@
 import numpy as np
 import copy
 import pymongo
+from bson.objectid import ObjectId
 
 
 default_inquery     = {'type': 'shapenetremat', 'has_texture': True, 'complexity': {'$exists': True}, 'center_pos': {'$exists': True}, 'boundb_pos': {'$exists': True}, 'isLight': {'$exists': True}, 'anchor_type': {'$exists': True}, 'aws_address': {'$exists': True}}
 
 
+default_keys = ['boundb_pos', 'isLight', 'anchor_type', 'aws_address', 'complexity', 'center_pos']
+
+
+
+
+
+
+
 def query_results_to_unity_data(query_results, scale, mass, var = .01, seed = 0):
 	item_list = []
-	for i in range(10):
+	for i in range(len(query_results)):
 		print i
 		res = query_results[i]
 		item = {}
@@ -25,24 +34,18 @@ def query_results_to_unity_data(query_results, scale, mass, var = .01, seed = 0)
 		item_list.append(item)
 	return item_list
 
+synset_for_table = [[u'n04379243']]
+rollie_synsets = [[u'n03991062'], [u'n02880940'], [u'n02946921'], [u'n02876657'], [u'n03593526']]
+shapenet_inquery = {'type': 'shapenetremat', 'has_texture': True, 'version': 0, 'complexity': {'$exists': True}, 'center_pos': {'$exists': True}, 'boundb_pos': {'$exists': True}, 'isLight': {'$exists': True}, 'anchor_type': {'$exists': True}, 'aws_address': {'$exists': True}}
+dosch_inquery = {'type': 'dosch', 'has_texture': True, 'version': 1, 'complexity': {'$exists': True}, 'center_pos': {'$exists': True}, 'boundb_pos': {'$exists': True}, 'isLight': {'$exists': True}, 'anchor_type': {'$exists': True}, 'aws_address': {'$exists': True}}
+other_vaguely_stackable_synsets = [[u'n03207941'], [u'n04004475'], [u'n02958343'], [u'n03001627'], [u'n04256520'], [u'n04330267'], [u'n03593526'], [u'n03761084'], [u'n02933112'], [u'n03001627'], [u'n04468005'], [u'n03691459'], [u'n02946921'], [u'n03337140'], [u'n02924116'], [u'n02801938'], [u'n02828884'], [u'n03001627'], [u'n04554684'], [u'n02808440'], [u'n04460130'], [u'n02843684'], [u'n03928116']]
+
+
+
 class environment:
-        synset_for_table = [[u'n04379243']]
-        # synset_for_table = [[u'n03207941'], [u'n04004475'], [u'n02958343'], [u'n03001627'], [u'n04256520'], [u'n04330267'], [u'n03593526'], [u'n03761084'], [u'n02933112'], [u'n03001627'], [u'n04468005'], [u'n03691459'], [u'n02946921'], [u'n03337140'], [u'n02924116'], [u'n02801938'], [u'n02828884'], [u'n03001627'], [u'n04554684'], [u'n02808440'], [u'n04460130'], [u'n02843684'], [u'n03928116']]
-        # synset_for_table = []
-        rollie_synsets = [[u'n03991062'], [u'n02880940'], [u'n02946921'], [u'n02876657'], [u'n03593526']]
-
-	# ShapeNet dictionary inquery
-	shapenet_inquery = {'type': 'shapenetremat', 'has_texture': True, 'version': 0, 'complexity': {'$exists': True}, 'center_pos': {'$exists': True}, 'boundb_pos': {'$exists': True}, 'isLight': {'$exists': True}, 'anchor_type': {'$exists': True}, 'aws_address': {'$exists': True}}
-
-	# Dosch dictionary inquery
-	dosch_inquery = {'type': 'dosch', 'has_texture': True, 'version': 1, 'complexity': {'$exists': True}, 'center_pos': {'$exists': True}, 'boundb_pos': {'$exists': True}, 'isLight': {'$exists': True}, 'anchor_type': {'$exists': True}, 'aws_address': {'$exists': True}}
-
-        # Tables
-        # q_tables = {'type': 'shapenetremat', 'version': 0, 'complexity': {'$exists': True}, 'center_pos': {'$exists': True}, 'boundb_pos': {'$exists': True}, 'isLight': {'$exists': True}, 'anchor_type': {'$exists': True}, 'aws_address': {'$exists': True}, 'synset' : synset_for_table}
-        q_tables = {'type': 'shapenetremat', 'version': 0, 'complexity': {'$exists': True}, 'center_pos': {'$exists': True}, 'boundb_pos': {'$exists': True}, 'isLight': {'$exists': True}, 'anchor_type': {'$exists': True}, 'aws_address': {'$exists': True}, 'synset' : {'$in' : synset_for_table}}
-
 	conn = pymongo.MongoClient(port=22334)
 	coll = conn['synthetic_generative']['3d_models']
+	CACHE = {}
 
 
 	RANDOM_SEED = 57
@@ -58,21 +61,35 @@ class environment:
 
 	def __init__(self, seed=0):
 		self.rng_config = np.random.RandomState(seed)
-		rolly_query = copy.deepcopy(self.shapenet_inquery)
-		rolly_query['synset'] = {'$in' : self.rollie_synsets}
-		table_query = copy.deepcopy(self.shapenet_inquery)
-		table_query['synset'] = {'$in' : self.synset_for_table}
-		print('querying')
-		table_res = self.coll.find(table_query)
-		shapenet_res = self.coll.find(self.shapenet_inquery)
-		dosch_res = self.coll.find(self.dosch_inquery)
-		print('going through queries')
-		self.table_bottom_item_list = query_results_to_unity_data(table_res, 2., 50., var = .01, seed = 0)
-		self.regular_stuff = query_results_to_unity_data(shapenet_res, .5, 1., var = .01, seed = 0) 
-		# + query_results_to_unity_data(dosch_res, .5, 1., var = .01, seed = 0)
 		self.next_config(init=True)
-		print('yeah')
 
+
+	def get_items(self, q, num_items, scale, mass, var = .01, seed = 0):
+		for _k in default_keys:
+			if _k not in q:
+				q[_k] = {'$exists': True}
+		print 'first query'
+		if not str(q) in self.CACHE:
+			idvals = np.array([str(_x['_id']) for _x in list(self.coll.find(q, projection=['_id']))])
+			self.CACHE[str(q)] = idvals
+			print('new', q, len(idvals))
+			idvals = self.CACHE[str(q)]
+		num_ava = len(idvals)
+		#might want to just initialize this once
+		rng = np.random.RandomState(seed=self.RANDOM_SEED)
+		goodidinds = rng.permutation(num_ava)[: num_items] 
+		goodidvals = idvals[goodidinds]
+		goodidvals = map(ObjectId, goodidvals)
+		keys = copy.deepcopy(default_keys)
+		for _k in q:
+			if _k not in keys:
+				keys.append(_k)
+		print 'second query'
+		query_res = list(self.coll.find({'_id': {'$in': goodidvals}}, projection=keys))
+		print 'making items'
+		return query_results_to_unity_data(query_res, scale, mass, var = var, seed = seed)
+
+				
 
 	# update config for next scene switch
 	def next_config(self, init=False):
@@ -89,18 +106,15 @@ class environment:
 				self.NUM_LIGHTS = 8
 			else:
 				self.NUM_LIGHTS = 4
-				
 		# The environment config to be used
 
-		items_dict = {
-"shape_cons": {"find_argu": self.shapenet_inquery, "choose_mode": "random", "choose_argu": {"number": self.NUM_SHAPENET, "seed": self.RANDOM_SEED}}, 
-"dosch":  {"find_argu": self.dosch_inquery, "choose_mode": "random", "choose_argu": {"number": self.NUM_DOSCH, "seed": self.RANDOM_SEED}}, 
-		}
 
-		for item in self.rollie_synsets:
-			item_query = copy.deepcopy(self.shapenet_inquery)
-			item_query['synset'] = item
-			items_dict[str(item[0])] = {"find_argu": item_query, "choose_mode": "random", "choose_argu": {"number": self.NUM_STACKABLE, "seed": self.RANDOM_SEED}}
+		# rolly_query = copy.deepcopy(self.shapenet_inquery)
+		# rolly_query['synset'] = {'$in' : self.rollie_synsets}
+		table_query = copy.deepcopy(shapenet_inquery)
+		table_query['synset'] = {'$in' : synset_for_table}
+		regular_items = self.get_items(shapenet_inquery, 30, .5, 1., var = .01)
+		table_items = self.get_items(table_query, 20, 2., 50., var = .01)
 
 
 		self.config = {
@@ -108,8 +122,6 @@ class environment:
 			"random_seed": self.RANDOM_SEED, #Omit and it will just choose one at random. Chosen seeds are output into the log(under warning or log level).
 			"should_use_standardized_size": False,
 			"standardized_size": [1.0, 1.0, 1.0],
-			"disabled_items": [], #["SQUIRL", "SNAIL", "STEGOSRS"], // A list of item names to not use, e.g. ["lamp", "bed"] would exclude files with the word "lamp" or "bed" in their file path
-			"permitted_items": [""] , #[],["bed1", "sofa_blue", "lamp"]
 			# "scale_relat_dict": table_scale_deal,  # option: "Absol_size", "Fract_room", "Multi_size"; TODO: implement "Fract_room"
 			"complexity": self.COMPLEXITY,
 			"random_materials": True,
@@ -134,16 +146,8 @@ class environment:
 			"min_hallway_width": 5.0,
 			"number_rooms": 1,
 			"max_wall_twists": 3,
-			#"enable_global_unit_scale": 1,
-			# "global_scale_dict": {"option": "Multi_size", "scale": 1, "var": 0.7, "seed": 0},
 			"max_placement_attempts": 300,   #Maximum number of failed placements before we consider a room fully filled.
 			"grid_size": 0.4,    #Determines how fine tuned a grid the objects are placed on during Proc. Gen. Smaller the number, the
 			"use_mongodb_inter": 1, 
-			'rounds' : [{'items' : self.regular_stuff, 'num_items' : 20}, {'items' : self.table_bottom_item_list, 'num_items' : 10}]
-
-# 			{
-# "shape_cons": {"find_argu": self.shapenet_inquery, "choose_mode": "random", "choose_argu": {"number": self.NUM_SHAPENET, "seed": self.RANDOM_SEED}}, 
-# "dosch":  {"find_argu": self.dosch_inquery, "choose_mode": "random", "choose_argu": {"number": self.NUM_DOSCH, "seed": self.RANDOM_SEED}}, 
-# "tables": {"find_argu": self.q_tables, "choose_mode": "random", "choose_argu": {"number": self.NUM_STACKABLE, "seed": self.RANDOM_SEED}}}
-# 		}
+			'rounds' : [{'items' : regular_items, 'num_items' : 20}, {'items' : table_items, 'num_items' : 10}]
 }
