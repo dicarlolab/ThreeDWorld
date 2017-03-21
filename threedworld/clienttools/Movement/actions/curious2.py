@@ -474,6 +474,8 @@ class agent:
 		under_pos = under_object[2]
 		under_extents = under_object[6]
 		under_center = under_object[7]
+		print('table deets')
+		print(under_object)
 		if height_above is None:
 			height_above = self.init_y_pos
 		if noisy_drop_std_dev is not None:

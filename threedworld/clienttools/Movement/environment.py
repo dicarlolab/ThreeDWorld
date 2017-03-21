@@ -20,7 +20,7 @@ def query_results_to_unity_data(query_results, scale, mass, var = .01, seed = 0)
 		item['anchor_type'] = res['anchor_type']
 		item['aws_address'] = res['aws_address']
 		item['mass'] = mass
-		item['scale'] = {"option": "Absol_size", "scale": scale, "var": var, "seed": seed}
+		item['scale'] = {"option": "Absol_size", "scale": scale, "var": var, "seed": seed, 'apply_to_inst' : True}
 		item['_id_str'] = str(res['_id'])
 		item_list.append(item)
 	return item_list
@@ -135,11 +135,11 @@ class environment:
 			"number_rooms": 1,
 			"max_wall_twists": 3,
 			#"enable_global_unit_scale": 1,
-			"global_scale_dict": {"option": "Multi_size", "scale": 1, "var": 0.7, "seed": 0},
+			# "global_scale_dict": {"option": "Multi_size", "scale": 1, "var": 0.7, "seed": 0},
 			"max_placement_attempts": 300,   #Maximum number of failed placements before we consider a room fully filled.
 			"grid_size": 0.4,    #Determines how fine tuned a grid the objects are placed on during Proc. Gen. Smaller the number, the
 			"use_mongodb_inter": 1, 
-			'rounds' : [{'items' : self.table_bottom_item_list, 'num_items' : 10}, {'items' : self.regular_stuff, 'num_items' : 20}]
+			'rounds' : [{'items' : self.regular_stuff, 'num_items' : 20}, {'items' : self.table_bottom_item_list, 'num_items' : 10}]
 
 # 			{
 # "shape_cons": {"find_argu": self.shapenet_inquery, "choose_mode": "random", "choose_argu": {"number": self.NUM_SHAPENET, "seed": self.RANDOM_SEED}}, 
