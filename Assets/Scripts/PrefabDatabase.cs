@@ -19,7 +19,6 @@ public class PrefabDatabase : MonoBehaviour
 		public string fileName;
 		public int complexity = -1;
 		public bool isLight = false;
-		public bool isStackable = false;
 		public GeneratablePrefab.AttachAnchor anchorType = GeneratablePrefab.AttachAnchor.Ground;
 		public Bounds bounds;
 		public List<GeneratablePrefab.StackableInfo> stackableAreas = new List<GeneratablePrefab.StackableInfo> ();
@@ -34,6 +33,9 @@ public class PrefabDatabase : MonoBehaviour
         public int rand_index       = 0;
         public bool apply_to_inst   = false;
         public float first_rand     = 0f;
+
+
+        public float mass = 1.0f;
 
         public int loaded = 1; // 1 means already loaded, otherwise would load it again (just for remote assetbundles)
         public string aws_version = "0";

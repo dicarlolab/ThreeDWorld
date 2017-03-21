@@ -18,7 +18,6 @@ public class ProceduralGeneration : MonoBehaviour
     public class PrefabInfo
     {
         public string fileName;
-        public int complexity;
         public bool isLight;
         public GeneratablePrefab.AttachAnchor anchorType;
         public Bounds bounds;
@@ -53,7 +52,6 @@ public class ProceduralGeneration : MonoBehaviour
 
 #region Fields
     // The number of physics collisions to create
-    public int complexityLevelToCreate = 100;
     public int numCeilingLights = 10;
     public float intensityCeilingLights = 1.0f;
 	public bool useStandardShader = false;
@@ -70,7 +68,6 @@ public class ProceduralGeneration : MonoBehaviour
     public List<string> disabledItems = new List<string>();
     public List<string> permittedItems = new List<string>();
     public float gridDim = 0.4f;
-    public int use_mongodb_inter = 0; // 0 is for not, 1 is for using
     public int use_cache_self   = 0; // 0 is for not (using Loadfromcacheordownload, 1 is for using)
     public int disable_rand_stacking = 1; //0 is for not disabling
     public int enable_global_unit_scale = 0; //1 is for enabling
@@ -111,10 +108,8 @@ public class ProceduralGeneration : MonoBehaviour
     public List<Random_help> list_rands    = new List<Random_help>();
 
     private int _curRandSeed = 0;
-    private int _curComplexity = 0;
     private int _curRoomWidth = 0;
     private int _curRoomLength = 0;
-    private bool _forceStackObject = false;
     private float _curRoomHeight = 0f;
     private Vector3 _roomCornerPos = Vector3.zero;
     private Transform _curRoom = null;
@@ -171,7 +166,6 @@ public class ProceduralGeneration : MonoBehaviour
             standardizedSize = json["standardized_size"].ReadVector3(standardizedSize);
             json["disabled_items"].ReadList(ref disabledItems);
             json["permitted_items"].ReadList(ref permittedItems);
-            complexityLevelToCreate = json["complexity"].ReadInt(complexityLevelToCreate);
             randomMaterials = json["random_materials"].ReadBool(false);
             numCeilingLights = json["num_ceiling_lights"].ReadInt(numCeilingLights);
             useStandardShader = json["use_standard_shader"].ReadBool(false);
@@ -195,7 +189,6 @@ public class ProceduralGeneration : MonoBehaviour
             MAX_NUM_TWISTS = json["max_wall_twists"].ReadInt(MAX_NUM_TWISTS);
             maxPlacementAttempts = json["max_placement_attempts"].ReadInt(maxPlacementAttempts);
             gridDim = json["grid_size"].ReadFloat(gridDim);
-            use_mongodb_inter   = json["use_mongodb_inter"].ReadInt(use_mongodb_inter);
             use_cache_self      = json["use_cache_self"].ReadInt(use_cache_self);
             cache_folder        = json["cache_folder"].ReadString(cache_folder);
             disable_rand_stacking   = json["disable_rand_stacking"].ReadInt(disable_rand_stacking);
@@ -212,74 +205,7 @@ public class ProceduralGeneration : MonoBehaviour
         list_rands.Clear();
         list_rands.Add(new Random_help(scene_scale_seed));
 
-        Debug.Log("Get mongodb inter:" + use_mongodb_inter);
-        if (use_mongodb_inter==1){
-            LitJson.JsonData config_for_prefabs = SimulationManager.sendMongoDBsearch(json["mongodb_items"]);
-            //Debug.Log("Config for prefabs:" + config_for_prefabs.ToJSON());
-            int count_prefabs   = config_for_prefabs.Count;
-            Debug.Log("Config for prefabs:" + count_prefabs);
-            //Debug.Log("Config for prefabs:" + config_for_prefabs.);
-            //foreach (LitJson.JsonData elem in config_for_prefabs as IList){
-
-			//List of valid stackable synsets
-			List<string> stackableSynsets = new List<string>(new string[] {"n04379243"});
-
-            for (int indx_now=0; indx_now<count_prefabs; indx_now++){
-                //Debug.Log("Current item: " + elem.ToJSON());
-                //u'version': 2, u'anchor_type': u'Ground', u'synset': [u'n02924116'], u'has_texture': True, u'boundb_pos': [0.1, 0.1, 0.5], u'center_pos': [0.0, 0.0, 0.0], u'upright': [0.0, 0.0, 1.0], u'aws_address': u'http://threedworld.s3.amazonaws.com/1004ae81238886674d44f5db04bf14b8.bundle', u'complexity': 5, u'isLight': u'False', u'source': u'3dw', u'shapenet_synset': u'n02924116', u'front': [-1.0, 0.0, 0.0], u'_id': ObjectId('57b31b77f8b11f6bc2b97af9'), u'type': u'shapenet', u'id': u'1004ae81238886674d44f5db04bf14b8', u'name': u'Tour bus concept purple'
-                LitJson.JsonData current_item    = config_for_prefabs[indx_now.ToString()];
-
-                PrefabDatabase.PrefabInfo newInfo = new PrefabDatabase.PrefabInfo();
-                newInfo.fileName = current_item["aws_address"].ReadString(newInfo.fileName);
-                //newInfo.fileName = newInfo.fileName.Replace("\"", "");
-                newInfo.complexity = current_item["complexity"].ReadInt(-1);
-                newInfo.bounds.center   = current_item["center_pos"].ReadVector3(new Vector3(0f, 0f, 0f));
-                newInfo.bounds.extents  = current_item["boundb_pos"].ReadVector3(new Vector3(0f, 0f, 0f));
-
-                newInfo._id_str         = current_item["_id_str"].ReadString(newInfo._id_str);
-                newInfo.aws_version     = current_item["aws_version"].ReadString(newInfo.aws_version);
-
-
-				newInfo.isStackable = false;
-				if(current_item["synset"] != null)
-				{
-					newInfo.isStackable = true;
-//					LitJson.JsonData synsetList = current_item["synset"];
-//					for(int j=0; j < synsetList.Count; j++) 
-//					{
-//						string synset = synsetList[j].ToString();
-//						for(int i=0; i < stackableSynsets.Count; i++)
-//                		{
-//                			if(synset == stackableSynsets[i])
-//                			{
-//                				newInfo.isStackable = true;
-//                				break;
-//                			}
-//                		}
-//                	}
-				}
-
-
-                //newInfo.loaded          = 0;
-                //Debug.Log("New info:" + newInfo.bounds + newInfo.complexity + newInfo.fileName);
-                //Debug.Log("To cache into: " + newInfo._id_str + "_" + newInfo.aws_version + ".bundle");
-                //Debug.Log(newInfo.fileName[0]);
-                //Debug.Log(newInfo);
-                availablePrefabs.Add(newInfo);
-
-                //newInfo.bounds = prefab.myBounds;
-                //newInfo.isLight = prefab.isLight;
-                //newInfo.anchorType = prefab.attachMethod;
-            }
-            Debug.Log(availablePrefabs.Count);
-            /*
-            foreach(string itemName in config_for_prefabs){
-                Debug.Log("Item " + itemName + ":" + config_for_prefabs[itemName].ToJSON());
-            }
-            */
-        }
-
-        _curRandSeed = UnityEngine.Random.Range (int.MinValue, int.MaxValue);
+		_curRandSeed = UnityEngine.Random.Range (int.MinValue, int.MaxValue);
         if (shouldUseGivenSeed) {
             _rand = new System.Random (desiredRndSeed);
             _curRandSeed = desiredRndSeed;
@@ -287,99 +213,8 @@ public class ProceduralGeneration : MonoBehaviour
             _rand = new System.Random (_curRandSeed);
         }
 
-        Debug.Log("Using random seed: " + _curRandSeed);
-
-        //var database_bundle = AssetBundle.LoadFromFile("Assets/ScenePrefabs/PrefabDatabase.prefab");
-        //PrefabDatabase database =  Resources.Load("Assets/ScenePrefabs/PrefabDatabase.prefab") as PrefabDatabase;
-        //PrefabDatabase database =  AssetDatabase.LoadAssetAtPath<PrefabDatabase> 
-        //        ("Assets/ScenePrefabs/PrefabDatabase.prefab");
-
-        /*
-        var database_list = database_bundle.LoadAllAssets<PrefabDatabase>();
-        Debug.Log("Test output: " + database_list);
-        var database = database_list[0];
-        if (database==null)
-        {
-            Debug.Log("Null database!" + database_list);
-        }
-        */
-        if (use_mongodb_inter==0) {
-            PrefabDatabase database = GameObject.FindObjectOfType<PrefabDatabase>();
-            availablePrefabs = database.prefabs;
-        }
-
-        Debug.Log (availablePrefabs.Count);
-
-        List<PrefabDatabase.PrefabInfo> filteredPrefabs = availablePrefabs.FindAll(((PrefabDatabase.PrefabInfo info)=>{
-            // Remove items that have been disallowed
-            foreach(string itemName in disabledItems)
-            {
-                if (info.fileName.ToLowerInvariant().Contains(itemName.ToLowerInvariant()))
-                    return false;
-            }
-
-            // If we have a list, only use items that are allowed in the list
-            if (permittedItems.Count > 0)
-            {
-                foreach(string itemName in permittedItems)
-                {
-                    if (info.fileName.ToLowerInvariant().Contains(itemName.ToLowerInvariant()))
-                    {
-                        // Get the option and scale from json message
-
-                        try {
-                            //info.option_scale   = json["scale_relat_dict"][itemName]["option"].ReadString(info.option_scale);
-                            //info.dynamic_scale  = json["scale_relat_dict"][itemName]["scale"].ReadFloat(info.dynamic_scale);
-                            //info.scale_var      = json["scale_relat_dict"][itemName][""]
-                            info.set_scale(json["scale_relat_dict"][itemName]);
-                            gen_rand_forinfo(ref info);
-                            return true;
-                        } catch {
-                        }
-
-                        // Get the option and scale via the Filename (recommend for http files)
-                        try {
-                            //info.option_scale   = json["scale_relat_dict"][info.fileName]["option"].ReadString(info.option_scale);
-                            //info.dynamic_scale  = json["scale_relat_dict"][info.fileName]["scale"].ReadFloat(info.dynamic_scale);
-                            info.set_scale(json["scale_relat_dict"][info.fileName]);
-                            gen_rand_forinfo(ref info);
-                            return true;
-                        } catch {
-                        }
-
-                        return true;
-                    }
-                }
-                return false;
-            }
-
-            // Get the option and scale via the Filename (recommend for http files)
-
-            try {
-                //info.option_scale   = json["scale_relat_dict"][info.fileName]["option"].ReadString(info.option_scale);
-                //info.dynamic_scale  = json["scale_relat_dict"][info.fileName]["scale"].ReadFloat(info.dynamic_scale);
-                info.set_scale(json["scale_relat_dict"][info.fileName]);
-                gen_rand_forinfo(ref info);
-            } catch {
-            }
-
-            return true;
-        }));
-        // TODO: We're not filtering the ceiling lights, since we currently only have 1 prefab that works
-        //ceilingLightPrefabs = availablePrefabs.FindAll(((PrefabDatabase.PrefabInfo info)=>{return info.anchorType == GeneratablePrefab.AttachAnchor.Ceiling && info.isLight;}));
-
-        groundPrefabs = filteredPrefabs.FindAll(((PrefabDatabase.PrefabInfo info)=>{return info.anchorType == GeneratablePrefab.AttachAnchor.Ground;}));
-		stackablePrefabs = groundPrefabs.FindAll(((PrefabDatabase.PrefabInfo info)=>{return info.isStackable == true;}));
-
-        // TODO: Remove stackingPrefabs as it is deprecated
-        stackingPrefabs = groundPrefabs.FindAll(((PrefabDatabase.PrefabInfo info)=>{return info.stackableAreas.Count > 0;}));
-
-        List<PrefabDatabase.PrefabInfo> itemsForStacking = groundPrefabs.FindAll(((PrefabDatabase.PrefabInfo info)=>{return true;}));
-
         // Create grid to populate objects
-        _curComplexity = 0;
         _failures = 0;
-        _forceStackObject = false;
 
         // Create rooms
         roomDim.x = Mathf.Round(roomDim.x / gridDim) * gridDim;
@@ -393,70 +228,45 @@ public class ProceduralGeneration : MonoBehaviour
 		CreateLightingSetup(roomDim, new Vector3((roomDim.x-1) * 0.5f,0,(roomDim.z-1) * 0.5f));
 		Debug.Log("...created!");
 
-        _failures = 0;
-        // Keep creating objects until we are supposed to stop
-        // TODO: Create a separate plane to map ceiling placement
-        // TODO: Replace ceilingLightPrefabs with Lighting setup
-        /*for(int i = 0; (i - _failures) < numCeilingLights && _failures < maxPlacementAttempts; ++i)
-            AddObjects(ceilingLightPrefabs);
-        _failures = 0;*/
+		availablePrefabs = new List<PrefabDatabase.PrefabInfo>();
+		LitJson.JsonData prefabRounds = json["rounds"];
+		if (prefabRounds != null) {
+			for(int r = 0; r < prefabRounds.Count; r++)
+			{
+				int num_items = prefabRounds[r]["num_items"].ReadInt(0);
+				LitJson.JsonData items = prefabRounds[r]["items"];
+				if(items != null) {
+					for(int i = 0; i < items.Count; i++)
+					{
+						PrefabDatabase.PrefabInfo newInfo = new PrefabDatabase.PrefabInfo();
+						newInfo.fileName = items[i]["aws_address"].ReadString(newInfo.fileName);
 
-        if (showProcGenDebug && minStackingBases > 0)
-            Debug.LogFormat("Stacking {0} objects bases: {1} types", minStackingBases, stackingPrefabs.Count);
-        // Place stacking bases first so we can have more opportunities to stack on top
-        for(int i = 0; (i - _failures) < minStackingBases && stackingPrefabs.Count > 0; ++i)
-            AddObjects(stackingPrefabs);
-        _failures = 0;
+						newInfo.bounds.center = items[i]["center_pos"].ReadVector3(new Vector3(0f, 0f, 0f));
+						newInfo.bounds.extents = items[i]["boundb_pos"].ReadVector3(new Vector3(0f, 0f, 0f));
 
-		if(showProcGenDebug && minStackingBases > 0)
-			Debug.LogFormat("Placing {0} stackable objects using {1} types", minStackingBases, stackablePrefabs.Count);
-		_forceStackObject = false;
-		for(int i = 0; (i - _failures) < minStackingBases && stackablePrefabs.Count > 0; ++i)
-		{
-			if(showProcGenDebug)
-				Debug.LogFormat("Placing object {0}", i);
-			AddObjects(stackablePrefabs);
-		}
-		_failures = 0;
+						newInfo._id_str  = items[i]["_id_str"].ReadString(newInfo._id_str);
+						newInfo.aws_version = items[i]["aws_version"].ReadString(newInfo.aws_version);
 
-        if (showProcGenDebug && forceStackedItems > 0)
-            Debug.LogFormat("Stacking {0} objects: {1} types", forceStackedItems, itemsForStacking.Count);
-        // Place stacking bases first so we can have more opportunities to stack on top
-        _forceStackObject = true;
+						newInfo.mass = items[i]["mass"].ReadFloat(1.0f);
+						newInfo.set_scale(items[i]["scale"]);
+						gen_rand_forinfo(ref newInfo);
 
-        Debug.Log("Now plane number:" + _allHeightPlanes.Count);
+						availablePrefabs.Add(newInfo);
+					}
+				}
+				groundPrefabs = availablePrefabs.FindAll(((PrefabDatabase.PrefabInfo info)=>
+				        {return info.anchorType == GeneratablePrefab.AttachAnchor.Ground;}));
 
-        for(int i = 0; (i - _failures) < forceStackedItems && itemsForStacking.Count > 0; ++i)
-            AddObjects(itemsForStacking);
-        _failures = 0;
-        _forceStackObject = false;
-
-        if (showProcGenDebug)
-            Debug.Log("Rest of objects");
-		while (!IsDone ())
-			if (!AddObjects (groundPrefabs)) {
-				break;
+				for(int i = 0; i < num_items; i++)
+				{
+					if (!AddObjects (groundPrefabs)) {
+						Debug.LogWarning(String.Format("Not enough objects spawned. {0} out of {1}", i, num_items));
+						break;
+					}
+				}
 			}
-
-        for(int i = 0; i < _allHeightPlanes.Count; ++i)
-            DrawTestGrid(_allHeightPlanes[i]);
-        Debug.Log("Final complexity: " + _curComplexity);
+		}
     }
-
-	//TODO: why is this called try place ground if you can specify the anchor type?
-
-	/// <summary>
-	/// Tries to place object on the ground.
-	/// </summary>
-	/// <returns><c>true</c>, if location to spawn object is found, <c>false</c> otherwise.</returns>
-	/// <param name="bounds">Bounds.</param>
-	/// <param name="anchorType">Anchor type, can be Ground, Ceiling, or Wall.</param>
-	/// <param name="finalX">x coord where object should spawn.</param>
-	/// <param name="finalY">y coord where object should spawn.</param>
-	/// <param name="modScale">Modified scale.</param>
-	/// <seealso cref="PrefabDatabase.GetSceneScale">modScale is retrieved via this method.</seealso>
-	/// <param name="whichPlane">Which height plane the object should spawn on.</param>
-        ///
 
     private bool TryPlaceGroundObject(Bounds bounds, float modScale, GeneratablePrefab.AttachAnchor anchorType, out int finalX, out int finalY, out HeightPlane whichPlane, out float offset_height)
     {
@@ -485,8 +295,6 @@ public class ProceduralGeneration : MonoBehaviour
 
         for(int i = 0; i < _allHeightPlanes.Count; ++i)
             randomPlanesOrder.Insert(randomOrderValue % (randomPlanesOrder.Count + 1), i);
-        if (_forceStackObject)
-            randomPlanesOrder.Remove(0);
 
         bool foundValid = false;
         foreach(int planeNum in randomPlanesOrder)
@@ -735,7 +543,6 @@ public class ProceduralGeneration : MonoBehaviour
                 prefab.ProcessPrefab();
             PrefabDatabase.PrefabInfo newInfo = new PrefabDatabase.PrefabInfo();
             newInfo.fileName = newFileName;
-            newInfo.complexity = prefab.myComplexity;
             newInfo.bounds = prefab.myBounds;
             newInfo.isLight = prefab.isLight;
             newInfo.anchorType = prefab.attachMethod;
@@ -778,7 +585,6 @@ public class ProceduralGeneration : MonoBehaviour
     {
         if (prefabList.Count == 0)
         {
-            _failures++;
             return false;
         }
 
@@ -786,68 +592,14 @@ public class ProceduralGeneration : MonoBehaviour
         int temp_rand_index     = _rand.Next(0, prefabList.Count);
         PrefabDatabase.PrefabInfo info = prefabList[temp_rand_index];
 
-        // Deprecated
-        if (info.loaded==0) {
-            // Load it now
-            Debug.Log("From http loaded!");
-            Debug.Log(info.fileName);
-            var www = WWW.LoadFromCacheOrDownload (info.fileName, 0);
-            var loadedAssetBundle = www.assetBundle;
-            string[] assetList = loadedAssetBundle.GetAllAssetNames ();
-
-            foreach (string asset in assetList) { 
-
-                GameObject gObj = loadedAssetBundle.LoadAsset<GameObject> (asset);
-                GeneratablePrefab[] prefab = gObj.GetComponents<GeneratablePrefab> ();
-                if (prefab.GetLength (0) == 0) {
-                    Debug.LogFormat ("Cannot load GeneratablePrefab component on {0}", gObj);
-                    continue;
-                }
-                GeneratablePrefab prefab_temp   = prefab [0];
-                info.loaded     = 1;
-                info.complexity = prefab_temp.myComplexity;
-                info.bounds     = prefab_temp.myBounds;
-                info.isLight    = prefab_temp.isLight;
-                info.anchorType = prefab_temp.attachMethod;
-                foreach (GeneratablePrefab.StackableInfo stackRegion in prefab_temp.stackableAreas)
-                    info.stackableAreas.Add (stackRegion);
-                prefabList[temp_rand_index]     = info;
-
-            }
-            loadedAssetBundle.Unload (false);
-        }
-
-        // Check for excess complexity
-        int maxComplexity = (complexityLevelToCreate - _curComplexity);
-        if (info.complexity > maxComplexity)
-        {
-            // Change for lazy loading
-            /*
-            prefabList.RemoveAll((PrefabDatabase.PrefabInfo testInfo)=>{
-				return (testInfo.complexity > maxComplexity) | (testInfo.complexity == 0);
-            });
-            if (showProcGenDebug)
-                Debug.LogFormat("Filtering for complexity {0} > {1} leaving {2} objects ", info.complexity, maxComplexity, prefabList.Count);
-            if (prefabList.Count == 0)
-                return false;
-            */
-
-            prefabList.Remove(info);
-            return true;
-            //info = prefabList[_rand.Next(0, prefabList.Count)];
-        }
-
-        // Find a spot to place this object
-        int spawnX, spawnZ;
         //float modScale = prefabDatabase.GetSceneScale (info);
         float modScale = 1.0f;
         float offset_y = 0.1f;
 
         // For global setting
         if (enable_global_unit_scale==1){
-            float longest_axis      = info.bounds.size.magnitude;
-            //Debug.Log("Longest axis: " + longest_axis.ToString());
-            modScale                = 1/longest_axis;
+            float longest_axis = info.bounds.size.magnitude;
+            modScale = 1/longest_axis;
         }
 
         //TODO Verify that we want to scale by the longest_axis here first (DOSCH very big otherwise)
@@ -880,19 +632,6 @@ public class ProceduralGeneration : MonoBehaviour
                 modScale            = info.first_rand/longest_axis;
         }
 
-		if (info.isStackable) {
-			modScale = (float) 1 / (float) info.bounds.extents.magnitude;
-//			modScale = 1 / Math.Max (info.bounds.extents.x,
-//				Math.Max (info.bounds.extents.y, 
-//					info.bounds.extents.z));
-		} 
-		else {
-			modScale = (float) .25 / (float) info.bounds.extents.magnitude;
-//			modScale = 1 / Math.Max (info.bounds.extents.x,
-//				Math.Max (info.bounds.extents.y, 
-//					info.bounds.extents.z));
-		}
-
         HeightPlane targetHeightPlane;
         Quaternion modifiedRotation = Quaternion.identity;
 
@@ -900,64 +639,46 @@ public class ProceduralGeneration : MonoBehaviour
             modifiedRotation = Quaternion.Euler(new Vector3(0, (float) _rand.NextDouble() * 360f,0));
         Bounds modifiedBounds = info.bounds.Rotate(modifiedRotation);
 
+		// Find a spot to place this object
+        int spawnX, spawnZ;
         if (TryPlaceGroundObject(modifiedBounds, modScale, info.anchorType, out spawnX, out spawnZ, out targetHeightPlane, out offset_y))
         {
             int boundsWidth = Mathf.CeilToInt(modScale* 2f * modifiedBounds.extents.x / gridDim) - 1;
             int boundsLength = Mathf.CeilToInt(modScale* 2f * modifiedBounds.extents.z / gridDim) - 1;
-            //float modHeight = 0.1f+(modifiedBounds.extents.y * modScale);
             float modHeight = offset_y+(modifiedBounds.extents.y * modScale);
             Vector3 centerPos = targetHeightPlane.cornerPos + new Vector3(gridDim * (spawnX + (0.5f * boundsWidth)), modHeight, gridDim * (spawnZ + (0.5f * boundsLength)));
             if (info.anchorType == GeneratablePrefab.AttachAnchor.Ceiling)
                 centerPos.y = _roomCornerPos.y + _curRoomHeight - modHeight;
 
-//            GameObject newPrefab = Resources.Load<GameObject>(info.
             GameObject newPrefab;
             if (info.fileName.ToLowerInvariant().Contains("http://")) {
                 if (use_cache_self==1) {
-                    //Debug.Log("From cache!");
-                    //StartCoroutine(PrefabDatabase.LoadAssetFromBundleWWW_cached_self(info.fileName));
-                    //newPrefab = PrefabDatabase.LoadAssetFromBundleWWW(info.fileName);
-                    //newPrefab = PrefabDatabase.LoadAssetFromBundleWWW_cache_in_file(info.fileName, info._id_str, info.aws_version, cache_folder);
-                    //
-                    //
                     //I need to do this here becuase StartCoroutine can not be correctly used in PrefabDatabase
                     string cache_fileName   = cache_folder + info._id_str + "_" + info.aws_version + ".bundle";
                     newPrefab   = PrefabDatabase.LoadAssetFromBundle(cache_fileName);
                     if (newPrefab==null){
                         // Loading it twice now, might influence the efficiency, TODO: load only once
                         // Currently the WWW can not be wrote when used for assetbundle
-
-                        //Debug.Log("Build the cache!");
                         StartCoroutine(PrefabDatabase.LoadAssetFromBundleWWW_cached_self(info.fileName, cache_fileName));
                         newPrefab = PrefabDatabase.LoadAssetFromBundleWWW(info.fileName);
                     }
                 } else {
-                    //Debug.Log("From http");
                     newPrefab = PrefabDatabase.LoadAssetFromBundleWWW(info.fileName);
                 }
             } else {
                 newPrefab = PrefabDatabase.LoadAssetFromBundle(info.fileName);
             }
-			// TODO: Factor in complexity to the arrangement algorithm?
-            _curComplexity += info.complexity;
 
             GameObject newInstance = UnityEngine.Object.Instantiate<GameObject>(newPrefab.gameObject);
             newInstance.transform.position = centerPos - (modifiedBounds.center * modScale);
             newInstance.transform.localScale = newInstance.transform.localScale * modScale;
             newInstance.transform.rotation = modifiedRotation * newInstance.transform.rotation;
-            //newInstance.name = string.Format("{0} #{1} on {2}", newPrefab.name, (_curRoom != null) ? _curRoom.childCount.ToString() : "?", targetHeightPlane.name);
-            
-            newInstance.name = string.Format("{0}, {1}, {2}", info.fileName, newPrefab.name, (_curRoom != null) ? _curRoom.childCount.ToString() : "?");
+  
+            newInstance.name = string.Format("{0}, {1}, {2}", info.fileName, 
+                    newPrefab.name, (_curRoom != null) ? _curRoom.childCount.ToString() : "?");
 			newInstance.GetComponent<SemanticObject>().isStatic = false;
 			newInstance.GetComponent<SemanticObject>().extents = modifiedBounds.extents;
-			if (info.isStackable) {
-				newInstance.GetComponent<SemanticObject> ().isStackable = true;
-				newInstance.GetComponent<Rigidbody> ().mass = 50;
-			} 
-//			else if (Math.Min(newInstance.transform.lossyScale.x, Math.Min(newInstance.transform.lossyScale.y, newInstance.transform.lossyScale.z)) > 1){
-//				newInstance.transform.localScale *= 1 / Math.Max(newInstance.transform.lossyScale.x,
-//					Math.Max(newInstance.transform.lossyScale.y, newInstance.transform.lossyScale.z));
-//			}
+			newInstance.GetComponent<Rigidbody> ().mass = info.mass;
 
 			// Add physics material
 			Collider[] colliders = newInstance.GetComponentsInChildren<Collider>();
@@ -1016,57 +737,15 @@ public class ProceduralGeneration : MonoBehaviour
 							// Add idval to shader
 							_mat.SetColor("_idval", colorID);
                     }
-            }	
-	
-            // Create test cube
-            if (DEBUG_testCubePrefab != null)
-            {
-                GameObject testCube = UnityEngine.Object.Instantiate<GameObject>(DEBUG_testCubePrefab);
-                testCube.transform.localScale = modScale * 2f * modifiedBounds.extents;
-                testCube.transform.position = centerPos;
-                testCube.name = string.Format("Cube {0}", newInstance.name);
-                testCube.transform.SetParent(_curRoom);
             }
 
-            if (showProcGenDebug)
-                Debug.LogFormat("{0}: @{1} R:{2} G:{3} BC:{4} MS:{5}", info.fileName, newInstance.transform.position, targetHeightPlane.cornerPos, new Vector3(gridDim * spawnX, info.bounds.extents.y, gridDim * spawnZ), info.bounds.center, modScale);
             if (_curRoom != null)
                 newInstance.transform.SetParent(_curRoom);
-
-            // For stackable objects, create a new height plane to stack
-            if (info.anchorType == GeneratablePrefab.AttachAnchor.Ground)
-            {
-                if (disable_rand_stacking==1) {
-                    targetHeightPlane.UpdateGrid(spawnX, spawnZ, boundsWidth, boundsLength);
-                }
-                foreach(GeneratablePrefab.StackableInfo stackInfo in info.stackableAreas)
-                {
-                    int width = Mathf.FloorToInt(stackInfo.dimensions.x / gridDim);
-                    int length = Mathf.FloorToInt(stackInfo.dimensions.z / gridDim);
-                    if (width <= 0 || length <= 0)
-                        continue;
-                    HeightPlane newPlane = new HeightPlane();
-                    newPlane.gridDim = gridDim;
-                    // TODO: Set rotation matrix for new plane?
-                    newPlane.rotMat = modifiedRotation;
-                    newPlane.cornerPos = newInstance.transform.position + (modifiedRotation * (stackInfo.bottomCenter + info.bounds.center));
-                    newPlane.cornerPos = newPlane.GridToWorld(new Vector2((width-1) * -0.5f, (length-1) * -0.5f));
-                    newPlane.planeHeight = stackInfo.dimensions.y;
-                    if (stackInfo.dimensions.y <= 0)
-                        newPlane.planeHeight = _curRoomHeight - newPlane.cornerPos.y;
-                    newPlane.Clear(width, length);
-                    newPlane.name = string.Format("Plane for {0}", newInstance.name);
-                    _allHeightPlanes.Add(newPlane);
-                }
-            }
         }
         else
         {
             // TODO: Mark item as unplaceable and continue with smaller objects?
-            if (showProcGenDebug)
-                Debug.LogFormat("Couldn't place: {0}. {1} object types, {2} complexity left", info.fileName, prefabList.Count, complexityLevelToCreate - _curComplexity);
             prefabList.Remove(info);
-            ++_failures;
         }
 		return true;
     }
@@ -1253,11 +932,5 @@ public class ProceduralGeneration : MonoBehaviour
                 test.transform.localScale = gridDim * Vector3.one;
             }
         }        
-    }
-
-    public bool IsDone()
-    {
-        // TODO: Find a better metric for completion
-        return _curComplexity >= complexityLevelToCreate || _failures > maxPlacementAttempts;
     }
 }
