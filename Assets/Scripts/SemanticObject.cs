@@ -23,6 +23,8 @@ public abstract class SemanticObject : MonoBehaviour
 
 	public Vector3 extents;
 
+	public Vector3 center;
+
     protected List<SemanticObjectComplex> parentObjects;
 
 //    // Keep track of currently active collisions on this object for evaluating various SemanticRelationships

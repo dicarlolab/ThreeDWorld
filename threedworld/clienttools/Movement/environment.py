@@ -36,7 +36,7 @@ class environment:
 	ROOM_LENGTH = 20.0
 	NUM_SHAPENET = 200
 	NUM_DOSCH = 10
-        NUM_STACKABLE = 20
+        NUM_STACKABLE = 10
 
 	rng_config = np.random.RandomState(0)
 

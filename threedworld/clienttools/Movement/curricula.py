@@ -6,20 +6,33 @@ import numpy as np
 #0: 3, 6, 50 - 130
 #1: 3-5, 50 - 130
 #2: 3-5, 50 - 100
-
 simple_push = [
-	('SINGLE_OBJECT', 'PUSHING_0', {'func' : curious2.make_constant_random_action_sequence, 'kwargs' : {'time_len_range' : range(3, 5), 'f_horiz_range' : range(50, 100)}, 'wait' : {'threshold' : .01, 'time_window' : 3, 'max_time' : 20}}),
+	('SINGLE_OBJECT', 
+		'PUSHING_0', 
+		{'func' : curious2.make_constant_random_action_sequence, 
+		'kwargs' : {'time_len_range' : range(3, 5), 'f_horiz_range' : range(50, 100), 'std_dev_ang' : np.pi / 6.}, 
+		'wait' : {'threshold' : .01, 'time_window' : 3, 'max_time' : 20},
+		'cut_if_off_screen' : 4
+		}
+		)
 ]
 
 simple_push_longer = [
 	('SINGLE_OBJECT', 'PUSHING_0', 
 		{'func' : curious2.make_constant_random_action_sequence, 
-		'kwargs' : {'time_len_range' : range(7, 10), 'f_horiz_range' : range(50, 70)}, 
-		'wait' : {'threshold' : .01, 'time_window' : 3, 'max_time' : 20}}),
+		'kwargs' : {'time_len_range' : range(8, 10), 'f_horiz_range' : range(50, 70), 'std_dev_ang' : np.pi / 6.}, 
+		'wait' : {'threshold' : .01, 'time_window' : 3, 'max_time' : 20},
+		'cut_if_off_screen' : 4
+		}),
 ]
 
 simple_push_shorter = [
-	('SINGLE_OBJECT', 'PUSHING_SHORT', {'func' : curious2.make_constant_random_action_sequence, 'kwargs' : {'time_len_range' : range(1, 2), 'f_horiz_range' : range(100, 400)}, 'wait' : {'threshold' : .01, 'time_window' : 3, 'max_time' : 20}}),
+	('SINGLE_OBJECT', 'PUSHING_SHORT', 
+		{'func' : curious2.make_constant_random_action_sequence, 
+		'kwargs' : {'time_len_range' : range(1, 2), 'f_horiz_range' : range(100, 400), 'std_dev_ang' : np.pi / 6.}, 
+		'wait' : {'threshold' : .01, 'time_window' : 3, 'max_time' : 20},
+		'cut_if_off_screen' : 4
+		}),
 ]
 
 
@@ -30,7 +43,10 @@ simple_push_shorter = [
 #maybe some more basic parabolic motion -- another category that's supposed to be more
 
 simple_lift = [
-	('SINGLE_OBJECT', 'LIFTING_0', {'func' : curious2.make_constant_random_action_sequence, 'kwargs' : {'time_len_range' : range(3, 7), 'f_horiz_range' : range(10), 'f_y_range' : range(25, 60)}, 'wait' : {'threshold' : .01, 'time_window' : 3, 'max_time' : 20}})
+	('SINGLE_OBJECT', 'LIFTING_0', 
+		{'func' : curious2.make_constant_random_action_sequence, 
+		'kwargs' : {'time_len_range' : range(3, 7), 'f_horiz_range' : range(10), 'f_y_range' : range(25, 60), 'std_dev_ang' : np.pi / 6.}, 
+		'wait' : {'threshold' : .01, 'time_window' : 3, 'max_time' : 20}})
 ]
 
 #0 range 1-3
@@ -39,13 +55,23 @@ simple_lift = [
 #3 f_horiz 0-60m f_y 130 - 200
 
 lift_short_fast = [
-	('SINGLE_OBJECT', 'LIFTING_1', {'func' : curious2.make_constant_random_action_sequence, 'kwargs' : {'time_len_range' : range(1, 2), 'f_horiz_range' : range(60), 'f_y_range' : range(130, 200)}, 'wait' : {'threshold' : .01, 'time_window' : 3, 'max_time' : 20}})
+	('SINGLE_OBJECT', 'LIFTING_1', 
+		{'func' : curious2.make_constant_random_action_sequence, 
+		'kwargs' : {'time_len_range' : range(1, 2), 'f_horiz_range' : range(60), 'f_y_range' : range(130, 200), 'std_dev_ang' : np.pi / 6.}, 
+		'wait' : {'threshold' : .01, 'time_window' : 3, 'max_time' : 20}})
 ]
 
 #just 0
 
 simple_rot = [
-	('SINGLE_OBJECT', 'ROTATING_0', {'func' : curious2.make_constant_random_action_sequence, 'kwargs' : {'time_len_range' : range(5, 10), 'tor_y_range' : range(50, 150)}, 'wait' : {'threshold' : .01, 'time_window' : 3, 'max_time' : 20}})
+	('SINGLE_OBJECT', 
+		'ROTATING_0', 
+		{
+		'func' : curious2.make_constant_random_action_sequence, 
+		'kwargs' : {'time_len_range' : range(15, 20), 'tor_y_range' : range(50, 200), 'std_dev_ang' : np.pi / 6.}, 
+		'wait' : {'threshold' : .01, 'time_window' : 3, 'max_time' : 20},
+		'cut_if_off_screen' : 4
+		})
 ]
 
 #0: 3-6
@@ -59,28 +85,34 @@ simple_rot = [
 push_rot = [
 	('SINGLE_OBJECT', 'PUSH_ROT', 
 		{'func' : curious2.make_constant_random_action_sequence, 
-		'kwargs' : {'time_len_range' : range(3, 10), 'f_horiz_range' : range(40, 70), 'tor_horiz_range' : range(10, 30), 'tor_y_range' : range(50, 150)}, 
-		'wait' : {'threshold' : .01, 'time_window' : 3, 'max_time' : 20}})
+		'kwargs' : {'time_len_range' : range(3, 10), 'f_horiz_range' : range(40, 70), 'tor_horiz_range' : range(10, 30), 'tor_y_range' : range(50, 150), 'std_dev_ang' : np.pi / 6.}, 
+		'wait' : {'threshold' : .01, 'time_window' : 3, 'max_time' : 20},
+		'cut_if_off_screen' : 4
+		})
 ]
 
 push_rot_slower = [
 	('SINGLE_OBJECT', 'PUSH_ROT', 
 		{'func' : curious2.make_constant_random_action_sequence, 
-		'kwargs' : {'time_len_range' : range(3, 10), 'f_horiz_range' : range(50, 60), 'tor_horiz_range' : range(10, 30), 'tor_y_range' : range(50, 150)}, 
-		'wait' : {'threshold' : .01, 'time_window' : 3, 'max_time' : 20}})
-
+		'kwargs' : {'time_len_range' : range(3, 10), 'f_horiz_range' : range(50, 60), 'tor_horiz_range' : range(10, 30), 'tor_y_range' : range(50, 150), 'std_dev_ang' : np.pi / 6.}, 
+		'wait' : {'threshold' : .01, 'time_window' : 3, 'max_time' : 20},
+		'cut_if_off_screen' : 4
+		})
 ]
 
 #some more parabolic projectile structure
 
 lift_push_rot = [
-	('SINGLE_OBJECT', 'LIFTING_1', {'func' : curious2.make_constant_random_action_sequence, 'kwargs' : {'time_len_range' : range(3, 7), 'f_horiz_range' : range(5, 10), 'f_y_range' : range(25, 60), 'tor_horiz_range' : range(10, 40), 'tor_y_range' : range(50, 150)}, 'wait' : {'threshold' : .01, 'time_window' : 3, 'max_time' : 20}})
+	('SINGLE_OBJECT', 'LIFTING_1', 
+		{'func' : curious2.make_constant_random_action_sequence, 
+		'kwargs' : {'time_len_range' : range(3, 7), 'f_horiz_range' : range(5, 10), 'f_y_range' : range(25, 60), 'tor_horiz_range' : range(10, 40), 'tor_y_range' : range(50, 150), 'std_dev_ang' : np.pi / 6.}, 
+		'wait' : {'threshold' : .01, 'time_window' : 3, 'max_time' : 20}})
 ]
 
 lift_push_rot_parabolic = [
 	('SINGLE_OBJECT', 'LIFTING_1', 
 		{'func' : curious2.make_constant_random_action_sequence, 
-		'kwargs' : {'time_len_range' : range(1, 2), 'f_horiz_range' : range(60), 'f_y_range' : range(130, 200), 'tor_horiz_range' : range(40, 80), 'tor_y_range' : range(50, 150)}, 
+		'kwargs' : {'time_len_range' : range(1, 2), 'f_horiz_range' : range(60), 'f_y_range' : range(130, 200), 'tor_horiz_range' : range(40, 80), 'tor_y_range' : range(50, 150), 'std_dev_ang' : np.pi / 6.}, 
 		'wait' : {'threshold' : .01, 'time_window' : 3, 'max_time' : 20}})
 ]
 
@@ -92,7 +124,9 @@ tab_push_long = [
 		'wait_after' : {'threshold' : .01, 'time_window' : 3, 'max_time' : 20}, 
 		'random_init_rot' : True, 
 		'func' : curious2.make_constant_random_action_sequence, 
-		'kwargs' : {'std_dev_ang' : np.pi / 6., 'time_len_range' : range(7, 10), 'f_horiz_range' : range(50, 70)}}),
+		'kwargs' : {'std_dev_ang' : np.pi / 6., 'time_len_range' : range(8, 10), 'f_horiz_range' : range(50, 70)},
+		'cut_if_off_screen' : 4
+		}),
 ]
 
 tab_push_short = [
@@ -102,8 +136,9 @@ tab_push_short = [
 		'wait_after' : {'threshold' : .01, 'time_window' : 3, 'max_time' : 20}, 
 		'random_init_rot' : True, 
 		'func' : curious2.make_constant_random_action_sequence, 
-		'kwargs' : {'std_dev_ang' : np.pi / 6., 'time_len_range' : range(1, 2), 'f_horiz_range' : range(100, 400)}}),
-
+		'kwargs' : {'std_dev_ang' : np.pi / 6., 'time_len_range' : range(1, 2), 'f_horiz_range' : range(100, 400)},
+		'cut_if_off_screen' : 4
+		}),
 ]
 
 
@@ -123,7 +158,9 @@ tab_rot = [
 		'wait_before' : {'threshold' : .01, 'time_window' : 3, 'max_time' : 20}, 
 		'wait_after' : {'threshold' : .01, 'time_window' : 3, 'max_time' : 20}, 
 		'random_init_rot' : True, 'func' : curious2.make_constant_random_action_sequence, 
-		'kwargs' : {'std_dev_ang' : np.pi / 6., 'time_len_range' : range(5, 10), 'tor_y_range' : range(50, 150)}})
+		'kwargs' : {'std_dev_ang' : np.pi / 6., 'time_len_range' : range(15, 20), 'tor_y_range' : range(50, 200)},
+		'cut_if_off_screen' : 4
+		})
 ]
 
 
@@ -133,7 +170,9 @@ tab_push_rot = [
 		'wait_before' : {'threshold' : .01, 'time_window' : 3, 'max_time' : 20}, 
 		'wait_after' : {'threshold' : .01, 'time_window' : 3, 'max_time' : 20}, 
 		'random_init_rot' : True, 'func' : curious2.make_constant_random_action_sequence, 
-		'kwargs' : {'std_dev_ang' : np.pi / 6., 'time_len_range' : range(3, 10), 'f_horiz_range' : range(50, 60), 'tor_horiz_range' : range(10, 30), 'tor_y_range' : range(50, 150)}})
+		'kwargs' : {'std_dev_ang' : np.pi / 6., 'time_len_range' : range(3, 10), 'f_horiz_range' : range(50, 60), 'tor_horiz_range' : range(10, 30), 'tor_y_range' : range(50, 150)},
+		'cut_if_off_screen' : 4
+		})
 ]
 
 tab_lift_push_rot = [
@@ -142,16 +181,32 @@ tab_lift_push_rot = [
 		'wait_before' : {'threshold' : .01, 'time_window' : 3, 'max_time' : 20}, 
 		'wait_after' : {'threshold' : .01, 'time_window' : 3, 'max_time' : 20}, 
 		'random_init_rot' : True, 'func' : curious2.make_constant_random_action_sequence, 
-		'kwargs' : {'std_dev_ang' : np.pi / 6., 'time_len_range' : range(1, 2), 'f_horiz_range' : range(60), 'f_y_range' : range(130, 200), 'tor_horiz_range' : range(40, 80), 'tor_y_range' : range(50, 150)}})
+		'kwargs' : {'std_dev_ang' : np.pi / 6., 'time_len_range' : range(1, 2), 'f_horiz_range' : range(60), 'f_y_range' : range(130, 200), 'tor_horiz_range' : range(40, 80), 'tor_y_range' : range(50, 150)}
+		})
 ]
 
 
 tab_push_noshake = [
-	('PUSH_OFF_TABLE', 'TAB_PUSHING_0', {'wait_before' : {'threshold' : .01, 'time_window' : 3, 'max_time' : 20}, 'wait_after' : {'threshold' : .01, 'time_window' : 3, 'max_time' : 20}, 'random_init_rot' : True, 'func' : curious2.make_constant_random_action_sequence, 'kwargs' : {'time_len_range' : range(3, 10), 'f_horiz_range' : range(50, 70)}}),
+	('PUSH_OFF_TABLE', 'TAB_PUSHING_0', 
+		{'wait_before' : {'threshold' : .01, 'time_window' : 3, 'max_time' : 20}, 
+		'wait_after' : {'threshold' : .01, 'time_window' : 3, 'max_time' : 20}, 
+		'random_init_rot' : True, 
+		'func' : curious2.make_constant_random_action_sequence, 
+		'kwargs' : {'time_len_range' : range(3, 10), 'f_horiz_range' : range(50, 70), 'std_dev_ang' : np.pi / 6.},
+		'cut_if_off_screen' : 4
+		}),
 ]
 
 tab_push_down_noshake = [
-	('PUSH_OFF_TABLE', 'TAB_PUSHING_0', {'wait_before' : {'threshold' : .01, 'time_window' : 3, 'max_time' : 20}, 'wait_after' : {'threshold' : .01, 'time_window' : 3, 'max_time' : 20}, 'random_init_rot' : True, 'func' : curious2.make_constant_random_action_sequence, 'kwargs' : {'time_len_range' : range(3, 10), 'f_horiz_range' : range(50, 70), 'f_y_range' : range(-100, -50)}}),
+	('PUSH_OFF_TABLE', 'TAB_PUSHING_0', 
+		{
+		'wait_before' : {'threshold' : .01, 'time_window' : 3, 'max_time' : 20}, 
+		'wait_after' : {'threshold' : .01, 'time_window' : 3, 'max_time' : 20}, 
+		'random_init_rot' : True, 
+		'func' : curious2.make_constant_random_action_sequence, 
+		'kwargs' : {'time_len_range' : range(3, 10), 'f_horiz_range' : range(50, 70), 'f_y_range' : range(-100, -50), 'std_dev_ang' : np.pi / 6.},
+		'cut_if_off_screen' : 4
+		}),
 ]
 
 
@@ -181,7 +236,8 @@ controlled_table_push_long = [
 		{'func' : curious2.controlled_constant_action_sequences_distinguished_direction,
 		'wait_before' : {'threshold' : .01, 'time_window' : 3, 'max_time' : 20}, 
 		'wait_after' : {'threshold' : .01, 'time_window' : 3, 'max_time' : 20}, 
-		'kwargs' : {'std_dev_ang' : np.pi / 6., 'time_len_range' : range(7, 10), 'f_horiz_range' : range(50, 70)},
+		'kwargs' : {'std_dev_ang' : np.pi / 6., 'time_len_range' : range(8, 10), 'f_horiz_range' : range(50, 70)},
+		'cut_if_off_screen' : 4
 		}
 
 		)
@@ -194,7 +250,8 @@ controlled_table_push = [
 		{'func' : curious2.controlled_constant_action_sequences_distinguished_direction,
 		'wait_before' : {'threshold' : .01, 'time_window' : 3, 'max_time' : 20}, 
 		'wait_after' : {'threshold' : .01, 'time_window' : 3, 'max_time' : 20}, 
-		'kwargs' : {'std_dev_ang' : np.pi / 6., 'time_len_range' : range(1, 2), 'f_horiz_range' : range(100, 400)}
+		'kwargs' : {'std_dev_ang' : np.pi / 6., 'time_len_range' : range(1, 2), 'f_horiz_range' : range(100, 400)},
+		'cut_if_off_screen' : 4
 		}
 
 		)
@@ -206,7 +263,7 @@ controlled_table_lift = [
 		{'func' : curious2.controlled_constant_action_sequences_distinguished_direction,
 		'wait_before' : {'threshold' : .01, 'time_window' : 3, 'max_time' : 20}, 
 		'wait_after' : {'threshold' : .01, 'time_window' : 3, 'max_time' : 20}, 
-		 'kwargs' : {'std_dev_ang' : np.pi / 6., 'time_len_range' : range(1, 2), 'f_horiz_range' : range(60), 'f_y_range' : range(130, 200)}
+		'kwargs' : {'std_dev_ang' : np.pi / 6., 'time_len_range' : range(1, 2), 'f_horiz_range' : range(60), 'f_y_range' : range(130, 200)},
 		}
 		)
 ]
@@ -217,7 +274,8 @@ controlled_table_rot = [
 		{'func' : curious2.controlled_constant_action_sequences_distinguished_direction,
 		'wait_before' : {'threshold' : .01, 'time_window' : 3, 'max_time' : 20}, 
 		'wait_after' : {'threshold' : .01, 'time_window' : 3, 'max_time' : 20}, 
-		'kwargs' : {'std_dev_ang' : np.pi / 6., 'time_len_range' : range(5, 10), 'tor_y_range' : range(50, 150)}
+		'kwargs' : {'std_dev_ang' : np.pi / 6., 'time_len_range' : range(15, 20), 'tor_y_range' : range(50, 200)},
+		'cut_if_off_screen' : 4
 		}
 		)
 ]
@@ -228,7 +286,8 @@ controlled_table_push_rot = [
 		{'func' : curious2.controlled_constant_action_sequences_distinguished_direction,
 		'wait_before' : {'threshold' : .01, 'time_window' : 3, 'max_time' : 20}, 
 		'wait_after' : {'threshold' : .01, 'time_window' : 3, 'max_time' : 20}, 
-		'kwargs' : {'std_dev_ang' : np.pi / 6., 'time_len_range' : range(3, 10), 'f_horiz_range' : range(50, 60), 'tor_horiz_range' : range(10, 30), 'tor_y_range' : range(50, 150)}
+		'kwargs' : {'std_dev_ang' : np.pi / 6., 'time_len_range' : range(3, 10), 'f_horiz_range' : range(50, 60), 'tor_horiz_range' : range(10, 30), 'tor_y_range' : range(50, 150)},
+		'cut_if_off_screen' : 4		
 		}
 		)
 ]
@@ -239,7 +298,7 @@ controlled_table_lift_push_rot = [
 		{'func' : curious2.controlled_constant_action_sequences_distinguished_direction,
 		'wait_before' : {'threshold' : .01, 'time_window' : 3, 'max_time' : 20}, 
 		'wait_after' : {'threshold' : .01, 'time_window' : 3, 'max_time' : 20}, 
-		'kwargs' : {'std_dev_ang' : np.pi / 6., 'time_len_range' : range(1, 2), 'f_horiz_range' : range(60), 'f_y_range' : range(130, 200), 'tor_horiz_range' : range(40, 80), 'tor_y_range' : range(50, 150)}
+		'kwargs' : {'std_dev_ang' : np.pi / 6., 'time_len_range' : range(1, 2), 'f_horiz_range' : range(60), 'f_y_range' : range(130, 200), 'tor_horiz_range' : range(40, 80), 'tor_y_range' : range(50, 150)},
 		}
 
 		)
