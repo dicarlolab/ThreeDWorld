@@ -283,6 +283,13 @@ class agent:
 			self.sock.send_json(msg)
 		else:
 			self.sock.send_json(msg['msg'])
+		if self.create_hdf5:
+			self.infolist.append(json.dumps(msg['msg']))
+			self.ims.append(imarray)
+			self.norms.append(narray)
+			self.infs.append(json.dumps(info))
+			self.objs.append(oarray)
+
 
 
 	def teleport_random(self):
@@ -339,7 +346,7 @@ class agent:
 			return None
 		for i in range(5000):
 			obj = valid_objects[self.rng.randint(len(valid_objects))]
-			if valid_pos(obj[2], 20., 20., test_height_too = True):
+			if valid_pos(obj[2], 19., 19., test_height_too = True):
 				return obj
 		return None
 
@@ -364,11 +371,7 @@ class agent:
 	def teleport_to_object(self, chosen_o, distance_from = 2):
 		if self.in_batch_counter >= self.BATCH_SIZE:
 			return
-		pos = chosen_o[2]
-		if self.init_y_pos > distance_from + pos[1]:
-			min_y_pos = 0
-		else:
-			min_y_pos = self.init_y_pos
+		pos = [chosen_o[2][0], 0., chosen_o[2][2]]
 		while True:
 			rand_horiz = self.rng.randn(2)
 			rand_yangle = self.rng.uniform(0, np.pi / 3)
@@ -378,7 +381,7 @@ class agent:
 			rand_normalized = np.array([rand_horiz[0] * distance_from * np.cos(rand_yangle)/ norm, distance_from * np.sin(rand_yangle), rand_horiz[1] * distance_from * np.cos(rand_yangle) / norm])
 			tgt_pos = list(np.array(pos) + rand_normalized)
 			#right now making sure the angle is between 0 and 60
-			if valid_pos(tgt_pos, 20., 20., test_height_too = True):
+			if valid_pos(tgt_pos, 19., 19., test_height_too = True):
 				break
 		tgt_rot = list(- rand_normalized)
 		msg = init_msg()
@@ -394,6 +397,7 @@ class agent:
 		msg = init_msg()
 		msg['msg']['action_type'] = 'TELE_OBJ'
 		action = {}
+		action['use_absolute_coordinates'] = True
 		action['id'] = str(obj[1])
 		action['teleport_to'] = {'position' : pos, 'rotation' : [0, 0, 0]}
 		msg['msg']['actions'].append(action)
@@ -410,7 +414,7 @@ class agent:
 			looking_dir = np.cos(looking_ang) * wall_dir + np.sin(looking_ang) * wall_dir_perp
 			tele_pos = wall_pos - distance_from * looking_dir
 			tele_pos[1] = self.init_y_pos / 4
-			if valid_pos(tele_pos, 20., 20.):
+			if valid_pos(tele_pos, 19., 19., test_height_too = True):
 				break
 		msg = init_msg()
 		tele_rot = looking_dir
@@ -419,6 +423,7 @@ class agent:
 		obj_tele_pos = tele_pos + obj_dist_from * looking_dir
 		init_rot = list(get_urand_sphere_point(self.rng, 3))
 		action = {}
+		action['use_absolute_coordinates'] = True
 		action['id'] = str(obj[1])
 		action['teleport_to'] = {'position' : list(obj_tele_pos), 'rotation' : list(init_rot)}
 		msg['msg']['actions'].append(action)
@@ -457,6 +462,7 @@ class agent:
 			init_rot = list(get_urand_sphere_point(self.rng, 3))
 		else:
 			init_rot = [0,0,0]
+		action['use_absolute_coordinates'] = True
 		action['teleport_to'] = {'position' : tgt_obj_pos, 'rotation' : init_rot}
 		msg['msg']['actions'].append(action)
 		self.send_msg(msg)
@@ -491,7 +497,7 @@ class agent:
 			rand_normalized = np.array([rand_horiz[0] * distance_from * np.cos(rand_yangle)/ norm, distance_from * np.sin(rand_yangle), rand_horiz[1] * distance_from * np.cos(rand_yangle) / norm])
 			tgt_pos = list(np.array(tabletop_pos) + rand_normalized)
 			#right now making sure the angle is between 0 and 60
-			if valid_pos(tgt_pos, 20., 20.):
+			if valid_pos(tgt_pos, 19., 19.):
 				break
 		print('random y angle: ' + str(rand_yangle))
 		tgt_rot = list(- rand_normalized)
@@ -505,6 +511,7 @@ class agent:
 		else:
 			init_rot = [0,0,0]
 		# print('init rot' + str(init_rot))
+		action['use_absolute_coordinates'] = True
 		action['teleport_to'] = {'position' : tgt_obj_pos, 'rotation' : init_rot}
 		msg['msg']['actions'].append(action)
 		self.send_msg(msg)
@@ -521,10 +528,11 @@ class agent:
 			self.send_msg(msg)
 			t += 1
 
-	def wait_until_stops(self, obj_of_interest, threshold, time_window, max_time, desc = 'WAITING'):
+	def wait_until_stops(self, obj_of_interest, threshold, time_window, max_time, desc = 'WAITING', cut_if_off_screen = None):
 		window = [float('inf')] * time_window
 		old_pos = np.array(obj_of_interest[2])
 		old_rot = np.array(obj_of_interest[3])
+		num_consecutive_off_screen = 0
 		for t in range(max_time):
 		 	if self.in_batch_counter >= self.BATCH_SIZE:
 		 		return
@@ -532,8 +540,15 @@ class agent:
 		 	obj_updated = obj_updated_list[0]
 		 	if not did_update:
 		 		return
-		 	if obj_updated is None or len((self.oarray1 == obj_updated[1]).nonzero()[0]) == 0:
-				window[t % time_window] = 0.0			
+		 	if obj_updated is None:
+				window[t % time_window] = 0.0
+			elif cut_if_off_screen is not None and len((self.oarray1 == obj_updated[1]).nonzero()[0]) == 0:
+				num_consecutive_off_screen += 1
+				if num_consecutive_off_screen >= cut_if_off_screen:
+					msg = init_msg()
+					msg['msg']['action_type'] = desc
+					self.send_msg(msg)
+					return
 			else:
 				obj_of_interest = obj_updated
 				pos = np.array(obj_of_interest[2])
@@ -595,6 +610,7 @@ class agent:
 			objpi.append(centroid)
 			action = {}
 			msg = init_msg()
+			action['use_absolute_coordinates'] = True
 			action['force'] = const_force
 			action['torque'] = [0,0,0]
 			action['id'] = str(chosen_id)
@@ -608,7 +624,7 @@ class agent:
 				self.observe_world()
 		self.wait(time_len_wait)
 
-	def apply_action(self, chosen_o, f_sequence, tor_sequence, act_descriptor, num_gone_stop = 3):
+	def apply_action(self, chosen_o, f_sequence, tor_sequence, act_descriptor, cut_if_off_screen = None):
 		if not (self.in_batch_counter < self.BATCH_SIZE):
 			return
 		num_object_gone = 0
@@ -625,6 +641,7 @@ class agent:
 			centroid = np.round(np.array(zip(xs, ys)).mean(0))
 			action = {}
 			msg = init_msg()
+			action['use_absolute_coordinates'] = True
 			action['force'] = f
 			action['torque'] = tor
 			action['id'] = str(chosen_id)
@@ -633,9 +650,9 @@ class agent:
 			msg['msg']['actions'].append(action)
 			msg['msg']['action_type'] = act_descriptor
 			self.send_msg(msg)
-			if self.in_batch_counter < self.BATCH_SIZE and t < len(f_sequence) - 1 and num_object_gone < num_gone_stop:
+			if self.in_batch_counter < self.BATCH_SIZE and t < len(f_sequence) - 1 and ((cut_if_off_screen is None) or (num_object_gone < cut_if_off_screen)):
 				self.observe_world()
-			elif self.in_batch_counter >= self.BATCH_SIZE or num_object_gone >= num_gone_stop:
+			elif self.in_batch_counter >= self.BATCH_SIZE or ((cut_if_off_screen is not None) and (num_object_gone >= cut_if_off_screen)):
 				return
 
 
@@ -652,11 +669,11 @@ class agent:
 			return None, None
 		for t in range(5000):
 			table = tables[self.rng.randint(len(tables))]
-			if valid_pos(table[2], 20., 20., test_height_too = True):
+			if valid_pos(table[2], 19., 19., test_height_too = True):
 				break
 		for t in range(5000):
 			not_table = not_tables[self.rng.randint(len(not_tables))]
-			if valid_pos(not_table[2], 20., 20., test_height_too = True):
+			if valid_pos(not_table[2], 19., 19., test_height_too = True):
 				return table, not_table
 		return None, None
 
@@ -696,11 +713,11 @@ class agent:
 			f_seq, tor_seq = act_params['func'](self.rng, distinct_dir = looking_dir, **act_params['kwargs'])
 		else:
 			f_seq, tor_seq = act_params['func'](self.rng, **act_params['kwargs'])
-		self.apply_action(obj, f_seq, tor_seq, act_desc)
+		self.apply_action(obj, f_seq, tor_seq, act_desc, cut_if_off_screen = act_params.get('cut_if_off_screen'))
 		if 'wait' in act_params:
 			# self.wait(act_params['wait'])
 			#technically should update the object, but not sure this is so important right now
-			self.wait_until_stops(obj, act_params['wait']['threshold'], act_params['wait']['time_window'], act_params['wait']['max_time'])
+			self.wait_until_stops(obj, act_params['wait']['threshold'], act_params['wait']['time_window'], act_params['wait']['max_time'], cut_if_off_screen = act_params.get('cut_if_off_screen'))
 
 
 	def do_wall_throw(self, act_desc, act_params, clean_up_after = True):
@@ -714,7 +731,7 @@ class agent:
 			return
 		wall_dir = self.teleport_to_wall(obj, distance_from = 1, obj_dist_from = .5)
 		if 'wait_before' in act_params:
-			self.wait_until_stops(obj, act_params['wait_before']['threshold'], act_params['wait_before']['time_window'], act_params['wait_before']['max_time'], desc = 'DROPPING')
+			self.wait_until_stops(obj, act_params['wait_before']['threshold'], act_params['wait_before']['time_window'], act_params['wait_before']['max_time'], desc = 'DROPPING', cut_if_off_screen = act_params.get('cut_if_off_screen'))
 		did_update, obj_after_teleport_list = self.observe_world(obj)
 		if not did_update:
 			return
@@ -725,9 +742,9 @@ class agent:
 			self.send_msg(msg)
 			return
 		f_seq, tor_seq = act_params['func'](self.rng, distinct_dir = wall_dir, ** act_params['kwargs'])
-		self.apply_action(obj_after_teleport, f_seq, tor_seq, act_desc)
+		self.apply_action(obj_after_teleport, f_seq, tor_seq, act_desc, cut_if_off_screen = act_params.get('cut_if_off_screen'))
 		if 'wait_after' in act_params:
-			self.wait_until_stops(obj_after_teleport, act_params['wait_after']['threshold'], act_params['wait_after']['time_window'], act_params['wait_after']['max_time'], desc = 'WAITING')
+			self.wait_until_stops(obj_after_teleport, act_params['wait_after']['threshold'], act_params['wait_after']['time_window'], act_params['wait_after']['max_time'], desc = 'WAITING', cut_if_off_screen = act_params.get('cut_if_off_screen'))
 		if clean_up_after:
 			did_update, obj_after_act_list = self.observe_world(obj)
 			if not did_update:
@@ -753,7 +770,7 @@ class agent:
 		old_pos = obj[2]
 		horiz_action_dir = self.controlled_teleport_on_top_of(under_obj, obj, height_above = None, distance_from = 1)
 		if 'wait_before' in act_params:
-			self.wait_until_stops(obj, act_params['wait_before']['threshold'], act_params['wait_before']['time_window'], act_params['wait_before']['max_time'], desc = 'DROPPING')
+			self.wait_until_stops(obj, act_params['wait_before']['threshold'], act_params['wait_before']['time_window'], act_params['wait_before']['max_time'], desc = 'DROPPING', cut_if_off_screen = act_params.get('cut_if_off_screen'))
 		did_update, obj_after_teleport_list = self.observe_world(obj)
 		if not did_update:
 			return
@@ -764,9 +781,9 @@ class agent:
 			self.send_msg(msg)
 			return
 		f_seq, tor_seq = act_params['func'](self.rng, horiz_action_dir, **act_params['kwargs'])
-		self.apply_action(obj_after_teleport, f_seq, tor_seq, act_desc)
+		self.apply_action(obj_after_teleport, f_seq, tor_seq, act_desc, cut_if_off_screen = act_params.get('cut_if_off_screen'))
 		if 'wait_after' in act_params:
-			self.wait_until_stops(obj_after_teleport, act_params['wait_after']['threshold'], act_params['wait_after']['time_window'], act_params['wait_after']['max_time'], desc = 'WAITING')
+			self.wait_until_stops(obj_after_teleport, act_params['wait_after']['threshold'], act_params['wait_after']['time_window'], act_params['wait_after']['max_time'], desc = 'WAITING', cut_if_off_screen = act_params.get('cut_if_off_screen'))
 		if clean_up_table:
 			did_update, obj_after_act_list = self.observe_world(obj)
 			if not did_update:
@@ -792,7 +809,7 @@ class agent:
 		looking_dir = self.teleport_on_top_of(under_obj, obj, height_above = None, distance_from = 1, random_init_rot = act_params.get('random_init_rot'), noisy_drop_std_dev = act_params.get('noisy_drop_std_dev'), noisy_drop_trunc = act_params.get('noisy_drop_trunc'))
 		if 'wait_before' in act_params:
 			#again, object is not immediately updated, but should not matter in this case.
-			self.wait_until_stops(obj, act_params['wait_before']['threshold'], act_params['wait_before']['time_window'], act_params['wait_before']['max_time'], desc = 'DROPPING')
+			self.wait_until_stops(obj, act_params['wait_before']['threshold'], act_params['wait_before']['time_window'], act_params['wait_before']['max_time'], desc = 'DROPPING', cut_if_off_screen = act_params.get('cut_if_off_screen'))
 		did_update, obj_after_teleport_list = self.observe_world(obj)
 		if not did_update:
 			return
@@ -806,9 +823,9 @@ class agent:
 			f_seq, tor_seq = act_params['func'](self.rng, distinct_dir = looking_dir, **act_params['kwargs'])
 		else:
 			f_seq, tor_seq = act_params['func'](self.rng, **act_params['kwargs'])
-		self.apply_action(obj_after_teleport, f_seq, tor_seq, act_desc)
+		self.apply_action(obj_after_teleport, f_seq, tor_seq, act_desc, cut_if_off_screen = act_params.get('cut_if_off_screen'))
 		if 'wait_after' in act_params:
-			self.wait_until_stops(obj_after_teleport, act_params['wait_after']['threshold'], act_params['wait_after']['time_window'], act_params['wait_after']['max_time'], desc = 'WAITING')
+			self.wait_until_stops(obj_after_teleport, act_params['wait_after']['threshold'], act_params['wait_after']['time_window'], act_params['wait_after']['max_time'], desc = 'WAITING', cut_if_off_screen = act_params.get('cut_if_off_screen'))
 		if clean_up_table:
 			did_update, obj_after_act_list = self.observe_world(obj)
 			if not did_update:
@@ -826,10 +843,17 @@ class agent:
 	def make_new_batch(self, bn, sock, path, create_hdf5, use_tdw_msg, task_params):
 		self.bn, self.sock, self.path, self.create_hdf5, self.use_tdw_msg = bn, sock, path, create_hdf5, use_tdw_msg
 		self.in_batch_counter = 0
-		self.temp_im_path = os.path.join(self.path, 'rollies')
+		self.temp_im_path = os.path.join(self.path, 'wall_test')
 		if not os.path.exists(self.temp_im_path):
 			os.mkdir(self.temp_im_path)
 		self.wait(10)
+		if self.create_hdf5:
+			self.ims = []
+			self.objs = []
+			self.norms = []
+			self.infolist = []
+			self.infs = []
+			self.valid, images, normals, objects, worldinfos, agentactions = self.get_hdf5_handles()
 		while self.in_batch_counter < self.BATCH_SIZE:
 			print(self.in_batch_counter)
 			for (mode, act_desc, act_params) in task_params:
@@ -843,37 +867,22 @@ class agent:
 					self.do_wall_throw(act_desc, act_params, clean_up_after = False)
 				else:
 					raise Exception('Batch mode not implemented')
-			# 	self.observe_world()
-			# 	if self.in_batch_counter == 0:
-			# 		self.init_y_pos = self.info['avatar_position'][1]
-			# 	obj = self.select_random_object()
-			# 	self.teleport_to_object(obj, distance_from = 3)
-			# 	self.observe_world()
-			# 	f_seq, tor_seq = act_params['func'](self.rng, **act_params['kwargs'])
-			# 	self.apply_action(obj, f_seq, tor_seq, act_desc)
-			# 	if 'wait' in act_params:
-			# 		self.wait(act_params['wait'])
-			# self.observe_world()		
-			# if self.in_batch_counter == 0:
-			# 	self.init_y_pos = self.info['avatar_position'][1]
-			# under_obj, obj = self.select_random_table_not_table()
-			# self.teleport_on_top_of(under_obj, obj, height_above = None, distance_from = 3)
-			# self.wait(20)
-			# self.observe_world()
-			# f_seq, tor_seq = make_const_simple_rot(self.rng, 10, magnitude = 100)
-			# self.apply_action(obj, f_seq, tor_seq, 'ROTATING')
-			# self.wait(20)
-			# for f in [[100, 0, 0], [0, 0, 100]]:
-			# 	self.observe_world()
-			# 	if self.in_batch_counter == 0:
-			# 		self.init_y_pos = self.info['avatar_position'][1]
-			# 	obj = self.select_random_object()
-			# 	self.teleport_to_object(obj, distance_from = 2)
-			# 	self.observe_world()
-			# 	f_list = [f for _ in range(3)]
-			# 	tor_list = [[0, 0, 0] for _ in range(3)]
-			# 	self.apply_action(obj, f_list, tor_list, 'PUSHING')
-			# 	self.wait(20)
+		if self.create_hdf5:
+			start = self.BATCH_SIZE * bn
+			end = self.BATCH_SIZE * (bn + 1)
+			self.ims = np.array(self.ims)
+			self.norms = np.array(self.norms)
+			self.objs = np.array(self.objs)
+			images[start: end] = ims
+			normals[start: end] = norms
+			objects[start: end] = objs
+			self.valid[start: end] = True
+			worldinfos[start: end] = infs
+			agentactions[start: end] = infolist
+			self.hdf5.flush()
+
+
+
 
 test_task_params = [
 	('PUSHING', {'func' : make_const_simple_push, 'kwargs' : {'time_len' : 3, 'magnitude' : 100}, 'wait' : 20}),
