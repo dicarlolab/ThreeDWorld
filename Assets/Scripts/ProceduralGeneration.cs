@@ -243,12 +243,13 @@ public class ProceduralGeneration : MonoBehaviour
 
 						newInfo.bounds.center = items[i]["center_pos"].ReadVector3(new Vector3(0f, 0f, 0f));
 						newInfo.bounds.extents = items[i]["boundb_pos"].ReadVector3(new Vector3(0f, 0f, 0f));
-
+						Debug.Log ("Center " + newInfo.bounds.center.ToString ());
 						newInfo._id_str  = items[i]["_id_str"].ReadString(newInfo._id_str);
 						newInfo.aws_version = items[i]["aws_version"].ReadString(newInfo.aws_version);
 
 						newInfo.mass = items[i]["mass"].ReadFloat(1.0f);
 						newInfo.set_scale(items[i]["scale"]);
+						newInfo.round_num = r;
 						gen_rand_forinfo(ref newInfo);
 
 						availablePrefabs.Add(newInfo);
@@ -257,6 +258,7 @@ public class ProceduralGeneration : MonoBehaviour
 				groundPrefabs = availablePrefabs.FindAll(((PrefabDatabase.PrefabInfo info)=>
 				        {return info.anchorType == GeneratablePrefab.AttachAnchor.Ground;}));
 
+				Debug.Log ("About to add objects");
 				for(int i = 0; i < num_items; i++)
 				{
 					if (!AddObjects (groundPrefabs)) {
@@ -626,11 +628,12 @@ public class ProceduralGeneration : MonoBehaviour
         // For option "Absol_size"
         if (info.option_scale=="Absol_size"){
             float longest_axis      = info.bounds.size.magnitude;
-            if (info.apply_to_inst)
-                modScale            = list_rands[info.rand_index].Next_Gaussian(info.dynamic_scale, info.scale_var)/longest_axis;
-            else
-                modScale            = info.first_rand/longest_axis;
-        }
+			if (info.apply_to_inst) {
+				modScale = list_rands [info.rand_index].Next_Gaussian (info.dynamic_scale, info.scale_var) / longest_axis;
+			} else {
+				modScale = info.first_rand / longest_axis;
+			}
+		}
 
         HeightPlane targetHeightPlane;
         Quaternion modifiedRotation = Quaternion.identity;
@@ -678,6 +681,8 @@ public class ProceduralGeneration : MonoBehaviour
                     newPrefab.name, (_curRoom != null) ? _curRoom.childCount.ToString() : "?");
 			newInstance.GetComponent<SemanticObject>().isStatic = false;
 			newInstance.GetComponent<SemanticObject>().extents = modifiedBounds.extents;
+			newInstance.GetComponent<SemanticObject> ().center = modifiedBounds.center;
+			newInstance.GetComponent<SemanticObject> ().round_num = info.round_num;
 			newInstance.GetComponent<Rigidbody> ().mass = info.mass;
 
 			// Add physics material

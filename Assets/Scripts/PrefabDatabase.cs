@@ -33,6 +33,7 @@ public class PrefabDatabase : MonoBehaviour
         public int rand_index       = 0;
         public bool apply_to_inst   = false;
         public float first_rand     = 0f;
+		public int round_num;
 
 
         public float mass = 1.0f;
