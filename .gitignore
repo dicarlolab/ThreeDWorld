@@ -19,7 +19,6 @@ Assets/Models/Props/*
 *nohup.out
 obj/Debug/*
 *.meta
-*.prefab
 *.bundle
 *.manifest
 *.x86
@@ -27,3 +26,4 @@ obj/Debug/*
 *.exe
 *_Data/
 *.mat
+Assets/http*
