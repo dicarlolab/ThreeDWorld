@@ -27,6 +27,7 @@ def recv_array(socket, flags=0, copy=True, track=False):
 def handle_message(sock, write=False, outdir='', imtype='png', prefix=''):
     # Handle info
     info = sock.recv()
+    print("got message")
     # Handle first set of images from camera 1
     nstr = sock.recv()
     narray2 = np.asarray(Image.open(StringIO(nstr)).convert('RGB'))

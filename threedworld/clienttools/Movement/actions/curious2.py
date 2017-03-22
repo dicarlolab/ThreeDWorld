@@ -42,7 +42,7 @@ def get_trunc_normal(rng, dim, std_dev, truncate_norm):
 
 
 def init_msg():
-	msg = {'n': 4, 'msg': {"msg_type": "CLIENT_INPUT", "get_obj_data": True, "send_scene_info" : True, "actions": []}}
+	msg = {'n': 7, 'msg': {"msg_type": "CLIENT_INPUT", "get_obj_data": True, "send_scene_info" : True, "actions": []}}
 	msg['msg']['vel'] = [0, 0, 0]
 	msg['msg']['ang_vel'] = [0, 0, 0]
 	return msg
@@ -307,8 +307,10 @@ class agent:
 		counter_str = str(self.global_counter)
 		while len(counter_str) < 4:
 			counter_str  = '0' + counter_str
+                print 'about to handle message'
 		info, self.narray, self.oarray, self.imarray = handle_message(self.sock, write=self.WRITE_FILES, outdir=self.temp_im_path, prefix=counter_str)
-		self.info = json.loads(info)
+                print 'message handled'
+                self.info = json.loads(info)
 		self.oarray1 = 256**2 * self.oarray[:, :, 0] + 256 * self.oarray[:, :, 1] + self.oarray[:, :, 2]
 		if self.global_counter == 0:
 			self.init_y_pos = self.info['avatar_position'][1]

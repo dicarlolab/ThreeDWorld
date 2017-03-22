@@ -461,9 +461,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   identifier: 
   isStatic: 1
-  isStackable: 0
   extents: {x: 0, y: 0, z: 0}
   center: {x: 0, y: 0, z: 0}
+  round_num: 0
 --- !u!114 &114614539033581100
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -498,7 +498,10 @@ MonoBehaviour:
   - {fileID: 4800000, guid: 01c10d508c72efc4c97ac9ea79b07271, type: 3}
   - {fileID: 4800000, guid: 901e682dceb434687a5ddad2900b85a4, type: 3}
   - {fileID: 0}
-  outputFormatList: []
+  outputFormatList:
+  - png
+  - png
+  - png
   moveSpeed: 5
   rotSpeed: 5
   observedRange: 25
