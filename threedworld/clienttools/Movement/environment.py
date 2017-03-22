@@ -36,35 +36,39 @@ def query_results_to_unity_data(query_results, scale, mass, var = .01, seed = 0)
 
 synset_for_table = [[u'n04379243']]
 rollie_synsets = [[u'n03991062'], [u'n02880940'], [u'n02946921'], [u'n02876657'], [u'n03593526']]
-shapenet_inquery = {'type': 'shapenetremat', 'has_texture': True, 'version': 0, 'complexity': {'$exists': True}, 'center_pos': {'$exists': True}, 'boundb_pos': {'$exists': True}, 'isLight': {'$exists': True}, 'anchor_type': {'$exists': True}, 'aws_address': {'$exists': True}}
-dosch_inquery = {'type': 'dosch', 'has_texture': True, 'version': 1, 'complexity': {'$exists': True}, 'center_pos': {'$exists': True}, 'boundb_pos': {'$exists': True}, 'isLight': {'$exists': True}, 'anchor_type': {'$exists': True}, 'aws_address': {'$exists': True}}
 other_vaguely_stackable_synsets = [[u'n03207941'], [u'n04004475'], [u'n02958343'], [u'n03001627'], [u'n04256520'], [u'n04330267'], [u'n03593526'], [u'n03761084'], [u'n02933112'], [u'n03001627'], [u'n04468005'], [u'n03691459'], [u'n02946921'], [u'n03337140'], [u'n02924116'], [u'n02801938'], [u'n02828884'], [u'n03001627'], [u'n04554684'], [u'n02808440'], [u'n04460130'], [u'n02843684'], [u'n03928116']]
 
+shapenet_inquery = {'type': 'shapenetremat', 'has_texture': True, 'version': 0, 'complexity': {'$exists': True}, 'center_pos': {'$exists': True}, 'boundb_pos': {'$exists': True}, 'isLight': {'$exists': True}, 'anchor_type': {'$exists': True}, 'aws_address': {'$exists': True}}
+dosch_inquery = {'type': 'dosch', 'has_texture': True, 'version': 1, 'complexity': {'$exists': True}, 'center_pos': {'$exists': True}, 'boundb_pos': {'$exists': True}, 'isLight': {'$exists': True}, 'anchor_type': {'$exists': True}, 'aws_address': {'$exists': True}}
 
+
+table_query = copy.deepcopy(shapenet_inquery)
+table_query['synset'] = {'$in' : synset_for_table}
+rolly_query = copy.deepcopy(shapenet_inquery)
+rolly_query['synset'] = {'$in' : rollie_synsets}
+other_reasonables_query = copy.deepcopy(shapenet_inquery)
+other_reasonables_query['synset'] = {'$in' : other_vaguely_stackable_synsets}
+
+query_dict = {'SHAPENET' : shapenet_inquery, 'ROLLY' : rolly_query, 'TABLE' : table_query, 'OTHER_STACKABLE' : other_reasonables_query}
 
 class environment:
 	conn = pymongo.MongoClient(port=22334)
 	coll = conn['synthetic_generative']['3d_models']
 	CACHE = {}
 
-
-	RANDOM_SEED = 57
+#right now these are being left fixed. I think complexity is being cut out entirely. At least, is irrelevant.
 	COMPLEXITY = 1500
 	NUM_LIGHTS = 4
 	ROOM_WIDTH = 20.0
 	ROOM_LENGTH = 20.0
-	NUM_SHAPENET = 200
-	NUM_DOSCH = 10
-        NUM_STACKABLE = 10
 
-	rng_config = np.random.RandomState(0)
-
-	def __init__(self, seed=0):
-		self.rng_config = np.random.RandomState(seed)
-		self.next_config(init=True)
+	def __init__(self, my_seed=0, unity_seed = 0):
+		self.rng = np.random.RandomState(my_seed)
+		self.RANDOM_SEED = unity_seed
+		# self.next_config(init=True)
 
 
-	def get_items(self, q, num_items, scale, mass, var = .01, seed = 0):
+	def get_items(self, q, num_items, scale, mass, var = .01):
 		for _k in default_keys:
 			if _k not in q:
 				q[_k] = {'$exists': True}
@@ -76,8 +80,7 @@ class environment:
 			idvals = self.CACHE[str(q)]
 		num_ava = len(idvals)
 		#might want to just initialize this once
-		rng = np.random.RandomState(seed=self.RANDOM_SEED)
-		goodidinds = rng.permutation(num_ava)[: num_items] 
+		goodidinds = self.rng.permutation(num_ava)[: num_items] 
 		goodidvals = idvals[goodidinds]
 		goodidvals = map(ObjectId, goodidvals)
 		keys = copy.deepcopy(default_keys)
@@ -87,42 +90,19 @@ class environment:
 		print 'second query'
 		query_res = list(self.coll.find({'_id': {'$in': goodidvals}}, projection=keys))
 		print 'making items'
-		return query_results_to_unity_data(query_res, scale, mass, var = var, seed = seed)
+		return query_results_to_unity_data(query_res, scale, mass, var = var, seed = self.RANDOM_SEED + 1)
 
 				
 
 	# update config for next scene switch
-	def next_config(self, init=False):
-		if not init:
-			complexity = np.arange(5000,20001,1000)
-			room_width = np.arange(12,26,1)	
-			room_length = room_width
-
-			self.RANDOM_SEED = self.rng_config.randint(1000000)
-			self.COMPLEXITY = complexity[self.rng_config.randint(len(complexity))]
-			self.ROOM_WIDTH = room_width[self.rng_config.randint(len(room_width))]
-			self.ROOM_LENGTH = room_length[self.rng_config.randint(len(room_length))]
-			if self.ROOM_LENGTH > 20 or self.ROOM_WIDTH > 20:
-				self.NUM_LIGHTS = 8
-			else:
-				self.NUM_LIGHTS = 4
-		# The environment config to be used
-
-
-		# rolly_query = copy.deepcopy(self.shapenet_inquery)
-		# rolly_query['synset'] = {'$in' : self.rollie_synsets}
-		table_query = copy.deepcopy(shapenet_inquery)
-		table_query['synset'] = {'$in' : synset_for_table}
-		regular_items = self.get_items(shapenet_inquery, 30, .5, 1., var = .01)
-		table_items = self.get_items(table_query, 20, 2., 50., var = .01)
-
+	def next_config(self, * round_info):
+		rounds = [{'items' : self.get_items(query_dict[info['type']], info['num_items'] * 2, info['scale'], info['mass'], info['scale_var']), 'num_items' : info['num_items']} for info in round_info]
 
 		self.config = {
 			"environment_scene" : "ProceduralGeneration",
 			"random_seed": self.RANDOM_SEED, #Omit and it will just choose one at random. Chosen seeds are output into the log(under warning or log level).
 			"should_use_standardized_size": False,
 			"standardized_size": [1.0, 1.0, 1.0],
-			# "scale_relat_dict": table_scale_deal,  # option: "Absol_size", "Fract_room", "Multi_size"; TODO: implement "Fract_room"
 			"complexity": self.COMPLEXITY,
 			"random_materials": True,
 			"num_ceiling_lights": self.NUM_LIGHTS,
@@ -149,5 +129,5 @@ class environment:
 			"max_placement_attempts": 300,   #Maximum number of failed placements before we consider a room fully filled.
 			"grid_size": 0.4,    #Determines how fine tuned a grid the objects are placed on during Proc. Gen. Smaller the number, the
 			"use_mongodb_inter": 1, 
-			'rounds' : [{'items' : regular_items, 'num_items' : 20}, {'items' : table_items, 'num_items' : 10}]
-}
+			'rounds' : rounds
+			}

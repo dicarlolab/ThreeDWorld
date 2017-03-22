@@ -148,7 +148,7 @@ def make_constant_random_action_sequence(rng, distinct_dir = None, std_dev_ang =
 class agent:
 	global_counter = 0
 
-	WRITE_FILES = True
+	WRITE_FILES = False
 
         SCREEN_WIDTH = 256 #512
         SCREEN_HEIGHT = 256 #384
@@ -272,6 +272,7 @@ class agent:
 		return None
 
 	def send_msg(self, msg):
+		msg['msg']['action_type'] = self.desc_prefix + '_' + msg['msg']['action_type']
 		if(not 'action_type' in msg['msg']):
 			print("ERROR! Action not recognized")
 		else:
@@ -842,8 +843,8 @@ class agent:
 
 
 
-	def make_new_batch(self, bn, sock, path, create_hdf5, use_tdw_msg, task_params):
-		self.bn, self.sock, self.path, self.create_hdf5, self.use_tdw_msg = bn, sock, path, create_hdf5, use_tdw_msg
+	def make_new_batch(self, bn, sock, path, create_hdf5, use_tdw_msg, task_params, descriptor_prefix):
+		self.bn, self.sock, self.path, self.create_hdf5, self.use_tdw_msg, self.desc_prefix = bn, sock, path, create_hdf5, use_tdw_msg, descriptor_prefix
 		self.in_batch_counter = 0
 		self.temp_im_path = os.path.join(self.path, 'test_test_test')
 		if not os.path.exists(self.temp_im_path):

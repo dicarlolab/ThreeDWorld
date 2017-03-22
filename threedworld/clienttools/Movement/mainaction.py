@@ -23,6 +23,11 @@ SCREEN_WIDTH = 512
 SCREEN_HEIGHT = 384
 SELECTED_BUILD = 'one_world.exe'
 
+if USE_TDW:
+	raise Exception('Not yet adapted to USE_TDW')
+
+NUM_TIMES_RUN = 5
+
 os.environ['USER'] = 'mrowca'
 #path = 'C:/Users/mrowca/Documents/test'
 #path = 'F:\one_world_dataset'
@@ -36,12 +41,174 @@ s.connect(("google.com",80))
 host_address = s.getsockname()[0]
 s.close()
 
-
+my_curriculum = [
+	(curricula.new_curriculum, 'ONE_OBJ', [{
+		'type' : 'SHAPENET',
+		'scale' : .5,
+		'mass' : 1.,
+		'scale_var' : .01,
+		'num_items' : 30
+		}]),
+	(curricula.new_table_curriculum, 'TABLE', [
+		{
+		'type' : 'SHAPENET',
+		'scale' : .5,
+		'mass' : 1.,
+		'scale_var' : .01,
+		'num_items' : 30,
+		},
+		{
+		'type' : 'TABLE',
+		'scale' : 2.,
+		'mass' : 50.,
+		'scale_var' : .01,
+		'num_items' : 10
+		}
+		]),
+	(curricula.controlled_table_curriculum, 'TABLE_CONTROLLED', [
+		{
+		'type' : 'SHAPENET',
+		'scale' : .5,
+		'mass' : 1.,
+		'scale_var' : .01,
+		'num_items' : 30,
+		},
+		{
+		'type' : 'TABLE',
+		'scale' : 2.,
+		'mass' : 50.,
+		'scale_var' : .01,
+		'num_items' : 10
+		}
+		]),
+	(curricula.other_obj_curriculum, 'OBJ_ON_OBJ', [
+		{
+		'type' : 'SHAPENET',
+		'scale' : .5,
+		'mass' : 1.,
+		'scale_var' : .01,
+		'num_items' : 30,
+		},
+		{
+		'type' : 'OTHER_STACKABLE',
+		'scale' : 1.,
+		'mass' : 1.,
+		'scale_var' : .01,
+		'num_items' : 10
+		}
+		]),
+	(curricula.wall_throw_curriculum, 'WALL_THROW', [
+		{
+		'type' : 'SHAPENET',
+		'scale' : .5,
+		'mass' : 1.,
+		'scale_var' : .01,
+		'num_items' : 30,
+		}
+		]),
+	(curricula.new_curriculum, 'ONE_ROLLY', [{
+		'type' : 'ROLLY',
+		'scale' : .5,
+		'mass' : 1.,
+		'scale_var' : .01,
+		'num_items' : 30
+		}]),
+	(curricula.new_table_curriculum, 'ROLLY_ON_TABLE', [
+		{
+		'type' : 'SHAPENET',
+		'scale' : .5,
+		'mass' : 1.,
+		'scale_var' : .01,
+		'num_items' : 30,
+		},
+		{
+		'type' : 'TABLE',
+		'scale' : 2.,
+		'mass' : 50.,
+		'scale_var' : .01,
+		'num_items' : 10
+		}
+		]),
+	(curricula.controlled_table_curriculum, 'ROLLY_ON_TABLE_CONTROLLED', [
+		{
+		'type' : 'SHAPENET',
+		'scale' : .5,
+		'mass' : 1.,
+		'scale_var' : .01,
+		'num_items' : 30,
+		},
+		{
+		'type' : 'TABLE',
+		'scale' : 2.,
+		'mass' : 50.,
+		'scale_var' : .01,
+		'num_items' : 10
+		}
+		]),
+	(curricula.other_obj_curriculum, 'ROLLY_ON_OBJ', [
+		{
+		'type' : 'ROLLY',
+		'scale' : .5,
+		'mass' : 1.,
+		'scale_var' : .01,
+		'num_items' : 30,
+		},
+		{
+		'type' : 'OTHER_STACKABLE',
+		'scale' : 1.,
+		'mass' : 1.,
+		'scale_var' : .01,
+		'num_items' : 10
+		}
+		]),
+	(curricula.other_obj_curriculum, 'OBJ_ON_ROLLY', [
+		{
+		'type' : 'SHAPENET',
+		'scale' : .5,
+		'mass' : 1.,
+		'scale_var' : .01,
+		'num_items' : 30,
+		},
+		{
+		'type' : 'ROLLY',
+		'scale' : 1.,
+		'mass' : 1.,
+		'scale_var' : .01,
+		'num_items' : 10
+		}
+		]),
+	(curricula.other_obj_curriculum, 'ROLLY_ON_ROLLY', [
+		{
+		'type' : 'ROLLY',
+		'scale' : .5,
+		'mass' : 1.,
+		'scale_var' : .01,
+		'num_items' : 30,
+		},
+		{
+		'type' : 'ROLLY',
+		'scale' : 1.,
+		'mass' : 1.,
+		'scale_var' : .01,
+		'num_items' : 10
+		}
+		]),
+	(curricula.wall_throw_curriculum, 'ROLLY_WALL_THROW', [
+		{
+		'type' : 'SHAPENET',
+		'scale' : .5,
+		'mass' : 1.,
+		'scale_var' : .01,
+		'num_items' : 30,
+		}
+		])
+]
 
 ctx = zmq.Context()
 def loop():
+	my_rng = np.random.RandomState(SEED + 3)
 	global sock
-	env = environment(SEED)	
+	env = environment(my_seed = SEED, unity_seed = SEED + 1)	
 	if USE_TDW:
 		env.next_config()
 		tc = TDW_Client(host_address,
@@ -61,36 +228,38 @@ def loop():
 		sock.connect("tcp://" + host_address + ":5556")
 		print "... connected @" + host_address + ":" + "5556"
 
-		print "sending join..."
-		#sock.send_json({"msg_type" : "SWITCH_SCENES", "get_obj_data" : True, "send_scene_info" : True})
-		#sock.send_json({"msg_type" : "CLIENT_JOIN", "get_obj_data" : True, "send_scene_info" : True})
-		#environment.next_config()
-		sock.send_json({"msg_type" : "CLIENT_JOIN_WITH_CONFIG", "config" : env.config, "get_obj_data" : True, "send_scene_info" : True, "output_formats": ["png", "png", "jpg"]})
-		print "...join sent"
+		# print "sending join..."
+		# #sock.send_json({"msg_type" : "SWITCH_SCENES", "get_obj_data" : True, "send_scene_info" : True})
+		# #sock.send_json({"msg_type" : "CLIENT_JOIN", "get_obj_data" : True, "send_scene_info" : True})
+		# #environment.next_config()
+		# sock.send_json({"msg_type" : "CLIENT_JOIN_WITH_CONFIG", "config" : env.config, "get_obj_data" : True, "send_scene_info" : True, "output_formats": ["png", "png", "jpg"]})
+		# print "...join sent"
 
 	bn = 0
-	agent = curious2.agent(CREATE_HDF5, path, SEED)
-	if USE_TDW:
-		agent.set_screen_width(SCREEN_WIDTH)
-                agent.set_screen_height(SCREEN_HEIGHT)
-	# while True:
-	for task_params in curricula.new_table_curriculum:
-		print(task_params)
-		if(bn != 0 and SCENE_SWITCH != 0 and bn % SCENE_SWITCH == 0):
-			print "switching scene..."
-			for i in range(7):
-			    sock.recv();
-			env.next_config()
-			scene_switch_msg = {"msg_type" : "SCENE_SWITCH", "config" : env.config, "get_obj_data" : True, "send_scene_info" : True, "output_formats": ["png", "png", "jpg"]}
-			if USE_TDW:
-                            sock.send_json({"n": 4, "msg": scene_switch_msg})
+	agent = curious2.agent(CREATE_HDF5, path, SEED + 2)
+	not_yet_joined = True
+	for through_curriculum_num in range(NUM_TIMES_RUN):
+		for (agent_directions, descriptor_prefix, scene_info) in my_curriculum:
+			print 'selecting objects...'
+			env.next_config(* scene_info)
+			if not_yet_joined:
+				print 'sending join...'
+				sock.send_json({"msg_type" : "CLIENT_JOIN_WITH_CONFIG", "config" : env.config, "get_obj_data" : True, "send_scene_info" : True, "output_formats": ["png", "png", "jpg"]})
+				print '...join sent'
+				not_yet_joined = False
 			else:
-			    sock.send_json(scene_switch_msg)
-			print "scene switched..."
-		print "waiting on messages"
-                agent.make_new_batch(bn, sock, path, CREATE_HDF5, USE_TDW, task_params)
-		print "messages received"
-		bn = bn + 1
+				for i in range(7):
+					sock.recv()
+				print 'switching scene...'
+				scene_switch_msg = {"msg_type" : "SCENE_SWITCH", "config" : env.config, "get_obj_data" : True, "send_scene_info" : True, "output_formats": ["png", "png", "jpg"]}
+				sock.send_json(scene_switch_msg)
+			task_order = my_rng.permutation(len(agent_directions))
+			for task_idx in task_order:
+				task_params = agent_directions[task_idx]
+				print 'waiting on messages'
+				agent.make_new_batch(bn, sock, path, CREATE_HDF5, USE_TDW, task_params, descriptor_prefix)
+				print 'message received'
+				bn += 1
 	
 def check_port_num(port_num):
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

@@ -192,7 +192,7 @@ tab_push_noshake = [
 		'wait_after' : {'threshold' : .01, 'time_window' : 3, 'max_time' : 20}, 
 		'random_init_rot' : True, 
 		'func' : curious2.make_constant_random_action_sequence, 
-		'kwargs' : {'time_len_range' : range(3, 10), 'f_horiz_range' : range(50, 70), 'std_dev_ang' : np.pi / 6.},
+		'kwargs' : {'time_len_range' : range(5, 10), 'f_horiz_range' : range(50, 70), 'std_dev_ang' : np.pi / 6.},
 		'cut_if_off_screen' : 4
 		}),
 ]
@@ -204,7 +204,7 @@ tab_push_down_noshake = [
 		'wait_after' : {'threshold' : .01, 'time_window' : 3, 'max_time' : 20}, 
 		'random_init_rot' : True, 
 		'func' : curious2.make_constant_random_action_sequence, 
-		'kwargs' : {'time_len_range' : range(3, 10), 'f_horiz_range' : range(50, 70), 'f_y_range' : range(-100, -50), 'std_dev_ang' : np.pi / 6.},
+		'kwargs' : {'time_len_range' : range(5, 10), 'f_horiz_range' : range(50, 70), 'f_y_range' : range(-100, -50), 'std_dev_ang' : np.pi / 6.},
 		'cut_if_off_screen' : 4
 		}),
 ]
@@ -304,7 +304,7 @@ controlled_table_lift_push_rot = [
 		)
 ]
 
-controlled_curriculum = [controlled_table_push_long, controlled_table_push, controlled_table_lift, controlled_table_rot, controlled_table_push_rot, controlled_table_lift_push_rot]
+controlled_table_curriculum = [controlled_table_push_long, controlled_table_push, controlled_table_lift, controlled_table_rot, controlled_table_push_rot, controlled_table_lift_push_rot]
 
 wall_throw = [
 	('WALL_THROW',
