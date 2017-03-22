@@ -296,7 +296,6 @@ def loop():
 	global sock
 	env = environment(my_seed = SEED, unity_seed = SEED + 1)	
 	if USE_TDW:
-		env.next_config()
 		tc = TDW_Client(host_address,
 			initial_command='request_create_environment',
 			description="test script",
@@ -305,14 +304,14 @@ def loop():
 			get_obj_data=True,
 			send_scene_info=True
 			)
-		tc.load_config(env.config)
-		tc.load_profile({'screen_width': SCREEN_WIDTH, 'screen_height': SCREEN_HEIGHT})
-		sock = tc.run()
 	else:
 		print "connecting..." 
 		sock = ctx.socket(zmq.REQ)
 		sock.connect("tcp://" + host_address + ":5556")
 		print "... connected @" + host_address + ":" + "5556"
+	if USE_TDW:
+		agent.set_screen_width(SCREEN_WIDTH)
+		agent.set_screen_height(SCREEN_HEIGHT)
 
 		# print "sending join..."
 		# #sock.send_json({"msg_type" : "SWITCH_SCENES", "get_obj_data" : True, "send_scene_info" : True})
@@ -329,16 +328,24 @@ def loop():
 			print 'selecting objects...'
 			env.next_config(* scene_info)
 			if not_yet_joined:
-				print 'sending join...'
-				sock.send_json({"msg_type" : "CLIENT_JOIN_WITH_CONFIG", "config" : env.config, "get_obj_data" : True, "send_scene_info" : True, "output_formats": ["png", "png", "jpg"]})
-				print '...join sent'
-				not_yet_joined = False
+				if USE_TDW:
+					tc.load_config(env.config)
+					tc.load_profile({'screen_width': SCREEN_WIDTH, 'screen_height': SCREEN_HEIGHT})
+					sock = tc.run()
+				else:
+					print 'sending join...'
+					sock.send_json({"msg_type" : "CLIENT_JOIN_WITH_CONFIG", "config" : env.config, "get_obj_data" : True, "send_scene_info" : True, "output_formats": ["png", "png", "jpg"]})
+					print '...join sent'
+					not_yet_joined = False
 			else:
 				for i in range(7):
 					sock.recv()
 				print 'switching scene...'
 				scene_switch_msg = {"msg_type" : "SCENE_SWITCH", "config" : env.config, "get_obj_data" : True, "send_scene_info" : True, "output_formats": ["png", "png", "jpg"]}
-				sock.send_json(scene_switch_msg)
+				if USE_TDW:
+					sock.send_json({"n": 4, "msg": scene_switch_msg})
+				else:
+					sock.send_json(scene_switch_msg)
 			task_order = my_rng.permutation(len(agent_directions))
 			for task_idx in task_order:
 				task_params = agent_directions[task_idx]
