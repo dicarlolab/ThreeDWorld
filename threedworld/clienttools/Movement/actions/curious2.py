@@ -272,7 +272,7 @@ class agent:
 		return None
 
 	def send_msg(self, msg):
-		msg['msg']['action_type'] = self.desc_prefix + '_' + msg['msg']['action_type']
+		msg['msg']['action_type'] = self.desc_prefix + ':' + msg['msg']['action_type']
 		if(not 'action_type' in msg['msg']):
 			print("ERROR! Action not recognized")
 		else:

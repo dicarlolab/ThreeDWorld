@@ -223,6 +223,73 @@ just_controlled_table_curriculum = [
 		]),
 ]
 
+just_obj_on_obj_curriculum = [
+	(curricula.other_obj_curriculum, 'OBJ_ON_OBJ', [
+		{
+		'type' : 'SHAPENET',
+		'scale' : .5,
+		'mass' : 1.,
+		'scale_var' : .01,
+		'num_items' : 30,
+		},
+		{
+		'type' : 'OTHER_STACKABLE',
+		'scale' : 1.,
+		'mass' : 1.,
+		'scale_var' : .01,
+		'num_items' : 10
+		}
+		]),
+	(curricula.other_obj_curriculum, 'ROLLY_ON_OBJ', [
+		{
+		'type' : 'ROLLY',
+		'scale' : .5,
+		'mass' : 1.,
+		'scale_var' : .01,
+		'num_items' : 30,
+		},
+		{
+		'type' : 'OTHER_STACKABLE',
+		'scale' : 1.,
+		'mass' : 1.,
+		'scale_var' : .01,
+		'num_items' : 10
+		}
+		]),
+	(curricula.other_obj_curriculum, 'OBJ_ON_ROLLY', [
+		{
+		'type' : 'SHAPENET',
+		'scale' : .5,
+		'mass' : 1.,
+		'scale_var' : .01,
+		'num_items' : 30,
+		},
+		{
+		'type' : 'ROLLY',
+		'scale' : 1.,
+		'mass' : 1.,
+		'scale_var' : .01,
+		'num_items' : 10
+		}
+		]),
+	(curricula.other_obj_curriculum, 'ROLLY_ON_ROLLY', [
+		{
+		'type' : 'ROLLY',
+		'scale' : .5,
+		'mass' : 1.,
+		'scale_var' : .01,
+		'num_items' : 30,
+		},
+		{
+		'type' : 'ROLLY',
+		'scale' : 1.,
+		'mass' : 1.,
+		'scale_var' : .01,
+		'num_items' : 10
+		}
+		]),
+]
+
 ctx = zmq.Context()
 def loop():
 	my_rng = np.random.RandomState(SEED + 3)
@@ -258,7 +325,7 @@ def loop():
 	agent = curious2.agent(CREATE_HDF5, path, SEED + 2)
 	not_yet_joined = True
 	for through_curriculum_num in range(NUM_TIMES_RUN):
-		for (agent_directions, descriptor_prefix, scene_info) in just_controlled_table_curriculum:
+		for (agent_directions, descriptor_prefix, scene_info) in just_obj_on_obj_curriculum:
 			print 'selecting objects...'
 			env.next_config(* scene_info)
 			if not_yet_joined:

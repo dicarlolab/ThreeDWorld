@@ -96,7 +96,7 @@ class environment:
 
 	# update config for next scene switch
 	def next_config(self, * round_info):
-		rounds = [{'items' : self.get_items(query_dict[info['type']], info['num_items'] * 2, info['scale'], info['mass'], info['scale_var']), 'num_items' : info['num_items']} for info in round_info]
+		rounds = [{'items' : self.get_items(query_dict[info['type']], info['num_items'] * 4, info['scale'], info['mass'], info['scale_var']), 'num_items' : info['num_items']} for info in round_info]
 
 		self.config = {
 			"environment_scene" : "ProceduralGeneration",

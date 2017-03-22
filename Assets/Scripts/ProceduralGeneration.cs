@@ -228,13 +228,17 @@ public class ProceduralGeneration : MonoBehaviour
 		CreateLightingSetup(roomDim, new Vector3((roomDim.x-1) * 0.5f,0,(roomDim.z-1) * 0.5f));
 		Debug.Log("...created!");
 
-		availablePrefabs = new List<PrefabDatabase.PrefabInfo>();
 		LitJson.JsonData prefabRounds = json["rounds"];
+		Debug.Log ("Rounds: " + prefabRounds.Count.ToString ());
 		if (prefabRounds != null) {
 			for(int r = 0; r < prefabRounds.Count; r++)
 			{
+				availablePrefabs = new List<PrefabDatabase.PrefabInfo>();
+				Debug.Log ("Round: " + r.ToString ());
 				int num_items = prefabRounds[r]["num_items"].ReadInt(0);
+				Debug.Log ("num_items requested: " + num_items.ToString ());
 				LitJson.JsonData items = prefabRounds[r]["items"];
+				Debug.Log ("num items provided: " + items.Count.ToString ());
 				if(items != null) {
 					for(int i = 0; i < items.Count; i++)
 					{
@@ -243,7 +247,6 @@ public class ProceduralGeneration : MonoBehaviour
 
 						newInfo.bounds.center = items[i]["center_pos"].ReadVector3(new Vector3(0f, 0f, 0f));
 						newInfo.bounds.extents = items[i]["boundb_pos"].ReadVector3(new Vector3(0f, 0f, 0f));
-						Debug.Log ("Center " + newInfo.bounds.center.ToString ());
 						newInfo._id_str  = items[i]["_id_str"].ReadString(newInfo._id_str);
 						newInfo.aws_version = items[i]["aws_version"].ReadString(newInfo.aws_version);
 
@@ -257,7 +260,7 @@ public class ProceduralGeneration : MonoBehaviour
 				}
 				groundPrefabs = availablePrefabs.FindAll(((PrefabDatabase.PrefabInfo info)=>
 				        {return info.anchorType == GeneratablePrefab.AttachAnchor.Ground;}));
-
+				Debug.Log ("Num ground prefabs: " + groundPrefabs.Count.ToString ());
 				Debug.Log ("About to add objects");
 				for(int i = 0; i < num_items; i++)
 				{
@@ -363,7 +366,7 @@ public class ProceduralGeneration : MonoBehaviour
                             centerPos.y     = max_height + 0.1f+boundsHeight;
                             try_times       = try_times + 1;
                         }
-                        Debug.Log("Choosing highest height:" + max_height + " " + try_times);
+//                        Debug.Log("Choosing highest height:" + max_height + " " + try_times);
                         finalX = testInfo.x;
                         finalY = testInfo.y;
                         offset_height = max_height + 0.1f;
