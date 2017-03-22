@@ -12,8 +12,10 @@ class agent:
 
 	WRITE_FILES = False
 
-        SCREEN_WIDTH = 256 #512
-        SCREEN_HEIGHT = 256 #384
+        # SCREEN_WIDTH = 256 #512
+        # SCREEN_HEIGHT = 256 #384
+    SCREEN_WIDTH = 600
+    SCREEN_HEIGHT = 256
 
 	BATCH_SIZE = 256
 	MULTSTART = -1
