@@ -9,6 +9,8 @@ using LitJson;
 using UnityEngine.SceneManagement;
 using AsyncIO;
 
+
+
 /// <summary>
 /// Manages connections with all clients
 /// </summary>
@@ -361,10 +363,10 @@ public class NetMessenger : MonoBehaviour
 				break;
             case MSG_R_ClientJoin:
                 OnClientJoin(server, jsonData);
-				RecieveClientInput(server, jsonData);
+                ReceiveClientInput(server, jsonData);
                 break;
             case MSG_R_FrameInput:
-                RecieveClientInput(server, jsonData);
+                ReceiveClientInput(server, jsonData);
                 break;
 			case MSG_R_ClientJoinWithConfig:
 				Debug.Log ("Config received!");
@@ -402,9 +404,9 @@ public class NetMessenger : MonoBehaviour
 		}
 
 		Debug.Log ("Loading \'" + newEnvironmentScene + "\'");
-
-		// Load new scene
-		SceneManager.LoadScene (newEnvironmentScene, LoadSceneMode.Additive);
+     
+        // Load new scene
+        SceneManager.LoadScene ( newEnvironmentScene, LoadSceneMode.Additive);
 		if (!SceneManager.GetSceneByName (newEnvironmentScene).IsValid()) {
 			Debug.LogError ("Scene name \"" + newEnvironmentScene + "\" was not found.");
 		}
@@ -412,8 +414,7 @@ public class NetMessenger : MonoBehaviour
 		if (!SceneManager.GetSceneByName (newEnvironmentScene).path.StartsWith ("Assets/Scenes/EnvironmentScenes/")) {
 			Debug.LogError ("Scene is not located in Assets/Scenes/EnvironmentScenes/, please relocate scene file to this directory!");
 		}
-
-		SceneManager.sceneLoaded += sceneWasLoaded;
+        SceneManager.sceneLoaded += sceneWasLoaded;
 
 		this.skipFrame = true;
 		this.waitForSceneInit = true;
@@ -426,7 +427,7 @@ public class NetMessenger : MonoBehaviour
 		this.skipFrame = true;
 	}
 
-    public void RecieveClientInput(ResponseSocket server, JsonData jsonData)
+    public void ReceiveClientInput(ResponseSocket server, JsonData jsonData)
     {
         _avatars[server].HandleNetInput(jsonData);
     }

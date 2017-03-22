@@ -15,7 +15,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &433184
 Transform:
   m_ObjectHideFlags: 1
@@ -40,7 +40,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6838632603741a1428102a46a4ed23d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  complexityLevelToCreate: 10000
   numCeilingLights: 3
   intensityCeilingLights: 1
   useStandardShader: 0
@@ -57,7 +56,6 @@ MonoBehaviour:
   disabledItems: []
   permittedItems: []
   gridDim: 1
-  use_mongodb_inter: 0
   use_cache_self: 0
   disable_rand_stacking: 1
   enable_global_unit_scale: 0
@@ -98,9 +96,9 @@ MonoBehaviour:
   ceilingMaterial: {fileID: 2100000, guid: 87294f02d9437b8479f6d772f8b00a8d, type: 2}
   wallTrimMaterial: {fileID: 2100000, guid: baf8ceb37ffecbd42a924d001e01127c, type: 2}
   windowMaterial: {fileID: 2100000, guid: e7a9aa901c4190f4ba2c8d9803d4df8f, type: 2}
-  skyboxMaterial: {fileID: 2100000, guid: 75ab8d55773004d0c847a631d433bd69, type: 2}
+  skyboxMaterial: {fileID: 2100000, guid: 74a166a5195ca0e4f877b7da165ce061, type: 2}
   windowTrimMaterial: {fileID: 2100000, guid: 037c10e8a9c9c5e47a726216732d17d8, type: 2}
-  physicsMaterial: {fileID: 13400000, guid: d678c4a4f7d9c44c1b03019d765cfae0, type: 2}
+  physicsMaterial: {fileID: 13400000, guid: 2934e16643abc274da7f1a7ce499337d, type: 2}
   showProcGenDebug: 0
   list_rands: []
   _allHeightPlanes: []

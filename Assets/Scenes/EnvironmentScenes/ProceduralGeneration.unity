@@ -1,15 +1,15 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
 --- !u!29 &1
-SceneSettings:
+OcclusionCullingSettings:
   m_ObjectHideFlags: 0
-  m_PVSData: 
-  m_PVSObjectsArray: []
-  m_PVSPortalsArray: []
+  serializedVersion: 2
   m_OcclusionBakeSettings:
     smallestOccluder: 5
     smallestHole: 0.25
     backfaceThreshold: 100
+  m_SceneGUID: 00000000000000000000000000000000
+  m_OcclusionCullingData: {fileID: 0}
 --- !u!104 &2
 RenderSettings:
   m_ObjectHideFlags: 0
@@ -80,16 +80,17 @@ NavMeshSettings:
   m_ObjectHideFlags: 0
   m_BuildSettings:
     serializedVersion: 2
+    agentTypeID: 0
     agentRadius: 0.5
     agentHeight: 2
     agentSlope: 45
     agentClimb: 0.4
     ledgeDropHeight: 0
     maxJumpAcrossDistance: 0
-    accuratePlacement: 0
     minRegionArea: 2
-    cellSize: 0.16666667
     manualCellSize: 0
+    cellSize: 0.16666667
+    accuratePlacement: 0
   m_NavMeshData: {fileID: 0}
 --- !u!1001 &1743655300
 Prefab:
@@ -98,46 +99,46 @@ Prefab:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 433184, guid: e1f5a804a9324bd4c88474bdfa97f3a3, type: 2}
+    - target: {fileID: 4552349190455906, guid: eb3265c2fb02c344cbfa866460de619d, type: 2}
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 433184, guid: e1f5a804a9324bd4c88474bdfa97f3a3, type: 2}
+    - target: {fileID: 4552349190455906, guid: eb3265c2fb02c344cbfa866460de619d, type: 2}
       propertyPath: m_LocalPosition.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 433184, guid: e1f5a804a9324bd4c88474bdfa97f3a3, type: 2}
+    - target: {fileID: 4552349190455906, guid: eb3265c2fb02c344cbfa866460de619d, type: 2}
       propertyPath: m_LocalPosition.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 433184, guid: e1f5a804a9324bd4c88474bdfa97f3a3, type: 2}
+    - target: {fileID: 4552349190455906, guid: eb3265c2fb02c344cbfa866460de619d, type: 2}
       propertyPath: m_LocalRotation.x
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 433184, guid: e1f5a804a9324bd4c88474bdfa97f3a3, type: 2}
+    - target: {fileID: 4552349190455906, guid: eb3265c2fb02c344cbfa866460de619d, type: 2}
       propertyPath: m_LocalRotation.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 433184, guid: e1f5a804a9324bd4c88474bdfa97f3a3, type: 2}
+    - target: {fileID: 4552349190455906, guid: eb3265c2fb02c344cbfa866460de619d, type: 2}
       propertyPath: m_LocalRotation.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 433184, guid: e1f5a804a9324bd4c88474bdfa97f3a3, type: 2}
+    - target: {fileID: 4552349190455906, guid: eb3265c2fb02c344cbfa866460de619d, type: 2}
       propertyPath: m_LocalRotation.w
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 433184, guid: e1f5a804a9324bd4c88474bdfa97f3a3, type: 2}
+    - target: {fileID: 4552349190455906, guid: eb3265c2fb02c344cbfa866460de619d, type: 2}
       propertyPath: m_RootOrder
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 11401938, guid: e1f5a804a9324bd4c88474bdfa97f3a3, type: 2}
-      propertyPath: showProcGenDebug
+    - target: {fileID: 1747089288522998, guid: eb3265c2fb02c344cbfa866460de619d, type: 2}
+      propertyPath: m_Name
+      value: ProceduralGeneration
+      objectReference: {fileID: 0}
+    - target: {fileID: 1747089288522998, guid: eb3265c2fb02c344cbfa866460de619d, type: 2}
+      propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 11401938, guid: e1f5a804a9324bd4c88474bdfa97f3a3, type: 2}
-      propertyPath: skyboxMaterial
-      value: 
-      objectReference: {fileID: 2100000, guid: 74a166a5195ca0e4f877b7da165ce061, type: 2}
     m_RemovedComponents: []
-  m_ParentPrefab: {fileID: 100100000, guid: e1f5a804a9324bd4c88474bdfa97f3a3, type: 2}
+  m_ParentPrefab: {fileID: 100100000, guid: eb3265c2fb02c344cbfa866460de619d, type: 2}
   m_IsPrefabParent: 0
