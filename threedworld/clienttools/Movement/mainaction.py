@@ -17,14 +17,14 @@ import curricula
 
 SEED = int(sys.argv[2])
 CREATE_HDF5 = False
-USE_TDW = False
+USE_TDW = True
 SCENE_SWITCH = 20
 SCREEN_WIDTH = 600
 SCREEN_HEIGHT = 256
 SELECTED_BUILD = 'one_world.exe'
 
-if USE_TDW:
-	raise Exception('Not yet adapted to USE_TDW')
+#if USE_TDW:
+#   raise Exception('Not yet adapted to USE_TDW')
 
 NUM_TIMES_RUN = 5
 
@@ -294,7 +294,8 @@ ctx = zmq.Context()
 def loop():
 	my_rng = np.random.RandomState(SEED + 3)
 	global sock
-	env = environment(my_seed = SEED, unity_seed = SEED + 1)	
+	env = environment(my_seed = SEED, unity_seed = SEED + 1)
+        agent = curious2.agent(CREATE_HDF5, path, SEED + 2)
 	if USE_TDW:
 		tc = TDW_Client(host_address,
 			initial_command='request_create_environment',
@@ -302,7 +303,8 @@ def loop():
 			selected_build=SELECTED_BUILD,  # or skip to select from UI
 			#queue_port_num="23402",
 			get_obj_data=True,
-			send_scene_info=True
+			send_scene_info=True,
+                        num_frames_per_msg=7,
 			)
 	else:
 		print "connecting..." 
@@ -321,7 +323,6 @@ def loop():
 		# print "...join sent"
 
 	bn = 0
-	agent = curious2.agent(CREATE_HDF5, path, SEED + 2)
 	not_yet_joined = True
 	for through_curriculum_num in range(NUM_TIMES_RUN):
 		for (agent_directions, descriptor_prefix, scene_info) in just_obj_on_obj_curriculum:
@@ -336,14 +337,14 @@ def loop():
 					print 'sending join...'
 					sock.send_json({"msg_type" : "CLIENT_JOIN_WITH_CONFIG", "config" : env.config, "get_obj_data" : True, "send_scene_info" : True, "output_formats": ["png", "png", "jpg"]})
 					print '...join sent'
-					not_yet_joined = False
+				not_yet_joined = False
 			else:
 				for i in range(7):
 					sock.recv()
 				print 'switching scene...'
 				scene_switch_msg = {"msg_type" : "SCENE_SWITCH", "config" : env.config, "get_obj_data" : True, "send_scene_info" : True, "output_formats": ["png", "png", "jpg"]}
 				if USE_TDW:
-					sock.send_json({"n": 4, "msg": scene_switch_msg})
+					sock.send_json({"n": 7, "msg": scene_switch_msg})
 				else:
 					sock.send_json(scene_switch_msg)
 			task_order = my_rng.permutation(len(agent_directions))
