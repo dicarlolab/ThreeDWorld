@@ -226,7 +226,7 @@ new_table_curriculum = [tab_push_long, tab_push_short, tab_lift, tab_rot, tab_pu
 
 
 
-
+#np.pi / 6.
 #controlled table task
 
 
@@ -256,6 +256,21 @@ controlled_table_push = [
 
 		)
 ]
+
+
+controlled_table_push_lowvar = [
+	('CONTROLLED_TABLE_TASK',
+		'CONTROLLED_PUSH',
+		{'func' : curious2.controlled_constant_action_sequences_distinguished_direction,
+		'wait_before' : {'threshold' : .01, 'time_window' : 3, 'max_time' : 20}, 
+		'wait_after' : {'threshold' : .01, 'time_window' : 3, 'max_time' : 20}, 
+		'kwargs' : {'std_dev_ang' : .001, 'time_len_range' : range(1, 2), 'f_horiz_range' : range(100, 400)},
+		'cut_if_off_screen' : 4
+		}
+
+		)
+]
+
 
 controlled_table_lift = [
 	('CONTROLLED_TABLE_TASK',
@@ -305,6 +320,8 @@ controlled_table_lift_push_rot = [
 ]
 
 controlled_table_curriculum = [controlled_table_push_long, controlled_table_push, controlled_table_lift, controlled_table_rot, controlled_table_push_rot, controlled_table_lift_push_rot]
+
+controlled_table_simple_test = [controlled_table_push_lowvar]
 
 wall_throw = [
 	('WALL_THROW',

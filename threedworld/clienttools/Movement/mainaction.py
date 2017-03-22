@@ -204,6 +204,25 @@ my_curriculum = [
 		])
 ]
 
+just_controlled_table_curriculum = [
+	(curricula.controlled_table_simple_test, 'TABLE_CONTROLLED', [
+		{
+		'type' : 'SHAPENET',
+		'scale' : .5,
+		'mass' : 1.,
+		'scale_var' : .01,
+		'num_items' : 30,
+		},
+		{
+		'type' : 'TABLE',
+		'scale' : 2.,
+		'mass' : 50.,
+		'scale_var' : .01,
+		'num_items' : 10
+		}
+		]),
+]
+
 ctx = zmq.Context()
 def loop():
 	my_rng = np.random.RandomState(SEED + 3)
@@ -239,7 +258,7 @@ def loop():
 	agent = curious2.agent(CREATE_HDF5, path, SEED + 2)
 	not_yet_joined = True
 	for through_curriculum_num in range(NUM_TIMES_RUN):
-		for (agent_directions, descriptor_prefix, scene_info) in my_curriculum:
+		for (agent_directions, descriptor_prefix, scene_info) in just_controlled_table_curriculum:
 			print 'selecting objects...'
 			env.next_config(* scene_info)
 			if not_yet_joined:

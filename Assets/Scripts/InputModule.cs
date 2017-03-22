@@ -177,10 +177,11 @@ public class InputModule : AbstractInputModule
 				int id = int.Parse(str_id);
 				teleport_to = action["teleport_to"];
 				Vector3 force = action ["force"].ReadVector3 ();
-				if (action["use_absolute_coordinates"].ReadBool(false))
+				if (! action["use_absolute_coordinates"].ReadBool(false)) {
 					force = _myAvatar.transform.TransformDirection (force);
+				}
 				Vector3 torque = action ["torque"].ReadVector3 ();
-				if (action["use_absolute_coordinates"].ReadBool(false))
+				if (! action["use_absolute_coordinates"].ReadBool(false))
 					torque = _myAvatar.transform.TransformDirection (torque);
 				foreach (SemanticObject o in allObjects) {
 					int idval = -999;

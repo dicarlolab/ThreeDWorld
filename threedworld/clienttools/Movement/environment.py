@@ -77,7 +77,7 @@ class environment:
 			idvals = np.array([str(_x['_id']) for _x in list(self.coll.find(q, projection=['_id']))])
 			self.CACHE[str(q)] = idvals
 			print('new', q, len(idvals))
-			idvals = self.CACHE[str(q)]
+		idvals = self.CACHE[str(q)]
 		num_ava = len(idvals)
 		#might want to just initialize this once
 		goodidinds = self.rng.permutation(num_ava)[: num_items] 
