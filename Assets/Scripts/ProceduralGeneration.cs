@@ -229,16 +229,12 @@ public class ProceduralGeneration : MonoBehaviour
 		Debug.Log("...created!");
 
 		LitJson.JsonData prefabRounds = json["rounds"];
-		Debug.Log ("Rounds: " + prefabRounds.Count.ToString ());
 		if (prefabRounds != null) {
 			for(int r = 0; r < prefabRounds.Count; r++)
 			{
 				availablePrefabs = new List<PrefabDatabase.PrefabInfo>();
-				Debug.Log ("Round: " + r.ToString ());
 				int num_items = prefabRounds[r]["num_items"].ReadInt(0);
-				Debug.Log ("num_items requested: " + num_items.ToString ());
 				LitJson.JsonData items = prefabRounds[r]["items"];
-				Debug.Log ("num items provided: " + items.Count.ToString ());
 				if(items != null) {
 					for(int i = 0; i < items.Count; i++)
 					{
@@ -260,7 +256,6 @@ public class ProceduralGeneration : MonoBehaviour
 				}
 				groundPrefabs = availablePrefabs.FindAll(((PrefabDatabase.PrefabInfo info)=>
 				        {return info.anchorType == GeneratablePrefab.AttachAnchor.Ground;}));
-				Debug.Log ("Num ground prefabs: " + groundPrefabs.Count.ToString ());
 				Debug.Log ("About to add objects");
 				for(int i = 0; i < num_items; i++)
 				{
