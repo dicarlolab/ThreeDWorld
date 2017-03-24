@@ -26,7 +26,7 @@ SELECTED_BUILD = 'one_world.exe'
 #if USE_TDW:
 #   raise Exception('Not yet adapted to USE_TDW')
 
-NUM_TIMES_RUN = 50
+NUM_TIMES_RUN = 3
 
 os.environ['USER'] = 'mrowca'
 #path = 'C:/Users/mrowca/Documents/test'
@@ -223,6 +223,25 @@ just_controlled_table_curriculum = [
 		]),
 ]
 
+just_random_table_curriculum = [
+	(curricula.new_table_curriculum, 'TABLE', [
+		{
+		'type' : 'SHAPENET',
+		'scale' : .5,
+		'mass' : 1.,
+		'scale_var' : .01,
+		'num_items' : 30,
+		},
+		{
+		'type' : 'TABLE',
+		'scale' : 2.,
+		'mass' : 50.,
+		'scale_var' : .01,
+		'num_items' : 10
+		}
+		])
+]
+
 just_obj_on_obj_curriculum = [
 	(curricula.other_obj_curriculum, 'OBJ_ON_OBJ', [
 		{
@@ -353,7 +372,7 @@ def loop():
 	bn = 0
 	not_yet_joined = True
 	for through_curriculum_num in range(NUM_TIMES_RUN):
-		for (agent_directions, descriptor_prefix, scene_info) in just_wall_throws:
+		for (agent_directions, descriptor_prefix, scene_info) in my_curriculum:
 			print 'selecting objects...'
 			env.next_config(* scene_info)
                         scene_start = True

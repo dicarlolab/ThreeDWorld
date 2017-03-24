@@ -192,6 +192,7 @@ public class InputModule : AbstractInputModule
 						if(teleport_to != null && !o.isStatic)
 						{
 							Vector3 new_object_position = teleport_to["position"].ReadVector3(Vector3.zero);
+							float object_height = o.GetComponent<SemanticObject> ().extents.y;
 							Vector3 new_object_rotation = teleport_to["rotation"].ReadVector3(Vector3.zero);
 							o.transform.rotation = Quaternion.LookRotation(new_object_rotation);
 
@@ -200,7 +201,7 @@ public class InputModule : AbstractInputModule
 							Vector3 raycast_origin = new Vector3(new_object_position.x, roomHeight-0.5f, new_object_position.z);
 							if (Physics.Raycast(raycast_origin, Vector3.down, out hit, roomHeight))
 							{
-								new_object_position.y = Mathf.Max(hit.point.y + object_size.y / 2 + 0.5f, 0);
+								new_object_position.y = Mathf.Max(hit.point.y + object_size.y / 2, new_object_position.y);
 							}
 							o.transform.position = new_object_position;
 						}

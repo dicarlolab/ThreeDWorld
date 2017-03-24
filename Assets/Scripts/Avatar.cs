@@ -188,8 +188,10 @@ public class Avatar : MonoBehaviour
 		const float radius = 0.3f;
 		float setHeight = new_position.y;
 		new_position.y = scene.roomDim.y - 0.5f;
-		if (Physics.Raycast(new_position, Vector3.down, out hit, 2*scene.roomDim.y))
+
+		if (Physics.Raycast (new_position, Vector3.down, out hit, 2 * scene.roomDim.y)) {
 			new_position.y = hit.point.y + radius;
+		}
 		new_position.y = Mathf.Max(setHeight, new_position.y);
         transform.position = new_position;
     }
