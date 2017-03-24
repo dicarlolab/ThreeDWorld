@@ -18,7 +18,6 @@ default_keys = ['boundb_pos', 'isLight', 'anchor_type', 'aws_address', 'complexi
 def query_results_to_unity_data(query_results, scale, mass, var = .01, seed = 0):
 	item_list = []
 	for i in range(len(query_results)):
-		print i
 		res = query_results[i]
 		item = {}
 		item['type'] = res['type']
