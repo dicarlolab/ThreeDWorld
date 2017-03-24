@@ -61,4 +61,4 @@ def handle_message(sock, write=False, outdir='', imtype='png', prefix=''):
         if '_0' in prefix:
             with open(os.path.join(outdir, 'info_%s.json' % prefix), 'w') as _f:
                 _f.write(info)
-    return [info, narray, oarray, imarray]
+    return [info, narray, oarray, imarray, narray2, oarray2, imarray2]

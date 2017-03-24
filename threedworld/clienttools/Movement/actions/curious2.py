@@ -150,7 +150,7 @@ class agent:
 
 	WRITE_FILES = False
 
-        SCREEN_WIDTH = 256 #512
+        SCREEN_WIDTH = 600 #512
         SCREEN_HEIGHT = 256 #384
 
 	BATCH_SIZE = 256
@@ -160,7 +160,7 @@ class agent:
 	ACTION_LENGTH = 15
 	ACTION_WAIT = 15
 
-	N = 256000
+	N = 2 * 256 * 50
 	valid = np.zeros((N,1)) 
 
 	rng = np.random.RandomState(0)
@@ -197,7 +197,10 @@ class agent:
             objects = self.hdf5.require_dataset('objects', shape=(self.N, self.SCREEN_HEIGHT, self.SCREEN_WIDTH, 3), dtype=np.uint8)
             worldinfos = self.hdf5.require_dataset('worldinfo', shape=(self.N,), dtype=dt)
             agentactions = self.hdf5.require_dataset('actions', shape=(self.N,), dtype=dt)
-            return [valid, images, normals, objects, worldinfos, agentactions]
+            images2 = self.hdf5.require_dataset('images2', shape = (self.N, self.SCREEN_HEIGHT, self.SCREEN_WIDTH, 3), dtype = np.uint8)
+            normals2 = self.hdf5.require_dataset('normals2', shape = (self.N, self.SCREEN_HEIGHT, self.SCREEN_WIDTH, 3), dtype = np.uint8)
+            objects2 = self.hdf5.require_dataset('objects2', shape = (self.N, self.SCREEN_HEIGHT, self.SCREEN_WIDTH, 3), dtype = np.uint8)
+            return [valid, images, normals, objects, worldinfos, agentactions, images2, normals2, objects2]
 
         def choose(self, x):
 	  index = self.rng.randint(len(x))
@@ -286,10 +289,13 @@ class agent:
 			self.sock.send_json(msg['msg'])
 		if self.create_hdf5:
 			self.infolist.append(json.dumps(msg['msg']))
-			self.ims.append(imarray)
-			self.norms.append(narray)
-			self.infs.append(json.dumps(info))
-			self.objs.append(oarray)
+			self.ims.append(self.imarray)
+			self.norms.append(self.narray)
+			self.infs.append(json.dumps(self.info))
+			self.objs.append(self.oarray)
+                        self.ims2.append(self.imarray2)
+                        self.norms2.append(self.narray2)
+                        self.objs2.append(self.oarray2)
 
 
 
@@ -308,7 +314,7 @@ class agent:
 		while len(counter_str) < 4:
 			counter_str  = '0' + counter_str
                 print 'about to handle message'
-		info, self.narray, self.oarray, self.imarray = handle_message(self.sock, write=self.WRITE_FILES, outdir=self.temp_im_path, prefix=counter_str)
+		info, self.narray, self.oarray, self.imarray, self.narray2, self.oarray2, self.imarray2 = handle_message(self.sock, write=self.WRITE_FILES, outdir=self.temp_im_path, prefix=counter_str)
                 print 'message handled'
                 self.info = json.loads(info)
 		self.oarray1 = 256**2 * self.oarray[:, :, 0] + 256 * self.oarray[:, :, 1] + self.oarray[:, :, 2]
@@ -845,20 +851,25 @@ class agent:
 
 
 
-	def make_new_batch(self, bn, sock, path, create_hdf5, use_tdw_msg, task_params, descriptor_prefix):
+	def make_new_batch(self, bn, sock, path, create_hdf5, use_tdw_msg, task_params, descriptor_prefix, scene_start = False):
 		self.bn, self.sock, self.path, self.create_hdf5, self.use_tdw_msg, self.desc_prefix = bn, sock, path, create_hdf5, use_tdw_msg, descriptor_prefix
 		self.in_batch_counter = 0
 		self.temp_im_path = os.path.join(self.path, 'test_test_test')
 		if not os.path.exists(self.temp_im_path):
 			os.mkdir(self.temp_im_path)
-		self.wait(10)
 		if self.create_hdf5:
+                        print 'creating instances for save'
 			self.ims = []
 			self.objs = []
 			self.norms = []
+                        self.ims2 = []
+                        self.objs2 = []
+                        self.norms2 = []
 			self.infolist = []
 			self.infs = []
-			self.valid, images, normals, objects, worldinfos, agentactions = self.get_hdf5_handles()
+			self.valid, images, normals, objects, worldinfos, agentactions, images2, normals2, objects2 = self.get_hdf5_handles()
+                if scene_start:
+                    self.wait(10)
 		while self.in_batch_counter < self.BATCH_SIZE:
 			print(self.in_batch_counter)
 			for (mode, act_desc, act_params) in task_params:
@@ -873,18 +884,27 @@ class agent:
 				else:
 					raise Exception('Batch mode not implemented')
 		if self.create_hdf5:
+                        print 'prepping for hdf5 write'
 			start = self.BATCH_SIZE * bn
 			end = self.BATCH_SIZE * (bn + 1)
 			self.ims = np.array(self.ims)
 			self.norms = np.array(self.norms)
 			self.objs = np.array(self.objs)
-			images[start: end] = ims
-			normals[start: end] = norms
-			objects[start: end] = objs
+                        self.ims2 = np.array(self.ims2)
+                        self.norms2 = np.array(self.norms2)
+                        self.objs2 = np.array(self.objs2)
+			images[start: end] = self.ims
+			normals[start: end] = self.norms
+			objects[start: end] = self.objs
+                        images2[start:end] = self.ims2
+                        normals2[start:end] = self.norms2
+                        objects2[start:end] = self.objs2
 			self.valid[start: end] = True
-			worldinfos[start: end] = infs
-			agentactions[start: end] = infolist
+			worldinfos[start: end] = self.infs
+			agentactions[start: end] = self.infolist
+                        print 'flushing'
 			self.hdf5.flush()
+                        print 'flushed'
 
 
 

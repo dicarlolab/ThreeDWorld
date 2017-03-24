@@ -68,7 +68,7 @@ simple_rot = [
 		'ROT', 
 		{
 		'func' : curious2.make_constant_random_action_sequence, 
-		'kwargs' : {'time_len_range' : range(15, 20), 'tor_y_range' : range(50, 200), 'std_dev_ang' : np.pi / 6.}, 
+		'kwargs' : {'time_len_range' : range(15, 20), 'tor_y_range' : range(100, 300), 'std_dev_ang' : np.pi / 6.}, 
 		'wait' : {'threshold' : .01, 'time_window' : 3, 'max_time' : 20},
 		'cut_if_off_screen' : 4
 		})
@@ -158,7 +158,7 @@ tab_rot = [
 		'wait_before' : {'threshold' : .01, 'time_window' : 3, 'max_time' : 20}, 
 		'wait_after' : {'threshold' : .01, 'time_window' : 3, 'max_time' : 20}, 
 		'random_init_rot' : True, 'func' : curious2.make_constant_random_action_sequence, 
-		'kwargs' : {'std_dev_ang' : np.pi / 6., 'time_len_range' : range(15, 20), 'tor_y_range' : range(50, 200)},
+		'kwargs' : {'std_dev_ang' : np.pi / 6., 'time_len_range' : range(15, 20), 'tor_y_range' : range(100, 300)},
 		'cut_if_off_screen' : 4
 		})
 ]
@@ -226,7 +226,7 @@ tab_rot_noshake = [
 		'wait_before' : {'threshold' : .01, 'time_window' : 3, 'max_time' : 20}, 
 		'wait_after' : {'threshold' : .01, 'time_window' : 3, 'max_time' : 20}, 
 		'random_init_rot' : True, 'func' : curious2.make_constant_random_action_sequence, 
-		'kwargs' : {'std_dev_ang' : np.pi / 6., 'time_len_range' : range(15, 20), 'tor_y_range' : range(50, 200)},
+		'kwargs' : {'std_dev_ang' : np.pi / 6., 'time_len_range' : range(15, 20), 'tor_y_range' : range(100, 300)},
 		'cut_if_off_screen' : 4
 		})
 ]
@@ -253,7 +253,7 @@ tab_lift_push_rot_noshake = [
 ]
 
 
-other_obj_curriculum = [tab_push_noshake, tab_push_down_noshake, tab_lift_noshake, tab_rot_noshake, tab_push_rot_noshake, tab_lift_push_rot_noshake]
+other_obj_curriculum = [tab_push_noshake, tab_push_down_noshake, tab_lift_noshake, tab_push_rot_noshake, tab_lift_push_rot_noshake]
 
 
 
@@ -341,7 +341,7 @@ controlled_table_rot = [
 		{'func' : curious2.controlled_constant_action_sequences_distinguished_direction,
 		'wait_before' : {'threshold' : .01, 'time_window' : 3, 'max_time' : 20}, 
 		'wait_after' : {'threshold' : .01, 'time_window' : 3, 'max_time' : 20}, 
-		'kwargs' : {'std_dev_ang' : np.pi / 6., 'time_len_range' : range(15, 20), 'tor_y_range' : range(50, 200)},
+		'kwargs' : {'std_dev_ang' : np.pi / 6., 'time_len_range' : range(15, 20), 'tor_y_range' : range(100, 300)},
 		'cut_if_off_screen' : 4
 		}
 		)
