@@ -29,7 +29,7 @@ simple_push_longer = [
 simple_push_shorter = [
 	('SINGLE_OBJECT', 'FAST_PUSH', 
 		{'func' : curious2.make_constant_random_action_sequence, 
-		'kwargs' : {'time_len_range' : range(1, 2), 'f_horiz_range' : range(100, 400), 'std_dev_ang' : np.pi / 6.}, 
+		'kwargs' : {'time_len_range' : range(1, 2), 'f_horiz_range' : range(100, 400) + range(100, 200), 'std_dev_ang' : np.pi / 6.}, 
 		'wait' : {'threshold' : .01, 'time_window' : 3, 'max_time' : 20},
 		'cut_if_off_screen' : 4
 		}),
@@ -136,7 +136,7 @@ tab_push_short = [
 		'wait_after' : {'threshold' : .01, 'time_window' : 3, 'max_time' : 20}, 
 		'random_init_rot' : True, 
 		'func' : curious2.make_constant_random_action_sequence, 
-		'kwargs' : {'std_dev_ang' : np.pi / 6., 'time_len_range' : range(1, 2), 'f_horiz_range' : range(100, 400)},
+		'kwargs' : {'std_dev_ang' : np.pi / 6., 'time_len_range' : range(1, 2), 'f_horiz_range' : range(100, 400) + range(100, 200)},
 		'cut_if_off_screen' : 4
 		}),
 ]
@@ -302,7 +302,7 @@ controlled_table_push = [
 		{'func' : curious2.controlled_constant_action_sequences_distinguished_direction,
 		'wait_before' : {'threshold' : .01, 'time_window' : 3, 'max_time' : 20}, 
 		'wait_after' : {'threshold' : .01, 'time_window' : 3, 'max_time' : 20}, 
-		'kwargs' : {'std_dev_ang' : np.pi / 6., 'time_len_range' : range(1, 2), 'f_horiz_range' : range(100, 400)},
+		'kwargs' : {'std_dev_ang' : np.pi / 6., 'time_len_range' : range(1, 2), 'f_horiz_range' : range(100, 400) + range(100, 200)},
 		'cut_if_off_screen' : 4
 		}
 
@@ -316,7 +316,7 @@ controlled_table_push_lowvar = [
 		{'func' : curious2.controlled_constant_action_sequences_distinguished_direction,
 		'wait_before' : {'threshold' : .01, 'time_window' : 3, 'max_time' : 20}, 
 		'wait_after' : {'threshold' : .01, 'time_window' : 3, 'max_time' : 20}, 
-		'kwargs' : {'std_dev_ang' : .001, 'time_len_range' : range(1, 2), 'f_horiz_range' : range(100, 400)},
+		'kwargs' : {'std_dev_ang' : .001, 'time_len_range' : range(1, 2), 'f_horiz_range' : range(100, 400) + range(100, 200)},
 		'cut_if_off_screen' : 4
 		}
 
@@ -389,6 +389,21 @@ wall_throw = [
 
 ]
 
+object_throw = [
+	('COLLISION',
+		'THROW_AT_OBJECT',
+		{
+		'func' : curious2.controlled_constant_action_sequences_distinguished_direction,
+		'wait_before' : {'threshold' : .01, 'time_window' : 3, 'max_time' : 20}, 
+		'wait_after' : {'threshold' : .01, 'time_window' : 3, 'max_time' : 20}, 
+		'kwargs' : {'std_dev_ang' : np.pi / 100., 'time_len_range' : range(2, 3), 'f_horiz_range' : range(130, 200), 'f_y_range' : range(30, 100)}
+		}
+
+
+		)
+]
+
 wall_throw_curriculum = [wall_throw]
 
+object_throw_curriculum = [object_throw]
 

@@ -26,7 +26,7 @@ SELECTED_BUILD = 'one_world.exe'
 #if USE_TDW:
 #   raise Exception('Not yet adapted to USE_TDW')
 
-NUM_TIMES_RUN = 3
+NUM_TIMES_RUN = 14
 
 os.environ['USER'] = 'mrowca'
 #path = 'C:/Users/mrowca/Documents/test'
@@ -204,6 +204,45 @@ my_curriculum = [
 		])
 ]
 
+just_object_throws = [
+	(curricula.object_throw_curriculum, 'OBJ_THROW_OBJ', [
+		{
+		'type' : 'SHAPENET',
+		'scale' : .5,
+		'mass' : 1.,
+		'scale_var' : .01,
+		'num_items' : 30,
+		},
+		{
+		'type' : 'OTHER_STACKABLE',
+		'scale' : 1.,
+		'mass' : 1.,
+		'scale_var' : .01,
+		'num_items' : 10
+		}
+		]),
+	(curricula.object_throw_curriculum, 'ROLLY_THROW_OBJ', [
+		{
+		'type' : 'ROLLY',
+		'scale' : .5,
+		'mass' : 1.,
+		'scale_var' : .01,
+		'num_items' : 30,
+		},
+		{
+		'type' : 'OTHER_STACKABLE',
+		'scale' : 1.,
+		'mass' : 1.,
+		'scale_var' : .01,
+		'num_items' : 10
+		}
+		])
+]
+
+just_object_throws = just_object_throws * 4
+my_curriculum = my_curriculum + just_object_throws
+
+
 just_controlled_table_curriculum = [
 	(curricula.controlled_table_simple_test, 'TABLE_CONTROLLED', [
 		{
@@ -306,8 +345,10 @@ just_obj_on_obj_curriculum = [
 		'scale_var' : .01,
 		'num_items' : 10
 		}
-		]),
+		])
 ]
+
+
 
 just_wall_throws = [
 (curricula.wall_throw_curriculum, 'WALL_THROW', [

@@ -19,7 +19,7 @@ def get_urand_sphere_point(rng, dim, zero_div_safety = .0001):
 	while True:
 		vec = rng.randn(dim)
 		norm = np.linalg.norm(vec)
-		if norm > .0001:
+		if norm > zero_div_safety:
 			return vec / norm
 
 def get_trunc_normal(rng, dim, std_dev, truncate_norm):
@@ -139,7 +139,7 @@ def make_constant_random_action_sequence(rng, distinct_dir = None, std_dev_ang =
 class agent:
 	global_counter = 0
 
-	WRITE_FILES = True
+	WRITE_FILES = False
 
         SCREEN_WIDTH = 600 #512
         SCREEN_HEIGHT = 256 #384
@@ -151,7 +151,7 @@ class agent:
 	ACTION_LENGTH = 15
 	ACTION_WAIT = 15
 
-	N = 2 * 256 * 50
+	N = 70 * 256 * 14
 	valid = np.zeros((N,1)) 
 
 	rng = np.random.RandomState(0)
@@ -431,6 +431,34 @@ class agent:
 		return wall_dir
 
 
+	def teleport_for_collision(self, big_object, little_object, distance_scale = 1):
+		if self.in_batch_counter >= self.BATCH_SIZE:
+			return
+		big_pos = big_object[2]
+		big_pos_floor = np.array([big_pos[0], 0, big_pos[2]])
+		height_vec = np.array([0., little_object[6][1], 0.])
+		for t in range(5000):
+			action_dir = get_urand_sphere_point(self.rng, 2, zero_div_safety = .0001)
+			action_dir = np.array([action_dir[0], 0, action_dir[1]])
+			little_pos = big_pos_floor - distance_scale * action_dir + height_vec
+			orientation_sign = 2 * self.rng.randint(0, 2) - 1
+			action_dir_perp = orientation_sign * np.array([action_dir[2], 0., - action_dir[0]])
+			view_yang = self.rng.uniform(0, np.pi / 3)
+			ava_diff = np.cos(view_yang) * action_dir_perp + np.sin(view_yang) * np.array([0., 1., 0.])
+			avatar_pos = big_pos_floor - (distance_scale / 2.) * action_dir + ava_diff
+			if valid_pos(little_pos, 19., 19., test_height_too = True) and valid_pos(avatar_pos, 19., 19., test_height_too = True):
+				msg = init_msg()
+				msg['msg']['teleport_to'] = {'position' : list(avatar_pos), 'rotation' : list(- ava_diff)}
+				msg['msg']['action_type'] = 'COLLIDE_TELE'
+				init_rot = list(get_urand_sphere_point(self.rng, 3))
+				action = {}
+				action['id'] = str(little_object[1])
+				action['use_absolute_coordinates'] = True
+				action['teleport_to'] = {'position' : list(little_pos), 'rotation' : list(init_rot)}
+				msg['msg']['actions'].append(action)
+				self.send_msg(msg)
+				return action_dir
+		return
 
 
 
@@ -730,7 +758,6 @@ class agent:
 			#technically should update the object, but not sure this is so important right now
 			self.wait_until_stops(obj, act_params['wait']['threshold'], act_params['wait']['time_window'], act_params['wait']['max_time'], cut_if_off_screen = act_params.get('cut_if_off_screen'))
 
-
 	def do_wall_throw(self, act_desc, act_params, clean_up_after = True):
 		self.observe_world()
 		obj = self.select_random_object()
@@ -768,6 +795,36 @@ class agent:
 				return
 			self.teleport_object(obj_after_act, old_pos)
 
+	def do_throw_at_object(self, act_desc, act_params):
+		self.observe_world()
+		big_obj, little_obj = self.select_random_table_not_table()
+		if little_obj is None or big_obj is None:
+			msg = init_msg()
+			msg['msg']['action_type'] = 'WAITING'
+			self.send_msg(msg)
+			return
+		horiz_action_dir = self.teleport_for_collision(big_obj, little_obj, distance_scale = 1)
+		if horiz_action_dir is None:
+			msg = init_msg()
+			msg['msg']['action_type'] = 'WAITING'
+			self.send_msg(msg)
+			return
+		if 'wait_before' in act_params:
+			wait_max_time = act_params['wait_before'].get('no_drop_max_time', 3)
+			self.wait_until_stops(little_obj, act_params['wait_before']['threshold'], act_params['wait_before']['time_window'], wait_max_time, desc = 'DROPPING', cut_if_off_screen = act_params.get('cut_if_off_screen'))
+		did_update, obj_after_teleport_list = self.observe_world(little_obj)
+		if not did_update:
+			return
+		little_obj_after_teleport = obj_after_teleport_list[0]
+		if little_obj_after_teleport is None:
+			msg = init_msg()
+			msg['msg']['action_type'] = 'WAITING'
+			self.send_msg(msg)
+			return
+		f_seq, tor_seq = act_params['func'](self.rng, horiz_action_dir, **act_params['kwargs'])
+		self.apply_action(little_obj_after_teleport, f_seq, tor_seq, act_desc, cut_if_off_screen = act_params.get('cut_if_off_screen'))
+		if 'wait_after' in act_params:
+			self.wait_until_stops(little_obj_after_teleport, act_params['wait_after']['threshold'], act_params['wait_after']['time_window'], act_params['wait_after']['max_time'], desc = 'WAITING', cut_if_off_screen = act_params.get('cut_if_off_screen'))
 
 
 	def do_controlled_table_task(self, act_desc, act_params, clean_up_table = True, drop = True):
@@ -860,10 +917,11 @@ class agent:
 
 
 	def make_new_batch(self, bn, sock, path, create_hdf5, use_tdw_msg, task_params, descriptor_prefix, scene_start = False):
+		print 'GOT HERE!'
 		self.bn, self.sock, self.path, self.create_hdf5, self.use_tdw_msg, self.desc_prefix = bn, sock, path, create_hdf5, use_tdw_msg, descriptor_prefix
 		self.in_batch_counter = 0
 		if self.WRITE_FILES:
-			self.temp_im_path = os.path.join(self.path, 'random_drop_nodrop')
+			self.temp_im_path = os.path.join(self.path, 'object_throw_test')
 			if not os.path.exists(self.temp_im_path):
 				os.mkdir(self.temp_im_path)
 		else:
@@ -901,6 +959,8 @@ class agent:
 					self.do_controlled_table_task(act_desc, act_params, clean_up_table = False, drop = drop)
 				elif mode == 'WALL_THROW':
 					self.do_wall_throw(act_desc, act_params, clean_up_after = False)
+				elif mode == 'COLLISION':
+					self.do_throw_at_object(act_desc, act_params)
 				else:
 					raise Exception('Batch mode not implemented')
 		if self.create_hdf5:
