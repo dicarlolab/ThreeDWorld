@@ -10,26 +10,26 @@ import h5py
 import os
 
 def get_view_vec_from_quaternion(quaternion):
-	ang = np.arccos(quaternion[0]) * 2
-	dir_unnorm = np.array([np.cos(ang), np.sin( - ang)])
-	return dir_unnorm / np.linalg.norm(dir_unnorm)
+        ang = np.arccos(quaternion[0]) * 2
+        dir_unnorm = np.array([np.cos(ang), np.sin( - ang)])
+        return dir_unnorm / np.linalg.norm(dir_unnorm)
 
 
 def get_urand_sphere_point(rng, dim, zero_div_safety = .0001):
-	while True:
-		vec = rng.randn(dim)
-		norm = np.linalg.norm(vec)
-		if norm > zero_div_safety:
-			return vec / norm
+        while True:
+                vec = rng.randn(dim)
+                norm = np.linalg.norm(vec)
+                if norm > zero_div_safety:
+                        return vec / norm
 
 def get_trunc_normal(rng, dim, std_dev, truncate_norm):
-	if truncate_norm is None:
-		truncate_norm = float('inf')
-	while True:
-		vec = std_dev * rng.randn(dim)
-		norm = np.linalg.norm(vec)
-		if norm < truncate_norm:
-			return vec
+        if truncate_norm is None:
+                truncate_norm = float('inf')
+        while True:
+                vec = std_dev * rng.randn(dim)
+                norm = np.linalg.norm(vec)
+                if norm < truncate_norm:
+                        return vec
 
 def get_valid_num(valid):
     print('getting valid num')
@@ -42,23 +42,23 @@ def get_valid_num(valid):
 
 
 def init_msg():
-	msg = {'n': 7, 'msg': {"msg_type": "CLIENT_INPUT", "get_obj_data": True, "send_scene_info" : True, "actions": []}}
-	msg['msg']['vel'] = [0, 0, 0]
-	msg['msg']['ang_vel'] = [0, 0, 0]
-	return msg
+        msg = {'n': 7, 'msg': {"msg_type": "CLIENT_INPUT", "get_obj_data": True, "send_scene_info" : True, "actions": []}}
+        msg['msg']['vel'] = [0, 0, 0]
+        msg['msg']['ang_vel'] = [0, 0, 0]
+        return msg
 
 def valid_pos(pos, room_length, room_width, test_height_too = False):
-	return pos[0] > 0 and pos[2] > 0 and pos[0] < room_length and pos[2] < room_width and ((not test_height_too) or (pos[1] > 0 and pos[1] < 5.))
+        return pos[0] > 0 and pos[2] > 0 and pos[0] < room_length and pos[2] < room_width and ((not test_height_too) or (pos[1] > 0 and pos[1] < 5.))
 
 def choose_random_wall_spot(rng):
-	wall_num = rng.randint(0, 4)
-	if wall_num == 0:
-		return np.array([0., 0., -1.]), np.array([rng.uniform(0., 19.), 0., 0.])
-	if wall_num == 1:
-		return np.array([-1., 0., 0.]), np.array([0., 0., rng.uniform(0., 19.)])
-	if wall_num == 2:
-		return np.array([0., 0., 1.]), np.array([rng.uniform(0., 19.), 0., 19.])
-	return np.array([1., 0., 0.]), np.array([19., 0., rng.uniform(0., 19.)])
+        wall_num = rng.randint(0, 4)
+        if wall_num == 0:
+                return np.array([0., 0., -1.]), np.array([rng.uniform(0., 19.), 0., 0.])
+        if wall_num == 1:
+                return np.array([-1., 0., 0.]), np.array([0., 0., rng.uniform(0., 19.)])
+        if wall_num == 2:
+                return np.array([0., 0., 1.]), np.array([rng.uniform(0., 19.), 0., 19.])
+        return np.array([1., 0., 0.]), np.array([19., 0., rng.uniform(0., 19.)])
 
 
 
@@ -68,102 +68,102 @@ def choose_random_wall_spot(rng):
 #reasonable rotation: magnitude = 100
 
 def make_const_simple_push(rng, time_len = 3, magnitude = 100):
-	return make_const_action_sequences(rng, time_len, f_horiz = magnitude)
+        return make_const_action_sequences(rng, time_len, f_horiz = magnitude)
 
 def make_const_simple_lift(rng, time_len = 3, x_magnitude = 50, y_magnitude = 120):
-	return make_const_action_sequences(rng, time_len, f_horiz = x_magnitude, f_y = y_magnitude)
+        return make_const_action_sequences(rng, time_len, f_horiz = x_magnitude, f_y = y_magnitude)
 
 def make_const_simple_rot(rng, time_len = 3, magnitude = 100):
-	return make_const_action_sequences(rng, time_len, tor_y = magnitude)
+        return make_const_action_sequences(rng, time_len, tor_y = magnitude)
 
 def make_const_action_sequences(rng, time_len = 3, f_horiz = 0, f_y = 0, tor_horiz = 0, tor_y = 0):
-	while True:
-		f_dir = rng.randn(2)
-		f_norm = np.linalg.norm(f_dir)
-		tor_dir = rng.randn(2)
-		tor_norm = np.linalg.norm(tor_dir)
-		tor_y_sign = 2 * rng.randint(0, 2) - 1
-		if f_norm > .0001 and tor_norm > .0001:
-			f_dir = f_dir / f_norm
-			tor_dir = tor_dir / tor_norm
-			f = [f_horiz * f_dir[0], f_y, f_horiz * f_dir[1]]
-			tor = [tor_horiz * tor_dir[0], tor_y_sign * tor_y, tor_horiz * tor_dir[1]]
-			break
-	return [f for _ in range(time_len)], [tor for _ in range(time_len)]
+        while True:
+                f_dir = rng.randn(2)
+                f_norm = np.linalg.norm(f_dir)
+                tor_dir = rng.randn(2)
+                tor_norm = np.linalg.norm(tor_dir)
+                tor_y_sign = 2 * rng.randint(0, 2) - 1
+                if f_norm > .0001 and tor_norm > .0001:
+                        f_dir = f_dir / f_norm
+                        tor_dir = tor_dir / tor_norm
+                        f = [f_horiz * f_dir[0], f_y, f_horiz * f_dir[1]]
+                        tor = [tor_horiz * tor_dir[0], tor_y_sign * tor_y, tor_horiz * tor_dir[1]]
+                        break
+        return [f for _ in range(time_len)], [tor for _ in range(time_len)]
 
 def make_const_action_sequences_distinguished_direction(rng, distinct_dir, std_dev_ang = np.pi / 6, time_len = 3, f_horiz = 0, f_y = 0, tor_horiz = 0, tor_y = 0):
-	horiz_angle = std_dev_ang * rng.randn()
-	horiz_f_sign = 2 * rng.randint(0, 2) - 1
-	assert len(distinct_dir) == 2
-	distinct_dir_normalized = distinct_dir / np.linalg.norm(distinct_dir)
-	distinct_dir_perp = np.array([- distinct_dir_normalized[1], distinct_dir_normalized[0]])
-	f_dir = np.cos(horiz_angle) * distinct_dir_perp + np.sin(horiz_angle) * distinct_dir_normalized
-	f_dir = horiz_f_sign * f_dir
-	f = [f_horiz * f_dir[0], f_y, f_horiz * f_dir[1]]
-	while True:
-		tor_dir = rng.randn(2)
-		tor_norm = np.linalg.norm(tor_dir)
-		tor_y_sign = 2 * rng.randint(0, 2) - 1
-		if tor_norm > .0001:
-			tor_dir = tor_dir / tor_norm
-			tor = [tor_horiz * tor_dir[0], tor_y_sign * tor_y, tor_horiz * tor_dir[1]]
-			break
-	return [f for _ in range(time_len)], [tor for _ in range(time_len)]
+        horiz_angle = std_dev_ang * rng.randn()
+        horiz_f_sign = 2 * rng.randint(0, 2) - 1
+        assert len(distinct_dir) == 2
+        distinct_dir_normalized = distinct_dir / np.linalg.norm(distinct_dir)
+        distinct_dir_perp = np.array([- distinct_dir_normalized[1], distinct_dir_normalized[0]])
+        f_dir = np.cos(horiz_angle) * distinct_dir_perp + np.sin(horiz_angle) * distinct_dir_normalized
+        f_dir = horiz_f_sign * f_dir
+        f = [f_horiz * f_dir[0], f_y, f_horiz * f_dir[1]]
+        while True:
+                tor_dir = rng.randn(2)
+                tor_norm = np.linalg.norm(tor_dir)
+                tor_y_sign = 2 * rng.randint(0, 2) - 1
+                if tor_norm > .0001:
+                        tor_dir = tor_dir / tor_norm
+                        tor = [tor_horiz * tor_dir[0], tor_y_sign * tor_y, tor_horiz * tor_dir[1]]
+                        break
+        return [f for _ in range(time_len)], [tor for _ in range(time_len)]
 
 def controlled_constant_action_sequences_distinguished_direction(rng, distinct_dir, std_dev_ang = np.pi / 6, time_len_range = [5], f_horiz_range = [0], f_y_range = [0], tor_horiz_range = [0], tor_y_range = [0]):
-	select_args = [('time_len', time_len_range), ('f_horiz', f_horiz_range), ('f_y', f_y_range), ('tor_horiz', tor_horiz_range), ('tor_y', tor_y_range)]
-	magnitudes = dict((desc, my_range[rng.randint(len(my_range))]) for (desc, my_range) in select_args)
-	f_horiz = magnitudes['f_horiz']
-	f_y = magnitudes['f_y']
-	tor_horiz = magnitudes['tor_horiz']
-	tor_y = magnitudes['tor_y']
-	time_len = magnitudes['time_len']
-	assert len(distinct_dir) == 3
-	distinct_dir_normalized = distinct_dir / np.linalg.norm(distinct_dir)
-	distinct_dir_perp = np.array([distinct_dir_normalized[2], 0, - distinct_dir_normalized[0]])
-	horiz_angle = std_dev_ang * rng.randn()
-	#opposite of the above because we are specifying the direction the force should bias towards, not the viewing direction
-	f_dir = np.cos(horiz_angle) * distinct_dir_normalized + np.sin(horiz_angle) * distinct_dir_perp
-	f = [magnitudes['f_horiz'] * f_dir[0], f_y, magnitudes['f_horiz'] * f_dir[2]]
-	while True:
-		tor_dir = rng.randn(2)
-		tor_norm = np.linalg.norm(tor_dir)
-		tor_y_sign = 2 * rng.randint(0, 2) - 1
-		if tor_norm > .0001:
-			tor_dir = tor_dir / tor_norm
-			tor = [tor_horiz * tor_dir[0], tor_y_sign * tor_y, tor_horiz * tor_dir[1]]
-			break
-	return [f for _ in range(time_len)], [tor for _ in range(time_len)]
+        select_args = [('time_len', time_len_range), ('f_horiz', f_horiz_range), ('f_y', f_y_range), ('tor_horiz', tor_horiz_range), ('tor_y', tor_y_range)]
+        magnitudes = dict((desc, my_range[rng.randint(len(my_range))]) for (desc, my_range) in select_args)
+        f_horiz = magnitudes['f_horiz']
+        f_y = magnitudes['f_y']
+        tor_horiz = magnitudes['tor_horiz']
+        tor_y = magnitudes['tor_y']
+        time_len = magnitudes['time_len']
+        assert len(distinct_dir) == 3
+        distinct_dir_normalized = distinct_dir / np.linalg.norm(distinct_dir)
+        distinct_dir_perp = np.array([distinct_dir_normalized[2], 0, - distinct_dir_normalized[0]])
+        horiz_angle = std_dev_ang * rng.randn()
+        #opposite of the above because we are specifying the direction the force should bias towards, not the viewing direction
+        f_dir = np.cos(horiz_angle) * distinct_dir_normalized + np.sin(horiz_angle) * distinct_dir_perp
+        f = [magnitudes['f_horiz'] * f_dir[0], f_y, magnitudes['f_horiz'] * f_dir[2]]
+        while True:
+                tor_dir = rng.randn(2)
+                tor_norm = np.linalg.norm(tor_dir)
+                tor_y_sign = 2 * rng.randint(0, 2) - 1
+                if tor_norm > .0001:
+                        tor_dir = tor_dir / tor_norm
+                        tor = [tor_horiz * tor_dir[0], tor_y_sign * tor_y, tor_horiz * tor_dir[1]]
+                        break
+        return [f for _ in range(time_len)], [tor for _ in range(time_len)]
 
 
 
 def make_constant_random_action_sequence(rng, distinct_dir = None, std_dev_ang = np.pi / 6, time_len_range = [3], f_horiz_range = [0], f_y_range = [0], tor_horiz_range = [0], tor_y_range = [0]):
-	select_args = [('time_len', time_len_range), ('f_horiz', f_horiz_range), ('f_y', f_y_range), ('tor_horiz', tor_horiz_range), ('tor_y', tor_y_range)]
-	my_kwargs = dict((desc, my_range[rng.randint(len(my_range))]) for (desc, my_range) in select_args)
-	if distinct_dir is None:
-		return make_const_action_sequences(rng,**my_kwargs)
-	return make_const_action_sequences_distinguished_direction(rng, distinct_dir, std_dev_ang = std_dev_ang, **my_kwargs)
+        select_args = [('time_len', time_len_range), ('f_horiz', f_horiz_range), ('f_y', f_y_range), ('tor_horiz', tor_horiz_range), ('tor_y', tor_y_range)]
+        my_kwargs = dict((desc, my_range[rng.randint(len(my_range))]) for (desc, my_range) in select_args)
+        if distinct_dir is None:
+                return make_const_action_sequences(rng,**my_kwargs)
+        return make_const_action_sequences_distinguished_direction(rng, distinct_dir, std_dev_ang = std_dev_ang, **my_kwargs)
 
 
 class agent:
-	global_counter = 0
+        global_counter = 0
 
-	WRITE_FILES = False
+        WRITE_FILES = False
 
         SCREEN_WIDTH = 600 #512
         SCREEN_HEIGHT = 256 #384
 
-	BATCH_SIZE = 256
-	MULTSTART = -1
+        BATCH_SIZE = 256
+        MULTSTART = -1
 
-	achoice = [-5, 0, 5]
-	ACTION_LENGTH = 15
-	ACTION_WAIT = 15
+        achoice = [-5, 0, 5]
+        ACTION_LENGTH = 15
+        ACTION_WAIT = 15
 
-	N = 70 * 256 * 14
-	valid = np.zeros((N,1)) 
+        N = 70 * 256 * 14
+        valid = np.zeros((N,1)) 
 
-	rng = np.random.RandomState(0)
+        rng = np.random.RandomState(0)
         use_stabilization = True
 
         def __init__(self, CREATE_HDF5, path='', dataset_num=-1, continue_writing = False):
@@ -172,13 +172,13 @@ class agent:
                 self.continue_writing = continue_writing
 
 
-	def set_screen_width(self, screen_width):
-	    self.SCREEN_WIDTH = screen_width
+        def set_screen_width(self, screen_width):
+            self.SCREEN_WIDTH = screen_width
         
         def set_screen_height(self, screen_height):
             self.SCREEN_HEIGHT = screen_height
 
-	def open_hdf5(self, path, dataset_num=-1):
+        def open_hdf5(self, path, dataset_num=-1):
             if dataset_num == -1:
                 file_iter = 1
                 h5path = os.path.join(path, 'dataset' + str(file_iter) + ".hdf5")
@@ -204,119 +204,119 @@ class agent:
             return [valid, images, normals, objects, worldinfos, agentactions, images2, normals2, objects2]
 
         def choose(self, x):
-	  index = self.rng.randint(len(x))
-	  return [x[index], index]
+          index = self.rng.randint(len(x))
+          return [x[index], index]
 
-	def choose_action_position(self, objarray, chosen_object, slipage=2):
+        def choose_action_position(self, objarray, chosen_object, slipage=2):
 
           selection = np.zeros(objarray.shape)
           selection[objarray == chosen_object] = objarray[objarray == chosen_object]
 
-	  # dilate image to add imprecision in selecting actions
-	  dialated_selection = scipy.ndimage.grey_dilation(selection, size=(slipage,slipage))
-	  xs, ys = dialated_selection.nonzero()
-	  pos = zip(xs, ys)
-	  if len(pos) == 0:
-	      return [np.array([]), chosen_object]
+          # dilate image to add imprecision in selecting actions
+          dialated_selection = scipy.ndimage.grey_dilation(selection, size=(slipage,slipage))
+          xs, ys = dialated_selection.nonzero()
+          pos = list(zip(xs, ys))
+          if len(pos) == 0:
+              return [np.array([]), chosen_object]
           chosen_pos = pos[self.rng.randint(len(pos))]
-	  return [np.array(chosen_pos), objarray[chosen_pos]]
+          return [np.array(chosen_pos), objarray[chosen_pos]]
 
-	def find_in_observed_objects(self, idx, obs_obj):
-	    for i in range(len(obs_obj)):
-		if obs_obj[i][1] == idx:
-		    return i
-	    return None
+        def find_in_observed_objects(self, idx, obs_obj):
+            for i in range(len(obs_obj)):
+                if obs_obj[i][1] == idx:
+                    return i
+            return None
 
-	def stabilize(self, rotation, angvel, target_axis=[0,1,0], stability=0.3, speed=0.5):
-	    norm = np.linalg.norm(angvel)
+        def stabilize(self, rotation, angvel, target_axis=[0,1,0], stability=0.3, speed=0.5):
+            norm = np.linalg.norm(angvel)
             if(norm == 0):
-		norm = np.array(1)
-	    ang = np.linalg.norm(angvel) * stability / speed;
-	    rot = scipy.linalg.expm3(np.cross(np.eye(3), angvel / norm * ang))
-	    target_axis = np.array(target_axis)
-	    target_pred = np.dot(rot, np.array(rotation))
-	    torque = np.cross(target_pred, target_axis)
-	    return (torque * speed * speed).tolist()
+                norm = np.array(1)
+            ang = np.linalg.norm(angvel) * stability / speed;
+            rot = scipy.linalg.expm3(np.cross(np.eye(3), angvel / norm * ang))
+            target_axis = np.array(target_axis)
+            target_pred = np.dot(rot, np.array(rotation))
+            torque = np.cross(target_pred, target_axis)
+            return (torque * speed * speed).tolist()
 
         def rotate_smooth(self, current_up, current_angvel, target_rot, speed = 0.01):
-	    for i in range(len(target_rot)):
-	        if target_rot[i] > 360:
-		    target_rot[i] -= 360
+            for i in range(len(target_rot)):
+                if target_rot[i] > 360:
+                    target_rot[i] -= 360
                 if target_rot[i] < 0:
-		    target_rot[i] += 360
-	#    direction = (np.array(target_rot) - np.array(current_rot))
-	#    print str(target_rot)
-	#    print str(current_rot)
+                    target_rot[i] += 360
+        #    direction = (np.array(target_rot) - np.array(current_rot))
+        #    print str(target_rot)
+        #    print str(current_rot)
         #   direction = speed * direction
 
-	    target_rot = np.array(target_rot)
-	    target_rot = np.deg2rad(target_rot)
-	    # x axis rotation
-	    th = target_rot[0]
-	    rx = np.array([[1, 0, 0], [0, np.cos(th), np.sin(th)], [0, -np.sin(th), np.cos(th)]])
-	    # y axis rotation
-	    th = target_rot[1]
-	    ry = np.array([[np.cos(th), 0, -np.sin(th)], [0, 1, 0], [np.sin(th), 0, np.cos(th)]])
-	    # z axis rotation
-	    th = target_rot[2]
-	    rz = np.array([[np.cos(th), np.sin(th), 0], [-np.sin(th), np.cos(th), 0], [0, 0, 1]])
+            target_rot = np.array(target_rot)
+            target_rot = np.deg2rad(target_rot)
+            # x axis rotation
+            th = target_rot[0]
+            rx = np.array([[1, 0, 0], [0, np.cos(th), np.sin(th)], [0, -np.sin(th), np.cos(th)]])
+            # y axis rotation
+            th = target_rot[1]
+            ry = np.array([[np.cos(th), 0, -np.sin(th)], [0, 1, 0], [np.sin(th), 0, np.cos(th)]])
+            # z axis rotation
+            th = target_rot[2]
+            rz = np.array([[np.cos(th), np.sin(th), 0], [-np.sin(th), np.cos(th), 0], [0, 0, 1]])
 
-	    target_axis = np.matmul(np.matmul(np.matmul(rx,ry), rz), current_up)
+            target_axis = np.matmul(np.matmul(np.matmul(rx,ry), rz), current_up)
  
-	    # z rotation only does not work with [0, 0, 1] have to rotate around other axis
+            # z rotation only does not work with [0, 0, 1] have to rotate around other axis
             #if(target_axis == np.array([0, 0, 1])).all():
             #    current_up = [0, 1, 0]
-	    #	target_axis = np.matmul(np.matmul(np.matmul(rx,ry), rz), current_up)
+            #   target_axis = np.matmul(np.matmul(np.matmul(rx,ry), rz), current_up)
             return target_axis #self.stabilize(current_up, current_angvel, target_axis)
-	# bn integer
+        # bn integer
 
 
-	def rectify(self, msg):
-		#TODO implement
-		return None
+        def rectify(self, msg):
+                #TODO implement
+                return None
 
-	def send_msg(self, msg):
-		msg['msg']['action_type'] = self.desc_prefix + ':' + msg['msg']['action_type']
-		if(not 'action_type' in msg['msg']):
-			print("ERROR! Action not recognized")
-		else:
-			print(msg['msg']['action_type'])
-		self.in_batch_counter += 1
-		self.global_counter += 1
-		print('counter ' + str(self.in_batch_counter))
-		if self.use_tdw_msg:
-			self.sock.send_json(msg)
-		else:
-			self.sock.send_json(msg['msg'])
-		if self.create_hdf5:
-			self.infolist.append(json.dumps(msg['msg']))
-			self.ims.append(self.imarray)
-			self.norms.append(self.narray)
-			self.infs.append(json.dumps(self.info))
-			self.objs.append(self.oarray)
+        def send_msg(self, msg):
+                msg['msg']['action_type'] = self.desc_prefix + ':' + msg['msg']['action_type']
+                if(not 'action_type' in msg['msg']):
+                        print("ERROR! Action not recognized")
+                else:
+                        print(msg['msg']['action_type'])
+                self.in_batch_counter += 1
+                self.global_counter += 1
+                print('counter ' + str(self.in_batch_counter))
+                if self.use_tdw_msg:
+                        self.sock.send_json(msg)
+                else:
+                        self.sock.send_json(msg['msg'])
+                if self.create_hdf5:
+                        self.infolist.append(json.dumps(msg['msg']))
+                        self.ims.append(self.imarray)
+                        self.norms.append(self.narray)
+                        self.infs.append(json.dumps(self.info))
+                        self.objs.append(self.oarray)
                         self.ims2.append(self.imarray2)
                         self.norms2.append(self.narray2)
                         self.objs2.append(self.oarray2)
 
 
 
-	def teleport_random(self):
-		msg = init_msg()
-		msg['msg']['teleport_random'] = True
-		msg['msg']['action_type'] = 'TELEPORT'
-		print('TELEPORT')
-		self.init_y_pos = self.info['avatar_position'][1]
-		self.send_msg(msg)
+        def teleport_random(self):
+                msg = init_msg()
+                msg['msg']['teleport_random'] = True
+                msg['msg']['action_type'] = 'TELEPORT'
+                print('TELEPORT')
+                self.init_y_pos = self.info['avatar_position'][1]
+                self.send_msg(msg)
 
-	def observe_world(self, * objects_to_track):
-		if self.in_batch_counter >= self.BATCH_SIZE:
-			return False, [None for _ in objects_to_track]
-		counter_str = str(self.global_counter)
-		while len(counter_str) < 4:
-			counter_str  = '0' + counter_str
-                print 'about to handle message'
-		info, self.narray, self.oarray, self.imarray, self.narray2, self.oarray2, self.imarray2 = handle_message(self.sock, write=self.WRITE_FILES, outdir=self.temp_im_path, prefix=counter_str)
-                print 'message handled'
+        def observe_world(self, * objects_to_track):
+                if self.in_batch_counter >= self.BATCH_SIZE:
+                        return False, [None for _ in objects_to_track]
+                counter_str = str(self.global_counter)
+                while len(counter_str) < 4:
+                        counter_str  = '0' + counter_str
+                print('about to handle message')
+                info, self.narray, self.oarray, self.imarray, self.narray2, self.oarray2, self.imarray2 = handle_message(self.sock, write=self.WRITE_FILES, outdir=self.temp_im_path, prefix=counter_str)
+                print('message handled')
                 self.info = json.loads(info)
 		self.oarray1 = 256**2 * self.oarray[:, :, 0] + 256 * self.oarray[:, :, 1] + self.oarray[:, :, 2]
 		if self.global_counter == 0:
@@ -951,60 +951,60 @@ class agent:
                             print('Skipping batch')
                             return
                 mode, act_desc, act_params = task_params[0]
-		if mode == 'PUSH_OFF_TABLE' or mode == 'CONTROLLED_TABLE_TASK':
-			drop = (self.rng.rand() < .5)
-			if drop:
-				self.desc_prefix = self.desc_prefix + ':DROP'
-				print 'dropping!'
-			else:
-				self.desc_prefix = self.desc_prefix + ':NODROP'
-				print 'not dropping!'
+                if mode == 'PUSH_OFF_TABLE' or mode == 'CONTROLLED_TABLE_TASK':
+                        drop = (self.rng.rand() < .5)
+                        if drop:
+                                self.desc_prefix = self.desc_prefix + ':DROP'
+                                print('dropping!')
+                        else:
+                                self.desc_prefix = self.desc_prefix + ':NODROP'
+                                print('not dropping!')
                 if scene_start:
-                    self.wait(10)		
-		while self.in_batch_counter < self.BATCH_SIZE:
-			print(self.in_batch_counter)
-			for (mode, act_desc, act_params) in task_params:
-				if mode == 'SINGLE_OBJECT':
-					self.do_one_object_task(act_desc, act_params)
-				elif mode == 'PUSH_OFF_TABLE':
-					self.do_table_drop_task(act_desc, act_params, clean_up_table = False, drop = drop)
-				elif mode == 'CONTROLLED_TABLE_TASK':
-					self.do_controlled_table_task(act_desc, act_params, clean_up_table = False, drop = drop)
-				elif mode == 'WALL_THROW':
-					self.do_wall_throw(act_desc, act_params, clean_up_after = False)
-				elif mode == 'COLLISION':
-					self.do_throw_at_object(act_desc, act_params)
-				else:
-					raise Exception('Batch mode not implemented')
-		if self.create_hdf5:
-                        print 'prepping for hdf5 write'
-			start = self.BATCH_SIZE * bn
-			end = self.BATCH_SIZE * (bn + 1)
-			self.ims = np.array(self.ims)
-			self.norms = np.array(self.norms)
-			self.objs = np.array(self.objs)
+                    self.wait(10)               
+                while self.in_batch_counter < self.BATCH_SIZE:
+                        print(self.in_batch_counter)
+                        for (mode, act_desc, act_params) in task_params:
+                                if mode == 'SINGLE_OBJECT':
+                                        self.do_one_object_task(act_desc, act_params)
+                                elif mode == 'PUSH_OFF_TABLE':
+                                        self.do_table_drop_task(act_desc, act_params, clean_up_table = False, drop = drop)
+                                elif mode == 'CONTROLLED_TABLE_TASK':
+                                        self.do_controlled_table_task(act_desc, act_params, clean_up_table = False, drop = drop)
+                                elif mode == 'WALL_THROW':
+                                        self.do_wall_throw(act_desc, act_params, clean_up_after = False)
+                                elif mode == 'COLLISION':
+                                        self.do_throw_at_object(act_desc, act_params)
+                                else:
+                                        raise Exception('Batch mode not implemented')
+                if self.create_hdf5:
+                        print('prepping for hdf5 write')
+                        start = self.BATCH_SIZE * bn
+                        end = self.BATCH_SIZE * (bn + 1)
+                        self.ims = np.array(self.ims)
+                        self.norms = np.array(self.norms)
+                        self.objs = np.array(self.objs)
                         self.ims2 = np.array(self.ims2)
                         self.norms2 = np.array(self.norms2)
                         self.objs2 = np.array(self.objs2)
-			images[start: end] = self.ims
-			normals[start: end] = self.norms
-			objects[start: end] = self.objs
+                        images[start: end] = self.ims
+                        normals[start: end] = self.norms
+                        objects[start: end] = self.objs
                         images2[start:end] = self.ims2
                         normals2[start:end] = self.norms2
                         objects2[start:end] = self.objs2
-			self.valid[start: end] = True
-			worldinfos[start: end] = self.infs
-			agentactions[start: end] = self.infolist
-                        print 'flushing'
-			self.hdf5.flush()
-                        print 'flushed'
+                        self.valid[start: end] = True
+                        worldinfos[start: end] = self.infs
+                        agentactions[start: end] = self.infolist
+                        print('flushing')
+                        self.hdf5.flush()
+                        print('flushed')
 
 
 
 
 test_task_params = [
-	('PUSHING', {'func' : make_const_simple_push, 'kwargs' : {'time_len' : 3, 'magnitude' : 100}, 'wait' : 20}),
-	('LIFTING', {'func' : make_const_simple_lift, 'kwargs' : {'time_len' : 3, 'x_magnitude' : 50, 'y_magnitude' : 120}, 'wait' : 20})
+        ('PUSHING', {'func' : make_const_simple_push, 'kwargs' : {'time_len' : 3, 'magnitude' : 100}, 'wait' : 20}),
+        ('LIFTING', {'func' : make_const_simple_lift, 'kwargs' : {'time_len' : 3, 'x_magnitude' : 50, 'y_magnitude' : 120}, 'wait' : 20})
 ]
 
 

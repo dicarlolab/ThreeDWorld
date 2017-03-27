@@ -71,7 +71,7 @@ class environment:
 		for _k in default_keys:
 			if _k not in q:
 				q[_k] = {'$exists': True}
-		print 'first query'
+		print('first query')
 		if not str(q) in self.CACHE:
 			idvals = np.array([str(_x['_id']) for _x in list(self.coll.find(q, projection=['_id']))])
 			self.CACHE[str(q)] = idvals
@@ -81,14 +81,14 @@ class environment:
 		#might want to just initialize this once
 		goodidinds = self.rng.permutation(num_ava)[: num_items] 
 		goodidvals = idvals[goodidinds]
-		goodidvals = map(ObjectId, goodidvals)
+		goodidvals = list(map(ObjectId, goodidvals))
 		keys = copy.deepcopy(default_keys)
 		for _k in q:
 			if _k not in keys:
 				keys.append(_k)
-		print 'second query'
+		print('second query')
 		query_res = list(self.coll.find({'_id': {'$in': goodidvals}}, projection=keys))
-		print 'making items'
+		print('making items')
 		return query_results_to_unity_data(query_res, scale, mass, var = var, seed = self.RANDOM_SEED + 1)
 
 				
