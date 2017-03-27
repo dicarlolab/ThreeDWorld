@@ -9,7 +9,12 @@ import numpy as np
 #import h5py
 import json
 from PIL import Image
-from StringIO import StringIO
+
+try:
+    from StringIO import StringIO
+except ImportError:
+    from io import StringIO
+
 import actions.curious2 as curious2 # import make_new_batch
 from environment import environment
 from threedworld.clienttools.tdw_client import TDW_Client
@@ -17,7 +22,7 @@ import curricula
 
 SEED = int(sys.argv[2])
 CREATE_HDF5 = False
-USE_TDW = True
+USE_TDW = False
 SCENE_SWITCH = 20
 SCREEN_WIDTH = 600
 SCREEN_HEIGHT = 256

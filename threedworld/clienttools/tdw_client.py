@@ -88,11 +88,11 @@ class TDW_Client(object):
 
         self.ctx = zmq.Context()
 
-        print "\n\n"
-        print '=' * 60
-        print " " * 17, "WELCOME TO 3D WORLD CLIENT"
-        print '=' * 60
-        print "\n"
+        print ("\n\n")
+        print ('=' * 60)
+        print (" " * 17, "WELCOME TO 3D WORLD CLIENT")
+        print ('=' * 60)
+        print ("\n")
 
         # connect to queue at requested server
         if (self.debug):
@@ -145,9 +145,9 @@ class TDW_Client(object):
                 option, index = pick(options, title)
                 commands[option]()
 
-        print "=" * 60
-        print " " * 19, "Client Setup Complete"
-        print "=" * 60
+        print ("=" * 60)
+        print (" " * 19, "Client Setup Complete")
+        print ("=" * 60)
         return self.sock
 
     ############################################################################
@@ -184,12 +184,11 @@ class TDW_Client(object):
         if msg["msg"]["msg_type"] == "ACTIVE_PROCESSES":
             pass
         else:
-            print "Error: " + msg["msg"]["msg_type"] + "\n"
+            print ("Error: " + msg["msg"]["msg_type"] + "\n")
             self.press_enter_to_continue()
             return
 
-        print 'The following processes will be killed:'
-        print
+        print ('The following processes will be killed:\n')
         killproc = [p for p in msg['processes'] if p['env_owner'] == username]
         self.print_processes(killproc)
 
@@ -205,9 +204,9 @@ class TDW_Client(object):
         """
         Requests to make an environment
         """
-        print '_' * 60
-        print " " * 16, "Requesting Create Environment"
-        print '_' * 60, "\n"
+        print ('_' * 60)
+        print (" " * 16, "Requesting Create Environment")
+        print ('_' * 60, "\n")
 
         # select a port number if not already specified
         if (not self.port_num):
@@ -229,7 +228,7 @@ class TDW_Client(object):
             elif (msg["msg"]["msg_type"] == "SEND_OPTIONS"):
                 has_valid_port_num = True
             else:
-                print "Error: " + msg["msg"]["msg_type"] + "\n"
+                print ("Error: " + msg["msg"]["msg_type"] + "\n")
                 self.press_enter_to_continue()
                 return
 
@@ -255,13 +254,13 @@ class TDW_Client(object):
 
         # collect username and description if not given in initialization
         while (not username):
-            print "\nPlease type a username:"
+            print ("\nPlease type a username:")
             username = raw_input()
-            print ""
+            print ("")
         while (not description):
-            print "\nPlease type a description:"
+            print ("\nPlease type a description:")
             description = raw_input()
-            print ""
+            print ("")
 
         # loop until has open port number on server
         has_valid_port_num = False
@@ -291,7 +290,7 @@ class TDW_Client(object):
             elif (msg["msg"]["msg_type"] == "JOIN_OFFER"):
                 has_valid_port_num = True
             else:
-                print "Error: " + msg["msg"]["msg_type"] + "\n"
+                print ("Error: " + msg["msg"]["msg_type"] + "\n")
                 self.press_enter_to_continue()
                 return
 
@@ -301,15 +300,15 @@ class TDW_Client(object):
 
         self.ready_for_recv = True
 
-        print "=" * 60
+        print ("=" * 60)
 
     def request_join_environment(self):
         """
         Requests to join active environment process
         """
-        print '_' * 60
-        print " " * 16, "Requesting Join Environment"
-        print '_' * 60, "\n"
+        print ('_' * 60)
+        print (" " * 16, "Requesting Join Environment")
+        print ('_' * 60, "\n")
 
         # phase 1
         # send join request
@@ -322,13 +321,13 @@ class TDW_Client(object):
         msg = json.loads(msg)
 
         if (msg["msg"]["msg_type"] == "NO_AVAILABLE_ENVIRONMENTS"):
-            print "No available environments on server!"
+            print ("No available environments on server!")
             self.press_enter_to_continue()
             return
         elif (msg["msg"]["msg_type"] == "SEND_OPTIONS"):
             has_valid_port_num = True
         else:
-            print "Error: " + msg["msg"]["msg_type"] + "\n"
+            print ("Error: " + msg["msg"]["msg_type"] + "\n")
             self.press_enter_to_continue()
             return
 
@@ -349,7 +348,7 @@ class TDW_Client(object):
 
         # handle if environment goes offline after picking environment
         if (msg["msg"]["msg_type"] == "ENVIRONMENT_UNAVAILABLE"):
-            print "Environment no longer available! Look for a new environment? (y/n)"
+            print ("Environment no longer available! Look for a new environment? (y/n)")
             while True:
                 ans = raw_input()
                 if (ans in ["y", "Y"]):
@@ -358,11 +357,11 @@ class TDW_Client(object):
                 elif (ans in ["n", "N"]):
                     return
                 else:
-                    print "Not a valid response please enter \'y\' or \'n\'"
+                    print ("Not a valid response please enter \'y\' or \'n\'")
         elif (msg["msg"]["msg_type"] == "JOIN_OFFER"):
             pass
         else:
-            print "Error: " + msg["msg"]["msg_type"] + "\n"
+            print ("Error: " + msg["msg"]["msg_type"] + "\n")
             self.press_enter_to_continue()
             return
 
@@ -372,16 +371,16 @@ class TDW_Client(object):
 
         self.ready_for_recv = True
 
-        print "=" * 60, "\n"
+        print ("=" * 60, "\n")
 
     def request_active_processes(self):
         """
         Request to display the relevant info for the environments on the server
         """
-        print '_' * 60
-        print " " * 16, "Requesting Active Processes"
-        print '_' * 60
-        print ""
+        print ('_' * 60)
+        print (" " * 16, "Requesting Active Processes")
+        print ('_' * 60)
+        print ("")
 
         msg = json.dumps({"msg": {"msg_type": "GET_ACTIVE_ENVIRONMENTS"}})
         self.send_json(msg, self.sock)
@@ -393,7 +392,7 @@ class TDW_Client(object):
         if (msg["msg"]["msg_type"] == "ACTIVE_PROCESSES"):
             pass
         else:
-            print "Error: " + msg["msg"]["msg_type"] + "\n"
+            print ("Error: " + msg["msg"]["msg_type"] + "\n")
             self.press_enter_to_continue()
             return
 
@@ -410,21 +409,21 @@ class TDW_Client(object):
         Send and receive functions
         """
         if (self.debug):
-            print "\n", ">" * 20
-            print "sending message..."
+            print ("\n", ">" * 20)
+            print ("sending message...")
         sock.send_json(msg)
         if (self.debug):
-            print "...message sent:\n", msg
-            print ">" * 20
+            print ("...message sent:\n", msg)
+            print (">" * 20)
 
     def recv_json(self, sock):
         if (self.debug):
-            print "\n", "<" * 20
-            print "waiting for message..."
+            print ("\n", "<" * 20)
+            print ("waiting for message...")
         msg = sock.recv_json()
         if (self.debug):
-            print "...message received:\n", msg
-            print "<" * 20
+            print ("...message received:\n", msg)
+            print ("<" * 20)
         return msg
 
     def pick_new_port_num(self):
@@ -440,7 +439,7 @@ class TDW_Client(object):
         """
         Type a port number until one is available or you request to switch to auto
         """
-        print
+        print("\n")
         print("Please enter a port number or type 'scan' or hit enter with no "       "content to sweep the host to find an available port and "
               "connect:")
         get_port_num = True
@@ -486,7 +485,7 @@ class TDW_Client(object):
         if (msg["msg"]["msg_type"] == "AUTO_SELECT_PORT"):
             self.port_num = msg["port_num"]
         else:
-            print "Error: " + msg["msg"]["msg_type"] + "\n"
+            print ("Error: " + msg["msg"]["msg_type"] + "\n")
             self.press_enter_to_continue()
             return
 
@@ -494,9 +493,9 @@ class TDW_Client(object):
         """
         Displays a bar asking to hit enter to continue, and stalls program until this action is performed
         """
-        print '=' * 60
-        print " " * 18, "Press Enter to continue"
-        print '=' * 60
+        print ('=' * 60)
+        print (" " * 18, "Press Enter to continue")
+        print ('=' * 60)
 
         raw_input()
 
@@ -513,7 +512,7 @@ class TDW_Client(object):
                                     entry["proc_create_time"])).strftime("%Y-%m-%d %H:%M:%S"),
                               entry["env_desc"]]]
 
-        print tabulate(table, headers=["Owner", "PID", "Port", "Create Time", "Description"], tablefmt="fancy_grid")
+        print (tabulate(table, headers=["Owner", "PID", "Port", "Create Time", "Description"], tablefmt="fancy_grid"))
 
     def pick_option(self, msg, default_choice=None):
         """
@@ -548,7 +547,7 @@ class TDW_Client(object):
 
         if (use_config and self.environment_config):
             if (self.debug):
-                print "sending with config..."
+                print("sending with config...")
             self.sock.send_json({"n": self.num_frames_per_msg,
                                  "msg": {"msg_type": "CLIENT_JOIN_WITH_CONFIG",
                                          "config": self.environment_config,
@@ -556,14 +555,14 @@ class TDW_Client(object):
                                             self.send_scene_info,
                                          "get_obj_data": self.get_obj_data}})
             if (self.debug):
-                print "...sent with config\n"
+                print("...sent with config\n")
         else:
             if (self.debug):
-                print "sending without config..."
+                print("sending without config...")
             self.sock.send_json({"n": self.num_frames_per_msg,
                                  "msg": {"msg_type": "CLIENT_JOIN",
                                          "send_scene_info":
                                              self.send_scene_info,
                                          "get_obj_data": self.get_obj_data}})
             if (self.debug):
-                print "...sent without config\n"
+                print("...sent without config\n")
