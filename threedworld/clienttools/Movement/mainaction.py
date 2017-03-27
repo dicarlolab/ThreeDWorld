@@ -22,7 +22,7 @@ import curricula
 
 SEED = int(sys.argv[2])
 CREATE_HDF5 = False
-USE_TDW = False
+USE_TDW = True
 SCENE_SWITCH = 20
 SCREEN_WIDTH = 600
 SCREEN_HEIGHT = 256

@@ -16,8 +16,8 @@ import struct
 DEFAULT_QUEUE_PORT=23402
 
 # Set your code and build directories as environment variables!
-os.environ['THREEDWORLD_BUILD_DIR'] = "C:\\Users\\mrowca\\Desktop\\world"
-os.environ['THREEDWORLD_CODE_DIR'] = "C:\\Users\\mrowca\\Documents\\GitHub\\ThreeDWorld"
+#os.environ['THREEDWORLD_BUILD_DIR'] = "C:\\Users\\mrowca\\Desktop\\world"
+#os.environ['THREEDWORLD_CODE_DIR'] = "C:\\Users\\mrowca\\Documents\\GitHub\\ThreeDWorld"
 GPU_NUM = 4
 
 class Three_D_World_Queue(object):
