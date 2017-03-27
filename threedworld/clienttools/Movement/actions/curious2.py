@@ -31,6 +31,15 @@ def get_trunc_normal(rng, dim, std_dev, truncate_norm):
 		if norm < truncate_norm:
 			return vec
 
+def get_valid_num(valid):
+    print('getting valid num')
+    print(valid.shape)
+    for i in range(valid.shape[0]):
+        if not valid[i]:
+            print(i)
+            return i
+
+
 
 def init_msg():
 	msg = {'n': 7, 'msg': {"msg_type": "CLIENT_INPUT", "get_obj_data": True, "send_scene_info" : True, "actions": []}}
@@ -157,9 +166,10 @@ class agent:
 	rng = np.random.RandomState(0)
         use_stabilization = True
 
-        def __init__(self, CREATE_HDF5, path='', dataset_num=-1):
+        def __init__(self, CREATE_HDF5, path='', dataset_num=-1, continue_writing = False):
             if(CREATE_HDF5):
                 self.open_hdf5(path, dataset_num)
+                self.continue_writing = continue_writing
 
 
 	def set_screen_width(self, screen_width):
@@ -917,8 +927,8 @@ class agent:
 
 
 	def make_new_batch(self, bn, sock, path, create_hdf5, use_tdw_msg, task_params, descriptor_prefix, scene_start = False):
-		print 'GOT HERE!'
-		self.bn, self.sock, self.path, self.create_hdf5, self.use_tdw_msg, self.desc_prefix = bn, sock, path, create_hdf5, use_tdw_msg, descriptor_prefix
+                print('Batch num: ' + str(bn))
+                self.bn, self.sock, self.path, self.create_hdf5, self.use_tdw_msg, self.desc_prefix = bn, sock, path, create_hdf5, use_tdw_msg, descriptor_prefix
 		self.in_batch_counter = 0
 		if self.WRITE_FILES:
 			self.temp_im_path = os.path.join(self.path, 'object_throw_test')
@@ -937,6 +947,9 @@ class agent:
 			self.infolist = []
 			self.infs = []
 			self.valid, images, normals, objects, worldinfos, agentactions, images2, normals2, objects2 = self.get_hdf5_handles()
+                        if self.valid[self.BATCH_SIZE * bn : self.BATCH_SIZE * (bn + 1)].all():
+                            print('Skipping batch')
+                            return
                 mode, act_desc, act_params = task_params[0]
 		if mode == 'PUSH_OFF_TABLE' or mode == 'CONTROLLED_TABLE_TASK':
 			drop = (self.rng.rand() < .5)

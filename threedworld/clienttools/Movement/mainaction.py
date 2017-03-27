@@ -21,7 +21,7 @@ USE_TDW = True
 SCENE_SWITCH = 20
 SCREEN_WIDTH = 600
 SCREEN_HEIGHT = 256
-SELECTED_BUILD = 'one_world.exe'
+SELECTED_BUILD = 'one_world_debug.exe'
 
 #if USE_TDW:
 #   raise Exception('Not yet adapted to USE_TDW')
@@ -383,7 +383,7 @@ def loop():
 	my_rng = np.random.RandomState(SEED + 3)
 	global sock
 	env = environment(my_seed = SEED, unity_seed = SEED + 1)
-        agent = curious2.agent(CREATE_HDF5, path)
+        agent = curious2.agent(CREATE_HDF5, path, dataset_num = int(sys.argv[3]), continue_writing = True)
 	if USE_TDW:
 		tc = TDW_Client(host_address,
 			initial_command='request_create_environment',
@@ -413,8 +413,9 @@ def loop():
 	bn = 0
 	not_yet_joined = True
 	for through_curriculum_num in range(NUM_TIMES_RUN):
+                print('beginning curriculum: ' + str(through_curriculum_num))
 		for (agent_directions, descriptor_prefix, scene_info) in my_curriculum:
-			print 'selecting objects...'
+			print('selecting objects...')
 			env.next_config(* scene_info)
                         scene_start = True
 			if not_yet_joined:
@@ -423,14 +424,14 @@ def loop():
 					tc.load_profile({'screen_width': SCREEN_WIDTH, 'screen_height': SCREEN_HEIGHT})
 					sock = tc.run()
 				else:
-					print 'sending join...'
+					print('sending join...')
 					sock.send_json({"msg_type" : "CLIENT_JOIN_WITH_CONFIG", "config" : env.config, "get_obj_data" : True, "send_scene_info" : True, "output_formats": ["png", "png", "jpg"]})
-					print '...join sent'
+					print('...join sent')
 				not_yet_joined = False
 			else:
 				for i in range(7):
 					sock.recv()
-				print 'switching scene...'
+				print('switching scene...')
 				scene_switch_msg = {"msg_type" : "SCENE_SWITCH", "config" : env.config, "get_obj_data" : True, "send_scene_info" : True, "output_formats": ["png", "png", "jpg"]}
 				if USE_TDW:
 					sock.send_json({"n": 7, "msg": scene_switch_msg})
@@ -438,12 +439,15 @@ def loop():
 					sock.send_json(scene_switch_msg)
 			task_order = my_rng.permutation(len(agent_directions))
 			for (order, task_idx) in enumerate(task_order):
+                                print('task time ' + str(order))
 				task_params = agent_directions[task_idx]
-				print 'waiting on messages'
+				print('waiting on messages')
                                 prefix_plus_order = descriptor_prefix + ':' + str(order)
+                                print('about to start batch ' + str(bn))
 				agent.make_new_batch(bn, sock, path, CREATE_HDF5, USE_TDW, task_params, prefix_plus_order, scene_start = scene_start)
-				scene_start = False
-                                print 'message received'
+				print('batch completed')
+                                scene_start = False
+                                print('message received')
 				bn += 1
 	
 def check_port_num(port_num):
