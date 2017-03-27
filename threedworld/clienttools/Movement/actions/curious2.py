@@ -318,635 +318,638 @@ class agent:
                 info, self.narray, self.oarray, self.imarray, self.narray2, self.oarray2, self.imarray2 = handle_message(self.sock, write=self.WRITE_FILES, outdir=self.temp_im_path, prefix=counter_str)
                 print('message handled')
                 self.info = json.loads(info)
-		self.oarray1 = 256**2 * self.oarray[:, :, 0] + 256 * self.oarray[:, :, 1] + self.oarray[:, :, 2]
-		if self.global_counter == 0:
-			self.init_y_pos = self.info['avatar_position'][1]
-			print('init y pos set: ' + str(self.init_y_pos))		
-		# if self.global_counter > 9999:
-		# 	raise Exception('Did not mean to make a movie that long!')
-		# pic_filename = 'pic' + counter_str + '.png'
-		# pic_filename = os.path.join(self.temp_im_path, pic_filename)
-		# im = Image.fromarray(self.imarray)
-		# im.save(pic_filename)
-		return True, [self.update_object(obj) for obj in objects_to_track]
+                self.oarray1 = 256**2 * self.oarray[:, :, 0] + 256 * self.oarray[:, :, 1] + self.oarray[:, :, 2]
+                if self.global_counter == 0:
+                        self.init_y_pos = self.info['avatar_position'][1]
+                        print('init y pos set: ' + str(self.init_y_pos))                
+                # if self.global_counter > 9999:
+                #       raise Exception('Did not mean to make a movie that long!')
+                # pic_filename = 'pic' + counter_str + '.png'
+                # pic_filename = os.path.join(self.temp_im_path, pic_filename)
+                # im = Image.fromarray(self.imarray)
+                # im.save(pic_filename)
+                return True, [self.update_object(obj) for obj in objects_to_track]
 
 
 
 
-	def select_object_in_view(self):
-		#might just be replaced with selecting a random object
-		obs = np.unique(self.oarray1)
-		valido = []
-		for o in self.info['observed_objects']:
-		    if not o[4] and o[1] in obs:
-			valido.append(o[1])
-		diff = set(valido).symmetric_difference(set(obs))
-		obs = np.array(valido)
-		for d in diff:
-		    self.oarray1[self.oarray1 == d] = 0
-		if len(obs) == 0:
-			raise Exception('Not yet implemented if no objects seen!')
-		fracs = [(self.oarray1 == o).sum() / float(np.prod(self.oarray.shape)) for o in obs]
-		chosen_o, index_o = self.choose(obs[np.argsort(fracs)[-5:]])
-		return chosen_o
+        def select_object_in_view(self):
+                #might just be replaced with selecting a random object
+                obs = np.unique(self.oarray1)
+                valido = []
+                for o in self.info['observed_objects']:
+                    if not o[4] and o[1] in obs:
+                        valido.append(o[1])
+                diff = set(valido).symmetric_difference(set(obs))
+                obs = np.array(valido)
+                for d in diff:
+                    self.oarray1[self.oarray1 == d] = 0
+                if len(obs) == 0:
+                        raise Exception('Not yet implemented if no objects seen!')
+                fracs = [(self.oarray1 == o).sum() / float(np.prod(self.oarray.shape)) for o in obs]
+                chosen_o, index_o = self.choose(obs[np.argsort(fracs)[-5:]])
+                return chosen_o
 
-	def select_random_object(self, not_table = True):
-		valid_objects = [o for o in self.info['observed_objects'] if not o[4] and int(o[1]) != -1 and (not not_table or not o[5])]
-		if not len(valid_objects):
-			return None
-		for i in range(5000):
-			obj = valid_objects[self.rng.randint(len(valid_objects))]
-			if valid_pos(obj[2], 19., 19., test_height_too = True):
-				return obj
-		return None
+        def select_random_object(self, not_table = True):
+                valid_objects = [o for o in self.info['observed_objects'] if not o[4] and int(o[1]) != -1 and (not not_table or not o[5])]
+                if not len(valid_objects):
+                        return None
+                for i in range(5000):
+                        obj = valid_objects[self.rng.randint(len(valid_objects))]
+                        if valid_pos(obj[2], 19., 19., test_height_too = True):
+                                return obj
+                return None
 
-	# def teleport_to_object(self, chosen_o, distance_from = 2):
-	# 	#TODO implement random position around object
-	# 	#TODO implement looking-from-above
-	# 	if self.in_batch_counter >= self.BATCH_SIZE:
-	# 		return
-	# 	pos = chosen_o[2]
-	# 	if pos[0] < distance_from:
-	# 		print('exception spot')
-	# 		target_pos = [pos[0] + distance_from, self.init_y_pos, pos[2]]
-	# 		target_rot = [-1, 0, 0]
-	# 	else:
-	# 		target_pos = [pos[0] - distance_from, self.init_y_pos, pos[2]]
-	# 		target_rot = [1, 0, 0]
-	# 	msg = init_msg()
-	# 	msg['msg']['teleport_to'] = {'position' : target_pos, 'rotation' : target_rot}
-	# 	msg['msg']['action_type'] = 'TELE_TO_OBJ'
-	# 	self.send_msg(msg)
+        # def teleport_to_object(self, chosen_o, distance_from = 2):
+        #       #TODO implement random position around object
+        #       #TODO implement looking-from-above
+        #       if self.in_batch_counter >= self.BATCH_SIZE:
+        #               return
+        #       pos = chosen_o[2]
+        #       if pos[0] < distance_from:
+        #               print('exception spot')
+        #               target_pos = [pos[0] + distance_from, self.init_y_pos, pos[2]]
+        #               target_rot = [-1, 0, 0]
+        #       else:
+        #               target_pos = [pos[0] - distance_from, self.init_y_pos, pos[2]]
+        #               target_rot = [1, 0, 0]
+        #       msg = init_msg()
+        #       msg['msg']['teleport_to'] = {'position' : target_pos, 'rotation' : target_rot}
+        #       msg['msg']['action_type'] = 'TELE_TO_OBJ'
+        #       self.send_msg(msg)
 
-	def teleport_to_object(self, chosen_o, distance_from = 2):
-		if self.in_batch_counter >= self.BATCH_SIZE:
-			return
-		pos = [chosen_o[2][0], 0., chosen_o[2][2]]
-		while True:
-			rand_horiz = self.rng.randn(2)
-			rand_yangle = self.rng.uniform(0, np.pi / 3)
-			norm = np.linalg.norm(rand_horiz)
-			if norm < .0001:
-				continue
-			rand_normalized = np.array([rand_horiz[0] * distance_from * np.cos(rand_yangle)/ norm, distance_from * np.sin(rand_yangle), rand_horiz[1] * distance_from * np.cos(rand_yangle) / norm])
-			tgt_pos = list(np.array(pos) + rand_normalized)
-			#right now making sure the angle is between 0 and 60
-			if valid_pos(tgt_pos, 19., 19., test_height_too = True):
-				break
-		tgt_rot = list(- rand_normalized)
-		msg = init_msg()
-		msg['msg']['teleport_to'] = {'position' : tgt_pos, 'rotation' : tgt_rot}
-		msg['msg']['action_type'] = 'TELE_TO_OBJ'
-		self.send_msg(msg)
-		return  - rand_normalized[[0,2]]
-
-
-	def teleport_object(self, obj, pos):
-		if self.in_batch_counter >= self.BATCH_SIZE:
-			return	
-		msg = init_msg()
-		msg['msg']['action_type'] = 'TELE_OBJ'
-		action = {}
-		action['use_absolute_coordinates'] = True
-		action['id'] = str(obj[1])
-		action['teleport_to'] = {'position' : pos, 'rotation' : [0, 0, 0]}
-		msg['msg']['actions'].append(action)
-		self.send_msg(msg)
-
-	def teleport_to_wall(self, obj, distance_from = 1., obj_dist_from = .5):
-		if self.in_batch_counter >= self.BATCH_SIZE:
-			return
-		while True:
-			wall_dir, wall_pos = choose_random_wall_spot(self.rng)
-			wall_dir_perp = np.array([wall_dir[2], 0, - wall_dir[0]])
-			# looking_ang = self.rng.uniform(-np.pi / 6, np.pi / 6)
-			looking_ang = 0.
-			looking_dir = np.cos(looking_ang) * wall_dir + np.sin(looking_ang) * wall_dir_perp
-			tele_pos = wall_pos - distance_from * looking_dir
-			tele_pos[1] = .01
-			if valid_pos(tele_pos, 19., 19., test_height_too = True):
-				break
-		msg = init_msg()
-		tele_rot = looking_dir
-		msg['msg']['teleport_to'] = {'position' : list(tele_pos), 'rotation' : list(tele_rot)}
-		msg['msg']['action_type'] = 'CONTROLLED_STACK_TELE'
-		obj_tele_pos = tele_pos + obj_dist_from * looking_dir
-		init_rot = list(get_urand_sphere_point(self.rng, 3))
-		action = {}
-		action['use_absolute_coordinates'] = True
-		action['id'] = str(obj[1])
-		action['teleport_to'] = {'position' : list(obj_tele_pos), 'rotation' : list(init_rot)}
-		msg['msg']['actions'].append(action)
-		self.send_msg(msg)
-		return wall_dir
+        def teleport_to_object(self, chosen_o, distance_from = 2):
+                if self.in_batch_counter >= self.BATCH_SIZE:
+                        return
+                pos = [chosen_o[2][0], 0., chosen_o[2][2]]
+                while True:
+                        rand_horiz = self.rng.randn(2)
+                        rand_yangle = self.rng.uniform(0, np.pi / 3)
+                        norm = np.linalg.norm(rand_horiz)
+                        if norm < .0001:
+                                continue
+                        rand_normalized = np.array([rand_horiz[0] * distance_from * np.cos(rand_yangle)/ norm, distance_from * np.sin(rand_yangle), rand_horiz[1] * distance_from * np.cos(rand_yangle) / norm])
+                        tgt_pos = list(np.array(pos) + rand_normalized)
+                        #right now making sure the angle is between 0 and 60
+                        if valid_pos(tgt_pos, 19., 19., test_height_too = True):
+                                break
+                tgt_rot = list(- rand_normalized)
+                msg = init_msg()
+                msg['msg']['teleport_to'] = {'position' : tgt_pos, 'rotation' : tgt_rot}
+                msg['msg']['action_type'] = 'TELE_TO_OBJ'
+                self.send_msg(msg)
+                return  - rand_normalized[[0,2]]
 
 
-	def teleport_for_collision(self, big_object, little_object, distance_scale = 1):
-		if self.in_batch_counter >= self.BATCH_SIZE:
-			return
-		big_pos = big_object[2]
-		big_pos_floor = np.array([big_pos[0], 0, big_pos[2]])
-		height_vec = np.array([0., little_object[6][1], 0.])
-		for t in range(5000):
-			action_dir = get_urand_sphere_point(self.rng, 2, zero_div_safety = .0001)
-			action_dir = np.array([action_dir[0], 0, action_dir[1]])
-			little_pos = big_pos_floor - distance_scale * action_dir + height_vec
-			orientation_sign = 2 * self.rng.randint(0, 2) - 1
-			action_dir_perp = orientation_sign * np.array([action_dir[2], 0., - action_dir[0]])
-			view_yang = self.rng.uniform(0, np.pi / 3)
-			ava_diff = np.cos(view_yang) * action_dir_perp + np.sin(view_yang) * np.array([0., 1., 0.])
-			avatar_pos = big_pos_floor - (distance_scale / 2.) * action_dir + ava_diff
-			if valid_pos(little_pos, 19., 19., test_height_too = True) and valid_pos(avatar_pos, 19., 19., test_height_too = True):
-				msg = init_msg()
-				msg['msg']['teleport_to'] = {'position' : list(avatar_pos), 'rotation' : list(- ava_diff)}
-				msg['msg']['action_type'] = 'COLLIDE_TELE'
-				init_rot = list(get_urand_sphere_point(self.rng, 3))
-				action = {}
-				action['id'] = str(little_object[1])
-				action['use_absolute_coordinates'] = True
-				action['teleport_to'] = {'position' : list(little_pos), 'rotation' : list(init_rot)}
-				msg['msg']['actions'].append(action)
-				self.send_msg(msg)
-				return action_dir
-		return
+        def teleport_object(self, obj, pos):
+                if self.in_batch_counter >= self.BATCH_SIZE:
+                        return  
+                msg = init_msg()
+                msg['msg']['action_type'] = 'TELE_OBJ'
+                action = {}
+                action['use_absolute_coordinates'] = True
+                action['id'] = str(obj[1])
+                action['teleport_to'] = {'position' : pos, 'rotation' : [0, 0, 0]}
+                msg['msg']['actions'].append(action)
+                self.send_msg(msg)
+
+        def teleport_to_wall(self, obj, distance_from = 1., obj_dist_from = .5):
+                if self.in_batch_counter >= self.BATCH_SIZE:
+                        return
+                while True:
+                        wall_dir, wall_pos = choose_random_wall_spot(self.rng)
+                        wall_dir_perp = np.array([wall_dir[2], 0, - wall_dir[0]])
+                        # looking_ang = self.rng.uniform(-np.pi / 6, np.pi / 6)
+                        looking_ang = 0.
+                        looking_dir = np.cos(looking_ang) * wall_dir + np.sin(looking_ang) * wall_dir_perp
+                        tele_pos = wall_pos - distance_from * looking_dir
+                        tele_pos[1] = .01
+                        if valid_pos(tele_pos, 19., 19., test_height_too = True):
+                                break
+                msg = init_msg()
+                tele_rot = looking_dir
+                msg['msg']['teleport_to'] = {'position' : list(tele_pos), 'rotation' : list(tele_rot)}
+                msg['msg']['action_type'] = 'CONTROLLED_STACK_TELE'
+                obj_tele_pos = tele_pos + obj_dist_from * looking_dir
+                init_rot = list(get_urand_sphere_point(self.rng, 3))
+                action = {}
+                action['use_absolute_coordinates'] = True
+                action['id'] = str(obj[1])
+                action['teleport_to'] = {'position' : list(obj_tele_pos), 'rotation' : list(init_rot)}
+                msg['msg']['actions'].append(action)
+                self.send_msg(msg)
+                return wall_dir
 
 
-
-	def controlled_teleport_on_top_of(self, under_object, over_object, height_above = None, distance_from = 2, off_center_camera_magnitude = .6, off_center_object_magnitude = .2, random_init_rot = True, drop = True):
-		if self.in_batch_counter >= self.BATCH_SIZE:
-			return
-		under_pos = under_object[2]
-		under_extents = under_object[6]
-		under_center = under_object[7]
-		under_rot = under_object[3]
-		view_dir = get_view_vec_from_quaternion(under_rot)
-		view_yang = self.rng.uniform(0, np.pi / 3)
-		view_3d = np.array([view_dir[0] * distance_from * np.cos(view_yang), distance_from * np.sin(view_yang), view_dir[1] * distance_from * np.cos(view_yang)])
-		center_rot = np.array([under_center[0] * view_dir[0], under_center[1], under_center[2] * view_dir[1]])
-		tabletop_pos = np.array(under_pos) + np.array(under_center) + np.array([0., under_extents[1], 0.])
-		horiz_sign = 2 * self.rng.randint(0, 2) - 1
-		view_horiz_perp = horiz_sign * np.array([view_dir[1], 0, -view_dir[0]])
-		tgt_pos = list(tabletop_pos + view_3d + off_center_camera_magnitude * view_horiz_perp)
-		tgt_rot = list(- view_3d)
-		msg = init_msg()
-		msg['msg']['teleport_to'] = {'position' : tgt_pos, 'rotation' : tgt_rot}
-		msg['msg']['action_type'] = 'CONTROLLED_STACK_TELE'
-		if height_above is None:
-			if drop:		
-				height_above = over_object[6][1] + .5
-			else:
-				height_above = .01 - tabletop_pos[1]
-		tgt_obj_pos = list(tabletop_pos + off_center_object_magnitude * view_horiz_perp + np.array([0., height_above, 0.]))
-		action = {}
-		action['id'] = str(over_object[1])
-		if random_init_rot:
-			init_rot = list(get_urand_sphere_point(self.rng, 3))
-		else:
-			init_rot = [0,0,0]
-		action['use_absolute_coordinates'] = True
-		action['teleport_to'] = {'position' : tgt_obj_pos, 'rotation' : init_rot}
-		msg['msg']['actions'].append(action)
-		self.send_msg(msg)
-		return view_horiz_perp
-
-	def teleport_on_top_of(self, under_object, over_object, height_above = None, distance_from = 2, random_init_rot = False, noisy_drop_std_dev = None, noisy_drop_trunc = None, drop = True):
-		if self.in_batch_counter >= self.BATCH_SIZE:
-			return		
-		under_pos = under_object[2]
-		under_extents = under_object[6]
-		under_center = under_object[7]
-		tabletop_pos = np.array(under_pos) + np.array(under_center) + np.array([0., under_extents[1], 0.])
-
-		if height_above is None:
-			height_above = over_object[6][1] + .5
-		if noisy_drop_std_dev is not None:
-			drop_translate = list(get_trunc_normal(self.rng, 2, noisy_drop_std_dev, noisy_drop_trunc))
-			print 'noisy drop: ' + str(drop_translate)
-		else:
-			drop_translate = [0, 0]
-		if drop:
-			y_level = height_above + tabletop_pos[1]
-		else:
-			print 'not dropping!'
-			y_level = .01
-		tgt_obj_pos = [under_pos[0] + drop_translate[0], y_level, under_pos[2] + drop_translate[1]]
-		# tabletop_pos = [under_pos[0], under_pos[1] + under_extents[1] + under_center[1], under_pos[2]]
-		# if self.init_y_pos > distance_from + tabletop_pos[1]:
-		# 	min_y_pos = 0
-		# else:
-		# 	min_y_pos = self.init_y_pos
-		while True:
-			rand_horiz = self.rng.randn(2)
-			rand_yangle = self.rng.uniform(0, np.pi / 3)
-			norm = np.linalg.norm(rand_horiz)
-			if norm < .0001:
-				continue
-			rand_normalized = np.array([rand_horiz[0] * distance_from * np.cos(rand_yangle)/ norm, distance_from * np.sin(rand_yangle), rand_horiz[1] * distance_from * np.cos(rand_yangle) / norm])
-			tgt_pos = list(np.array(tabletop_pos) + rand_normalized)
-			#right now making sure the angle is between 0 and 60
-			if valid_pos(tgt_pos, 19., 19.):
-				break
-		print('random y angle: ' + str(rand_yangle))
-		tgt_rot = list(- rand_normalized)
-		msg = init_msg()
-		msg['msg']['teleport_to'] = {'position' : tgt_pos, 'rotation' : tgt_rot}
-		msg['msg']['action_type'] = 'STACK_TELE'
-		action = {}
-		action['id'] = str(over_object[1])
-		if random_init_rot:
-			init_rot = list(get_urand_sphere_point(self.rng, 3))
-		else:
-			init_rot = [0,0,0]
-		# print('init rot' + str(init_rot))
-		action['use_absolute_coordinates'] = True
-		action['teleport_to'] = {'position' : tgt_obj_pos, 'rotation' : init_rot}
-		print 'teleport action info'
-		print action
-		msg['msg']['actions'].append(action)
-		self.send_msg(msg)
-		return - rand_normalized[[0,2]]
+        def teleport_for_collision(self, big_object, little_object, distance_scale = 1):
+                if self.in_batch_counter >= self.BATCH_SIZE:
+                        return
+                big_pos = big_object[2]
+                big_pos_floor = np.array([big_pos[0], 0, big_pos[2]])
+                height_vec = np.array([0., little_object[6][1], 0.])
+                for t in range(5000):
+                        action_dir = get_urand_sphere_point(self.rng, 2, zero_div_safety = .0001)
+                        action_dir = np.array([action_dir[0], 0, action_dir[1]])
+                        little_pos = big_pos_floor - distance_scale * action_dir + height_vec
+                        orientation_sign = 2 * self.rng.randint(0, 2) - 1
+                        action_dir_perp = orientation_sign * np.array([action_dir[2], 0., - action_dir[0]])
+                        view_yang = self.rng.uniform(0, np.pi / 3)
+                        ava_diff = np.cos(view_yang) * action_dir_perp + np.sin(view_yang) * np.array([0., 1., 0.])
+                        avatar_pos = big_pos_floor - (distance_scale / 2.) * action_dir + ava_diff
+                        if valid_pos(little_pos, 19., 19., test_height_too = True) and valid_pos(avatar_pos, 19., 19., test_height_too = True):
+                                msg = init_msg()
+                                msg['msg']['teleport_to'] = {'position' : list(avatar_pos), 'rotation' : list(- ava_diff)}
+                                msg['msg']['action_type'] = 'COLLIDE_TELE'
+                                init_rot = list(get_urand_sphere_point(self.rng, 3))
+                                action = {}
+                                action['id'] = str(little_object[1])
+                                action['use_absolute_coordinates'] = True
+                                action['teleport_to'] = {'position' : list(little_pos), 'rotation' : list(init_rot)}
+                                msg['msg']['actions'].append(action)
+                                self.send_msg(msg)
+                                return action_dir
+                return
 
 
 
-	def wait(self, waiting_time, desc = 'WAITING'):
-		t = 0
-		while self.in_batch_counter < self.BATCH_SIZE and t < waiting_time:
-			self.observe_world()
-			msg = init_msg()
-			msg['msg']['action_type'] = desc
-			self.send_msg(msg)
-			t += 1
+        def controlled_teleport_on_top_of(self, under_object, over_object, height_above = None, distance_from = 2, off_center_camera_magnitude = .6, off_center_object_magnitude = .2, random_init_rot = True, drop = True):
+                if self.in_batch_counter >= self.BATCH_SIZE:
+                        return
+                under_pos = under_object[2]
+                under_extents = under_object[6]
+                under_center = under_object[7]
+                under_rot = under_object[3]
+                view_dir = get_view_vec_from_quaternion(under_rot)
+                view_yang = self.rng.uniform(0, np.pi / 3)
+                view_3d = np.array([view_dir[0] * distance_from * np.cos(view_yang), distance_from * np.sin(view_yang), view_dir[1] * distance_from * np.cos(view_yang)])
+                center_rot = np.array([under_center[0] * view_dir[0], under_center[1], under_center[2] * view_dir[1]])
+                tabletop_pos = np.array(under_pos) + np.array(under_center) + np.array([0., under_extents[1], 0.])
+                horiz_sign = 2 * self.rng.randint(0, 2) - 1
+                view_horiz_perp = horiz_sign * np.array([view_dir[1], 0, -view_dir[0]])
+                tgt_pos = list(tabletop_pos + view_3d + off_center_camera_magnitude * view_horiz_perp)
+                tgt_rot = list(- view_3d)
+                msg = init_msg()
+                msg['msg']['teleport_to'] = {'position' : tgt_pos, 'rotation' : tgt_rot}
+                msg['msg']['action_type'] = 'CONTROLLED_STACK_TELE'
+                if height_above is None:
+                        if drop:                
+                                height_above = over_object[6][1] + .5
+                        else:
+                                height_above = .01 - tabletop_pos[1]
+                tgt_obj_pos = list(tabletop_pos + off_center_object_magnitude * view_horiz_perp + np.array([0., height_above, 0.]))
+                action = {}
+                action['id'] = str(over_object[1])
+                if random_init_rot:
+                        init_rot = list(get_urand_sphere_point(self.rng, 3))
+                else:
+                        init_rot = [0,0,0]
+                action['use_absolute_coordinates'] = True
+                action['teleport_to'] = {'position' : tgt_obj_pos, 'rotation' : init_rot}
+                msg['msg']['actions'].append(action)
+                self.send_msg(msg)
+                return view_horiz_perp
 
-	def wait_until_stops(self, obj_of_interest, threshold, time_window, max_time, desc = 'WAITING', cut_if_off_screen = None):
-		window = [float('inf')] * time_window
-		old_pos = np.array(obj_of_interest[2])
-		old_rot = np.array(obj_of_interest[3])
-		num_consecutive_off_screen = 0
-		for t in range(max_time):
-		 	if self.in_batch_counter >= self.BATCH_SIZE:
-		 		return
-		 	did_update, obj_updated_list = self.observe_world(obj_of_interest)
-		 	obj_updated = obj_updated_list[0]
-		 	if not did_update:
-		 		return
-		 	if obj_updated is None:
-				window[t % time_window] = 0.0
-			elif cut_if_off_screen is not None and len((self.oarray1 == obj_updated[1]).nonzero()[0]) == 0:
-				num_consecutive_off_screen += 1
-				if num_consecutive_off_screen >= cut_if_off_screen:
-					msg = init_msg()
-					msg['msg']['action_type'] = desc
-					self.send_msg(msg)
-					return
-			else:
-				obj_of_interest = obj_updated
-				pos = np.array(obj_of_interest[2])
-				rot = np.array(obj_of_interest[3])
-				window[t % time_window] = np.linalg.norm(pos - old_pos) + np.linalg.norm(rot - old_rot)
-				old_pos = pos
-				old_rot = rot
-			msg = init_msg()
-			msg['msg']['action_type'] = desc
-			self.send_msg(msg)
-			if sum(window) < threshold:
-				return
+        def teleport_on_top_of(self, under_object, over_object, height_above = None, distance_from = 2, random_init_rot = False, noisy_drop_std_dev = None, noisy_drop_trunc = None, drop = True):
+                if self.in_batch_counter >= self.BATCH_SIZE:
+                        return          
+                under_pos = under_object[2]
+                under_extents = under_object[6]
+                under_center = under_object[7]
+                tabletop_pos = np.array(under_pos) + np.array(under_center) + np.array([0., under_extents[1], 0.])
 
-
-
-	def get_to_object(self, chosen_o, target_distance = 2.):
-		#might just be replaced with teleporting towards an object
-		obs_obj = self.info['observed_objects']
-		obs_idx = self.find_in_observed_objects(chosen_o, obs_obj)
-		chosen_o_name = obs_obj[obs_idx][0]
-		print 'Object chosen: ' + str(chosen_o) + ' ' + str(chosen_o_name)
-		pos3d = np.array(obs_obj[obs_idx][2])
-		obs_dist = np.linalg.norm(pos3d - np.array(self.info['avatar_position']))
-		while obs_dist > target_distance and self.in_batch_counter < self.BATCH_SIZE:
-			print 'MOVING CLOSER TO ' + str(chosen_o)
-			print 'TARGET DISTANCE ' + str(target_distance) + ' > ' + str(obs_dist)
-			xs, ys = (self.oarray1 == chosen_o).nonzero()
-			pos = np.round(np.array(zip(xs, ys)).mean(0))
-			if np.abs(self.SCREEN_WIDTH/2 - pos[1]) < 10:
-			    d = 0
-			else:
-			    d =  -0.1 * np.sign(self.SCREEN_WIDTH/2 - pos[1])
-			msg = init_msg()
-			msg['msg']['vel'] = [0, 0, .25]
-			msg['msg']['ang_vel'] = [0, d, 0]
-			msg['msg']['action_type'] = "MOVING_CLOSER"
-			self.send_msg(msg)
-			self.observe_world()
-			#TODO object might not be observed still, somehow! Fix this.
-			obs_obj = self.info['observed_objects']
-			obs_idx = self.find_in_observed_objects(chosen_o, obs_obj)
-			pos3d = np.array(obs_obj[obs_idx][2])
-			obs_dist = np.linalg.norm(pos3d - np.array(self.info['avatar_position']))
-
-
-	def push_object(self, chosen_o, time_len_apply, time_len_wait, const_force):
-		chosen_o = chosen_o[1]
-		# self.get_to_object(chosen_o)
-		t = 0
-		objpi = []
-		while self.in_batch_counter < self.BATCH_SIZE and t < time_len_apply:
-			pos, chosen_id = self.choose_action_position(self.oarray1, chosen_o, slipage = 0)
-			xs, ys = (self.oarray1 == chosen_o).nonzero()
-			obs_obj = self.info['observed_objects']
-			obs_idx = self.find_in_observed_objects(chosen_o, obs_obj)
-			chosen_o_name = obs_obj[obs_idx][0]
-			print 'Applying force to ' + str(chosen_o_name)
-			centroid = np.round(np.array(zip(xs, ys)).mean(0))
-			objpi.append(centroid)
-			action = {}
-			msg = init_msg()
-			action['use_absolute_coordinates'] = True
-			action['force'] = const_force
-			action['torque'] = [0,0,0]
-			action['id'] = str(chosen_id)
-			action['object'] = str(chosen_o)
-			action['action_pos'] = map(float, pos)
-			msg['msg']['actions'].append(action)
-			msg['msg']['action_type'] = 'PUSHING'
-			self.send_msg(msg)
-			t += 1
-			if self.in_batch_counter < self.BATCH_SIZE and t < time_len_apply:
-				self.observe_world()
-		self.wait(time_len_wait)
-
-	def apply_action(self, chosen_o, f_sequence, tor_sequence, act_descriptor, cut_if_off_screen = None):
-		if not (self.in_batch_counter < self.BATCH_SIZE):
-			return
-		num_object_gone = 0
-		assert len(f_sequence) == len(tor_sequence)
-		for (t, (f, tor)) in enumerate(zip(f_sequence, tor_sequence)):
-			pos, chosen_id = self.choose_action_position(self.oarray1, chosen_o[1], slipage = 0)
-			xs, ys = (self.oarray1 == chosen_o[1]).nonzero()
-			if len(xs) == 0:
-				num_object_gone += 1
-			else:
-				num_object_gone = 0
-			chosen_o_name = chosen_o[0]
-			print('Applying force to ' + str(chosen_o_name))
-			centroid = np.round(np.array(zip(xs, ys)).mean(0))
-			action = {}
-			msg = init_msg()
-			action['use_absolute_coordinates'] = True
-			action['force'] = f
-			action['torque'] = tor
-			action['id'] = str(chosen_id)
-			action['object'] = str(chosen_o[1])
-			action['action_pos'] = map(float, pos)
-			msg['msg']['actions'].append(action)
-			msg['msg']['action_type'] = act_descriptor
-			self.send_msg(msg)
-			if self.in_batch_counter < self.BATCH_SIZE and t < len(f_sequence) - 1 and ((cut_if_off_screen is None) or (num_object_gone < cut_if_off_screen)):
-				self.observe_world()
-			elif self.in_batch_counter >= self.BATCH_SIZE or ((cut_if_off_screen is not None) and (num_object_gone >= cut_if_off_screen)):
-				return
-
-
-	def get_tables_and_not_tables_lists(self):
-		tables =  [o for o in self.info['observed_objects'] if o[5] and int(o[1]) != -1 and not o[4]]
-		not_tables = [o for o in self.info['observed_objects'] if not o[5] and int(o[1]) != -1 and not o[4]]
-		print 'table and not table lengths'
-		print (len(tables), len(not_tables))
-		return tables, not_tables
-
-	def select_random_table_not_table(self):
-		tables, not_tables = self.get_tables_and_not_tables_lists()
-		if (not len(tables)) or (not len(not_tables)):
-			return None, None
-		for t in range(5000):
-			table = tables[self.rng.randint(len(tables))]
-			if valid_pos(table[2], 19., 19., test_height_too = True):
-				break
-		for t in range(5000):
-			not_table = not_tables[self.rng.randint(len(not_tables))]
-			if valid_pos(not_table[2], 19., 19., test_height_too = True):
-				return table, not_table
-		return None, None
-
-	def update_object(self, old_obj):
-		'''
-		When observe_world has been called, and there's an object from a previous frame that you want up-to-date info on. Returns None if the
-		object is not in observed_objects.
-		'''
-		obs_obj = self.info['observed_objects']
-		obs_idx = self.find_in_observed_objects(old_obj[1], obs_obj)
-		if obs_idx is None:
-			return None
-		else:
-			return obs_obj[obs_idx]
-
-	def do_one_object_task(self, act_desc, act_params):
-		self.observe_world()
-		if self.in_batch_counter == 0:
-			self.init_y_pos = self.info['avatar_position'][1]
-		obj = self.select_random_object()
-		if obj is None:
-			msg = init_msg()
-			msg['msg']['action_type'] = 'WAITING'
-			self.send_msg(msg)
-			return
-		looking_dir = self.teleport_to_object(obj, distance_from = 1)
-		did_update, obj_list = self.observe_world(obj)
-		if not did_update:
-			return
-		obj = obj_list[0]
-		if obj is None:
-			msg = init_msg()
-			msg['msg']['action_type'] = 'WAITING'
-			self.send_msg(msg)
-			return
-		if 'std_dev_ang' in act_params['kwargs']:
-			f_seq, tor_seq = act_params['func'](self.rng, distinct_dir = looking_dir, **act_params['kwargs'])
-		else:
-			f_seq, tor_seq = act_params['func'](self.rng, **act_params['kwargs'])
-		self.apply_action(obj, f_seq, tor_seq, act_desc, cut_if_off_screen = act_params.get('cut_if_off_screen'))
-		if 'wait' in act_params:
-			# self.wait(act_params['wait'])
-			#technically should update the object, but not sure this is so important right now
-			self.wait_until_stops(obj, act_params['wait']['threshold'], act_params['wait']['time_window'], act_params['wait']['max_time'], cut_if_off_screen = act_params.get('cut_if_off_screen'))
-
-	def do_wall_throw(self, act_desc, act_params, clean_up_after = True):
-		self.observe_world()
-		obj = self.select_random_object()
-		old_pos = obj[2]
-		if obj is None:
-			msg = init_msg()
-			msg['msg']['action_type'] = 'WAITING'
-			self.send_msg(msg)
-			return
-		wall_dir = self.teleport_to_wall(obj, distance_from = 1, obj_dist_from = .5)
-		if 'wait_before' in act_params:
-			self.wait_until_stops(obj, act_params['wait_before']['threshold'], act_params['wait_before']['time_window'], act_params['wait_before']['max_time'], desc = 'DROPPING', cut_if_off_screen = act_params.get('cut_if_off_screen'))
-		did_update, obj_after_teleport_list = self.observe_world(obj)
-		if not did_update:
-			return
-		obj_after_teleport = obj_after_teleport_list[0]
-		if obj_after_teleport is None:
-			msg = init_msg()
-			msg['msg']['action_type'] = 'WAITING'
-			self.send_msg(msg)
-			return
-		f_seq, tor_seq = act_params['func'](self.rng, distinct_dir = wall_dir, ** act_params['kwargs'])
-		self.apply_action(obj_after_teleport, f_seq, tor_seq, act_desc, cut_if_off_screen = act_params.get('cut_if_off_screen'))
-		if 'wait_after' in act_params:
-			self.wait_until_stops(obj_after_teleport, act_params['wait_after']['threshold'], act_params['wait_after']['time_window'], act_params['wait_after']['max_time'], desc = 'WAITING', cut_if_off_screen = act_params.get('cut_if_off_screen'))
-		if clean_up_after:
-			did_update, obj_after_act_list = self.observe_world(obj)
-			if not did_update:
-				return
-			obj_after_act = obj_after_act_list[0]
-			if obj_after_act is None:
-				msg = init_msg()
-				msg['msg']['action_type'] = 'WAITING'
-				self.send_msg(msg)
-				return
-			self.teleport_object(obj_after_act, old_pos)
-
-	def do_throw_at_object(self, act_desc, act_params):
-		self.observe_world()
-		big_obj, little_obj = self.select_random_table_not_table()
-		if little_obj is None or big_obj is None:
-			msg = init_msg()
-			msg['msg']['action_type'] = 'WAITING'
-			self.send_msg(msg)
-			return
-		horiz_action_dir = self.teleport_for_collision(big_obj, little_obj, distance_scale = 1)
-		if horiz_action_dir is None:
-			msg = init_msg()
-			msg['msg']['action_type'] = 'WAITING'
-			self.send_msg(msg)
-			return
-		if 'wait_before' in act_params:
-			wait_max_time = act_params['wait_before'].get('no_drop_max_time', 3)
-			self.wait_until_stops(little_obj, act_params['wait_before']['threshold'], act_params['wait_before']['time_window'], wait_max_time, desc = 'DROPPING', cut_if_off_screen = act_params.get('cut_if_off_screen'))
-		did_update, obj_after_teleport_list = self.observe_world(little_obj)
-		if not did_update:
-			return
-		little_obj_after_teleport = obj_after_teleport_list[0]
-		if little_obj_after_teleport is None:
-			msg = init_msg()
-			msg['msg']['action_type'] = 'WAITING'
-			self.send_msg(msg)
-			return
-		f_seq, tor_seq = act_params['func'](self.rng, horiz_action_dir, **act_params['kwargs'])
-		self.apply_action(little_obj_after_teleport, f_seq, tor_seq, act_desc, cut_if_off_screen = act_params.get('cut_if_off_screen'))
-		if 'wait_after' in act_params:
-			self.wait_until_stops(little_obj_after_teleport, act_params['wait_after']['threshold'], act_params['wait_after']['time_window'], act_params['wait_after']['max_time'], desc = 'WAITING', cut_if_off_screen = act_params.get('cut_if_off_screen'))
-
-
-	def do_controlled_table_task(self, act_desc, act_params, clean_up_table = True, drop = True):
-		self.observe_world()
-		under_obj, obj = self.select_random_table_not_table()
-		if under_obj is None or obj is None:
-			msg = init_msg()
-			msg['msg']['action_type'] = 'WAITING'
-			self.send_msg(msg)
-			return
-		old_pos = obj[2]
-		horiz_action_dir = self.controlled_teleport_on_top_of(under_obj, obj, height_above = None, distance_from = 1, drop = drop)
-		if 'wait_before' in act_params:
-			if drop:
-				wait_max_time = act_params['wait_before']['max_time']
-			else:
-				wait_max_time = act_params['wait_before'].get('no_drop_max_time', 3)
-			self.wait_until_stops(obj, act_params['wait_before']['threshold'], act_params['wait_before']['time_window'], wait_max_time, desc = 'DROPPING', cut_if_off_screen = act_params.get('cut_if_off_screen'))
-		did_update, obj_after_teleport_list = self.observe_world(obj)
-		if not did_update:
-			return
-		obj_after_teleport = obj_after_teleport_list[0]
-		if obj_after_teleport is None:
-			msg = init_msg()
-			msg['msg']['action_type'] = 'WAITING'
-			self.send_msg(msg)
-			return
-		f_seq, tor_seq = act_params['func'](self.rng, horiz_action_dir, **act_params['kwargs'])
-		self.apply_action(obj_after_teleport, f_seq, tor_seq, act_desc, cut_if_off_screen = act_params.get('cut_if_off_screen'))
-		if 'wait_after' in act_params:
-			self.wait_until_stops(obj_after_teleport, act_params['wait_after']['threshold'], act_params['wait_after']['time_window'], act_params['wait_after']['max_time'], desc = 'WAITING', cut_if_off_screen = act_params.get('cut_if_off_screen'))
-		if clean_up_table:
-			did_update, obj_after_act_list = self.observe_world(obj)
-			if not did_update:
-				return
-			obj_after_act = obj_after_act_list[0]
-			if obj_after_act is None:
-				msg = init_msg()
-				msg['msg']['action_type'] = 'WAITING'
-				self.send_msg(msg)
-				return
-			self.teleport_object(obj_after_act, old_pos)
-
-
-	def do_table_drop_task(self, act_desc, act_params, clean_up_table = True, drop = True):
-		self.observe_world()
-		under_obj, obj = self.select_random_table_not_table()
-		if under_obj is None or obj is None:
-			msg = init_msg()
-			msg['msg']['action_type'] = 'WAITING'
-			self.send_msg(msg)
-			return
-		old_pos = obj[2]
-		looking_dir = self.teleport_on_top_of(under_obj, obj, height_above = None, distance_from = 1, random_init_rot = act_params.get('random_init_rot'), noisy_drop_std_dev = act_params.get('noisy_drop_std_dev'), noisy_drop_trunc = act_params.get('noisy_drop_trunc'), drop = drop)
-		if 'wait_before' in act_params:
-			if drop:
-				wait_max_time = act_params['wait_before']['max_time']
-			else:
-				wait_max_time = act_params['wait_before'].get('no_drop_max_time', 3)
-			#again, object is not immediately updated, but should not matter in this case.
-			self.wait_until_stops(obj, act_params['wait_before']['threshold'], act_params['wait_before']['time_window'], wait_max_time, desc = 'DROPPING', cut_if_off_screen = act_params.get('cut_if_off_screen'))
-		did_update, obj_after_teleport_list = self.observe_world(obj)
-		if not did_update:
-			return
-		obj_after_teleport = obj_after_teleport_list[0]
-		if obj_after_teleport is None:
-			msg = init_msg()
-			msg['msg']['action_type'] = 'WAITING'
-			self.send_msg(msg)
-			return
-		if 'std_dev_ang' in act_params['kwargs']:
-			f_seq, tor_seq = act_params['func'](self.rng, distinct_dir = looking_dir, **act_params['kwargs'])
-		else:
-			f_seq, tor_seq = act_params['func'](self.rng, **act_params['kwargs'])
-		self.apply_action(obj_after_teleport, f_seq, tor_seq, act_desc, cut_if_off_screen = act_params.get('cut_if_off_screen'))
-		if 'wait_after' in act_params:
-			self.wait_until_stops(obj_after_teleport, act_params['wait_after']['threshold'], act_params['wait_after']['time_window'], act_params['wait_after']['max_time'], desc = 'WAITING', cut_if_off_screen = act_params.get('cut_if_off_screen'))
-		if clean_up_table:
-			did_update, obj_after_act_list = self.observe_world(obj)
-			if not did_update:
-				return
-			obj_after_act = obj_after_act_list[0]
-			if obj_after_act is None:
-				msg = init_msg()
-				msg['msg']['action_type'] = 'WAITING'
-				self.send_msg(msg)
-				return
-			self.teleport_object(obj_after_act, old_pos)
+                if height_above is None:
+                        height_above = over_object[6][1] + .5
+                if noisy_drop_std_dev is not None:
+                        drop_translate = list(get_trunc_normal(self.rng, 2, noisy_drop_std_dev, noisy_drop_trunc))
+                        print ('noisy drop: ' + str(drop_translate))
+                else:
+                        drop_translate = [0, 0]
+                if drop:
+                        y_level = height_above + tabletop_pos[1]
+                else:
+                        print ('not dropping!')
+                        y_level = .01
+                tgt_obj_pos = [under_pos[0] + drop_translate[0], y_level, under_pos[2] + drop_translate[1]]
+                # tabletop_pos = [under_pos[0], under_pos[1] + under_extents[1] + under_center[1], under_pos[2]]
+                # if self.init_y_pos > distance_from + tabletop_pos[1]:
+                #       min_y_pos = 0
+                # else:
+                #       min_y_pos = self.init_y_pos
+                while True:
+                        rand_horiz = self.rng.randn(2)
+                        rand_yangle = self.rng.uniform(0, np.pi / 3)
+                        norm = np.linalg.norm(rand_horiz)
+                        if norm < .0001:
+                                continue
+                        rand_normalized = np.array([rand_horiz[0] * distance_from * np.cos(rand_yangle)/ norm, distance_from * np.sin(rand_yangle), rand_horiz[1] * distance_from * np.cos(rand_yangle) / norm])
+                        tgt_pos = list(np.array(tabletop_pos) + rand_normalized)
+                        #right now making sure the angle is between 0 and 60
+                        if valid_pos(tgt_pos, 19., 19.):
+                                break
+                print('random y angle: ' + str(rand_yangle))
+                tgt_rot = list(- rand_normalized)
+                msg = init_msg()
+                msg['msg']['teleport_to'] = {'position' : tgt_pos, 'rotation' : tgt_rot}
+                msg['msg']['action_type'] = 'STACK_TELE'
+                action = {}
+                action['id'] = str(over_object[1])
+                if random_init_rot:
+                        init_rot = list(get_urand_sphere_point(self.rng, 3))
+                else:
+                        init_rot = [0,0,0]
+                # print('init rot' + str(init_rot))
+                action['use_absolute_coordinates'] = True
+                action['teleport_to'] = {'position' : tgt_obj_pos, 'rotation' : init_rot}
+                print ('teleport action info')
+                print (action)
+                msg['msg']['actions'].append(action)
+                self.send_msg(msg)
+                return - rand_normalized[[0,2]]
 
 
 
-	def make_new_batch(self, bn, sock, path, create_hdf5, use_tdw_msg, task_params, descriptor_prefix, scene_start = False):
+        def wait(self, waiting_time, desc = 'WAITING'):
+                t = 0
+                while self.in_batch_counter < self.BATCH_SIZE and t < waiting_time:
+                        self.observe_world()
+                        msg = init_msg()
+                        msg['msg']['action_type'] = desc
+                        self.send_msg(msg)
+                        t += 1
+
+        def wait_until_stops(self, obj_of_interest, threshold, time_window, max_time, desc = 'WAITING', cut_if_off_screen = None):
+                window = [float('inf')] * time_window
+                old_pos = np.array(obj_of_interest[2])
+                old_rot = np.array(obj_of_interest[3])
+                num_consecutive_off_screen = 0
+                for t in range(max_time):
+                        if self.in_batch_counter >= self.BATCH_SIZE:
+                                return
+                        did_update, obj_updated_list = self.observe_world(obj_of_interest)
+                        obj_updated = obj_updated_list[0]
+                        if not did_update:
+                                return
+                        if obj_updated is None:
+                                window[t % time_window] = 0.0
+                        elif cut_if_off_screen is not None and len((self.oarray1 == obj_updated[1]).nonzero()[0]) == 0:
+                                num_consecutive_off_screen += 1
+                                if num_consecutive_off_screen >= cut_if_off_screen:
+                                        msg = init_msg()
+                                        msg['msg']['action_type'] = desc
+                                        self.send_msg(msg)
+                                        return
+                        else:
+                                obj_of_interest = obj_updated
+                                pos = np.array(obj_of_interest[2])
+                                rot = np.array(obj_of_interest[3])
+                                window[t % time_window] = np.linalg.norm(pos - old_pos) + np.linalg.norm(rot - old_rot)
+                                old_pos = pos
+                                old_rot = rot
+                        msg = init_msg()
+                        msg['msg']['action_type'] = desc
+                        self.send_msg(msg)
+                        if sum(window) < threshold:
+                                return
+
+
+
+        def get_to_object(self, chosen_o, target_distance = 2.):
+                #might just be replaced with teleporting towards an object
+                obs_obj = self.info['observed_objects']
+                obs_idx = self.find_in_observed_objects(chosen_o, obs_obj)
+                chosen_o_name = obs_obj[obs_idx][0]
+                print ('Object chosen: ' + str(chosen_o) + ' ' + str(chosen_o_name))
+                pos3d = np.array(obs_obj[obs_idx][2])
+                obs_dist = np.linalg.norm(pos3d - np.array(self.info['avatar_position']))
+                while obs_dist > target_distance and self.in_batch_counter < self.BATCH_SIZE:
+                        print ('MOVING CLOSER TO ' + str(chosen_o))
+                        print ('TARGET DISTANCE ' + str(target_distance) + ' > ' + str(obs_dist))
+                        xs, ys = (self.oarray1 == chosen_o).nonzero()
+                        spos = list(zip(xs, ys))
+                        pos = np.round(np.array(spos).mean(0))
+                        if np.abs(self.SCREEN_WIDTH/2 - pos[1]) < 10:
+                            d = 0
+                        else:
+                            d =  -0.1 * np.sign(self.SCREEN_WIDTH/2 - pos[1])
+                        msg = init_msg()
+                        msg['msg']['vel'] = [0, 0, .25]
+                        msg['msg']['ang_vel'] = [0, d, 0]
+                        msg['msg']['action_type'] = "MOVING_CLOSER"
+                        self.send_msg(msg)
+                        self.observe_world()
+                        #TODO object might not be observed still, somehow! Fix this.
+                        obs_obj = self.info['observed_objects']
+                        obs_idx = self.find_in_observed_objects(chosen_o, obs_obj)
+                        pos3d = np.array(obs_obj[obs_idx][2])
+                        obs_dist = np.linalg.norm(pos3d - np.array(self.info['avatar_position']))
+
+
+        def push_object(self, chosen_o, time_len_apply, time_len_wait, const_force):
+                chosen_o = chosen_o[1]
+                # self.get_to_object(chosen_o)
+                t = 0
+                objpi = []
+                while self.in_batch_counter < self.BATCH_SIZE and t < time_len_apply:
+                        pos, chosen_id = self.choose_action_position(self.oarray1, chosen_o, slipage = 0)
+                        xs, ys = (self.oarray1 == chosen_o).nonzero()
+                        obs_obj = self.info['observed_objects']
+                        obs_idx = self.find_in_observed_objects(chosen_o, obs_obj)
+                        chosen_o_name = obs_obj[obs_idx][0]
+                        print ('Applying force to ' + str(chosen_o_name))
+                        spos = list(zip(xs, ys))
+                        centroid = np.round(np.array(spos).mean(0))
+                        objpi.append(centroid)
+                        action = {}
+                        msg = init_msg()
+                        action['use_absolute_coordinates'] = True
+                        action['force'] = const_force
+                        action['torque'] = [0,0,0]
+                        action['id'] = str(chosen_id)
+                        action['object'] = str(chosen_o)
+                        action['action_pos'] = list(map(float, pos))
+                        msg['msg']['actions'].append(action)
+                        msg['msg']['action_type'] = 'PUSHING'
+                        self.send_msg(msg)
+                        t += 1
+                        if self.in_batch_counter < self.BATCH_SIZE and t < time_len_apply:
+                                self.observe_world()
+                self.wait(time_len_wait)
+
+        def apply_action(self, chosen_o, f_sequence, tor_sequence, act_descriptor, cut_if_off_screen = None):
+                if not (self.in_batch_counter < self.BATCH_SIZE):
+                        return
+                num_object_gone = 0
+                assert len(f_sequence) == len(tor_sequence)
+                for (t, (f, tor)) in enumerate(zip(f_sequence, tor_sequence)):
+                        pos, chosen_id = self.choose_action_position(self.oarray1, chosen_o[1], slipage = 0)
+                        xs, ys = (self.oarray1 == chosen_o[1]).nonzero()
+                        if len(xs) == 0:
+                                num_object_gone += 1
+                        else:
+                                num_object_gone = 0
+                        chosen_o_name = chosen_o[0]
+                        print('Applying force to ' + str(chosen_o_name))
+                        spos = list(zip(xs, ys))
+                        centroid = np.round(np.array(spos).mean(0))
+                        action = {}
+                        msg = init_msg()
+                        action['use_absolute_coordinates'] = True
+                        action['force'] = f
+                        action['torque'] = tor
+                        action['id'] = str(chosen_id)
+                        action['object'] = str(chosen_o[1])
+                        action['action_pos'] = list(map(float, pos))
+                        msg['msg']['actions'].append(action)
+                        msg['msg']['action_type'] = act_descriptor
+                        self.send_msg(msg)
+                        if self.in_batch_counter < self.BATCH_SIZE and t < len(f_sequence) - 1 and ((cut_if_off_screen is None) or (num_object_gone < cut_if_off_screen)):
+                                self.observe_world()
+                        elif self.in_batch_counter >= self.BATCH_SIZE or ((cut_if_off_screen is not None) and (num_object_gone >= cut_if_off_screen)):
+                                return
+
+
+        def get_tables_and_not_tables_lists(self):
+                tables =  [o for o in self.info['observed_objects'] if o[5] and int(o[1]) != -1 and not o[4]]
+                not_tables = [o for o in self.info['observed_objects'] if not o[5] and int(o[1]) != -1 and not o[4]]
+                print ('table and not table lengths')
+                print (len(tables), len(not_tables))
+                return tables, not_tables
+
+        def select_random_table_not_table(self):
+                tables, not_tables = self.get_tables_and_not_tables_lists()
+                if (not len(tables)) or (not len(not_tables)):
+                        return None, None
+                for t in range(5000):
+                        table = tables[self.rng.randint(len(tables))]
+                        if valid_pos(table[2], 19., 19., test_height_too = True):
+                                break
+                for t in range(5000):
+                        not_table = not_tables[self.rng.randint(len(not_tables))]
+                        if valid_pos(not_table[2], 19., 19., test_height_too = True):
+                                return table, not_table
+                return None, None
+
+        def update_object(self, old_obj):
+                '''
+                When observe_world has been called, and there's an object from a previous frame that you want up-to-date info on. Returns None if the
+                object is not in observed_objects.
+                '''
+                obs_obj = self.info['observed_objects']
+                obs_idx = self.find_in_observed_objects(old_obj[1], obs_obj)
+                if obs_idx is None:
+                        return None
+                else:
+                        return obs_obj[obs_idx]
+
+        def do_one_object_task(self, act_desc, act_params):
+                self.observe_world()
+                if self.in_batch_counter == 0:
+                        self.init_y_pos = self.info['avatar_position'][1]
+                obj = self.select_random_object()
+                if obj is None:
+                        msg = init_msg()
+                        msg['msg']['action_type'] = 'WAITING'
+                        self.send_msg(msg)
+                        return
+                looking_dir = self.teleport_to_object(obj, distance_from = 1)
+                did_update, obj_list = self.observe_world(obj)
+                if not did_update:
+                        return
+                obj = obj_list[0]
+                if obj is None:
+                        msg = init_msg()
+                        msg['msg']['action_type'] = 'WAITING'
+                        self.send_msg(msg)
+                        return
+                if 'std_dev_ang' in act_params['kwargs']:
+                        f_seq, tor_seq = act_params['func'](self.rng, distinct_dir = looking_dir, **act_params['kwargs'])
+                else:
+                        f_seq, tor_seq = act_params['func'](self.rng, **act_params['kwargs'])
+                self.apply_action(obj, f_seq, tor_seq, act_desc, cut_if_off_screen = act_params.get('cut_if_off_screen'))
+                if 'wait' in act_params:
+                        # self.wait(act_params['wait'])
+                        #technically should update the object, but not sure this is so important right now
+                        self.wait_until_stops(obj, act_params['wait']['threshold'], act_params['wait']['time_window'], act_params['wait']['max_time'], cut_if_off_screen = act_params.get('cut_if_off_screen'))
+
+        def do_wall_throw(self, act_desc, act_params, clean_up_after = True):
+                self.observe_world()
+                obj = self.select_random_object()
+                old_pos = obj[2]
+                if obj is None:
+                        msg = init_msg()
+                        msg['msg']['action_type'] = 'WAITING'
+                        self.send_msg(msg)
+                        return
+                wall_dir = self.teleport_to_wall(obj, distance_from = 1, obj_dist_from = .5)
+                if 'wait_before' in act_params:
+                        self.wait_until_stops(obj, act_params['wait_before']['threshold'], act_params['wait_before']['time_window'], act_params['wait_before']['max_time'], desc = 'DROPPING', cut_if_off_screen = act_params.get('cut_if_off_screen'))
+                did_update, obj_after_teleport_list = self.observe_world(obj)
+                if not did_update:
+                        return
+                obj_after_teleport = obj_after_teleport_list[0]
+                if obj_after_teleport is None:
+                        msg = init_msg()
+                        msg['msg']['action_type'] = 'WAITING'
+                        self.send_msg(msg)
+                        return
+                f_seq, tor_seq = act_params['func'](self.rng, distinct_dir = wall_dir, ** act_params['kwargs'])
+                self.apply_action(obj_after_teleport, f_seq, tor_seq, act_desc, cut_if_off_screen = act_params.get('cut_if_off_screen'))
+                if 'wait_after' in act_params:
+                        self.wait_until_stops(obj_after_teleport, act_params['wait_after']['threshold'], act_params['wait_after']['time_window'], act_params['wait_after']['max_time'], desc = 'WAITING', cut_if_off_screen = act_params.get('cut_if_off_screen'))
+                if clean_up_after:
+                        did_update, obj_after_act_list = self.observe_world(obj)
+                        if not did_update:
+                                return
+                        obj_after_act = obj_after_act_list[0]
+                        if obj_after_act is None:
+                                msg = init_msg()
+                                msg['msg']['action_type'] = 'WAITING'
+                                self.send_msg(msg)
+                                return
+                        self.teleport_object(obj_after_act, old_pos)
+
+        def do_throw_at_object(self, act_desc, act_params):
+                self.observe_world()
+                big_obj, little_obj = self.select_random_table_not_table()
+                if little_obj is None or big_obj is None:
+                        msg = init_msg()
+                        msg['msg']['action_type'] = 'WAITING'
+                        self.send_msg(msg)
+                        return
+                horiz_action_dir = self.teleport_for_collision(big_obj, little_obj, distance_scale = 1)
+                if horiz_action_dir is None:
+                        msg = init_msg()
+                        msg['msg']['action_type'] = 'WAITING'
+                        self.send_msg(msg)
+                        return
+                if 'wait_before' in act_params:
+                        wait_max_time = act_params['wait_before'].get('no_drop_max_time', 3)
+                        self.wait_until_stops(little_obj, act_params['wait_before']['threshold'], act_params['wait_before']['time_window'], wait_max_time, desc = 'DROPPING', cut_if_off_screen = act_params.get('cut_if_off_screen'))
+                did_update, obj_after_teleport_list = self.observe_world(little_obj)
+                if not did_update:
+                        return
+                little_obj_after_teleport = obj_after_teleport_list[0]
+                if little_obj_after_teleport is None:
+                        msg = init_msg()
+                        msg['msg']['action_type'] = 'WAITING'
+                        self.send_msg(msg)
+                        return
+                f_seq, tor_seq = act_params['func'](self.rng, horiz_action_dir, **act_params['kwargs'])
+                self.apply_action(little_obj_after_teleport, f_seq, tor_seq, act_desc, cut_if_off_screen = act_params.get('cut_if_off_screen'))
+                if 'wait_after' in act_params:
+                        self.wait_until_stops(little_obj_after_teleport, act_params['wait_after']['threshold'], act_params['wait_after']['time_window'], act_params['wait_after']['max_time'], desc = 'WAITING', cut_if_off_screen = act_params.get('cut_if_off_screen'))
+
+
+        def do_controlled_table_task(self, act_desc, act_params, clean_up_table = True, drop = True):
+                self.observe_world()
+                under_obj, obj = self.select_random_table_not_table()
+                if under_obj is None or obj is None:
+                        msg = init_msg()
+                        msg['msg']['action_type'] = 'WAITING'
+                        self.send_msg(msg)
+                        return
+                old_pos = obj[2]
+                horiz_action_dir = self.controlled_teleport_on_top_of(under_obj, obj, height_above = None, distance_from = 1, drop = drop)
+                if 'wait_before' in act_params:
+                        if drop:
+                                wait_max_time = act_params['wait_before']['max_time']
+                        else:
+                                wait_max_time = act_params['wait_before'].get('no_drop_max_time', 3)
+                        self.wait_until_stops(obj, act_params['wait_before']['threshold'], act_params['wait_before']['time_window'], wait_max_time, desc = 'DROPPING', cut_if_off_screen = act_params.get('cut_if_off_screen'))
+                did_update, obj_after_teleport_list = self.observe_world(obj)
+                if not did_update:
+                        return
+                obj_after_teleport = obj_after_teleport_list[0]
+                if obj_after_teleport is None:
+                        msg = init_msg()
+                        msg['msg']['action_type'] = 'WAITING'
+                        self.send_msg(msg)
+                        return
+                f_seq, tor_seq = act_params['func'](self.rng, horiz_action_dir, **act_params['kwargs'])
+                self.apply_action(obj_after_teleport, f_seq, tor_seq, act_desc, cut_if_off_screen = act_params.get('cut_if_off_screen'))
+                if 'wait_after' in act_params:
+                        self.wait_until_stops(obj_after_teleport, act_params['wait_after']['threshold'], act_params['wait_after']['time_window'], act_params['wait_after']['max_time'], desc = 'WAITING', cut_if_off_screen = act_params.get('cut_if_off_screen'))
+                if clean_up_table:
+                        did_update, obj_after_act_list = self.observe_world(obj)
+                        if not did_update:
+                                return
+                        obj_after_act = obj_after_act_list[0]
+                        if obj_after_act is None:
+                                msg = init_msg()
+                                msg['msg']['action_type'] = 'WAITING'
+                                self.send_msg(msg)
+                                return
+                        self.teleport_object(obj_after_act, old_pos)
+
+
+        def do_table_drop_task(self, act_desc, act_params, clean_up_table = True, drop = True):
+                self.observe_world()
+                under_obj, obj = self.select_random_table_not_table()
+                if under_obj is None or obj is None:
+                        msg = init_msg()
+                        msg['msg']['action_type'] = 'WAITING'
+                        self.send_msg(msg)
+                        return
+                old_pos = obj[2]
+                looking_dir = self.teleport_on_top_of(under_obj, obj, height_above = None, distance_from = 1, random_init_rot = act_params.get('random_init_rot'), noisy_drop_std_dev = act_params.get('noisy_drop_std_dev'), noisy_drop_trunc = act_params.get('noisy_drop_trunc'), drop = drop)
+                if 'wait_before' in act_params:
+                        if drop:
+                                wait_max_time = act_params['wait_before']['max_time']
+                        else:
+                                wait_max_time = act_params['wait_before'].get('no_drop_max_time', 3)
+                        #again, object is not immediately updated, but should not matter in this case.
+                        self.wait_until_stops(obj, act_params['wait_before']['threshold'], act_params['wait_before']['time_window'], wait_max_time, desc = 'DROPPING', cut_if_off_screen = act_params.get('cut_if_off_screen'))
+                did_update, obj_after_teleport_list = self.observe_world(obj)
+                if not did_update:
+                        return
+                obj_after_teleport = obj_after_teleport_list[0]
+                if obj_after_teleport is None:
+                        msg = init_msg()
+                        msg['msg']['action_type'] = 'WAITING'
+                        self.send_msg(msg)
+                        return
+                if 'std_dev_ang' in act_params['kwargs']:
+                        f_seq, tor_seq = act_params['func'](self.rng, distinct_dir = looking_dir, **act_params['kwargs'])
+                else:
+                        f_seq, tor_seq = act_params['func'](self.rng, **act_params['kwargs'])
+                self.apply_action(obj_after_teleport, f_seq, tor_seq, act_desc, cut_if_off_screen = act_params.get('cut_if_off_screen'))
+                if 'wait_after' in act_params:
+                        self.wait_until_stops(obj_after_teleport, act_params['wait_after']['threshold'], act_params['wait_after']['time_window'], act_params['wait_after']['max_time'], desc = 'WAITING', cut_if_off_screen = act_params.get('cut_if_off_screen'))
+                if clean_up_table:
+                        did_update, obj_after_act_list = self.observe_world(obj)
+                        if not did_update:
+                                return
+                        obj_after_act = obj_after_act_list[0]
+                        if obj_after_act is None:
+                                msg = init_msg()
+                                msg['msg']['action_type'] = 'WAITING'
+                                self.send_msg(msg)
+                                return
+                        self.teleport_object(obj_after_act, old_pos)
+
+
+
+        def make_new_batch(self, bn, sock, path, create_hdf5, use_tdw_msg, task_params, descriptor_prefix, scene_start = False):
                 print('Batch num: ' + str(bn))
                 self.bn, self.sock, self.path, self.create_hdf5, self.use_tdw_msg, self.desc_prefix = bn, sock, path, create_hdf5, use_tdw_msg, descriptor_prefix
-		self.in_batch_counter = 0
-		if self.WRITE_FILES:
-			self.temp_im_path = os.path.join(self.path, 'object_throw_test')
-			if not os.path.exists(self.temp_im_path):
-				os.mkdir(self.temp_im_path)
-		else:
-			self.temp_im_path = None
-		if self.create_hdf5:
-                        print 'creating instances for save'
-			self.ims = []
-			self.objs = []
-			self.norms = []
+                self.in_batch_counter = 0
+                if self.WRITE_FILES:
+                        self.temp_im_path = os.path.join(self.path, 'object_throw_test')
+                        if not os.path.exists(self.temp_im_path):
+                                os.mkdir(self.temp_im_path)
+                else:
+                        self.temp_im_path = None
+                if self.create_hdf5:
+                        print ('creating instances for save')
+                        self.ims = []
+                        self.objs = []
+                        self.norms = []
                         self.ims2 = []
                         self.objs2 = []
                         self.norms2 = []
-			self.infolist = []
-			self.infs = []
-			self.valid, images, normals, objects, worldinfos, agentactions, images2, normals2, objects2 = self.get_hdf5_handles()
+                        self.infolist = []
+                        self.infs = []
+                        self.valid, images, normals, objects, worldinfos, agentactions, images2, normals2, objects2 = self.get_hdf5_handles()
                         if self.valid[self.BATCH_SIZE * bn : self.BATCH_SIZE * (bn + 1)].all():
                             print('Skipping batch')
                             return
