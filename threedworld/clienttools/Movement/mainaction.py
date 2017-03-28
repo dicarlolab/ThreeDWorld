@@ -21,12 +21,12 @@ from threedworld.clienttools.tdw_client import TDW_Client
 import curricula
 
 SEED = int(sys.argv[2])
-CREATE_HDF5 = False
+CREATE_HDF5 = True
 USE_TDW = True
 SCENE_SWITCH = 20
 SCREEN_WIDTH = 600
 SCREEN_HEIGHT = 256
-SELECTED_BUILD = 'one_world.exe'
+SELECTED_BUILD = 'one_world_debug.exe'
 
 #if USE_TDW:
 #   raise Exception('Not yet adapted to USE_TDW')
