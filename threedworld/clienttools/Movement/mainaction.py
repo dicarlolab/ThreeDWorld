@@ -26,7 +26,7 @@ USE_TDW = True
 SCENE_SWITCH = 20
 SCREEN_WIDTH = 600
 SCREEN_HEIGHT = 256
-SELECTED_BUILD = 'one_world_debug.exe'
+SELECTED_BUILD = 'one_world.exe'
 
 #if USE_TDW:
 #   raise Exception('Not yet adapted to USE_TDW')
