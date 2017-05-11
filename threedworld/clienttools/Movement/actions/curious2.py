@@ -195,13 +195,15 @@ class agent:
             valid = self.hdf5.require_dataset('valid', shape=(self.N,), dtype=np.bool)
             images = self.hdf5.require_dataset('images', shape=(self.N, self.SCREEN_HEIGHT, self.SCREEN_WIDTH, 3), dtype=np.uint8)
             normals = self.hdf5.require_dataset('normals', shape=(self.N, self.SCREEN_HEIGHT, self.SCREEN_WIDTH, 3), dtype=np.uint8)
+            depths = self.hdf5.require_dataset('depths', shape=(self.N, self.SCREEN_HEIGHT, self.SCREEN_WIDTH, 3), dtype=np.uint8)
             objects = self.hdf5.require_dataset('objects', shape=(self.N, self.SCREEN_HEIGHT, self.SCREEN_WIDTH, 3), dtype=np.uint8)
             worldinfos = self.hdf5.require_dataset('worldinfo', shape=(self.N,), dtype=dt)
             agentactions = self.hdf5.require_dataset('actions', shape=(self.N,), dtype=dt)
             images2 = self.hdf5.require_dataset('images2', shape = (self.N, self.SCREEN_HEIGHT, self.SCREEN_WIDTH, 3), dtype = np.uint8)
             normals2 = self.hdf5.require_dataset('normals2', shape = (self.N, self.SCREEN_HEIGHT, self.SCREEN_WIDTH, 3), dtype = np.uint8)
+            depths2 = self.hdf5.require_dataset('depths2', shape=(self.N, self.SCREEN_HEIGHT, self.SCREEN_WIDTH, 3), dtype=np.uint8)
             objects2 = self.hdf5.require_dataset('objects2', shape = (self.N, self.SCREEN_HEIGHT, self.SCREEN_WIDTH, 3), dtype = np.uint8)
-            return [valid, images, normals, objects, worldinfos, agentactions, images2, normals2, objects2]
+            return [valid, images, normals, depths, objects, worldinfos, agentactions, images2, normals2, depths2, objects2]
 
         def choose(self, x):
           index = self.rng.randint(len(x))
@@ -292,10 +294,12 @@ class agent:
                         self.infolist.append(json.dumps(msg['msg']))
                         self.ims.append(self.imarray)
                         self.norms.append(self.narray)
+                        self.deps.append(self.darray)
                         self.infs.append(json.dumps(self.info))
                         self.objs.append(self.oarray)
                         self.ims2.append(self.imarray2)
                         self.norms2.append(self.narray2)
+                        self.deps2.append(self.darray2)
                         self.objs2.append(self.oarray2)
 
 
@@ -315,7 +319,7 @@ class agent:
                 while len(counter_str) < 4:
                         counter_str  = '0' + counter_str
                 print('about to handle message')
-                info, self.narray, self.oarray, self.imarray, self.narray2, self.oarray2, self.imarray2 = handle_message(self.sock, write=self.WRITE_FILES, outdir=self.temp_im_path, prefix=counter_str)
+                info, self.narray, self.oarray, self.darray, self.imarray, self.narray2, self.oarray2, self.darray2, self.imarray2 = handle_message(self.sock, write=self.WRITE_FILES, outdir=self.temp_im_path, prefix=counter_str)
                 print('message handled')
                 self.info = json.loads(info)
                 self.oarray1 = 256**2 * self.oarray[:, :, 0] + 256 * self.oarray[:, :, 1] + self.oarray[:, :, 2]
@@ -944,12 +948,14 @@ class agent:
                         self.ims = []
                         self.objs = []
                         self.norms = []
+                        self.deps = []
                         self.ims2 = []
                         self.objs2 = []
                         self.norms2 = []
+                        self.deps2 = []
                         self.infolist = []
                         self.infs = []
-                        self.valid, images, normals, objects, worldinfos, agentactions, images2, normals2, objects2 = self.get_hdf5_handles()
+                        self.valid, images, normals, depths, objects, worldinfos, agentactions, images2, normals2, depths2, objects2 = self.get_hdf5_handles()
                         if self.valid[self.BATCH_SIZE * bn : self.BATCH_SIZE * (bn + 1)].all():
                             print('Skipping batch')
                             return
@@ -985,15 +991,19 @@ class agent:
                         end = self.BATCH_SIZE * (bn + 1)
                         self.ims = np.array(self.ims)
                         self.norms = np.array(self.norms)
+                        self.deps = np.array(self.deps)
                         self.objs = np.array(self.objs)
                         self.ims2 = np.array(self.ims2)
                         self.norms2 = np.array(self.norms2)
+                        self.deps2 = np.array(self.deps2) 
                         self.objs2 = np.array(self.objs2)
                         images[start: end] = self.ims
                         normals[start: end] = self.norms
+                        depths[start: end] = self.deps
                         objects[start: end] = self.objs
                         images2[start:end] = self.ims2
                         normals2[start:end] = self.norms2
+                        depths2[start: end] = self.deps2
                         objects2[start:end] = self.objs2
                         self.valid[start: end] = True
                         worldinfos[start: end] = self.infs

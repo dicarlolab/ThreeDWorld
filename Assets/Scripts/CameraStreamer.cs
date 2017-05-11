@@ -142,7 +142,7 @@ public class CameraStreamer : MonoBehaviour
             }
 			request.capturedImages[i].pictureBuffer = TakeSnapshotNow(request.shadersList[i], 0, request.outputFormatList[i]).pictureBuffer;
 			// for second camera
-			request.capturedImages[i+3].pictureBuffer = TakeSnapshotNow(request.shadersList[i], 1, request.outputFormatList[i]).pictureBuffer;
+			request.capturedImages[i+4].pictureBuffer = TakeSnapshotNow(request.shadersList[i], 1, request.outputFormatList[i]).pictureBuffer;
         }
         if (request.callbackFunc != null)
             request.callbackFunc(request);

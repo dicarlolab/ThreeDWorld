@@ -497,8 +497,10 @@ MonoBehaviour:
   shaders:
   - {fileID: 4800000, guid: 01c10d508c72efc4c97ac9ea79b07271, type: 3}
   - {fileID: 4800000, guid: 901e682dceb434687a5ddad2900b85a4, type: 3}
+  - {fileID: 4800000, guid: 1986050d145164d7bb84f71809ab140a, type: 3}
   - {fileID: 0}
   outputFormatList:
+  - png
   - png
   - png
   - png

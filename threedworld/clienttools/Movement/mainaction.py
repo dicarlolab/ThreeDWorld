@@ -429,14 +429,14 @@ def loop():
                                         sock = tc.run()
                                 else:
                                         print('sending join...')
-                                        sock.send_json({"msg_type" : "CLIENT_JOIN_WITH_CONFIG", "config" : env.config, "get_obj_data" : True, "send_scene_info" : True, "output_formats": ["png", "png", "jpg"]})
+                                        sock.send_json({"msg_type" : "CLIENT_JOIN_WITH_CONFIG", "config" : env.config, "get_obj_data" : True, "send_scene_info" : True, "output_formats": ["png", "png", "png", "jpg"]})
                                         print('...join sent')
                                 not_yet_joined = False
                         else:
-                                for i in range(7):
+                                for i in range(9):
                                         sock.recv()
                                 print('switching scene...')
-                                scene_switch_msg = {"msg_type" : "SCENE_SWITCH", "config" : env.config, "get_obj_data" : True, "send_scene_info" : True, "output_formats": ["png", "png", "jpg"]}
+                                scene_switch_msg = {"msg_type" : "SCENE_SWITCH", "config" : env.config, "get_obj_data" : True, "send_scene_info" : True, "output_formats": ["png", "png", "png", "jpg"]}
                                 if USE_TDW:
                                         sock.send_json({"n": 7, "msg": scene_switch_msg})
                                 else:

@@ -36,6 +36,8 @@ def handle_message(sock, write=False, outdir='', imtype='png', prefix=''):
     narray2 = np.asarray(Image.open(StringIO(nstr)).convert('RGB'))
     ostr = sock.recv()
     oarray2 = np.asarray(Image.open(StringIO(ostr)).convert('RGB'))
+    dstr = sock.recv()
+    darray2 = np.asarray(Image.open(StringIO(dstr)).convert('RGB'))
     imstr = sock.recv()
     imarray2 = np.asarray(Image.open(StringIO(imstr)).convert('RGB'))
     # Handle second set of images from camera 2
@@ -43,12 +45,19 @@ def handle_message(sock, write=False, outdir='', imtype='png', prefix=''):
     narray = np.asarray(Image.open(StringIO(nstr)).convert('RGB'))
     ostr = sock.recv()
     oarray = np.asarray(Image.open(StringIO(ostr)).convert('RGB'))
+    dstr = sock.recv()
+    darray = np.asarray(Image.open(StringIO(dstr)).convert('RGB'))
     imstr = sock.recv()
     imarray = np.asarray(Image.open(StringIO(imstr)).convert('RGB'))
 
     im = Image.fromarray(imarray)
     im2 = Image.fromarray(imarray2)
     imo = Image.fromarray(oarray)
+
+    #dim = Image.fromarray(darray2)
+    #print(outdir, prefix, imtype)
+    #dim.save(os.path.join('/Users/damian/Desktop/test_images/new/', 'depth_%s.%s' % (prefix, imtype)))
+
     if write:
         if not os.path.exists(outdir):
             os.mkdir(outdir)
@@ -64,4 +73,4 @@ def handle_message(sock, write=False, outdir='', imtype='png', prefix=''):
         if '_0' in prefix:
             with open(os.path.join(outdir, 'info_%s.json' % prefix), 'w') as _f:
                 _f.write(info)
-    return [info, narray, oarray, imarray, narray2, oarray2, imarray2]
+    return [info, narray, oarray, darray, imarray, narray2, oarray2, darray2, imarray2]
