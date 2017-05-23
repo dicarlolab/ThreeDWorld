@@ -24,14 +24,15 @@ SEED = int(sys.argv[2])
 CREATE_HDF5 = True
 USE_TDW = True
 SCENE_SWITCH = 20
-SCREEN_WIDTH = 600
-SCREEN_HEIGHT = 256
+SCREEN_WIDTH = 170
+SCREEN_HEIGHT = 128
 SELECTED_BUILD = 'one_world.exe'
 
 #if USE_TDW:
 #   raise Exception('Not yet adapted to USE_TDW')
 
-NUM_TIMES_RUN = 14
+NUM_TIMES_RUN = 1
+REPEATS = 1000
 
 os.environ['USER'] = 'mrowca'
 #path = 'C:/Users/mrowca/Documents/test'
@@ -209,6 +210,25 @@ my_curriculum = [
                 ])
 ]
 
+random_object_throws = [
+        (curricula.object_throw_curriculum * REPEATS, 'OBJ_THROW_OBJ', [
+                {
+                'type' : 'SHAPENET',
+                'scale' : 0.4,
+                'mass' : 1.,
+                'scale_var' : .01,
+                'num_items' : 1,
+                },
+                {
+                'type' : 'OTHER_STACKABLE',
+                'scale' : 0.4,
+                'mass' : 1.,
+                'scale_var' : .01,
+                'num_items' : 1,
+                }
+                ])]
+
+
 just_object_throws = [
         (curricula.object_throw_curriculum, 'OBJ_THROW_OBJ', [
                 {
@@ -246,7 +266,7 @@ just_object_throws = [
 
 just_object_throws = just_object_throws * 4
 my_curriculum = my_curriculum + just_object_throws
-
+my_curriculum = random_object_throws
 
 just_controlled_table_curriculum = [
         (curricula.controlled_table_simple_test, 'TABLE_CONTROLLED', [
@@ -397,7 +417,7 @@ def loop():
                         #queue_port_num="23402",
                         get_obj_data=True,
                         send_scene_info=True,
-                        num_frames_per_msg=7,
+                        num_frames_per_msg=9,
                         )
         else:
                 print ("connecting...")
@@ -438,7 +458,7 @@ def loop():
                                 print('switching scene...')
                                 scene_switch_msg = {"msg_type" : "SCENE_SWITCH", "config" : env.config, "get_obj_data" : True, "send_scene_info" : True, "output_formats": ["png", "png", "png", "jpg"]}
                                 if USE_TDW:
-                                        sock.send_json({"n": 7, "msg": scene_switch_msg})
+                                        sock.send_json({"n": 9, "msg": scene_switch_msg})
                                 else:
                                         sock.send_json(scene_switch_msg)
                         task_order = my_rng.permutation(len(agent_directions))

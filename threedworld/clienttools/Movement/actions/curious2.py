@@ -42,7 +42,7 @@ def get_valid_num(valid):
 
 
 def init_msg():
-        msg = {'n': 7, 'msg': {"msg_type": "CLIENT_INPUT", "get_obj_data": True, "send_scene_info" : True, "actions": []}}
+        msg = {'n': 9, 'msg': {"msg_type": "CLIENT_INPUT", "get_obj_data": True, "send_scene_info" : True, "actions": []}}
         msg['msg']['vel'] = [0, 0, 0]
         msg['msg']['ang_vel'] = [0, 0, 0]
         return msg
@@ -150,8 +150,8 @@ class agent:
 
         WRITE_FILES = False
 
-        SCREEN_WIDTH = 600 #512
-        SCREEN_HEIGHT = 256 #384
+        SCREEN_WIDTH = 170 #512
+        SCREEN_HEIGHT = 128 #384
 
         BATCH_SIZE = 256
         MULTSTART = -1
@@ -160,7 +160,7 @@ class agent:
         ACTION_LENGTH = 15
         ACTION_WAIT = 15
 
-        N = 70 * 256 * 14
+        N = 1000 * 256 #70 * 256 * 14
         valid = np.zeros((N,1)) 
 
         rng = np.random.RandomState(0)
@@ -449,17 +449,21 @@ class agent:
                 if self.in_batch_counter >= self.BATCH_SIZE:
                         return
                 big_pos = big_object[2]
+                big_pos = list([self.rng.uniform(9, 11)] * 3)
                 big_pos_floor = np.array([big_pos[0], 0, big_pos[2]])
-                height_vec = np.array([0., little_object[6][1], 0.])
+                height_vec = np.array([0., little_object[6][1] / 2.0, 0.])
                 for t in range(5000):
+                        distance_scale = self.rng.uniform(0.5, 1.2)
                         action_dir = get_urand_sphere_point(self.rng, 2, zero_div_safety = .0001)
                         action_dir = np.array([action_dir[0], 0, action_dir[1]])
                         little_pos = big_pos_floor - distance_scale * action_dir + height_vec
                         orientation_sign = 2 * self.rng.randint(0, 2) - 1
-                        action_dir_perp = orientation_sign * np.array([action_dir[2], 0., - action_dir[0]])
+                        action_dir_perp = orientation_sign * np.array([action_dir[2], 0.0, -action_dir[0]])
+                        action_dir_perp = get_urand_sphere_point(self.rng, 2)
+                        action_dir_perp = np.array([action_dir_perp[0], 0.0, action_dir_perp[1]])
                         view_yang = self.rng.uniform(0, np.pi / 3)
                         ava_diff = np.cos(view_yang) * action_dir_perp + np.sin(view_yang) * np.array([0., 1., 0.])
-                        avatar_pos = big_pos_floor - (distance_scale / 2.) * action_dir + ava_diff
+                        avatar_pos = big_pos_floor - (self.rng.uniform(0.2, 0.8)* distance_scale) * action_dir + ava_diff
                         if valid_pos(little_pos, 19., 19., test_height_too = True) and valid_pos(avatar_pos, 19., 19., test_height_too = True):
                                 msg = init_msg()
                                 msg['msg']['teleport_to'] = {'position' : list(avatar_pos), 'rotation' : list(- ava_diff)}
@@ -469,6 +473,12 @@ class agent:
                                 action['id'] = str(little_object[1])
                                 action['use_absolute_coordinates'] = True
                                 action['teleport_to'] = {'position' : list(little_pos), 'rotation' : list(init_rot)}
+                                msg['msg']['actions'].append(action)
+                                init_rot = list(get_urand_sphere_point(self.rng, 3))
+                                action = {}
+                                action['id'] = str(big_object[1])
+                                action['use_absolute_coordinates'] = True
+                                action['teleport_to'] = {'position' : list(big_pos_floor), 'rotation' : list(init_rot)}
                                 msg['msg']['actions'].append(action)
                                 self.send_msg(msg)
                                 return action_dir
@@ -711,27 +721,31 @@ class agent:
                         elif self.in_batch_counter >= self.BATCH_SIZE or ((cut_if_off_screen is not None) and (num_object_gone >= cut_if_off_screen)):
                                 return
 
-
+        chosen = False
         def get_tables_and_not_tables_lists(self):
-                tables =  [o for o in self.info['observed_objects'] if o[5] and int(o[1]) != -1 and not o[4]]
-                not_tables = [o for o in self.info['observed_objects'] if not o[5] and int(o[1]) != -1 and not o[4]]
+            if not self.chosen:
+                print('Choosing new object!')
+                self.tables =  [o for o in self.info['observed_objects'] if o[5] and int(o[1]) != -1 and not o[4]]
+                self.not_tables = [o for o in self.info['observed_objects'] if not o[5] and int(o[1]) != -1 and not o[4]]
                 print ('table and not table lengths')
-                print (len(tables), len(not_tables))
-                return tables, not_tables
+                print (len(self.tables), len(self.not_tables))
+                self.chosen = True
+            return self.tables, self.not_tables
 
         def select_random_table_not_table(self):
                 tables, not_tables = self.get_tables_and_not_tables_lists()
                 if (not len(tables)) or (not len(not_tables)):
                         return None, None
-                for t in range(5000):
-                        table = tables[self.rng.randint(len(tables))]
-                        if valid_pos(table[2], 19., 19., test_height_too = True):
-                                break
-                for t in range(5000):
-                        not_table = not_tables[self.rng.randint(len(not_tables))]
-                        if valid_pos(not_table[2], 19., 19., test_height_too = True):
-                                return table, not_table
-                return None, None
+                #for t in range(5000):
+                table = tables[self.rng.randint(len(tables))]
+                #        if valid_pos(table[2], 19., 19., test_height_too = True):
+                #                break
+                #for t in range(5000):
+                not_table = not_tables[self.rng.randint(len(not_tables))]
+                #        if valid_pos(not_table[2], 19., 19., test_height_too = True):
+                #                return table, not_table
+                #return None, None
+                return table, not_table
 
         def update_object(self, old_obj):
                 '''
@@ -956,7 +970,7 @@ class agent:
                         self.infolist = []
                         self.infs = []
                         self.valid, images, normals, depths, objects, worldinfos, agentactions, images2, normals2, depths2, objects2 = self.get_hdf5_handles()
-                        if self.valid[self.BATCH_SIZE * bn : self.BATCH_SIZE * (bn + 1)].all():
+                        if False and self.valid[self.BATCH_SIZE * bn : self.BATCH_SIZE * (bn + 1)].all():
                             print('Skipping batch')
                             return
                 mode, act_desc, act_params = task_params[0]

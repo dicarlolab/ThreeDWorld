@@ -396,7 +396,7 @@ object_throw = [
 		'func' : curious2.controlled_constant_action_sequences_distinguished_direction,
 		'wait_before' : {'threshold' : .01, 'time_window' : 3, 'max_time' : 20}, 
 		'wait_after' : {'threshold' : .01, 'time_window' : 3, 'max_time' : 20}, 
-		'kwargs' : {'std_dev_ang' : np.pi / 100., 'time_len_range' : range(2, 3), 'f_horiz_range' : range(130, 200), 'f_y_range' : range(30, 100)}
+		'kwargs' : {'std_dev_ang' : np.pi / 12., 'time_len_range' : range(2, 3), 'f_horiz_range' : range(130, 200), 'f_y_range' : range(30, 100)}
 		}
 
 
