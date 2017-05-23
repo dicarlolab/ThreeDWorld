@@ -25,6 +25,8 @@ public abstract class SemanticObject : MonoBehaviour
 
 	public Vector3 center;
 
+    public Vector3 initLocalScale;
+
 	public int round_num;
 
     protected List<SemanticObjectComplex> parentObjects;

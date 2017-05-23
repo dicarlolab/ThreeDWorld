@@ -191,7 +191,10 @@ public class InputModule : AbstractInputModule
 
 						if(teleport_to != null && !o.isStatic)
 						{
-							Vector3 new_object_position = teleport_to["position"].ReadVector3(Vector3.zero);
+                            //TODO: Rescale object at teleport
+                            o.transform.localScale = o.GetComponent<SemanticObject>().initLocalScale *
+                                Random.Range(0.5f, 3.0f);
+                            Vector3 new_object_position = teleport_to["position"].ReadVector3(Vector3.zero);
 							float object_height = o.GetComponent<SemanticObject> ().extents.y;
 							Vector3 new_object_rotation = teleport_to["rotation"].ReadVector3(Vector3.zero);
 							o.transform.rotation = Quaternion.LookRotation(new_object_rotation);
