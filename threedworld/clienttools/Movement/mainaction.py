@@ -21,8 +21,8 @@ from threedworld.clienttools.tdw_client import TDW_Client
 import curricula
 
 SEED = int(sys.argv[2])
-CREATE_HDF5 = True
-USE_TDW = True
+CREATE_HDF5 = False
+USE_TDW = False
 SCENE_SWITCH = 20
 SCREEN_WIDTH = 170
 SCREEN_HEIGHT = 128
@@ -34,7 +34,7 @@ SELECTED_BUILD = 'one_world.exe'
 NUM_TIMES_RUN = 1
 REPEATS = 1000
 
-os.environ['USER'] = 'mrowca'
+os.environ['USER'] = 'nhaber'
 #path = 'C:/Users/mrowca/Documents/test'
 #path = 'F:\one_world_dataset'
 #path = '/home/mrowca/Desktop/images'
@@ -228,6 +228,74 @@ random_object_throws = [
                 }
                 ])]
 
+object_mash = [
+    (curricula.object_mash_curriculum * REPEATS, 'OBJ_MASH_OBJ', [
+        {
+        'type' : 'SHAPENET',
+        'scale' : .4,
+        'mass' : 1.,
+        'scale_var' : .01,
+        'num_items' : 1,
+        },
+        {
+        'type' : 'OTHER_STACKABLE',
+        'scale' : .4,
+        'mass' : 1.,
+        'scale_var' : .01,
+        'num_items' : 1,
+        }
+
+
+        ])
+]
+
+object_mash_rot = [
+    (curricula.object_mash_rot_curriculum * REPEATS, 'OBJ_MASH_OBJ', [
+        {
+        'type' : 'SHAPENET',
+        'scale' : .4,
+        'mass' : 1.,
+        'scale_var' : .01,
+        'num_items' : 1,
+        },
+        {
+        'type' : 'OTHER_STACKABLE',
+        'scale' : .4,
+        'mass' : 1.,
+        'scale_var' : .01,
+        'num_items' : 1,
+        }
+        ])
+]
+
+
+lift_smash = [
+    (curricula.lift_smash_curriculum * REPEATS, 'LIFT_SMASH', [
+        {
+        'type' : 'SHAPENET',
+        'scale' : .4,
+        'mass' : 1.,
+        'scale_var' : .01,
+        'num_items' : 1,
+        }
+        ]
+    )
+]
+
+lift_smash_rot = [
+    (curricula.lift_smash_rot_curriculum * REPEATS, 'LIFT_SMASH_ROT', [
+        {
+        'type' : 'SHAPENET',
+        'scale' : .4,
+        'mass' : 1.,
+        'scale_var' : .01,
+        'num_items' : 1,
+        }
+        ]
+    )
+]
+
+
 
 just_object_throws = [
         (curricula.object_throw_curriculum, 'OBJ_THROW_OBJ', [
@@ -266,7 +334,8 @@ just_object_throws = [
 
 just_object_throws = just_object_throws * 4
 my_curriculum = my_curriculum + just_object_throws
-my_curriculum = random_object_throws
+#HERE to edit which currlculum you're doing, or add them together. lift_smash, lift_smash_rot, object_mash, object_mash_rot
+my_curriculum = lift_smash
 
 just_controlled_table_curriculum = [
         (curricula.controlled_table_simple_test, 'TABLE_CONTROLLED', [
