@@ -26,6 +26,14 @@ public class Utils
     {
         return string.Format("@{0} ms since last", TimeDiff().TotalMilliseconds);
     }
+
+	public static Matrix4x4[] initTransforms(int n)
+	{
+		Matrix4x4[] ms = new Matrix4x4[n];
+		for(int i = 0; i < ms.Length; i++)
+			ms[i] = Matrix4x4.zero;
+		return ms;
+	}
 }
 
 [System.Serializable]

@@ -132,26 +132,26 @@ public class InputModule : AbstractInputModule
 			Vector3 new_avatar_position = teleport_to["position"].ReadVector3(Vector3.zero);
 			Vector3 new_avatar_rotation = teleport_to["rotation"].ReadVector3(Vector3.zero);
 			_myAvatar.TeleportToGivenPosition(new_avatar_position, new_avatar_rotation);
+			_myAvatar.ResetObjectTransformations();
 		}
 		else if (jsonData["teleport_random"].ReadBool(false))
+		{
             _myAvatar.TeleportToValidPosition();
+			_myAvatar.ResetObjectTransformations();
+        }
         
         _myAvatar.shouldCollectObjectInfo = jsonData["get_obj_data"].ReadBool(false);
 
         //TODO
-		JsonData JsonOutputFormatList = jsonData["output_formats"];
-		if (JsonOutputFormatList != null) {
-			if (JsonOutputFormatList.Count != _myAvatar.outputFormatList.Count) {
-				Debug.LogError(_myAvatar.outputFormatList.Count.ToString() + 
-					" output formats need to be specified, one for each shader!" +
-					" Using standard output formats.");
+		JsonData JsonShaderList = jsonData["shaders"];
+		if (JsonShaderList != null) {
+			List<string[]> ShaderList = new List<string[]>();
+			foreach(IDictionary shader in JsonShaderList) {
+				Debug.Assert(shader.Count == 1);
+				foreach(string k in shader.Keys)
+					ShaderList.Add(new string[2] {k, shader[k].ToString()});
 			}
-			List<string> outputFormatList = new List<string>();
-			for(int i = 0; i < JsonOutputFormatList.Count; i++) {
-				string outputFormat = JsonOutputFormatList[i].ReadString();
-				outputFormatList.Add(outputFormat);
-			}
-			_myAvatar.SetOutputFormatList(outputFormatList);
+			_myAvatar.SetShaderList(ShaderList);
 		}
 
         List<string> relationships = new List<string>();

@@ -451,19 +451,15 @@ public class NetMessenger : MonoBehaviour
 		newAvatar.shouldCollectObjectInfo = data["get_obj_data"].ReadBool(false);
 
 		//TODO
-		JsonData JsonOutputFormatList = data["output_formats"];
-		if (JsonOutputFormatList != null) {
-			if (JsonOutputFormatList.Count != newAvatar.outputFormatList.Count) {
-				Debug.LogError(newAvatar.outputFormatList.Count.ToString() + 
-					" output formats need to be specified, one for each shader!" +
-					" Using standard output formats.");
+		JsonData JsonShaderList = data["shaders"];
+		if (JsonShaderList != null) {
+			List<string[]> ShaderList = new List<string[]>();
+			foreach(IDictionary shader in JsonShaderList) {
+				Debug.Assert(shader.Count == 1);
+				foreach(string k in shader.Keys)
+					ShaderList.Add(new string[2] {k, shader[k].ToString()});
 			}
-			List<string> outputFormatList = new List<string>();
-			for(int i = 0; i < JsonOutputFormatList.Count; i++) {
-				string outputFormat = JsonOutputFormatList[i].ReadString();
-				outputFormatList.Add(outputFormat);
-			}
-			newAvatar.SetOutputFormatList(outputFormatList);
+			newAvatar.SetShaderList(ShaderList);
 		}
         //
         //        // Send confirmation message
@@ -650,7 +646,7 @@ public class NetMessenger : MonoBehaviour
 				}
 				else {
 					_info.Add(-1);
-					Debug.Log("Material doesn't have a color property '_idval', hence it was set to -1!");
+					Debug.LogFormat("Material of object {0} doesn't have a color property '_idval', hence it was set to -1!", semObj.name);
 				}
 				jsonData["sceneInfo"].Add(_info);
 

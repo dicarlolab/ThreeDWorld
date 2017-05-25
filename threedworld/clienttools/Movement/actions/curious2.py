@@ -41,8 +41,8 @@ def get_valid_num(valid):
 
 
 
-def init_msg():
-        msg = {'n': 9, 'msg': {"msg_type": "CLIENT_INPUT", "get_obj_data": True, "send_scene_info" : True, "actions": []}}
+def init_msg(num_frames_per_msg):
+        msg = {'n': num_frames_per_msg, 'msg': {"msg_type": "CLIENT_INPUT", "get_obj_data": True, "send_scene_info" : True, "actions": []}}
         msg['msg']['vel'] = [0, 0, 0]
         msg['msg']['ang_vel'] = [0, 0, 0]
         return msg
@@ -147,30 +147,42 @@ def make_constant_random_action_sequence(rng, distinct_dir = None, std_dev_ang =
 
 class agent:
         global_counter = 0
-
         WRITE_FILES = False
-
-        SCREEN_WIDTH = 170 #512
-        SCREEN_HEIGHT = 128 #384
-
-        BATCH_SIZE = 256
-        MULTSTART = -1
-
-        achoice = [-5, 0, 5]
-        ACTION_LENGTH = 15
-        ACTION_WAIT = 15
-
-        N = 1000 * 256 #70 * 256 * 14
-        valid = np.zeros((N,1)) 
-
         rng = np.random.RandomState(0)
-        use_stabilization = True
 
-        def __init__(self, CREATE_HDF5, path='', dataset_num=-1, continue_writing = False):
+        def __init__(self, 
+                CREATE_HDF5, 
+                num_frames_per_msg, 
+                n_cameras, 
+                shaders, 
+                hdf5_shader_names, 
+                batch_size, 
+                num_examples,
+                screen_width, 
+                screen_height,
+                path='', 
+                dataset_num=-1, 
+                continue_writing = False):
+            self.BATCH_SIZE = batch_size
+            self.N = num_examples
+            self.SCREEN_WIDTH = screen_width
+            self.SCREEN_HEIGHT = screen_height
             if(CREATE_HDF5):
                 self.open_hdf5(path, dataset_num)
                 self.continue_writing = continue_writing
+            self.hdf5_names = []
+            assert len(shaders) == len(hdf5_shader_names), \
+                    ("Each shader has to be provided with a hdf5 name")
+            for i in xrange(len(shaders)):
+                assert len(shaders[i].keys()) == 1
+                for k in shaders[i]:
+                    assert k in hdf5_shader_names[i], \
+                            (k, 'not in', hdf5_shader_names[i])
+                    self.hdf5_names.append(hdf5_shader_names[i][k])
+            self.hdf5_names = [self.hdf5_names] * n_cameras
 
+            self.num_frames_per_msg = num_frames_per_msg
+            self.n_cameras = n_cameras
 
         def set_screen_width(self, screen_width):
             self.SCREEN_WIDTH = screen_width
@@ -192,18 +204,22 @@ class agent:
 
         def get_hdf5_handles(self):
             dt = h5py.special_dtype(vlen=str)
-            valid = self.hdf5.require_dataset('valid', shape=(self.N,), dtype=np.bool)
-            images = self.hdf5.require_dataset('images', shape=(self.N, self.SCREEN_HEIGHT, self.SCREEN_WIDTH, 3), dtype=np.uint8)
-            normals = self.hdf5.require_dataset('normals', shape=(self.N, self.SCREEN_HEIGHT, self.SCREEN_WIDTH, 3), dtype=np.uint8)
-            depths = self.hdf5.require_dataset('depths', shape=(self.N, self.SCREEN_HEIGHT, self.SCREEN_WIDTH, 3), dtype=np.uint8)
-            objects = self.hdf5.require_dataset('objects', shape=(self.N, self.SCREEN_HEIGHT, self.SCREEN_WIDTH, 3), dtype=np.uint8)
-            worldinfos = self.hdf5.require_dataset('worldinfo', shape=(self.N,), dtype=dt)
-            agentactions = self.hdf5.require_dataset('actions', shape=(self.N,), dtype=dt)
-            images2 = self.hdf5.require_dataset('images2', shape = (self.N, self.SCREEN_HEIGHT, self.SCREEN_WIDTH, 3), dtype = np.uint8)
-            normals2 = self.hdf5.require_dataset('normals2', shape = (self.N, self.SCREEN_HEIGHT, self.SCREEN_WIDTH, 3), dtype = np.uint8)
-            depths2 = self.hdf5.require_dataset('depths2', shape=(self.N, self.SCREEN_HEIGHT, self.SCREEN_WIDTH, 3), dtype=np.uint8)
-            objects2 = self.hdf5.require_dataset('objects2', shape = (self.N, self.SCREEN_HEIGHT, self.SCREEN_WIDTH, 3), dtype = np.uint8)
-            return [valid, images, normals, depths, objects, worldinfos, agentactions, images2, normals2, depths2, objects2]
+            handles = { 'valid': self.hdf5.require_dataset( \
+                        'valid', shape=(self.N,), dtype=np.bool), 
+                        'worldinfo': self.hdf5.require_dataset( \
+                        'worldinfo', shape=(self.N,), dtype=dt),
+                        'actions': self.hdf5.require_dataset( \
+                        'actions', shape=(self.N,), dtype=dt)
+                        }
+            for cam in xrange(len(self.hdf5_names)):
+                for n in xrange(len(self.hdf5_names[cam])):
+                    field_name = self.hdf5_names[cam][n] + str(cam+1)
+                    assert field_name not in handles, \
+                            ('duplicate handle %s' % field_name)
+                    handles[field_name] = self.hdf5.require_dataset( \
+                            field_name, shape=(self.N, self.SCREEN_HEIGHT, \
+                            self.SCREEN_WIDTH, 3), dtype=np.uint8)
+            return handles
 
         def choose(self, x):
           index = self.rng.randint(len(x))
@@ -291,21 +307,15 @@ class agent:
                 else:
                         self.sock.send_json(msg['msg'])
                 if self.create_hdf5:
-                        self.infolist.append(json.dumps(msg['msg']))
-                        self.ims.append(self.imarray)
-                        self.norms.append(self.narray)
-                        self.deps.append(self.darray)
-                        self.infs.append(json.dumps(self.info))
-                        self.objs.append(self.oarray)
-                        self.ims2.append(self.imarray2)
-                        self.norms2.append(self.narray2)
-                        self.deps2.append(self.darray2)
-                        self.objs2.append(self.oarray2)
-
+                    self.batch_data['actions'] = json.dumps(msg['msg'])
+                    self.batch_data['worldinfo'] = json.dumps(self.info)
+                    self.batch_data['valid'] = True
+                    for k in self.accumulated_data:
+                        self.accumulated_data[k].append(self.batch_data[k])
 
 
         def teleport_random(self):
-                msg = init_msg()
+                msg = init_msg(self.num_frames_per_msg)
                 msg['msg']['teleport_random'] = True
                 msg['msg']['action_type'] = 'TELEPORT'
                 print('TELEPORT')
@@ -319,22 +329,22 @@ class agent:
                 while len(counter_str) < 4:
                         counter_str  = '0' + counter_str
                 print('about to handle message')
-                info, self.narray, self.oarray, self.darray, self.imarray, self.narray2, self.oarray2, self.darray2, self.imarray2 = handle_message(self.sock, write=self.WRITE_FILES, outdir=self.temp_im_path, prefix=counter_str)
+                data = handle_message(self.sock, self.hdf5_names, \
+                        write=self.WRITE_FILES, \
+                        outdir=self.temp_im_path, prefix=counter_str)
+                info = data['info']
+                self.batch_data = {}
+                for k in data:
+                    self.batch_data[k] = data[k]
+
                 print('message handled')
                 self.info = json.loads(info)
+                self.oarray = self.batch_data['objects1']
                 self.oarray1 = 256**2 * self.oarray[:, :, 0] + 256 * self.oarray[:, :, 1] + self.oarray[:, :, 2]
                 if self.global_counter == 0:
                         self.init_y_pos = self.info['avatar_position'][1]
                         print('init y pos set: ' + str(self.init_y_pos))                
-                # if self.global_counter > 9999:
-                #       raise Exception('Did not mean to make a movie that long!')
-                # pic_filename = 'pic' + counter_str + '.png'
-                # pic_filename = os.path.join(self.temp_im_path, pic_filename)
-                # im = Image.fromarray(self.imarray)
-                # im.save(pic_filename)
                 return True, [self.update_object(obj) for obj in objects_to_track]
-
-
 
 
         def select_object_in_view(self):
@@ -377,7 +387,7 @@ class agent:
         #       else:
         #               target_pos = [pos[0] - distance_from, self.init_y_pos, pos[2]]
         #               target_rot = [1, 0, 0]
-        #       msg = init_msg()
+        #       msg = init_msg(self.num_frames_per_msg)
         #       msg['msg']['teleport_to'] = {'position' : target_pos, 'rotation' : target_rot}
         #       msg['msg']['action_type'] = 'TELE_TO_OBJ'
         #       self.send_msg(msg)
@@ -398,7 +408,7 @@ class agent:
                         if valid_pos(tgt_pos, 19., 19., test_height_too = True):
                                 break
                 tgt_rot = list(- rand_normalized)
-                msg = init_msg()
+                msg = init_msg(self.num_frames_per_msg)
                 msg['msg']['teleport_to'] = {'position' : tgt_pos, 'rotation' : tgt_rot}
                 msg['msg']['action_type'] = 'TELE_TO_OBJ'
                 self.send_msg(msg)
@@ -408,7 +418,7 @@ class agent:
         def teleport_object(self, obj, pos):
                 if self.in_batch_counter >= self.BATCH_SIZE:
                         return  
-                msg = init_msg()
+                msg = init_msg(self.num_frames_per_msg)
                 msg['msg']['action_type'] = 'TELE_OBJ'
                 action = {}
                 action['use_absolute_coordinates'] = True
@@ -430,7 +440,7 @@ class agent:
                         tele_pos[1] = .01
                         if valid_pos(tele_pos, 19., 19., test_height_too = True):
                                 break
-                msg = init_msg()
+                msg = init_msg(self.num_frames_per_msg)
                 tele_rot = looking_dir
                 msg['msg']['teleport_to'] = {'position' : list(tele_pos), 'rotation' : list(tele_rot)}
                 msg['msg']['action_type'] = 'CONTROLLED_STACK_TELE'
@@ -465,7 +475,7 @@ class agent:
                         ava_diff = np.cos(view_yang) * action_dir_perp + np.sin(view_yang) * np.array([0., 1., 0.])
                         avatar_pos = big_pos_floor - (self.rng.uniform(0.2, 0.8)* distance_scale) * action_dir + ava_diff
                         if valid_pos(little_pos, 19., 19., test_height_too = True) and valid_pos(avatar_pos, 19., 19., test_height_too = True):
-                                msg = init_msg()
+                                msg = init_msg(self.num_frames_per_msg)
                                 msg['msg']['teleport_to'] = {'position' : list(avatar_pos), 'rotation' : list(- ava_diff)}
                                 msg['msg']['action_type'] = 'COLLIDE_TELE'
                                 init_rot = list(get_urand_sphere_point(self.rng, 3))
@@ -502,7 +512,7 @@ class agent:
                 view_horiz_perp = horiz_sign * np.array([view_dir[1], 0, -view_dir[0]])
                 tgt_pos = list(tabletop_pos + view_3d + off_center_camera_magnitude * view_horiz_perp)
                 tgt_rot = list(- view_3d)
-                msg = init_msg()
+                msg = init_msg(self.num_frames_per_msg)
                 msg['msg']['teleport_to'] = {'position' : tgt_pos, 'rotation' : tgt_rot}
                 msg['msg']['action_type'] = 'CONTROLLED_STACK_TELE'
                 if height_above is None:
@@ -562,7 +572,7 @@ class agent:
                                 break
                 print('random y angle: ' + str(rand_yangle))
                 tgt_rot = list(- rand_normalized)
-                msg = init_msg()
+                msg = init_msg(self.num_frames_per_msg)
                 msg['msg']['teleport_to'] = {'position' : tgt_pos, 'rotation' : tgt_rot}
                 msg['msg']['action_type'] = 'STACK_TELE'
                 action = {}
@@ -586,7 +596,7 @@ class agent:
                 t = 0
                 while self.in_batch_counter < self.BATCH_SIZE and t < waiting_time:
                         self.observe_world()
-                        msg = init_msg()
+                        msg = init_msg(self.num_frames_per_msg)
                         msg['msg']['action_type'] = desc
                         self.send_msg(msg)
                         t += 1
@@ -608,7 +618,7 @@ class agent:
                         elif cut_if_off_screen is not None and len((self.oarray1 == obj_updated[1]).nonzero()[0]) == 0:
                                 num_consecutive_off_screen += 1
                                 if num_consecutive_off_screen >= cut_if_off_screen:
-                                        msg = init_msg()
+                                        msg = init_msg(self.num_frames_per_msg)
                                         msg['msg']['action_type'] = desc
                                         self.send_msg(msg)
                                         return
@@ -619,7 +629,7 @@ class agent:
                                 window[t % time_window] = np.linalg.norm(pos - old_pos) + np.linalg.norm(rot - old_rot)
                                 old_pos = pos
                                 old_rot = rot
-                        msg = init_msg()
+                        msg = init_msg(self.num_frames_per_msg)
                         msg['msg']['action_type'] = desc
                         self.send_msg(msg)
                         if sum(window) < threshold:
@@ -645,7 +655,7 @@ class agent:
                             d = 0
                         else:
                             d =  -0.1 * np.sign(self.SCREEN_WIDTH/2 - pos[1])
-                        msg = init_msg()
+                        msg = init_msg(self.num_frames_per_msg)
                         msg['msg']['vel'] = [0, 0, .25]
                         msg['msg']['ang_vel'] = [0, d, 0]
                         msg['msg']['action_type'] = "MOVING_CLOSER"
@@ -674,7 +684,7 @@ class agent:
                         centroid = np.round(np.array(spos).mean(0))
                         objpi.append(centroid)
                         action = {}
-                        msg = init_msg()
+                        msg = init_msg(self.num_frames_per_msg)
                         action['use_absolute_coordinates'] = True
                         action['force'] = const_force
                         action['torque'] = [0,0,0]
@@ -706,7 +716,7 @@ class agent:
                         spos = list(zip(xs, ys))
                         centroid = np.round(np.array(spos).mean(0))
                         action = {}
-                        msg = init_msg()
+                        msg = init_msg(self.num_frames_per_msg)
                         action['use_absolute_coordinates'] = True
                         action['force'] = f
                         action['torque'] = tor
@@ -765,7 +775,7 @@ class agent:
                         self.init_y_pos = self.info['avatar_position'][1]
                 obj = self.select_random_object()
                 if obj is None:
-                        msg = init_msg()
+                        msg = init_msg(self.num_frames_per_msg)
                         msg['msg']['action_type'] = 'WAITING'
                         self.send_msg(msg)
                         return
@@ -775,7 +785,7 @@ class agent:
                         return
                 obj = obj_list[0]
                 if obj is None:
-                        msg = init_msg()
+                        msg = init_msg(self.num_frames_per_msg)
                         msg['msg']['action_type'] = 'WAITING'
                         self.send_msg(msg)
                         return
@@ -794,7 +804,7 @@ class agent:
                 obj = self.select_random_object()
                 old_pos = obj[2]
                 if obj is None:
-                        msg = init_msg()
+                        msg = init_msg(self.num_frames_per_msg)
                         msg['msg']['action_type'] = 'WAITING'
                         self.send_msg(msg)
                         return
@@ -806,7 +816,7 @@ class agent:
                         return
                 obj_after_teleport = obj_after_teleport_list[0]
                 if obj_after_teleport is None:
-                        msg = init_msg()
+                        msg = init_msg(self.num_frames_per_msg)
                         msg['msg']['action_type'] = 'WAITING'
                         self.send_msg(msg)
                         return
@@ -820,7 +830,7 @@ class agent:
                                 return
                         obj_after_act = obj_after_act_list[0]
                         if obj_after_act is None:
-                                msg = init_msg()
+                                msg = init_msg(self.num_frames_per_msg)
                                 msg['msg']['action_type'] = 'WAITING'
                                 self.send_msg(msg)
                                 return
@@ -830,13 +840,13 @@ class agent:
                 self.observe_world()
                 big_obj, little_obj = self.select_random_table_not_table()
                 if little_obj is None or big_obj is None:
-                        msg = init_msg()
+                        msg = init_msg(self.num_frames_per_msg)
                         msg['msg']['action_type'] = 'WAITING'
                         self.send_msg(msg)
                         return
                 horiz_action_dir = self.teleport_for_collision(big_obj, little_obj, distance_scale = 1)
                 if horiz_action_dir is None:
-                        msg = init_msg()
+                        msg = init_msg(self.num_frames_per_msg)
                         msg['msg']['action_type'] = 'WAITING'
                         self.send_msg(msg)
                         return
@@ -848,7 +858,7 @@ class agent:
                         return
                 little_obj_after_teleport = obj_after_teleport_list[0]
                 if little_obj_after_teleport is None:
-                        msg = init_msg()
+                        msg = init_msg(self.num_frames_per_msg)
                         msg['msg']['action_type'] = 'WAITING'
                         self.send_msg(msg)
                         return
@@ -862,7 +872,7 @@ class agent:
                 self.observe_world()
                 under_obj, obj = self.select_random_table_not_table()
                 if under_obj is None or obj is None:
-                        msg = init_msg()
+                        msg = init_msg(self.num_frames_per_msg)
                         msg['msg']['action_type'] = 'WAITING'
                         self.send_msg(msg)
                         return
@@ -879,7 +889,7 @@ class agent:
                         return
                 obj_after_teleport = obj_after_teleport_list[0]
                 if obj_after_teleport is None:
-                        msg = init_msg()
+                        msg = init_msg(self.num_frames_per_msg)
                         msg['msg']['action_type'] = 'WAITING'
                         self.send_msg(msg)
                         return
@@ -893,7 +903,7 @@ class agent:
                                 return
                         obj_after_act = obj_after_act_list[0]
                         if obj_after_act is None:
-                                msg = init_msg()
+                                msg = init_msg(self.num_frames_per_msg)
                                 msg['msg']['action_type'] = 'WAITING'
                                 self.send_msg(msg)
                                 return
@@ -904,7 +914,7 @@ class agent:
                 self.observe_world()
                 under_obj, obj = self.select_random_table_not_table()
                 if under_obj is None or obj is None:
-                        msg = init_msg()
+                        msg = init_msg(self.num_frames_per_msg)
                         msg['msg']['action_type'] = 'WAITING'
                         self.send_msg(msg)
                         return
@@ -922,7 +932,7 @@ class agent:
                         return
                 obj_after_teleport = obj_after_teleport_list[0]
                 if obj_after_teleport is None:
-                        msg = init_msg()
+                        msg = init_msg(self.num_frames_per_msg)
                         msg['msg']['action_type'] = 'WAITING'
                         self.send_msg(msg)
                         return
@@ -939,7 +949,7 @@ class agent:
                                 return
                         obj_after_act = obj_after_act_list[0]
                         if obj_after_act is None:
-                                msg = init_msg()
+                                msg = init_msg(self.num_frames_per_msg)
                                 msg['msg']['action_type'] = 'WAITING'
                                 self.send_msg(msg)
                                 return
@@ -959,18 +969,9 @@ class agent:
                         self.temp_im_path = None
                 if self.create_hdf5:
                         print ('creating instances for save')
-                        self.ims = []
-                        self.objs = []
-                        self.norms = []
-                        self.deps = []
-                        self.ims2 = []
-                        self.objs2 = []
-                        self.norms2 = []
-                        self.deps2 = []
-                        self.infolist = []
-                        self.infs = []
-                        self.valid, images, normals, depths, objects, worldinfos, agentactions, images2, normals2, depths2, objects2 = self.get_hdf5_handles()
-                        if False and self.valid[self.BATCH_SIZE * bn : self.BATCH_SIZE * (bn + 1)].all():
+                        self.handles = self.get_hdf5_handles()
+                        self.accumulated_data = {k: [] for k in self.handles}
+                        if False and self.handles['valid'][self.BATCH_SIZE * bn : self.BATCH_SIZE * (bn + 1)].all():
                             print('Skipping batch')
                             return
                 mode, act_desc, act_params = task_params[0]
@@ -1003,40 +1004,17 @@ class agent:
                         print('prepping for hdf5 write')
                         start = self.BATCH_SIZE * bn
                         end = self.BATCH_SIZE * (bn + 1)
-                        self.ims = np.array(self.ims)
-                        self.norms = np.array(self.norms)
-                        self.deps = np.array(self.deps)
-                        self.objs = np.array(self.objs)
-                        self.ims2 = np.array(self.ims2)
-                        self.norms2 = np.array(self.norms2)
-                        self.deps2 = np.array(self.deps2) 
-                        self.objs2 = np.array(self.objs2)
-                        images[start: end] = self.ims
-                        normals[start: end] = self.norms
-                        depths[start: end] = self.deps
-                        objects[start: end] = self.objs
-                        images2[start:end] = self.ims2
-                        normals2[start:end] = self.norms2
-                        depths2[start: end] = self.deps2
-                        objects2[start:end] = self.objs2
-                        self.valid[start: end] = True
-                        worldinfos[start: end] = self.infs
-                        agentactions[start: end] = self.infolist
+                        for k in self.handles:
+                            if k in ['valid', 'actions', 'worldinfo']:
+                                self.handles[k][start:end] = self.accumulated_data[k]
+                            else:
+                                self.handles[k][start:end] = np.array(
+                                        self.accumulated_data[k])
                         print('flushing')
                         self.hdf5.flush()
                         print('flushed')
-
-
-
 
 test_task_params = [
         ('PUSHING', {'func' : make_const_simple_push, 'kwargs' : {'time_len' : 3, 'magnitude' : 100}, 'wait' : 20}),
         ('LIFTING', {'func' : make_const_simple_lift, 'kwargs' : {'time_len' : 3, 'x_magnitude' : 50, 'y_magnitude' : 120}, 'wait' : 20})
 ]
-
-
-
-
-
-
-

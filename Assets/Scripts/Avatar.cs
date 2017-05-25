@@ -87,6 +87,8 @@ public class Avatar : MonoBehaviour
 #region Unity callbacks
     private void Awake()
     {
+    	Debug.Assert(this.outputFormatList.Count == this.shaders.Count);
+
 		Debug.Log ("I'm awake!");
 		_rand = new System.Random ();
 		Debug.Log ("got random");
@@ -104,10 +106,21 @@ public class Avatar : MonoBehaviour
 		Debug.Log ("teleported");
     }
 
-    public void SetOutputFormatList(List<string> NewOutputFormatList)
+    public void SetShaderList(List<string[]> shaderList)
     {
-    	this.outputFormatList = NewOutputFormatList;
-    	_request.outputFormatList = NewOutputFormatList;
+		this.shaders = new List<Shader> ();
+		this.outputFormatList = new List<string> ();
+    	foreach(string[] shader in shaderList)
+    	{
+    		Debug.Assert(shader.Length == 2);
+    		if(shader[0] == "Image")
+    			this.shaders.Add(null);
+    		else
+    			this.shaders.Add(Shader.Find(shader[0]));
+    		this.outputFormatList.Add(shader[1]);
+    	}
+    	_request.shadersList = this.shaders;
+    	_request.outputFormatList = this.outputFormatList;
     }
 
     private void FixedUpdate()
@@ -118,6 +131,18 @@ public class Avatar : MonoBehaviour
         }
     }
 #endregion
+
+	public void ResetObjectTransformations()
+	{
+		if( myCam != null) {
+			int n_cameras = 2;
+			myCam.ResetObjectTransforms(n_cameras);
+		}
+		else
+		{
+			Debug.LogWarning("ResetObjectTransformations myCam null");
+		}
+	}
 
 	public void ReadyFramesForRequest()
     {

@@ -1,4 +1,4 @@
-﻿Shader "Get Identity" {
+﻿Shader "GetIdentity" {
 	Properties {
 		_idval ("Object Identity", Color) = (0, 0, 0, 0)
 	}

@@ -28,11 +28,16 @@ SCREEN_WIDTH = 170
 SCREEN_HEIGHT = 128
 SELECTED_BUILD = 'one_world.exe'
 
-#if USE_TDW:
-#   raise Exception('Not yet adapted to USE_TDW')
-
 NUM_TIMES_RUN = 1
 REPEATS = 1000
+BATCH_SIZE = 256
+TOTAL = NUM_TIMES_RUN * REPEATS * BATCH_SIZE
+
+SHADERS = [{"DisplayNormals": "png"}, {"GetIdentity": "png"}, {"DisplayDepth": "png"}, {"Images": "jpg"}, {"DisplayVelocity": "png"} , {"DisplayAcceleration": "png"}, {"DisplayJerk": "png"}]
+HDF5_NAMES = [{"DisplayNormals": "normals"}, {"GetIdentity": "objects"}, {"DisplayDepth": "depths"}, {"Images": "images"}, {"DisplayVelocity": "velocities"} , {"DisplayAcceleration": "accelerations"}, {"DisplayJerk": "jerks"}]
+
+n_cameras = 2
+num_frames_per_msg = 1 + n_cameras * len(SHADERS) # +1 because of info frame
 
 os.environ['USER'] = 'mrowca'
 #path = 'C:/Users/mrowca/Documents/test'
@@ -408,7 +413,19 @@ def loop():
         my_rng = np.random.RandomState(SEED + 3)
         global sock
         env = environment(my_seed = SEED, unity_seed = SEED + 1)
-        agent = curious2.agent(CREATE_HDF5, path, dataset_num = int(sys.argv[3]), continue_writing = True)
+        agent = curious2.agent(
+                CREATE_HDF5, 
+                num_frames_per_msg, 
+                n_cameras, 
+                SHADERS, 
+                HDF5_NAMES, 
+                BATCH_SIZE, 
+                TOTAL, 
+                SCREEN_WIDTH, 
+                SCREEN_HEIGHT, 
+                path, 
+                dataset_num = int(sys.argv[3]), 
+                continue_writing = True)
         if USE_TDW:
                 tc = TDW_Client(host_address,
                         initial_command='request_create_environment',
@@ -417,7 +434,7 @@ def loop():
                         #queue_port_num="23402",
                         get_obj_data=True,
                         send_scene_info=True,
-                        num_frames_per_msg=9,
+                        num_frames_per_msg=num_frames_per_msg,
                         )
         else:
                 print ("connecting...")
@@ -449,16 +466,16 @@ def loop():
                                         sock = tc.run()
                                 else:
                                         print('sending join...')
-                                        sock.send_json({"msg_type" : "CLIENT_JOIN_WITH_CONFIG", "config" : env.config, "get_obj_data" : True, "send_scene_info" : True, "output_formats": ["png", "png", "png", "jpg"]})
+                                        sock.send_json({"msg_type" : "CLIENT_JOIN_WITH_CONFIG", "config" : env.config, "get_obj_data" : True, "send_scene_info" : True, "shaders": SHADERS})
                                         print('...join sent')
                                 not_yet_joined = False
                         else:
-                                for i in range(9):
+                                for i in range(num_frames_per_msg):
                                         sock.recv()
                                 print('switching scene...')
-                                scene_switch_msg = {"msg_type" : "SCENE_SWITCH", "config" : env.config, "get_obj_data" : True, "send_scene_info" : True, "output_formats": ["png", "png", "png", "jpg"]}
+                                scene_switch_msg = {"msg_type" : "SCENE_SWITCH", "config" : env.config, "get_obj_data" : True, "send_scene_info" : True, "shaders": SHADERS}
                                 if USE_TDW:
-                                        sock.send_json({"n": 9, "msg": scene_switch_msg})
+                                        sock.send_json({"n": num_frames_per_msg, "msg": scene_switch_msg})
                                 else:
                                         sock.send_json(scene_switch_msg)
                         task_order = my_rng.permutation(len(agent_directions))

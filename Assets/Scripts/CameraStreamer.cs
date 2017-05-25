@@ -128,24 +128,127 @@ public class CameraStreamer : MonoBehaviour
         if (request.capturedImages == null)
             request.capturedImages = new List<CapturedImage>();
         // times 2 for second camera
-        while(request.capturedImages.Count < request.shadersList.Count * 2)
+		while(request.capturedImages.Count < request.shadersList.Count * targetCams.Count)
         {
 			request.capturedImages.Add(new CapturedImage());
 //            Debug.Log("Capture count now: " + request.capturedImages.Count);
         }
-        for (int i = 0; i < request.shadersList.Count; ++i)
+		UpdateObjectTransforms(targetCams);
+        for (int c = 0; c < targetCams.Count; c++)
         {
-            if(DEBUG)
-            {
-                Debug.Log("SHADER CALL");
-                Debug.Log(i);
-            }
-			request.capturedImages[i].pictureBuffer = TakeSnapshotNow(request.shadersList[i], 0, request.outputFormatList[i]).pictureBuffer;
-			// for second camera
-			request.capturedImages[i+4].pictureBuffer = TakeSnapshotNow(request.shadersList[i], 1, request.outputFormatList[i]).pictureBuffer;
+        	// Choose the appropriate previous transforms for velocity calculation
+			SelectObjectTransforms(c);
+        	//Render and write images
+        	for (int i = 0; i < request.shadersList.Count; ++i)
+        	{
+            	if(DEBUG)
+            	{
+                	Debug.Log("SHADER CALL");
+                	Debug.Log(i);
+            	}
+				request.capturedImages[i+c*request.shadersList.Count].pictureBuffer = TakeSnapshotNow(request.shadersList[i], c, request.outputFormatList[i]).pictureBuffer;
+			}
         }
         if (request.callbackFunc != null)
             request.callbackFunc(request);
+    }
+
+    public void ResetObjectTransforms(int n_cameras)
+    {
+		SemanticObject[] allObjects = UnityEngine.Object.FindObjectsOfType<SemanticObject>();
+		foreach(SemanticObject obj in allObjects)
+		{
+			Renderer[] rendererList = obj.GetComponentsInChildren<Renderer>();
+			foreach (Renderer _rend in rendererList)
+            {
+				MaterialPropertyBlock properties = new MaterialPropertyBlock();
+				_rend.GetPropertyBlock(properties);
+				for(int t = 0; t < 4; t++) 
+            	{
+					properties.SetMatrixArray(String.Format("_{0}MVPs", t), Utils.initTransforms(n_cameras));
+					properties.SetMatrixArray(String.Format("_{0}MVs", t), Utils.initTransforms(n_cameras));
+				}
+            	_rend.SetPropertyBlock(properties);
+            }
+		}
+    }
+
+    private void SelectObjectTransforms(int camera_id)
+    {
+		SemanticObject[] allObjects = UnityEngine.Object.FindObjectsOfType<SemanticObject>();
+		foreach(SemanticObject obj in allObjects)
+		{
+			Renderer[] rendererList = obj.GetComponentsInChildren<Renderer>();
+			foreach (Renderer _rend in rendererList)
+            {
+				MaterialPropertyBlock properties = new MaterialPropertyBlock();
+				_rend.GetPropertyBlock(properties);
+            	foreach (Material _mat in _rend.materials)
+                {
+					for(int t = 0; t < 4; t++) 
+            		{
+						_mat.SetMatrix(String.Format("_{0}MVP", t), 
+							properties.GetMatrixArray(String.Format("_{0}MVPs", t))[camera_id]);
+						_mat.SetMatrix(String.Format("_{0}MV", t), 
+							properties.GetMatrixArray(String.Format("_{0}MVs", t))[camera_id]);
+					}
+				}
+            }
+		}
+    }
+
+    private void UpdateObjectTransforms(List<Camera> cams)
+    {
+		SemanticObject[] allObjects = UnityEngine.Object.FindObjectsOfType<SemanticObject>();
+		foreach(SemanticObject obj in allObjects)
+		{
+			Renderer[] rendererList = obj.GetComponentsInChildren<Renderer>();
+			foreach (Renderer _rend in rendererList)
+            {
+				MaterialPropertyBlock properties = new MaterialPropertyBlock();
+				_rend.GetPropertyBlock(properties);
+				List<Matrix4x4[]> MVPs = new List<Matrix4x4[]>();
+				List<Matrix4x4[]> MVs = new List<Matrix4x4[]>();
+				for(int t = 0; t < 4; t++) 
+            	{
+					Matrix4x4[] MVP = properties.GetMatrixArray(String.Format("_{0}MVPs", t));
+					if(MVP == null)
+						MVP = Utils.initTransforms(cams.Count);
+					MVPs.Add(MVP);
+					Matrix4x4[] MV = properties.GetMatrixArray(String.Format("_{0}MVs", t));
+					if(MV == null)
+						MV = Utils.initTransforms(cams.Count);
+					MVs.Add(MV);
+				}
+				Debug.Assert(MVs[0].Length == cams.Count);
+				Debug.Assert(MVPs[0].Length == cams.Count);
+
+				for(int t = 2; t >= 0; t--) 
+            	{
+					Array.Copy(MVs[t], MVs[t+1], MVs[t].Length);
+					properties.SetMatrixArray(String.Format("_{0}MVs", t+1), MVs[t+1]);
+					Array.Copy(MVPs[t], MVPs[t+1], MVPs[t].Length);
+					properties.SetMatrixArray(String.Format("_{0}MVPs", t+1), MVPs[t+1]);
+				}
+
+				for(int c = 0; c < cams.Count; c++)
+				{
+					// Get projection and camera transformation matrix
+					Matrix4x4 P = GL.GetGPUProjectionMatrix(cams[c].projectionMatrix, false);
+					Matrix4x4 V = cams[c].worldToCameraMatrix;
+            		// Get model tranformation matrix
+					Matrix4x4 M = _rend.localToWorldMatrix;
+					Matrix4x4 MV = V * M;
+					Matrix4x4 MVP = P * V * M;
+
+					MVs[0][c] = MV;
+					MVPs[0][c] = MVP;
+				}
+				properties.SetMatrixArray("_0MVs", MVs[0]);
+				properties.SetMatrixArray("_0MVPs", MVPs[0]);
+            	_rend.SetPropertyBlock(properties);
+            }
+		}
     }
 
     private void OnDisable()

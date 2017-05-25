@@ -695,6 +695,16 @@ public class ProceduralGeneration : MonoBehaviour
             Color colorID = getNewUIDColor ();
             foreach (Renderer _rend in RendererList)
             {
+            		//Initialize previous transformation matrices
+            		MaterialPropertyBlock properties = new MaterialPropertyBlock();
+            		int n_cameras = 2;
+            		for(int t = 0; t < 4; t++) 
+            		{
+						properties.SetMatrixArray(String.Format("_{0}MVPs", t), Utils.initTransforms(n_cameras));				
+						properties.SetMatrixArray(String.Format("_{0}MVs", t), Utils.initTransforms(n_cameras));
+					}
+            		_rend.SetPropertyBlock(properties);
+
                     foreach (Material _mat in _rend.materials)
                     {
                     		// This is just to make objects easier identifiable 
@@ -740,6 +750,12 @@ public class ProceduralGeneration : MonoBehaviour
 
 							// Add idval to shader
 							_mat.SetColor("_idval", colorID);
+							// Add initial transform
+							for(int t = 0; t < 4; t++) 
+            				{
+								_mat.SetMatrix(String.Format("_{0}MVP", t), Matrix4x4.zero);
+								_mat.SetMatrix(String.Format("_{0}MV", t), Matrix4x4.zero);
+							}
                     }
             }
 
