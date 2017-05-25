@@ -33,8 +33,8 @@ REPEATS = 1000
 BATCH_SIZE = 256
 TOTAL = NUM_TIMES_RUN * REPEATS * BATCH_SIZE
 
-SHADERS = [{"DisplayNormals": "png"}, {"GetIdentity": "png"}, {"DisplayDepth": "png"}, {"Images": "jpg"}, {"DisplayVelocity": "png"} , {"DisplayAcceleration": "png"}, {"DisplayJerk": "png"}]
-HDF5_NAMES = [{"DisplayNormals": "normals"}, {"GetIdentity": "objects"}, {"DisplayDepth": "depths"}, {"Images": "images"}, {"DisplayVelocity": "velocities"} , {"DisplayAcceleration": "accelerations"}, {"DisplayJerk": "jerks"}]
+SHADERS = [{"DisplayNormals": "png"}, {"GetIdentity": "png"}, {"DisplayDepth": "png"}, {"DisplayVelocity": "png"}, {"DisplayAcceleration": "png"}, {"DisplayJerk": "png"}, {"Images": "jpg"}]
+HDF5_NAMES = [{"DisplayNormals": "normals"}, {"GetIdentity": "objects"}, {"DisplayDepth": "depths"}, {"DisplayVelocity": "velocities"}, {"DisplayAcceleration": "accelerations"}, {"DisplayJerk": "jerks"}, {"Images": "images"}]
 
 n_cameras = 2
 num_frames_per_msg = 1 + n_cameras * len(SHADERS) # +1 because of info frame

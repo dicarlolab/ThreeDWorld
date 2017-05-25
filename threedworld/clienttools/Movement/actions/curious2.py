@@ -369,6 +369,7 @@ class agent:
                 print('message handled')
                 self.info = json.loads(info)
                 self.oarray = self.batch_data['objects1']
+                self.oarray2 = self.batch_data['objects2']
                 self.oarray1 = 256**2 * self.oarray[:, :, 0] + 256 * self.oarray[:, :, 1] + self.oarray[:, :, 2]
                 self.oarray21 = 256**2 * self.oarray2[:, :, 0] + 256 * self.oarray2[:, :, 1] + self.oarray2[:, :, 2]
                 if self.global_counter == 0:
@@ -457,7 +458,7 @@ class agent:
             offset_dir = np.array([offset_dir_horiz[0] * distance_from * np.cos(rand_yangle), distance_from * np.sin(rand_yangle), offset_dir_horiz[1] * distance_from * np.cos(rand_yangle)])
             new_agent_pos = list(np.array(new_obj_pos) + offset_dir)
             looking_dir = list(- offset_dir)
-            msg = init_msg()
+            msg = init_msg(self.num_frames_per_msg)
             msg['msg']['teleport_to'] = {'position' : new_agent_pos, 'rotation' : looking_dir}
             msg['msg']['action_type'] = 'TELE_TO_CENTER'
             action = {}
@@ -786,7 +787,7 @@ class agent:
                 id1 = obj1[1]
                 pos2 = obj2[2]
                 id2 = obj2[1]
-                msg = init_msg()
+                msg = init_msg(self.num_frames_per_msg)
                 action_1 = {}
                 action_1['use_absolute_coordinates'] = True
                 action_1['force'] = list(f1)
@@ -810,7 +811,7 @@ class agent:
                     if not obj_updated:
                         return
                     if None in obj_updated_list:
-                        msg = init_msg()
+                        msg = init_msg(self.num_frames_per_msg)
                         msg['msg']['action_type'] = 'WAITING'
                         self.send_msg(msg)
                         return
@@ -894,7 +895,7 @@ class agent:
             self.observe_world()
             obj = self.select_random_object()
             if obj is None:
-                msg = init_msg()
+                msg = init_msg(self.num_frames_per_msg)
                 msg['msg']['action_type'] = 'WAITING'
                 self.send_msg(msg)
                 return
@@ -912,7 +913,7 @@ class agent:
                     return
                 obj = obj_after_teleport_list[0]
                 if obj is None or not self.check_objects_in_view([obj]) or not check_objects_close_enough(np.array(new_obj_pos) - np.array(looking_dir), [obj], too_far_threshold = too_far_thresh):
-                    msg = init_msg()
+                    msg = init_msg(self.num_frames_per_msg)
                     msg['msg']['action_type'] = 'WAITING'
                     self.send_msg(msg)
                     return
@@ -925,7 +926,7 @@ class agent:
                     return
                 obj = obj_list[0]
                 if obj is None or not self.check_objects_in_view([obj]):
-                    msg = init_msg()
+                    msg = init_msg(self.num_frames_per_msg)
                     msg['msg']['action_type'] = 'WAITING'
                     self.send_msg(msg)
                     return
@@ -1005,13 +1006,13 @@ class agent:
             self.observe_world()
             big_obj, little_obj = self.select_random_table_not_table()
             if little_obj is None or big_obj is None:
-                msg = init_msg()
+                msg = init_msg(self.num_frames_per_msg)
                 msg['msg']['action_type'] = 'WAITING'
                 self.send_msg(msg)
                 return
             horiz_action_dir, agent_pos = self.teleport_for_collision(big_obj, little_obj, distance_scale = 1, agent_pos_too = True) 
             if horiz_action_dir is None:
-                msg = init_msg()
+                msg = init_msg(self.num_frames_per_msg)
                 msg['msg']['action_type'] = 'WAITING'
                 self.send_msg(msg)
                 return
@@ -1024,7 +1025,7 @@ class agent:
                     return
                 little_obj, big_obj = obj_after_teleport_list
                 if little_obj is None or big_obj is None or not self.check_objects_in_view([little_obj, big_obj]) or not check_objects_close_enough(agent_pos, [little_obj, big_obj], too_far_threshold = too_far_thresh):
-                    msg = init_msg()
+                    msg = init_msg(self.num_frames_per_msg)
                     msg['msg']['action_type'] = 'WAITING'
                     self.send_msg(msg)
                     return
