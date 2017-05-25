@@ -245,7 +245,7 @@ public class ProceduralGeneration : MonoBehaviour
 						newInfo.bounds.extents = items[i]["boundb_pos"].ReadVector3(new Vector3(0f, 0f, 0f));
 						newInfo._id_str  = items[i]["_id_str"].ReadString(newInfo._id_str);
 						newInfo.aws_version = items[i]["aws_version"].ReadString(newInfo.aws_version);
-
+//						newInfo.complexity = items[i]["complexity"].ReadString(newInfo.complexity);
 						newInfo.mass = items[i]["mass"].ReadFloat(1.0f);
 						newInfo.set_scale(items[i]["scale"]);
 						newInfo.round_num = r;

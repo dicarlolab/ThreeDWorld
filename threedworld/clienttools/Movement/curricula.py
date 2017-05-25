@@ -389,19 +389,128 @@ wall_throw = [
 
 ]
 
+# object_mash = [
+# 	('MASH',
+# 		'MASH_OBJECTS',
+# 		{
+# 		'func' : curious2.roughly_opposing_constant_actions,
+# 		'kwargs' : {'std_dev_ang' : np.pi/12., 'time_len_range' : range(2, 3), 'f_horiz_range' : range(130, 200)},
+# 		'wait_before' : {'threshold' : .01, 'time_window' : 1, 'max_time' : 1, 'no_drop_max_time' : 1},
+# 		'wait_after' : {'threshold' : .01, 'time_window' : 2, 'max_time' : 2},
+# 		'cut_if_off_screen' : 1
+# 		}
+# 		)
+# ]
+
+# object_mash_wider_range = [
+# 	('MASH',
+# 		'MASH_WIDE_RANGE',
+# 		{
+# 		'func' : curious2.roughly_opposing_constant_actions,
+# 		'kwargs' : {'std_dev_ang' : np.pi/12., 'time_len_range' : range(2, 3), 'f_horiz_range' : range(0, 200)},
+# 		'wait_before' : {'threshold' : .01, 'time_window' : 1, 'max_time' : 1, 'no_drop_max_time' : 1},
+# 		'wait_after' : {'threshold' : .01, 'time_window' : 2, 'max_time' : 2},
+# 		'cut_if_off_screen' : 1
+# 		}
+# 		)
+# ]
+
+object_mash_sometimes_one_arm = [
+	('MASH',
+		'MASH',
+		{
+		'func' : curious2.roughly_opposing_constant_actions,
+		'kwargs' : {'std_dev_ang' : np.pi/12., 'time_len_range' : range(1, 2), 'f_horiz_range' : range(130, 200), 'f_y_range' : range(30, 60)},
+		'wait_before' : {'threshold' : .01, 'time_window' : 1, 'max_time' : 1, 'no_drop_max_time' : 1},
+		'wait_after' : {'threshold' : .01, 'time_window' : 2, 'max_time' : 2},
+		'cut_if_off_screen' : 1,
+		'one_arm_prob' : .5
+		}
+		)
+]
+
+object_mash_longer = [
+	('MASH',
+		'MASH_LONGER',
+		{
+		'func' : curious2.roughly_opposing_constant_actions,
+		'kwargs' : {'std_dev_ang' : np.pi/12., 'time_len_range' : range(2, 3), 'f_horiz_range' : range(130, 200), 'f_y_range' : range(30, 60)},
+		'wait_before' : {'threshold' : .01, 'time_window' : 1, 'max_time' : 1, 'no_drop_max_time' : 1},
+		'wait_after' : {'threshold' : .01, 'time_window' : 2, 'max_time' : 2},
+		'cut_if_off_screen' : 1,
+		'one_arm_prob' : .5
+		}
+		)
+]
+
+object_mash_rot = [
+	('MASH',
+		'MASH_ROT',
+		{
+		'func' : curious2.roughly_opposing_constant_actions,
+		'kwargs' : {'std_dev_ang' : np.pi/12., 'time_len_range' : range(1, 2), 'f_horiz_range' : range(130, 200), 'f_y_range' : range(30, 60), 'tor_horiz_range' : range(100, 300), 'tor_y_range' : range(100, 300)},
+		'wait_before' : {'threshold' : .01, 'time_window' : 1, 'max_time' : 1, 'no_drop_max_time' : 1},
+		'wait_after' : {'threshold' : .01, 'time_window' : 2, 'max_time' : 2},
+		'cut_if_off_screen' : 1,
+		'one_arm_prob' : .5
+		}
+		)
+]
+
+
+lift_smash = [
+	('LIFT_SMASH',
+		'LIFT_SMASH',
+		{
+		'lift_func' : curious2.make_constant_random_action_sequence,
+		'lift_kwargs' : {'time_len_range' : range(2, 3), 'f_horiz_range' : range(5), 'f_y_range' : range(60, 80), 'std_dev_ang' : np.pi / 100.},
+		'func' : curious2.make_constant_random_action_sequence,
+		'kwargs' : {'time_len_range' : range(1, 2), 'f_horiz_range' : range(5), 'tor_horiz_range' : range(2000), 'f_y_range' : range(-100, -50), 'std_dev_ang' : np.pi / 100.},
+		'wait_before' : {'threshold' : .01, 'time_window' : 1, 'max_time' : 1, 'no_drop_max_time' : 1},
+		'wait_after' : {'threshold' : .01, 'time_window' : 2, 'max_time' : 1},
+		'cut_if_off_screen' : 1,
+		}
+
+		)
+]
+
+
+lift_smash_rot = [
+	('LIFT_SMASH',
+		'LIFT_SMASH',
+		{
+		'lift_func' : curious2.make_constant_random_action_sequence,
+		'lift_kwargs' : {'time_len_range' : range(3, 5), 'f_horiz_range' : range(5), 'f_y_range' : range(60, 80), 'tor_horiz_range' : range(100, 300), 'tor_y_range' : range(100, 300), 'std_dev_ang' : np.pi / 100.},
+		'func' : curious2.make_constant_random_action_sequence,
+		'kwargs' : {'time_len_range' : range(1, 2), 'f_horiz_range' : range(5), 'tor_horiz_range' : range(100, 300), 'tor_y_range' : range(100, 300), 'f_y_range' : range(-50, 0), 'std_dev_ang' : np.pi / 100.},
+		'wait_before' : {'threshold' : .01, 'time_window' : 1, 'max_time' : 1, 'no_drop_max_time' : 1},
+		'wait_after' : {'threshold' : .01, 'time_window' : 2, 'max_time' : 1},
+		'cut_if_off_screen' : 1,
+		}
+
+		)
+]
+
 object_throw = [
 	('COLLISION',
 		'THROW_AT_OBJECT',
 		{
 		'func' : curious2.controlled_constant_action_sequences_distinguished_direction,
-		'wait_before' : {'threshold' : .01, 'time_window' : 3, 'max_time' : 20}, 
-		'wait_after' : {'threshold' : .01, 'time_window' : 3, 'max_time' : 20}, 
-		'kwargs' : {'std_dev_ang' : np.pi / 12., 'time_len_range' : range(2, 3), 'f_horiz_range' : range(130, 200), 'f_y_range' : range(30, 100)}
+		'wait_before' : {'threshold' : .01, 'time_window' : 3, 'max_time' : 1, 'no_drop_max_time' : 1}, 
+		'wait_after' : {'threshold' : .01, 'time_window' : 3, 'max_time' : 3}, 
+		'kwargs' : {'std_dev_ang' : np.pi / 12., 'time_len_range' : range(2, 3), 'f_horiz_range' : range(130, 200), 'f_y_range' : range(30, 100)},
+		'cut_if_off_screen' : 1
 		}
-
-
 		)
 ]
+
+
+object_mash_curriculum = [object_mash_sometimes_one_arm, object_mash_longer]
+object_mash_rot_curriculum = [object_mash_rot]
+
+
+lift_smash_curriculum = [lift_smash]
+lift_smash_rot_curriculum = [lift_smash_rot]
 
 wall_throw_curriculum = [wall_throw]
 
