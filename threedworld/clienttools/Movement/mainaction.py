@@ -22,14 +22,14 @@ import curricula
 
 SEED = int(sys.argv[2])
 CREATE_HDF5 = False
-USE_TDW = False
+USE_TDW = True
 SCENE_SWITCH = 20
 SCREEN_WIDTH = 170
 SCREEN_HEIGHT = 128
 SELECTED_BUILD = 'one_world.exe'
 
 NUM_TIMES_RUN = 1
-REPEATS = 1000
+REPEATS = 1
 BATCH_SIZE = 256
 TOTAL = NUM_TIMES_RUN * REPEATS * BATCH_SIZE
 
@@ -38,6 +38,7 @@ HDF5_NAMES = [{"DisplayNormals": "normals"}, {"GetIdentity": "objects"}, {"Displ
 
 n_cameras = 2
 num_frames_per_msg = 1 + n_cameras * len(SHADERS) # +1 because of info frame
+print('Exchanging %d messages' % num_frames_per_msg)
 
 os.environ['USER'] = 'nhaber'
 #path = 'C:/Users/mrowca/Documents/test'

@@ -34,8 +34,8 @@ def handle_message(sock, msg_names, \
     print("got message")
     data = {'info': info}
     # Iterate over all cameras
-    for cam in xrange(len(msg_names)):
-        for n in xrange(len(msg_names[cam])):
+    for cam in range(len(msg_names)):
+        for n in range(len(msg_names[cam])):
             # Handle set of images per camera
             imgstr = sock.recv()
             imgarray = np.asarray(Image.open(StringIO(imgstr)).convert('RGB'))

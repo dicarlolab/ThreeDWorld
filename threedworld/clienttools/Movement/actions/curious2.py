@@ -202,7 +202,7 @@ class agent:
             self.hdf5_names = []
             assert len(shaders) == len(hdf5_shader_names), \
                     ("Each shader has to be provided with a hdf5 name")
-            for i in xrange(len(shaders)):
+            for i in range(len(shaders)):
                 assert len(shaders[i].keys()) == 1
                 for k in shaders[i]:
                     assert k in hdf5_shader_names[i], \
@@ -240,8 +240,8 @@ class agent:
                         'actions': self.hdf5.require_dataset( \
                         'actions', shape=(self.N,), dtype=dt)
                         }
-            for cam in xrange(len(self.hdf5_names)):
-                for n in xrange(len(self.hdf5_names[cam])):
+            for cam in range(len(self.hdf5_names)):
+                for n in range(len(self.hdf5_names[cam])):
                     field_name = self.hdf5_names[cam][n] + str(cam+1)
                     assert field_name not in handles, \
                             ('duplicate handle %s' % field_name)

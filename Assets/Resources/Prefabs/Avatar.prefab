@@ -463,6 +463,7 @@ MonoBehaviour:
   isStatic: 1
   extents: {x: 0, y: 0, z: 0}
   center: {x: 0, y: 0, z: 0}
+  initLocalScale: {x: 0, y: 0, z: 0}
   round_num: 0
 --- !u!114 &114614539033581100
 MonoBehaviour:
@@ -498,8 +499,14 @@ MonoBehaviour:
   - {fileID: 4800000, guid: 01c10d508c72efc4c97ac9ea79b07271, type: 3}
   - {fileID: 4800000, guid: 901e682dceb434687a5ddad2900b85a4, type: 3}
   - {fileID: 4800000, guid: 0477d80fe34fea242be66f58330c0483, type: 3}
+  - {fileID: 4800000, guid: f0e2f8987a83cad4a955a2fe9773d8b2, type: 3}
+  - {fileID: 4800000, guid: 355cb9d211030cb4f90301894e6dad7d, type: 3}
+  - {fileID: 4800000, guid: 72f5fba6478e56f478b962edf8aa1d1f, type: 3}
   - {fileID: 0}
   outputFormatList:
+  - png
+  - png
+  - png
   - png
   - png
   - png
