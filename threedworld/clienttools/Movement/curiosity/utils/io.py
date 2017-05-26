@@ -44,9 +44,9 @@ def handle_message(sock, msg_names, \
                     ('duplicate message name %s' % field_name)
             data[field_name] = imgarray
 
-    im = Image.fromarray(data['velocities1'])
-    im2 = Image.fromarray(data['velocities2'])
-    imo = Image.fromarray(data['jerks2'])
+    #im = Image.fromarray(data['images1'])
+    #im2 = Image.fromarray(data['images2'])
+    #imo = Image.fromarray(data['objects1'])
     #dim = Image.fromarray(data['accelerations2'])
     #print(outdir, prefix, imtype)
     #imo.save(os.path.join('/Users/damian/Desktop/test_images/new/', 'jerk_%s.%s' % (prefix, imtype)))
