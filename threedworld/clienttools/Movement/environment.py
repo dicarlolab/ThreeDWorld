@@ -91,11 +91,31 @@ class environment:
 		print('making items')
 		return query_results_to_unity_data(query_res, scale, mass, var = var, seed = self.RANDOM_SEED + 1)
 
-				
+
+        def get_items_local(self, info):
+            if 'has_texture' not in info:
+                info['has_texture'] = True
+            if 'isLight' not in info:
+                info['isLight'] = False
+            for k in ['type', 'aws_address', 'scale']:
+                if k not in info:
+                    raise KeyError('Missing key in local object info: %s' % k)
+            return [info]
 
 	# update config for next scene switch
 	def next_config(self, * round_info):
-		rounds = [{'items' : self.get_items(query_dict[info['type']], info['num_items'] * 4, info['scale'], info['mass'], info['scale_var']), 'num_items' : info['num_items']} for info in round_info]
+            rounds = []
+            for info in round_info:
+                if 'host' in info and info['host'] is 'local':
+                    rounds.append({'items': self.get_items_local(info),
+                            'num_items': info['num_items']})
+                else:
+                    rounds.append({
+                        'items' : self.get_items(query_dict[info['type']], 
+                            info['num_items'] * 4, 
+                            info['scale'], info['mass'], 
+                            info['scale_var']), 
+                        'num_items' : info['num_items']})
 
 		self.config = {
 			"environment_scene" : "ProceduralGeneration",

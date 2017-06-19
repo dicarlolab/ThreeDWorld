@@ -242,7 +242,7 @@ public class ProceduralGeneration : MonoBehaviour
 						newInfo.fileName = items[i]["aws_address"].ReadString(newInfo.fileName);
 
 						newInfo.bounds.center = items[i]["center_pos"].ReadVector3(new Vector3(0f, 0f, 0f));
-						newInfo.bounds.extents = items[i]["boundb_pos"].ReadVector3(new Vector3(0f, 0f, 0f));
+						newInfo.bounds.extents = items[i]["boundb_pos"].ReadVector3(new Vector3(1.0f, 1.0f, 1.0f));
 						newInfo._id_str  = items[i]["_id_str"].ReadString(newInfo._id_str);
 						newInfo.aws_version = items[i]["aws_version"].ReadString(newInfo.aws_version);
 //						newInfo.complexity = items[i]["complexity"].ReadString(newInfo.complexity);
