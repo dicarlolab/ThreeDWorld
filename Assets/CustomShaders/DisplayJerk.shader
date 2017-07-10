@@ -33,7 +33,7 @@
                 //float4 acc = (_0Pos - 2 * _1Pos + _2Pos) - (_1Pos - 2 * _2Pos + _3Pos);
                 float4 jerk = _0Pos - 3 * _1Pos + 3 * _2Pos - _3Pos;
 
-                float3 maxJerk = float3(.1, .1, .1);
+                float3 maxJerk = float3(2.0, 2.0, 2.0);
 
                 //o.color = fixed4(normalize(fixed3(vel.xyz)) * 0.5 + 0.5, 
                 //	clamp(length(vel.xyz) / maxVel, -1.0, 1.0) * 0.5 + 0.5);

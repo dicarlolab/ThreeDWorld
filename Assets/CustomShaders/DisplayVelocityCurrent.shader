@@ -1,4 +1,4 @@
-﻿Shader "DisplayVelocity" {
+﻿Shader "DisplayVelocityCurrent" {
     SubShader {
         Pass {
 
@@ -8,7 +8,7 @@
             #pragma fragment frag
             #include "UnityCG.cginc"
 
-            uniform float4x4 _1MVP;
+            uniform float4x4 _0MVP;
     		uniform float4x4 _1MV;
     		uniform float4x4 _0MV;
 
@@ -20,7 +20,7 @@
             v2f vert (appdata_base v)
             {
                 v2f o;
-                o.pos = mul(_1MVP, v.vertex);
+                o.pos = mul(_0MVP, v.vertex);
 
                 // Transform from model to world to camera
                 float4 prevPos = mul(_1MV, v.vertex);

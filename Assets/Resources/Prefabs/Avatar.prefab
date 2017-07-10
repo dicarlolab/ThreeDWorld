@@ -502,8 +502,14 @@ MonoBehaviour:
   - {fileID: 4800000, guid: f0e2f8987a83cad4a955a2fe9773d8b2, type: 3}
   - {fileID: 4800000, guid: 355cb9d211030cb4f90301894e6dad7d, type: 3}
   - {fileID: 4800000, guid: 72f5fba6478e56f478b962edf8aa1d1f, type: 3}
+  - {fileID: 4800000, guid: e9a0650a12738ea4da5bc90cc1f0cd05, type: 3}
+  - {fileID: 4800000, guid: 0f636ca599994bd418bb0394bba615e9, type: 3}
+  - {fileID: 4800000, guid: 1f29b140f011d0140ac49f95f5391a16, type: 3}
   - {fileID: 0}
   outputFormatList:
+  - png
+  - png
+  - png
   - png
   - png
   - png
