@@ -275,6 +275,23 @@ object_mash_rot = [
 ]
 
 
+lift_smash_local = [
+    (curricula.lift_smash_curriculum * REPEATS, 'LIFT_SMASH', [
+        {
+        'host' : 'local',
+        'aws_address' : 'PrefabDatabase/AssetBundles/Separated/playbox.bundle',
+        'type' : 'CONTAINER',
+        'scale' : {"option": "Absol_size", 
+            "scale": 0.7,
+            "var": .0, 
+            "seed": SEED, 'apply_to_inst' : True},
+        'mass' : 10000.,
+        'num_items' : 1,
+        }
+        ]
+    )
+]
+
 lift_smash = [
     (curricula.lift_smash_curriculum * REPEATS, 'LIFT_SMASH', [
         {

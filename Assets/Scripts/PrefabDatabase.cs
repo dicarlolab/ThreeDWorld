@@ -120,6 +120,7 @@ public class PrefabDatabase : MonoBehaviour
 
 	public static GameObject LoadAssetFromBundle (string fileName)
 	{
+		fileName = Path.Combine(Application.dataPath, fileName);
 		AssetBundle loadedAssetBundle = AssetBundle.LoadFromFile (fileName);
 		if (loadedAssetBundle == null) {
 			Debug.Log ("Failed to load AssetBundle!");
@@ -412,6 +413,42 @@ public class PrefabDatabase : MonoBehaviour
 			BuildTarget.StandaloneOSXUniversal
 		);
 	}
+
+	[MenuItem ("Prefab Database/2. Build AssetBundles/Process Prefab", false, 90)]
+	static void PreprocessPrefabsSeparate ()
+	{
+		/* 
+		 * Preprocess each selected  prefab inside the selected folder of prefabs.
+		 */
+		// Build all bundles existing in the project
+		//		BuildPipeline.BuildAssetBundles ("Assets/AssetBundles/", BuildAssetBundleOptions.None, BuildTarget.StandaloneOSXUniversal);
+		// For building bundles selectively
+		Dictionary<GameObject, string> selectedPrefabs = ListSelectedPrefabs ();
+
+		int loop_counter = 0;
+		foreach (KeyValuePair<GameObject, string> entry in selectedPrefabs) {
+			string prefabName = entry.Value;
+			GameObject prefab = entry.Key;
+			GameObject instance = GameObject.Instantiate (prefab) as GameObject;
+			GeneratablePrefab metaData = instance.GetComponent<GeneratablePrefab> ();
+			metaData.ProcessPrefab ();
+			SemanticObject objData = instance.GetComponent<SemanticObject> ();
+			objData.extents = metaData.myBounds.extents;
+			objData.center = metaData.myBounds.center;
+
+			if (prefab == null)
+				prefab = PrefabUtility.CreatePrefab (prefabName, instance);
+			else
+				prefab = PrefabUtility.ReplacePrefab (instance, prefab);
+
+			loop_counter++;
+		}
+		AssetDatabase.SaveAssets ();
+
+		foreach (KeyValuePair<GameObject, string> entry in selectedPrefabs)
+			GameObject.DestroyImmediate(entry.Key, true);
+	}
+
 
 	[MenuItem ("Prefab Database/3. Setup Bundles", false, 100)]
 	private static void SetupBundlesMenu ()

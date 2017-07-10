@@ -200,11 +200,12 @@ public class InputModule : AbstractInputModule
 							o.transform.rotation = Quaternion.LookRotation(new_object_rotation);
 
 							RaycastHit hit = new RaycastHit();
-							Vector3 object_size = o.GetComponent<GeneratablePrefab>().myBounds.size;
-							Vector3 raycast_origin = new Vector3(new_object_position.x, roomHeight-0.5f, new_object_position.z);
+							Vector3 object_extents = o.GetComponent<SemanticObject>().extents;
+							object_extents.Scale(o.transform.localScale);
+							Vector3 raycast_origin = new Vector3(new_object_position.x, roomHeight/2, new_object_position.z);
 							if (Physics.Raycast(raycast_origin, Vector3.down, out hit, roomHeight))
 							{
-								new_object_position.y = Mathf.Max(hit.point.y + object_size.y / 2, new_object_position.y);
+								new_object_position.y = Mathf.Max(hit.point.y + object_extents.y, new_object_position.y);
 							}
 							o.transform.position = new_object_position;
 						}
