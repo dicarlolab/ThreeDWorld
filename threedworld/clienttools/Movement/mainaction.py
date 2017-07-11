@@ -28,13 +28,13 @@ SCREEN_WIDTH = 170
 SCREEN_HEIGHT = 128
 SELECTED_BUILD = 'one_world.exe'
 
-NUM_TIMES_RUN = 1
-REPEATS = 1000
+NUM_TIMES_RUN = 25
+REPEATS = 40
 BATCH_SIZE = 256
 TOTAL = NUM_TIMES_RUN * REPEATS * BATCH_SIZE
 
-SHADERS = [{"DisplayNormals": "png"}, {"GetIdentity": "png"}, {"DisplayDepth": "png"}, {"DisplayVelocity": "png"}, {"DisplayAcceleration": "png"}, {"DisplayJerk": "png"}, {"Images": "jpg"}]
-HDF5_NAMES = [{"DisplayNormals": "normals"}, {"GetIdentity": "objects"}, {"DisplayDepth": "depths"}, {"DisplayVelocity": "velocities"}, {"DisplayAcceleration": "accelerations"}, {"DisplayJerk": "jerks"}, {"Images": "images"}]
+SHADERS = [{"DisplayNormals": "png"}, {"GetIdentity": "png"}, {"DisplayDepth": "png"}, {"DisplayVelocity": "png"}, {"DisplayAcceleration": "png"}, {"DisplayJerk": "png"}, {"DisplayVelocityCurrent": "png"}, {"DisplayAccelerationCurrent": "png"}, {"DisplayJerkCurrent": "png"}, {"Images": "jpg"}]
+HDF5_NAMES = [{"DisplayNormals": "normals"}, {"GetIdentity": "objects"}, {"DisplayDepth": "depths"}, {"DisplayVelocity": "velocities"}, {"DisplayAcceleration": "accelerations"}, {"DisplayJerk": "jerks"},  {"DisplayVelocityCurrent": "velocities_current"}, {"DisplayAccelerationCurrent": "accelerations_current"}, {"DisplayJerkCurrent": "jerks_current"}, {"Images": "images"}]
 
 n_cameras = 2
 num_frames_per_msg = 1 + n_cameras * len(SHADERS) # +1 because of info frame
