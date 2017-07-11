@@ -120,7 +120,7 @@ public class PrefabDatabase : MonoBehaviour
 
 	public static GameObject LoadAssetFromBundle (string fileName)
 	{
-		fileName = Path.Combine(Application.dataPath, fileName);
+		//fileName = Path.Combine(Application.dataPath, fileName);
 		AssetBundle loadedAssetBundle = AssetBundle.LoadFromFile (fileName);
 		if (loadedAssetBundle == null) {
 			Debug.Log ("Failed to load AssetBundle!");
@@ -144,9 +144,51 @@ public class PrefabDatabase : MonoBehaviour
 
         }
 
+	[MenuItem ("Prefab Database/Extract Selected AssetBundles", false, 90)]
+	public static void LoadSelectedAssetBundle()
+	{
+		foreach (UnityEngine.Object obj in Selection.objects) {
+			if (obj != null) {
+				var prefab = LoadAssetFromBundle(AssetDatabase.GetAssetPath (obj));
+				GameObject newInstance = GameObject.Instantiate (prefab) as GameObject;
+
+            	Renderer[] RendererList = newInstance.GetComponentsInChildren<Renderer>();
+            	foreach (Renderer _rend in RendererList)
+            	    foreach (Material _mat in _rend.materials)
+						_mat.shader = Shader.Find("Standard");
+			}
+		}
+	}
+
+	[MenuItem ("Prefab Database/Combine Meshes", false, 90)]
+	public static void CombineMeshes ()
+	{
+		foreach(GameObject obj in Selection.gameObjects) {
+        	MeshFilter[] meshFilters = obj.GetComponentsInChildren<MeshFilter>();
+        	CombineInstance[] combine = new CombineInstance[meshFilters.Length];
+        	int i = 0;
+        	while (i < meshFilters.Length) {
+            	combine[i].mesh = meshFilters[i].sharedMesh;
+            	combine[i].transform = meshFilters[i].transform.localToWorldMatrix;
+            	meshFilters[i].gameObject.active = false;
+            	i++;
+        	}
+			if(obj.GetComponent<MeshFilter>() == null)
+        		obj.AddComponent<MeshFilter>();
+			if(obj.GetComponent<MeshRenderer>() == null)
+			{
+				MeshRenderer rend = obj.AddComponent<MeshRenderer>();
+				rend.material.shader = Shader.Find("Standard");
+        	}
+        	obj.GetComponent<MeshFilter>().sharedMesh = new Mesh();
+        	obj.GetComponent<MeshFilter>().sharedMesh.CombineMeshes(combine);
+        }
+    }
+
+
 	public static GameObject LoadAssetFromBundleWWW (string fileName)
 	{
-                // 0 is the version number and not used currently
+        // 0 is the version number and not used currently
 		var www = WWW.LoadFromCacheOrDownload (fileName, 0);
 
 		if (!String.IsNullOrEmpty (www.error)) {

@@ -22,7 +22,7 @@ import curricula
 
 SEED = int(sys.argv[2])
 CREATE_HDF5 = False
-USE_TDW = True
+USE_TDW = False
 SCENE_SWITCH = 20
 SCREEN_WIDTH = 170
 SCREEN_HEIGHT = 128
@@ -279,7 +279,7 @@ lift_smash_local = [
     (curricula.lift_smash_curriculum * REPEATS, 'LIFT_SMASH', [
         {
         'host' : 'local',
-        'aws_address' : 'PrefabDatabase/AssetBundles/Separated/playbox.bundle',
+        'aws_address' : 'Assets/PrefabDatabase/AssetBundles/Separated/playbox.bundle',
         'type' : 'CONTAINER',
         'scale' : {"option": "Absol_size", 
             "scale": 0.7,
