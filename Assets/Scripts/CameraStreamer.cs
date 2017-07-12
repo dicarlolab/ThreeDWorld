@@ -364,8 +364,8 @@ public class CameraStreamer : MonoBehaviour
 				targetCams[camera_id].gameObject.AddComponent<AmbientOcclusion>();
 
 	            //Screen Space Reflections
-				targetCams[camera_id].renderingPath = RenderingPath.DeferredShading;
-				targetCams[camera_id].gameObject.AddComponent<ScreenSpaceReflection>();
+				//targetCams[camera_id].renderingPath = RenderingPath.DeferredShading;
+				//targetCams[camera_id].gameObject.AddComponent<ScreenSpaceReflection>();
 	        }
         }
 

@@ -144,6 +144,7 @@ public class PrefabDatabase : MonoBehaviour
 
         }
 
+	#if UNITY_EDITOR
 	[MenuItem ("Prefab Database/Extract Selected AssetBundles", false, 90)]
 	public static void LoadSelectedAssetBundle()
 	{
@@ -184,7 +185,7 @@ public class PrefabDatabase : MonoBehaviour
         	obj.GetComponent<MeshFilter>().sharedMesh.CombineMeshes(combine);
         }
     }
-
+	#endif
 
 	public static GameObject LoadAssetFromBundleWWW (string fileName)
 	{
