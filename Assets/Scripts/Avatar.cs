@@ -163,15 +163,15 @@ public class Avatar : MonoBehaviour
     // Looks for all the SemanticObject's that are within the range
     public void UpdateObservedObjects()
     {
-		Debug.Log ("UpdateObserveredObjects");
+//		Debug.Log ("UpdateObserveredObjects");
         _observedObjs.Clear();
         if (!_shouldCollectObjectInfo)
             return;
-        if (NetMessenger.logTimingInfo)
-            Debug.LogFormat("Starting Avatar.UpdateObservedObjects() {0}", Utils.GetTimeStamp());
+//        if (NetMessenger.logTimingInfo)
+//            Debug.LogFormat("Starting Avatar.UpdateObservedObjects() {0}", Utils.GetTimeStamp());
         Collider[] observedObjects = Physics.OverlapSphere(transform.position, observedRange);
-        if (NetMessenger.logTimingInfo)
-            Debug.LogFormat("Finished OverlapSphere() and found {1}, {0}", Utils.GetTimeStamp(), observedObjects.Length);
+//        if (NetMessenger.logTimingInfo)
+//            Debug.LogFormat("Finished OverlapSphere() and found {1}, {0}", Utils.GetTimeStamp(), observedObjects.Length);
 
         foreach(Collider col in observedObjects)
         {
@@ -185,8 +185,8 @@ public class Avatar : MonoBehaviour
             else
             {
                 obj = col.attachedRigidbody.GetComponent<SemanticObjectSimple>();
-				if (obj == null)
-					Debug.LogWarningFormat ("{0} Rigidbody doesn't have an associated SemanticObject!", col.attachedRigidbody.name);
+//				if (obj == null)
+//					Debug.LogWarningFormat ("{0} Rigidbody doesn't have an associated SemanticObject!", col.attachedRigidbody.name);
             }
             if (obj != null && !_observedObjs.Contains(obj))
             {
@@ -198,10 +198,10 @@ public class Avatar : MonoBehaviour
                 }
             }
         }
-		if (NetMessenger.logTimingInfo) {
-			Debug.LogFormat ("Finished Avatar.UpdateObservedObjects() and found {1} {0}", Utils.GetTimeStamp (), observedObjs.Count);
-		}
-		Debug.Log ("exiting UpdateObserveredObjects");
+//		if (NetMessenger.logTimingInfo) {
+//			Debug.LogFormat ("Finished Avatar.UpdateObservedObjects() and found {1} {0}", Utils.GetTimeStamp (), observedObjs.Count);
+//		}
+//		Debug.Log ("exiting UpdateObserveredObjects");
     }
 
     public void TeleportToGivenPosition(Vector3 new_position, Vector3 new_rotation)

@@ -340,7 +340,7 @@ public class CameraStreamer : MonoBehaviour
          {
 			snapshotInit[camera_id] = false;
             // Image Effects
-			if (true && targetCams[camera_id] != null)
+			if (false && targetCams[camera_id] != null)
             {
 				targetCams[camera_id].hdr = true;
 

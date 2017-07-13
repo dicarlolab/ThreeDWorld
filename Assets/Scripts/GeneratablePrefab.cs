@@ -46,7 +46,7 @@ public class GeneratablePrefab : MonoBehaviour
         {
             c = gameObject.AddComponent<BoxCollider>();
             myBounds = new Bounds(transform.TransformPoint(c.center), transform.TransformVector(c.size).Abs());
-            Debug.LogFormat("Encapsulating bounds for {0} as {1} with {2}", name, myBounds, c.bounds);
+//            Debug.LogFormat("Encapsulating bounds for {0} as {1} with {2}", name, myBounds, c.bounds);
             firstBounds = false;
         }
         foreach(Renderer col in GetComponentsInChildren<Renderer>())
@@ -77,9 +77,9 @@ public class GeneratablePrefab : MonoBehaviour
 //                myBounds.Encapsulate(col.bounds);
 //            }
 //        }
-        Debug.LogFormat("Final bounds for {0} is {1}", name, myBounds);
+//        Debug.LogFormat("Final bounds for {0} is {1}", name, myBounds);
         myBounds.center = myBounds.center - transform.localPosition;
-        Debug.LogFormat("Real final bounds for {0} is {1}", name, myBounds);
+//        Debug.LogFormat("Real final bounds for {0} is {1}", name, myBounds);
         if (c != null)
         {
 //            if(Application.isEditor && Application.isPlaying == false)
