@@ -3,7 +3,7 @@ import copy
 import pymongo
 from bson.objectid import ObjectId
 
-
+# default 
 default_inquery     = {'type': 'shapenetremat', 'has_texture': True, 'complexity': {'$exists': True}, 'center_pos': {'$exists': True}, 'boundb_pos': {'$exists': True}, 'isLight': {'$exists': True}, 'anchor_type': {'$exists': True}, 'aws_address': {'$exists': True}}
 
 
