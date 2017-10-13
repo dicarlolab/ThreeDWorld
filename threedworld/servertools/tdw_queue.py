@@ -18,7 +18,11 @@ DEFAULT_QUEUE_PORT=23402
 # Set your code and build directories as environment variables!
 #os.environ['THREEDWORLD_BUILD_DIR'] = "C:\\Users\\mrowca\\Desktop\\world"
 #os.environ['THREEDWORLD_CODE_DIR'] = "C:\\Users\\mrowca\\Documents\\GitHub\\ThreeDWorld"
+os.environ['THREEDWORLD_BUILD_DIR'] = "/data/nhaber/tdw_stuffs/linux_stuffs/locked_rot"
+os.environ['THREEDWORLD_CODE_DIR'] = "/home/nhaber/projects/ThreeDWorld"
+
 GPU_NUM = 4
+
 
 class Three_D_World_Queue(object):
 
@@ -210,7 +214,8 @@ class Three_D_World_Queue(object):
                        "-force-opengl",
                        "-port=" + str(forward_port_num),
                        "-address=" + self.host_address,
-                       "-batchmode"]
+                       #"-batchmode"
+			]
             
             if os.name == 'nt':
                 process = [j["selected_build"],
