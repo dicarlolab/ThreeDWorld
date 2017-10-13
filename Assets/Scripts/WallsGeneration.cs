@@ -115,7 +115,7 @@ public class WallInfo
             }
             if (placementLoc + nextArea.x + MOD_WINDOW_WIDTH > nextArea.y)
             {
-                Debug.LogErrorFormat("Invalid placement @{0}/{1} on {2} with mww:{3} for #{4}", placementLoc, totalRange, nextArea, MOD_WINDOW_WIDTH, NUM_TO_PLACE);
+//                Debug.LogErrorFormat("Invalid placement @{0}/{1} on {2} with mww:{3} for #{4}", placementLoc, totalRange, nextArea, MOD_WINDOW_WIDTH, NUM_TO_PLACE);
                 NUM_TO_PLACE = 0;
             }
             else
@@ -618,10 +618,10 @@ public class WallArray : IEnumerable<WallInfo>
         }
 
         // Sanity check
-        if (foundStart == null)
-            Debug.LogWarningFormat("Couldn't find start point! {0}", myWalls[0].name);
-        if (foundEnd == null)
-            Debug.LogWarningFormat("Couldn't find end point! {0}", myWalls[Count - 1].name);
+//        if (foundStart == null)
+//            Debug.LogWarningFormat("Couldn't find start point! {0}", myWalls[0].name);
+//        if (foundEnd == null)
+//            Debug.LogWarningFormat("Couldn't find end point! {0}", myWalls[Count - 1].name);
     }
 
     private static Material GetNextWallMat()

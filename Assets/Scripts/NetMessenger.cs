@@ -88,11 +88,11 @@ public class NetMessenger : MonoBehaviour
 		bool logSimpleTimingInfo, bool logDetailedTimeInfo, string preferredImageFormat, bool saveDebugImageFiles, string environmentScene)
     {
 		this.avatarPrefab = Resources.Load<Avatar>("Prefabs/Avatar");
-		if (this.avatarPrefab == null) {
-			Debug.Log ("it doesnt exist still!");
-		}
-
-		Debug.Log (this.avatarPrefab.name);
+//		if (this.avatarPrefab == null) {
+//			Debug.Log ("it doesnt exist still!");
+//		}
+//
+//		Debug.Log (this.avatarPrefab.name);
 
         // Read port number
 		this.portNumber = portNumber;
@@ -111,9 +111,9 @@ public class NetMessenger : MonoBehaviour
 		// Load Environment Scene
 		if (shouldCreateServer) {
 			SceneManager.LoadScene (environmentScene, LoadSceneMode.Additive);
-			if (!SceneManager.GetSceneByName (environmentScene).IsValid()) {
-				Debug.LogWarning ("Scene name \"" + environmentScene + "\" was not found.");
-			}
+//			if (!SceneManager.GetSceneByName (environmentScene).IsValid()) {
+//				Debug.LogWarning ("Scene name \"" + environmentScene + "\" was not found.");
+//			}
 		}
 
         // Start up connections
@@ -123,7 +123,7 @@ public class NetMessenger : MonoBehaviour
         clientInfo.Connect("tcp://" + hostAddress + ":" + portNumber_info);
         CreateNewSocketConnection();
 
-		Debug.Log ("Net Messenger Initialized!");
+//		Debug.Log ("Net Messenger Initialized!");
     }
 
     public bool AreAllAvatarsReady()
@@ -142,7 +142,7 @@ public class NetMessenger : MonoBehaviour
                     string output;
 					if (clientSimulation.HasIn && clientSimulation.TryReceiveFrameString (out output))
                     {
-                        Debug.LogWarning("Received: " + output);
+//                        Debug.LogWarning("Received: " + output);
                     }
 					return;
 				}
@@ -163,7 +163,7 @@ public class NetMessenger : MonoBehaviour
 				}
 			} else {
 				foreach (Scene scene in scenesToUnload) {
-					Debug.Log ("Unloading: " + scene.name);
+//					Debug.Log ("Unloading: " + scene.name);
 					SceneManager.UnloadScene (scene);
 				}
 
@@ -171,7 +171,7 @@ public class NetMessenger : MonoBehaviour
 				PrefabDatabase.GarbageCollect();
 
 				OnClientJoin (lastSocket, lastJsonContents);
-				Debug.Log ("Client Join Handled");
+//				Debug.Log ("Client Join Handled");
 
 				foreach (Avatar a in _avatars.Values)
 					a.UpdateObservedObjects();
@@ -187,8 +187,8 @@ public class NetMessenger : MonoBehaviour
         // TODO: Handle this for when we have multiple Avatars
 		if (SimulationManager.FinishUpdatingFrames())
         {
-            if (logTimingInfo)
-                Debug.LogFormat("Start FinishUpdatingFrames() {0}", Utils.GetTimeStamp());
+//            if (logTimingInfo)
+//                Debug.LogFormat("Start FinishUpdatingFrames() {0}", Utils.GetTimeStamp());
             HashSet<SemanticObject> allObserved = new HashSet<SemanticObject>();
             HashSet<string> relationshipsActive = new HashSet<string>();
             foreach(Avatar a in _avatars.Values)
@@ -197,8 +197,8 @@ public class NetMessenger : MonoBehaviour
                 allObserved.UnionWith(a.observedObjs);
                 relationshipsActive.UnionWith(a.relationshipsToRetrieve);
             }
-            if (logTimingInfo)
-                Debug.LogFormat("Finished find avatar observed objects {0}", Utils.GetTimeStamp());
+//            if (logTimingInfo)
+//                Debug.LogFormat("Finished find avatar observed objects {0}", Utils.GetTimeStamp());
 
             // Process all the relation changes
             bool hasAll = relationshipsActive.Contains("ALL");
@@ -207,13 +207,13 @@ public class NetMessenger : MonoBehaviour
                 if (hasAll || relationshipsActive.Contains(rel.name))
                     rel.Setup(allObserved);
             }
-            if (logTimingInfo)
-                Debug.LogFormat("Finished relationships setup {0}", Utils.GetTimeStamp());
+//            if (logTimingInfo)
+//                Debug.LogFormat("Finished relationships setup {0}", Utils.GetTimeStamp());
 
             foreach(Avatar a in _avatars.Values)
                 a.ReadyFramesForRequest();
-            if (logTimingInfo)
-                Debug.LogFormat("Finished FinishUpdatingFrames() {0}", Utils.GetTimeStamp());
+//            if (logTimingInfo)
+//                Debug.LogFormat("Finished FinishUpdatingFrames() {0}", Utils.GetTimeStamp());
         }
     }
 
@@ -267,10 +267,10 @@ public class NetMessenger : MonoBehaviour
         ResponseSocket server = _ctx.CreateResponseSocket();
         if (shouldCreateServer)
         {
-			Debug.Log("connecting...");
+//			Debug.Log("connecting...");
             server.Bind("tcp://" + this.hostAddress + ":" + this.portNumber);
             _createdSockets.Add(server);
-			Debug.Log ("...connected@" + this.hostAddress + ":" + this.portNumber);
+//			Debug.Log ("...connected@" + this.hostAddress + ":" + this.portNumber);
             if (shouldCreateTestClient)
                 CreateTestClient(server);
         }
@@ -315,18 +315,18 @@ public class NetMessenger : MonoBehaviour
     #region For mongodb intergration
     public JsonData SendAndReceiveMongoDB(JsonData jsonData){
         clientInfo.SendFrame(jsonData.ToJSON());
-        Debug.Log("Message info sent!");
+//        Debug.Log("Message info sent!");
         //_lastMessage_info = clientInfo.ReceiveMessage();
         TimeSpan timeout = TimeSpan.FromSeconds(30);
         bool did_receive = false;
         while(!did_receive)
             did_receive = clientInfo.TryReceiveMultipartMessage(timeout, ref _lastMessage_info);
         //if (clientInfo.TryReceiveMultipartMessage(ref _lastMessage_info)){
-        Debug.Log("Receive info: ");
+//        Debug.Log("Receive info: ");
 
         string msgHeader = _lastMessage_info.First.ConvertToString();
         JsonData jsonData_ = _lastMessage_info.ReadJson(out msgHeader);
-        Debug.Log("To Json: " + jsonData_);
+//        Debug.Log("To Json: " + jsonData_);
         return jsonData_;
         //return CreateMsgJson("Noback");
     }
@@ -335,25 +335,25 @@ public class NetMessenger : MonoBehaviour
     #region Receive messages from the client
     public void HandleFrameMessage(ResponseSocket server, NetMQMessage msg)
     {
-		Debug.Log ("Handling Message");
+//		Debug.Log ("Handling Message");
         if (logTimingInfo || logSimpleTimeInfo)
         {
             DateTime newTime = DateTime.Now;
-            Debug.LogFormat("Time since received last msg: {0} ms", newTime.Subtract(_timeForLastMsg).TotalMilliseconds);
+//            Debug.LogFormat("Time since received last msg: {0} ms", newTime.Subtract(_timeForLastMsg).TotalMilliseconds);
             _timeForLastMsg = newTime;
         }
-        if (debugNetworkMessages)
-            Debug.LogFormat("Received Msg on Server: {0}", ReadOutMessage(msg));
+//        if (debugNetworkMessages)
+//            Debug.LogFormat("Received Msg on Server: {0}", ReadOutMessage(msg));
         string msgHeader = msg.First.ConvertToString();
         JsonData jsonData = msg.ReadJson(out msgHeader);
         if (jsonData == null)
         {
-            Debug.LogError("Invalid message from client! Cannot parse JSON!\n" + ReadOutMessage(msg));
+//            Debug.LogError("Invalid message from client! Cannot parse JSON!\n" + ReadOutMessage(msg));
             return;
         }
         if (msgHeader == null)
         {
-            Debug.LogError("Invalid message from client! No msg_type!\n" + jsonData.ToJSON());
+//            Debug.LogError("Invalid message from client! No msg_type!\n" + jsonData.ToJSON());
             return;
         }
         switch(msgHeader.ToString())
@@ -369,15 +369,15 @@ public class NetMessenger : MonoBehaviour
                 ReceiveClientInput(server, jsonData);
                 break;
 			case MSG_R_ClientJoinWithConfig:
-				Debug.Log ("Config received!");
+//				Debug.Log ("Config received!");
 				ReceiveSceneSwitch (server, jsonData);
-				Debug.Log ("Config handled!");
+//				Debug.Log ("Config handled!");
 				break;
 			case MSG_R_SceneSwitch:
 				ReceiveSceneSwitch(server, jsonData);
 				break;
             default:
-                Debug.LogWarningFormat("Invalid message from client! Unknown msg_type '{0}'\n{1}", msgHeader, jsonData.ToJSON());
+//                Debug.LogWarningFormat("Invalid message from client! Unknown msg_type '{0}'\n{1}", msgHeader, jsonData.ToJSON());
                 break;
         }
     }
@@ -388,7 +388,7 @@ public class NetMessenger : MonoBehaviour
 
 		SimulationManager.setArgsConfig (jsonData["config"]);
 
-		Debug.Log ("Scene config: " + jsonData ["config"].ToJSON ());
+//		Debug.Log ("Scene config: " + jsonData ["config"].ToJSON ());
 
                 //Debug.Log("Scale Related Dict: " + SimulationManager.argsConfig["scale_relat_dict"]["bed1"]["option"].ToJSON());
 
@@ -398,21 +398,21 @@ public class NetMessenger : MonoBehaviour
 		for (int i = 0; i < SceneManager.sceneCount; i++) {
 			Scene sceneAtIndex = SceneManager.GetSceneAt (i);
 			if (sceneAtIndex.path.StartsWith ("Assets/Scenes/EnvironmentScenes/")) {
-				Debug.Log ("Queueing scene unload for: " + sceneAtIndex.name);
+//				Debug.Log ("Queueing scene unload for: " + sceneAtIndex.name);
 				this.scenesToUnload.Add (sceneAtIndex);
 			}
 		}
 
-		Debug.Log ("Loading \'" + newEnvironmentScene + "\'");
+//		Debug.Log ("Loading \'" + newEnvironmentScene + "\'");
      
         // Load new scene
         SceneManager.LoadScene ( newEnvironmentScene, LoadSceneMode.Additive);
 		if (!SceneManager.GetSceneByName (newEnvironmentScene).IsValid()) {
-			Debug.LogError ("Scene name \"" + newEnvironmentScene + "\" was not found.");
+//			Debug.LogError ("Scene name \"" + newEnvironmentScene + "\" was not found.");
 		}
 
 		if (!SceneManager.GetSceneByName (newEnvironmentScene).path.StartsWith ("Assets/Scenes/EnvironmentScenes/")) {
-			Debug.LogError ("Scene is not located in Assets/Scenes/EnvironmentScenes/, please relocate scene file to this directory!");
+//			Debug.LogError ("Scene is not located in Assets/Scenes/EnvironmentScenes/, please relocate scene file to this directory!");
 		}
         SceneManager.sceneLoaded += sceneWasLoaded;
 
@@ -436,7 +436,7 @@ public class NetMessenger : MonoBehaviour
     {
         // Setup new avatar object from prefab
 		GameObject newGameObject = Instantiate (Resources.Load ("Prefabs/Avatar")) as GameObject;
-		Debug.Log (newGameObject.name);
+//		Debug.Log (newGameObject.name);
 		Avatar newAvatar = newGameObject.GetComponent<Avatar> ();
         if (_avatars.ContainsKey(server))
         {
@@ -473,8 +473,8 @@ public class NetMessenger : MonoBehaviour
     // Used for debugging without an agent
     public void HandleClientFrameMessage(RequestSocket client, NetMQMessage msg)
     {
-        if (debugNetworkMessages)
-            Debug.LogFormat("Received Msg on Client: {0}", ReadOutMessage(msg));
+//        if (debugNetworkMessages)
+//            Debug.LogFormat("Received Msg on Client: {0}", ReadOutMessage(msg));
         string msgHeader = msg.First.ConvertToString();
 
         // Hack to avoid slow parsing of long json values since we're not reading it anyways
@@ -493,12 +493,12 @@ public class NetMessenger : MonoBehaviour
 
         if (jsonData == null)
         {
-            Debug.LogError("Invalid message from server! Cannot parse JSON!\n" + ReadOutMessage(msg));
+//            Debug.LogError("Invalid message from server! Cannot parse JSON!\n" + ReadOutMessage(msg));
             return;
         }
         if (msgHeader == null)
         {
-            Debug.LogError("Invalid message from server! No msg_type!\n" + jsonData.ToJSON());
+//            Debug.LogError("Invalid message from server! No msg_type!\n" + jsonData.ToJSON());
             return;
         }
 
@@ -511,7 +511,7 @@ public class NetMessenger : MonoBehaviour
                 SimulateClientInput(client, jsonData, msg);
                 break;
             default:
-                Debug.LogWarningFormat("Invalid message from server! Unknown msg_type '{0}'\n{1}", msgHeader, jsonData.ToJSON());
+//                Debug.LogWarningFormat("Invalid message from server! Unknown msg_type '{0}'\n{1}", msgHeader, jsonData.ToJSON());
                 break;
         }
     }
@@ -552,8 +552,8 @@ public class NetMessenger : MonoBehaviour
             // Just save out the png data to the local filesystem(Debugging code only)
             if (msg.FrameCount > 1)
             {
-                for(int i = 0; i < myAvatar.shaders.Count; ++i)
-                    Debug.LogFormat("Saving out: {0}", CameraStreamer.SaveOutImages(msg[msg.FrameCount + i - myAvatar.shaders.Count].ToByteArray(), i));
+//                for(int i = 0; i < myAvatar.shaders.Count; ++i)
+//                    Debug.LogFormat("Saving out: {0}", CameraStreamer.SaveOutImages(msg[msg.FrameCount + i - myAvatar.shaders.Count].ToByteArray(), i));
                 CameraStreamer.fileIndex++;
             }
         }
@@ -577,8 +577,8 @@ public class NetMessenger : MonoBehaviour
 
     public void SendFrameUpdate(CameraStreamer.CaptureRequest streamCapture, Avatar a)
 	{
-        if (logTimingInfo)
-            Debug.LogFormat("Start SendFrameUpdate() {0} {1}", a.name, Utils.GetTimeStamp());
+//        if (logTimingInfo)
+//            Debug.LogFormat("Start SendFrameUpdate() {0} {1}", a.name, Utils.GetTimeStamp());
         _lastMessageSent.Clear();
         JsonData jsonData = CreateMsgJson(MSG_S_FrameData);
         // TODO: Additional frame message description?
@@ -646,33 +646,33 @@ public class NetMessenger : MonoBehaviour
 				}
 				else {
 					_info.Add(-1);
-					Debug.LogFormat("Material of object {0} doesn't have a color property '_idval', hence it was set to -1!", semObj.name);
+//					Debug.LogFormat("Material of object {0} doesn't have a color property '_idval', hence it was set to -1!", semObj.name);
 				}
 				jsonData["sceneInfo"].Add(_info);
 
 	    	}
 	    }
 
-        if (logTimingInfo)
-            Debug.LogFormat("Finished collect Json data {0}", Utils.GetTimeStamp());
+//        if (logTimingInfo)
+//            Debug.LogFormat("Finished collect Json data {0}", Utils.GetTimeStamp());
         // Send out the real message
         string jsonString = LitJson.JsonMapper.ToJson(jsonData);
         _lastMessageSent.Append(jsonString);
-        if (logTimingInfo)
-            Debug.LogFormat("Finished encode json data of length {1}, {0}", Utils.GetTimeStamp(), jsonString.Length);
+//        if (logTimingInfo)
+//            Debug.LogFormat("Finished encode json data of length {1}, {0}", Utils.GetTimeStamp(), jsonString.Length);
 
         // Add in captured frames(directly, non-JSON)
         int numValues = Mathf.Max(streamCapture.shadersList.Count, streamCapture.capturedImages.Count);
         for(int i = 0; i < numValues; ++i)
             _lastMessageSent.Append(streamCapture.capturedImages[i].pictureBuffer);
-        if (logTimingInfo)
-            Debug.LogFormat("Finished Encode Image data {0}", Utils.GetTimeStamp());
+//        if (logTimingInfo)
+//            Debug.LogFormat("Finished Encode Image data {0}", Utils.GetTimeStamp());
 
 		a.myServer.SendMultipartMessage(_lastMessageSent);
 		//Debug.Log (_lastMessageSent.ToString());
-        Debug.LogFormat("Sending frame message with {0} frames for {1} values", _lastMessageSent.FrameCount, numValues);
-        if (logTimingInfo)
-            Debug.LogFormat("Finish SendFrameUpdate() {0} {1}", a.name, Utils.GetTimeStamp());
+//        Debug.LogFormat("Sending frame message with {0} frames for {1} values", _lastMessageSent.FrameCount, numValues);
+//        if (logTimingInfo)
+////            Debug.LogFormat("Finish SendFrameUpdate() {0} {1}", a.name, Utils.GetTimeStamp());
     }
 
     public ResponseSocket GetServerForClient(RequestSocket client)

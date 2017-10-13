@@ -320,6 +320,9 @@ public static class SimulationManager
             Debug.Log(output);
         }
 
+		Debug.Log (screenWidth);
+		Debug.Log(screenHeight);
+		Debug.Log(Screen.fullScreen);
         Screen.SetResolution(screenWidth, screenHeight, Screen.fullScreen);
 
         physicsTimeMultiplier = targetFrameRate * (Time.fixedDeltaTime * numPhysicsFramesPerUpdate * 1.05f);

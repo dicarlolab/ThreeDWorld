@@ -216,7 +216,7 @@ class Three_D_World_Queue(object):
                        "-address=" + self.host_address,
                        #"-batchmode"
 			]
-            
+           
             if os.name == 'nt':
                 process = [j["selected_build"],
                            "-gpu", self.next_gpu(),
@@ -283,7 +283,8 @@ class Three_D_World_Queue(object):
                        " --port=" + str(j["port_num"]) +
                        " --hostaddress=" + self.host_address +
                        " --forwardport=" + str(forward_port_num) +
-                       " --forwardhostaddress=" + self.host_address)
+                       " --forwardhostaddress=" + self.host_address +
+                       " --forwardpid=" + str(environment.pid))
                 print ("\nforward port @%s:%d -> %s:%d" % (self.host_address,
                                                                    j["port_num"],
                                                                    self.host_address,
@@ -308,7 +309,8 @@ class Three_D_World_Queue(object):
                                                    "--port=" + str(j["port_num"]),
                                                    "--hostaddress=" + self.host_address,
                                                    "--forwardport=" + str(forward_port_num),
-                                                   "--forwardhostaddress=" + self.host_address],
+                                                   "--forwardhostaddress=" + self.host_address,
+                                                   "--forwardpid=" + str(environment.pid)],
                                                    preexec_fn=self.preexec_function)
 
 
@@ -537,6 +539,7 @@ class Three_D_World_Queue(object):
                                                                                    "--hostaddress=" + self.host_address,
                                                                                    "--forwardport=" + str(proc.connections(kind="tcp")[0].laddr[1]),
                                                                                    "--forwardhostaddress=" + proc.connections(kind="tcp")[0].laddr[0]],
+                                                                                   "--forwardpid=" + pid,
                                                                                    preexec_fn=self.preexec_function)
 
                                             if (self.debug):
