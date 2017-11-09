@@ -262,6 +262,12 @@ class Three_D_World_Queue(object):
             if ("save_debug_image_files" in j.keys()):
                 process = process + ["-saveDebugImageFiles"]
 
+            if ('gpu_num' in j.keys()):
+                gpu_num = str(j['gpu_num'])
+            else:
+                gpu_num = '0'
+            print('gpu num: ' + gpu_num)
+
                 #start environment process
             if (self.debug):
                 print ("Running Environment:")
@@ -271,7 +277,7 @@ class Three_D_World_Queue(object):
             if os.name == 'nt':
                 environment = subprocess.Popen(process, env=my_env)
             else:
-                my_env['DISPLAY'] = ':0'
+                my_env['DISPLAY'] = ':0.' + gpu_num
                 environment = subprocess.Popen(process, env=my_env, preexec_fn=self.preexec_function)
             if (self.debug):
                 print ("environment pid: %d" % environment.pid)
