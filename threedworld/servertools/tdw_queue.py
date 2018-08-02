@@ -278,6 +278,7 @@ class Three_D_World_Queue(object):
                 environment = subprocess.Popen(process, env=my_env)
             else:
                 my_env['DISPLAY'] = ':0.' + gpu_num
+                process = process + ["-cudaGPU=" + str(gpu_num)]
                 environment = subprocess.Popen(process, env=my_env, preexec_fn=self.preexec_function)
             if (self.debug):
                 print ("environment pid: %d" % environment.pid)
